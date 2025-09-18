@@ -60,34 +60,60 @@
               placeholder="ismoil_007u@gmail.com"
           >
         </div>
-        <div class="grid grid-cols-2 gap-4">
+        <!-- Password + Confirm -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-            <input
-                id="password"
-                :type="showPassword ? 'text' : 'password'"
-                v-model.trim="form.password"
-                autocomplete="current-password"
-                required
-                minlength="6"
-                class="w-full px-3 py-2 pr-10 bg-gray-100 border-0 rounded-lg focus:ring-2 focus:ring-blue-500 focus:bg-white"
-                placeholder="••••••••"
-                @blur="touched.password = true"
-            />
+            <label class="block text-sm font-medium text-gray-700 mb-1">Parol</label>
+            <div class="relative">
+              <input
+                  id="password"
+                  :type="showPassword ? 'text' : 'password'"
+                  v-model.trim="formData.password"
+                  autocomplete="new-password"
+                  required
+                  minlength="6"
+                  class="w-full px-3 py-2 pr-10 bg-gray-100 border-0 rounded-lg focus:ring-2 focus:ring-blue-500 focus:bg-white"
+                  placeholder="••••••••"
+                  @blur="touched.password = true"
+              />
+              <button
+                  type="button"
+                  class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500"
+                  @click="showPassword = !showPassword"
+                  aria-label="Parolni ko'rsatish"
+              >
+                <svg v-if="!showPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                        d="M2.036 12.322a1.012 1.012 0 010-.644C3.423 7.51 7.36 5 12 5s8.577 2.51 9.964 6.678c.07.214.07.45 0 .644C20.577 16.49 16.64 19 12 19S3.423 16.49 2.036 12.322z"/>
+                  <circle cx="12" cy="12" r="3" stroke-width="1.8"/>
+                </svg>
+                <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                        d="M3 3l18 18M10.584 10.59A3 3 0 0113.41 13.41M9.88 5.1A8.966 8.966 0 0112 5c4.64 0 8.577 2.51 9.964 6.678.07.214.07.45 0 .644-.46 1.404-1.24 2.642-2.26 3.66M6.62 6.62C4.88 7.54 3.45 9.03 2.036 12.322a1.012 1.012 0 000 .644C3.423 16.49 7.36 19 12 19c1.33 0 2.6-.2 3.78-.58"/>
+                </svg>
+              </button>
+            </div>
+            <p v-if="touched.password && !valid.password" class="mt-1 text-xs text-red-600">
+              Parol kamida 6 ta belgidan iborat bo‘lsin
+            </p>
           </div>
+
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Parolni tasdiqlang</label>
             <input
                 id="confirm_password"
                 :type="showPassword ? 'text' : 'password'"
-                v-model.trim="form.confirm_password"
-                autocomplete="current-password"
+                v-model.trim="formData.confirm_password"
+                autocomplete="new-password"
                 required
                 minlength="6"
                 class="w-full px-3 py-2 pr-10 bg-gray-100 border-0 rounded-lg focus:ring-2 focus:ring-blue-500 focus:bg-white"
                 placeholder="••••••••"
-                @blur="touched.password = true"
+                @blur="touched.confirm_password = true"
             />
+            <p v-if="touched.confirm_password && !valid.confirm" class="mt-1 text-xs text-red-600">
+              Parollar mos kelmadi
+            </p>
           </div>
         </div>
 
@@ -398,6 +424,8 @@ const formData = reactive({
   firstName: '',
   lastName: '',
   email: '',
+  password: '',
+  confirm_password: '',
   phone: '',
   age: '',
   resumeText: '',
@@ -408,6 +436,67 @@ const formData = reactive({
   salaryFrom: '',
   salaryTo: ''
 })
+
+
+const touched = reactive({
+  firstName: false,
+  lastName: false,
+  email: false,
+  password: false,
+  confirm_password: false,
+});
+const showPassword = ref(false);
+const loading = ref(false);
+const error = ref("");
+
+const valid = reactive({
+  get email() {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email);
+  },
+  get password() {
+    return formData.password.length >= 6;
+  },
+  get confirm() {
+    return formData.confirm_password.length >= 6 && formData.confirm_password === formData.password;
+  },
+  get names() {
+    return formData.firstName.trim().length > 0 && formData.lastName.trim().length > 0;
+  },
+});
+
+const isValid = computed(() => valid.email && valid.password && valid.confirm && valid.names && valid.accept);
+
+async function onSubmit() {
+  touched.firstName = true;
+  touched.lastName = true;
+  touched.email = true;
+  touched.password = true;
+  touched.confirm_password = true;
+  touched.accept = true;
+  error.value = "";
+
+  if (!isValid.value) return;
+  loading.value = true;
+
+  try {
+    // === Bu yerda real API chaqirig'ini bajarasiz ===
+    // const res = await api.post('/auth/register', {
+    //   firstName: form.firstName,
+    //   lastName: form.lastName,
+    //   email: form.email,
+    //   password: form.password
+    // });
+
+    await new Promise(r => setTimeout(r, 900)); // demo delay
+
+    // Muvaffaqiyatdan so‘ng confirm email sahifasiga yoki avtomatik login:
+    router.push({ name: "Login" }); // yoki { name: "VerifyEmail" }
+  } catch (e) {
+    error.value = "Ro‘yxatdan o‘tishda xatolik yuz berdi. Keyinroq urinib ko‘ring.";
+  } finally {
+    loading.value = false;
+  }
+}
 
 const handleFileUpload = (event) => {
   const file = event.target.files[0]
