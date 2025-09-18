@@ -16,23 +16,23 @@
             ></div>
           </div>
         </div>
-        <p class="text-center text-sm text-gray-500">Шаг {{ currentStep }} из 4</p>
+        <p class="text-center text-sm text-gray-500">{{ translations.Step }} {{ currentStep }} {{translations.from}} 4</p>
       </div>
 
       <!-- Step 1: Personal Information -->
       <div v-if="currentStep === 1" class="space-y-6">
-        <h2 class="text-xl font-medium text-center text-gray-800 mb-6">Расскажите о себе</h2>
+        <h2 class="text-xl font-medium text-center text-gray-800 mb-6">{{ translations.tell_us_about_yourself }}</h2>
 
         <div class="flex items-center text-blue-600 mb-4">
           <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
             <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
           </svg>
-          <span class="font-medium">Личные данные</span>
+          <span class="font-medium">{{translations.personal_data}}</span>
         </div>
 
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Имя</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">{{translations.name}}</label>
             <input
                 v-model="formData.firstName"
                 type="text"
@@ -41,7 +41,7 @@
             >
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Фамилия</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">{{translations.surname}}</label>
             <input
                 v-model="formData.lastName"
                 type="text"
@@ -52,7 +52,7 @@
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ translations.email }}</label>
           <input
               v-model="formData.email"
               type="email"
@@ -63,7 +63,7 @@
         <!-- Password + Confirm -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Parol</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">{{ translations.password }}</label>
             <div class="relative">
               <input
                   id="password"
@@ -99,7 +99,7 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Parolni tasdiqlang</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">{{translations.confirm_password}}</label>
             <input
                 id="confirm_password"
                 :type="showPassword ? 'text' : 'password'"
@@ -119,7 +119,7 @@
 
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Телефон</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">{{ translations.phone }}</label>
             <input
                 v-model="formData.phone"
                 type="tel"
@@ -128,7 +128,7 @@
             >
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Возраст</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">{{translations.age}}</label>
             <input
                 v-model="formData.age"
                 type="number"
@@ -148,25 +148,25 @@
       : 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-50'
   ]"
         >
-          Далее
+          {{ translations.next }}
         </button>
       </div>
 
       <!-- Step 2: Resume Upload -->
       <div v-if="currentStep === 2" class="space-y-6">
-        <h2 class="text-xl font-medium text-center text-gray-800 mb-6">Загрузите резюме</h2>
+        <h2 class="text-xl font-medium text-center text-gray-800 mb-6">{{translations.Upload_your_resume}}</h2>
 
         <div class="flex items-center text-blue-600 mb-4">
           <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
             <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"/>
           </svg>
-          <span class="font-medium">Резюме</span>
+          <span class="font-medium">{{ translations.resume }}</span>
         </div>
 
         <div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Введите текст резюме</label>
+            <label class="block text-sm font-medium text-gray-700 mb-2">{{translations.Enter_your_resume_text}}</label>
             <input
                 v-model="formData.resumeText"
                 class="w-full px-3 py-2 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -174,10 +174,10 @@
             >
           </div>
 
-          <div class="text-center text-gray-500">или</div>
+          <div class="text-center text-gray-500">{{translations.or}}</div>
 
 
-          <label class="block text-sm font-medium text-gray-700 mb-2">Загрузить файл резюме</label>
+          <label class="block text-sm font-medium text-gray-700 mb-2">{{translations.Upload_your_resume_file}}</label>
           <div
               class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-400 transition-colors cursor-pointer"
           >
@@ -202,12 +202,12 @@
                 />
               </svg>
               <p class="text-gray-500 mb-4">
-                Перетащите файл сюда или нажмите для выбора
+                {{translations.dadafhocts}}
               </p>
               <span
                   class="inline-block px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors"
               >
-      Выбрать файл
+      {{translations.select_file}}
     </span>
             </label>
           </div>
@@ -219,7 +219,7 @@
               @click="prevStep"
               class="flex-1 bg-gray-100 text-gray-700 py-3 rounded-md font-medium hover:bg-gray-200 transition-colors"
           >
-            Назад
+            {{translations.back}}
           </button>
           <button
               @click="nextStep"
@@ -231,7 +231,7 @@
       : 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-50'
   ]"
           >
-            Далее
+            {{translations.next}}
           </button>
 
         </div>
@@ -239,26 +239,26 @@
 
       <!-- Step 3: Field Selection -->
       <div v-if="currentStep === 3" class="space-y-6">
-        <h2 class="text-xl font-medium text-center text-gray-800 mb-6">Выберите сферу</h2>
+        <h2 class="text-xl font-medium text-center text-gray-800 mb-6">{{translations.Select_a_field}}</h2>
 
         <div class="flex items-center text-blue-600 mb-4">
           <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
             <path fill-rule="evenodd" d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clip-rule="evenodd"/>
           </svg>
-          <span class="font-medium">Сфера деятельности</span>
+          <span class="font-medium">{{translations.Field_of_activity}}</span>
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Желаемая сфера работы</label>
+          <label class="block text-sm font-medium text-gray-700 mb-2">{{translations.Desired_field_of_work}}</label>
           <select
               v-model="formData.workField"
               class="w-full px-3 py-2 bg-gray-100 border-0 rounded-md focus:ring-2 focus:ring-blue-500 focus:bg-white"
           >
-            <option value="">Выберите сферу</option>
-            <option value="it">IT и разработка</option>
-            <option value="design">Дизайн</option>
-            <option value="marketing">Маркетинг</option>
-            <option value="sales">Продажи</option>
+            <option value="">{{translations.Select_a_field}}</option>
+            <option value="it">{{translations.IT_and_development}}</option>
+            <option value="design">{{translations.Design}}</option>
+            <option value="marketing">{{translations.Marketing}}</option>
+            <option value="sales">{{translations.Sales}}</option>
           </select>
         </div>
 
@@ -268,16 +268,16 @@
               v-model="formData.experience"
               class="w-full px-3 py-2 bg-gray-100 border-0 rounded-md focus:ring-2 focus:ring-blue-500 focus:bg-white"
           >
-            <option value="">Выберите опыт</option>
-            <option value="0-1">Без опыта</option>
-            <option value="1-3">1-3 года</option>
-            <option value="3-5">3-5 лет</option>
-            <option value="5+">Более 5 лет</option>
+            <option value="">{{translations.Choose_an_experience}}</option>
+            <option value="0-1">{{translations.No_experience}}</option>
+            <option value="1-3">{{translations.years1}}</option>
+            <option value="3-5">{{translations.years2}}</option>
+            <option value="5+">{{translations.years3}}</option>
           </select>
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Локация</label>
+          <label class="block text-sm font-medium text-gray-700 mb-2">{{translations.Location}}</label>
           <div class="relative">
             <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
@@ -296,7 +296,7 @@
               @click="prevStep"
               class="flex-1 bg-gray-100 text-gray-700 py-3 rounded-md font-medium hover:bg-gray-200 transition-colors"
           >
-            Назад
+            {{translations.back}}
           </button>
           <button
               @click="nextStep"
@@ -308,7 +308,7 @@
       : 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-50'
   ]"
           >
-            Далее
+            {{ translations.next }}
           </button>
 
         </div>
@@ -316,32 +316,32 @@
 
       <!-- Step 4: Preferences -->
       <div v-if="currentStep === 4" class="space-y-6">
-        <h2 class="text-xl font-medium text-center text-gray-800 mb-6">Настройте предпочтения</h2>
+        <h2 class="text-xl font-medium text-center text-gray-800 mb-6">{{translations.Set_your_preferences}}</h2>
 
         <div class="flex items-center text-blue-600 mb-4">
           <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
             <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/>
           </svg>
-          <span class="font-medium">Предпочтения по работе</span>
+          <span class="font-medium">{{translations.Work_preferences}}</span>
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Тип занятости</label>
+          <label class="block text-sm font-medium text-gray-700 mb-2">{{translations.Type_of_employment}}</label>
           <select
               v-model="formData.employmentType"
               class="w-full px-3 py-2 bg-gray-100 border-0 rounded-md focus:ring-2 focus:ring-blue-500 focus:bg-white"
           >
-            <option value="">Выберите тип</option>
-            <option value="full-time">Полная занятость</option>
-            <option value="part-time">Частичная занятость</option>
-            <option value="remote">Удаленная работа</option>
-            <option value="freelance">Фриланс</option>
+            <option value="">{{translations.Select_type}}</option>
+            <option value="full-time">{{translations.Full_employment}}</option>
+            <option value="part-time">{{translations.Part_employment}}</option>
+            <option value="remote">{{translations.Remote_work}}</option>
+            <option value="freelance">{{translations.Freelance}}</option>
           </select>
         </div>
 
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Зарплата от (₽)</label>
+            <label class="block text-sm font-medium text-gray-700 mb-2">{{translations.salary}}</label>
             <input
                 v-model="formData.salaryFrom"
                 type="number"
@@ -350,7 +350,7 @@
             >
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Зарплата до (₽)</label>
+            <label class="block text-sm font-medium text-gray-700 mb-2">{{translations.salary2}}</label>
             <div class="relative">
               <input
                   v-model="formData.salaryTo"
@@ -370,7 +370,7 @@
               @click="prevStep"
               class="flex-1 bg-gray-100 text-gray-700 py-3 rounded-md font-medium hover:bg-gray-200 transition-colors"
           >
-            Назад
+            {{translations.back}}
           </button>
           <button
               @click="completeRegistration"
@@ -382,15 +382,15 @@
       : 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-50'
   ]"
           >
-            Завершить
+            {{translations.finish}}
           </button>
         </div>
       </div>
 
       <!-- Footer -->
       <p class="mt-6 text-center text-sm text-gray-500">
-        Hisobingiz bormi?
-        <RouterLink to="/login" class="text-blue-600 hover:underline">Login</RouterLink>
+        {{translations.Do_you_have_an_account}}
+        <RouterLink to="/login" class="text-blue-600 hover:underline">{{ translations.login }}</RouterLink>
       </p>
 
       <!-- Success Message -->
@@ -400,13 +400,13 @@
             <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
           </svg>
         </div>
-        <h2 class="text-xl font-medium text-gray-800">Регистрация завершена!</h2>
-        <p class="text-gray-600">Добро пожаловать в Inter-AI. Ваш профиль успешно создан.</p>
+        <h2 class="text-xl font-medium text-gray-800">{{translations.Registration_is_complete}}</h2>
+        <p class="text-gray-600">{{translations.wtf}}</p>
         <button
             @click="resetForm"
             class="bg-blue-500 text-white px-6 py-3 rounded-md font-medium hover:bg-blue-600 transition-colors"
         >
-          Начать заново
+          {{translations.Start_over}}
         </button>
       </div>
     </div>
@@ -414,6 +414,8 @@
 </template>
 
 <script setup>
+import { useI18n } from '@/i18n-lite'
+const { translations, locale, t } = useI18n()
 import { ref, reactive, computed } from 'vue'
 import { useRouter } from 'vue-router'
 const router = useRouter()
