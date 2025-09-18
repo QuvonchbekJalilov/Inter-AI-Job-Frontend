@@ -92,7 +92,7 @@
         </div>
 
         <!-- Способы оплаты -->
-        <div class="bg-white border border-gray-200 rounded-2xl p-6">
+        <div class="bg-white border border-gray-200 rounded-2xl px-6">
           <h2 class="text-lg font-semibold mb-4 flex items-center gap-2 text-black">
             💰 Способы оплаты
           </h2>
@@ -116,7 +116,7 @@
         <!-- Redakt qilish -->
         <div class="text-center">
           <button
-              class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm"
+              class="px-6 pb-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm"
           >
             ⚙️ Редактировать профиль
           </button>
