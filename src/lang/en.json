@@ -1,0 +1,18 @@
+{
+  "salom": "Hello",
+  "welcome": "Welcome, {name}!",
+  "resumeProfile": "Resume & Profile",
+  "help": "Help",
+  "profile": "Profile",
+  "language": "Language",
+  "responses":"Responses",
+  "vacancies":"Vacancies",
+  "interview":"Interview"
+  ,
+  "tabs.all": "All",
+  "tabs.new": "New",
+  "tabs.assigned": "Assigned",
+  "reply":"Reply",
+  "assigned":"Assigned",
+  "prepare_for_the_interview":"Prepare for the interview"
+}

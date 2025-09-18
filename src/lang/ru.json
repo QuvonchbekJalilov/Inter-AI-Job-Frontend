@@ -1,0 +1,18 @@
+{
+  "salom": "Привет",
+  "welcome": "Добро пожаловать, {name}!",
+  "resumeProfile": "Резюме и профиль",
+  "help": "Помощь",
+  "profile": "Профиль",
+  "language": "Язык",
+  "responses":"Откликов",
+  "vacancies":"Вакансии",
+  "interview":"Интервью"
+  ,
+  "tabs.all": "Все",
+  "tabs.new": "Новые",
+  "tabs.assigned": "Назначенные",
+  "reply":"Откликнуться",
+  "assigned":"Назначено",
+  "prepare_for_the_interview":"Подготовиться к интервью"
+}

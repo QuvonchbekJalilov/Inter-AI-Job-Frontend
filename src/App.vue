@@ -1,5 +1,6 @@
 <script setup>
-import Page from './app/Page.vue'
+import { provideI18n } from './i18n-lite'
+provideI18n()
 </script>
 
 <template>

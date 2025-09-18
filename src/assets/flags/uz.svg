@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 40">
+  <rect width="60" height="40" fill="#1EB53A"/>
+  <rect width="60" height="26.67" fill="#fff"/>
+  <rect width="60" height="13.33" fill="#3CC1DA"/>
+  <rect y="13.33" width="60" height="1.33" fill="#CE1126"/>
+  <rect y="25.33" width="60" height="1.33" fill="#CE1126"/>
+  <!-- simple crescent -->
+  <circle cx="8" cy="7" r="4" fill="#fff"/>
+  <circle cx="9.5" cy="7" r="3.2" fill="#3CC1DA"/>
+</svg>

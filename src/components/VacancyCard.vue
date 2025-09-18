@@ -6,7 +6,7 @@
           :to="{ name: 'vacancyDetail', params: { id: index + 1 } }"
           v-for="(job, index) in jobs"
           :key="index"
-          class="flex w-full max-w-lg flex-col"
+          class="flex w-full max-w-lg flex-col mb-3"
       >
         <!-- Header -->
         <div class="flex items-center">
@@ -43,7 +43,7 @@
         <!-- Footer -->
         <div class="w-full overflow-hidden rounded-b-2xl">
           <button class="w-full bg-blue-600 py-3 font-bold text-white">
-            Откликнуться
+            {{translations.reply}}
           </button>
         </div>
       </router-link>
@@ -52,6 +52,8 @@
 </template>
 
 <script setup>
+import { useI18n } from '@/i18n-lite'
+const { translations, locale, t } = useI18n()
 const jobs = [
   {
     experience: "1–3 года",
