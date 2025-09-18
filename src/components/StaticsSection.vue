@@ -5,15 +5,15 @@
         <!-- Stats -->
         <div class="bg-white rounded-2xl py-4 flex justify-around shadow-top divide-x mt-3">
           <div class="flex-1 text-center px-2">
-            <div class="text-blue-600 text-2xl font-bold">24</div>
+            <div class="text-blue-600 text-2xl font-medium">24</div>
             <div class="text-sm text-gray-500">{{translations.responses}}</div>
           </div>
           <div class="flex-1 text-center px-2">
-            <div class="text-green-600 text-2xl font-bold">8</div>
+            <div class="text-blue-600 text-2xl font-medium">8</div>
             <div class="text-sm text-gray-500">{{translations.vacancies}}</div>
           </div>
           <div class="flex-1 text-center px-2">
-            <div class="text-indigo-600 text-2xl font-bold">2</div>
+            <div class="text-indigo-600 text-2xl font-medium">2</div>
             <div class="text-sm text-gray-500">{{translations.interview}}</div>
           </div>
         </div>
@@ -27,7 +27,7 @@
           :key="tab.key"
           class="tab-btn min-w-0 basis-0 px-3 sm:px-4 rounded-xl transform transition-colors whitespace-nowrap overflow-hidden text-ellipsis flex items-center justify-center gap-1"
           :class="tab.active
-            ? 'bg-blue-600 text-white scale-100 py-2.5 font-medium'
+            ? 'bg-blue-600 text-white scale-100 py-2.5'
             : 'bg-gray-100 text-gray-700 hover:bg-gray-200 scale-95 py-2'"
           :style="{ flexGrow: tab.active ? 2 : 1 }"
           @click="$emit('change-tab', tab.key)"

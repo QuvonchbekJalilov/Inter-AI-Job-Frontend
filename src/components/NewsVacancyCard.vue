@@ -6,7 +6,7 @@
           :to="{ name: 'vacancyDetail', params: { id: index + 1 } }"
           v-for="(job, index) in jobs"
           :key="index"
-          class="flex w-full max-w-lg flex-col"
+          class="flex w-full max-w-lg flex-col mb-3"
       >
         <!-- Header -->
         <div class="flex items-center">
@@ -18,11 +18,11 @@
         </div>
         <!-- Content -->
         <div class="flex flex-col bg-white p-4 px-6 rounded-tr-2xl">
-          <h2 class="mb-2 text-xl leading-tight font-bold">
+          <h2 class="mb-2 text-xl leading-tight font-medium">
             {{ job.title }}
           </h2>
           <div class="mb-2 flex items-center">
-            <span class="font-semibold text-gray-700">{{ job.company }}</span>
+            <span class="text-gray-700">{{ job.company }}</span>
             <svg
                 class="ml-2 h-5 w-5 text-blue-600"
                 fill="currentColor"
@@ -42,7 +42,7 @@
         </div>
         <!-- Footer -->
         <div class="w-full overflow-hidden rounded-b-2xl">
-          <button class="w-full bg-blue-600 py-3 font-bold text-white">
+          <button class="w-full bg-blue-600 py-3 font-medium text-white">
             {{translations.reply}}
           </button>
         </div>

@@ -18,11 +18,11 @@
         </div>
         <!-- Content -->
         <div class="flex flex-col bg-white p-4 px-6 rounded-tr-2xl">
-          <h2 class="mb-2 text-xl leading-tight font-bold">
+          <h2 class="mb-2 text-xl leading-tight font-medium">
             {{ job.title }}
           </h2>
           <div class="mb-2 flex items-center">
-            <span class="font-semibold text-gray-700">{{ job.company }}</span>
+            <span class="text-gray-700">{{ job.company }}</span>
             <svg
                 class="ml-2 h-5 w-5 text-blue-600"
                 fill="currentColor"
@@ -35,14 +35,20 @@
                   clip-rule="evenodd"
               />
             </svg>
+            <small class="bg-green-100 mx-2 px-2 text-green-700 text-center text-sm font-semibold py-1 rounded-full">
+              95% совпадение
+            </small>
           </div>
           <p class="text-sm leading-snug text-gray-500">
             {{ job.location }}
           </p>
+<!--          <small class="bg-green-100 mt-2 text-green-700 text-center text-sm font-medium py-1 rounded-full">-->
+<!--            95% совпадение-->
+<!--          </small>-->
         </div>
         <!-- Footer -->
         <div class="w-full overflow-hidden rounded-b-2xl">
-          <button class="w-full bg-blue-600 py-3 font-bold text-white">
+          <button class="w-full bg-blue-600 py-3 font-medium text-white">
             {{translations.reply}}
           </button>
         </div>

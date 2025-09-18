@@ -2,7 +2,7 @@
   <div class="bg-white rounded-2xl shadow-md p-6 space-y-4 max-w-3xl mx-auto">
     <div class="flex justify-between items-center">
       <div>
-        <h3 class="text-xl font-semibold text-gray-800">{{ title }}</h3>
+        <h3 class="text-xl font-medium text-gray-800">{{ title }}</h3>
         <p class="text-blue-600 font-medium">{{ company }}</p>
       </div>
       <span class="px-3 py-1 text-sm rounded-full bg-blue-100 text-blue-700">{{translations.assigned}}</span>
