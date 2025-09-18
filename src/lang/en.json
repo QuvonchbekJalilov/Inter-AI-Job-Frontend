@@ -12,7 +12,7 @@
   "tabs.all": "All",
   "tabs.new": "New",
   "tabs.assigned": "Assigned",
-  "reply":"Reply",
+  "reply":"Apply",
   "assigned":"Assigned",
   "prepare_for_the_interview":"Prepare for the interview",
     "login_in":"Login In",
@@ -70,5 +70,12 @@
     "Start_over":"Start over",
     "Step":"Step",
     "from":"from",
-    "Set_your_preferences":"Set your preferences"
+    "Set_your_preferences":"Set your preferences",
+    "applies":"Applies",
+
+    "Schedule":"Schedule",
+    "Job_Description":"Job Description",
+    "Views":"Views",
+    "Published":"Published"
+
 }

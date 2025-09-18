@@ -17,7 +17,7 @@
         >
           <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
         </svg>
-        Назад
+        {{ translations.back }}
       </button>
     </div>
 
@@ -42,18 +42,18 @@
       <!-- Schedule & Employment -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div class="p-4 border rounded-lg">
-          <p class="text-sm text-gray-500">График</p>
+          <p class="text-sm text-gray-500">{{translations.Schedule}}</p>
           <p class="font-medium">{{ vacancy.schedule?.name }}</p>
         </div>
         <div class="p-4 border rounded-lg">
-          <p class="text-sm text-gray-500">Тип занятости</p>
+          <p class="text-sm text-gray-500">{{translations.Type_of_employment}}</p>
           <p class="font-medium">{{ vacancy.employment?.name }}</p>
         </div>
       </div>
 
       <!-- Description -->
       <div>
-        <h2 class="text-xl font-semibold mb-2">Описание вакансии</h2>
+        <h2 class="text-xl font-semibold mb-2">{{translations.Job_Description}}</h2>
         <p class="text-gray-600 whitespace-pre-line">
           {{ vacancy.description }}
         </p>
@@ -62,21 +62,21 @@
       <!-- Stats -->
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div class="p-3 bg-gray-50 rounded-lg text-center">
-          <p class="text-sm text-gray-500">Просмотры</p>
+          <p class="text-sm text-gray-500">{{translations.Views}}</p>
           <p class="font-bold">{{ vacancy.views_count }}</p>
         </div>
         <div class="p-3 bg-gray-50 rounded-lg text-center">
-          <p class="text-sm text-gray-500">Отклики</p>
+          <p class="text-sm text-gray-500">{{translations.applies}}</p>
           <p class="font-bold">{{ vacancy.responses_count }}</p>
         </div>
         <div class="p-3 bg-gray-50 rounded-lg text-center">
-          <p class="text-sm text-gray-500">Опубликовано</p>
+          <p class="text-sm text-gray-500">{{ translations.Published }}</p>
           <p class="font-bold">{{ formatDate(vacancy.published_at) }}</p>
         </div>
-        <div class="p-3 bg-gray-50 rounded-lg text-center">
+        <!-- <div class="p-3 bg-gray-50 rounded-lg text-center">
           <p class="text-sm text-gray-500">Действительно до</p>
           <p class="font-bold">{{ formatDate(vacancy.expires_at) }}</p>
-        </div>
+        </div> -->
       </div>
 
       <!-- Action -->
@@ -87,7 +87,7 @@
             rel="noopener noreferrer"
             class="block w-full bg-blue-600 py-3 rounded-lg text-white font-bold text-center"
         >
-          Откликнуться
+          {{translations.reply}}
         </a>
       </div>
     </div>
@@ -98,6 +98,8 @@
 import { ref } from "vue"
 import { useRoute, useRouter } from "vue-router"
 import Header from "@/components/Header.vue"
+import { useI18n } from '@/i18n-lite'
+const { translations, locale, t } = useI18n()
 
 // Router hooks
 const route = useRoute()

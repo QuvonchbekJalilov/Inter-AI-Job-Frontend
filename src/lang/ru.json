@@ -12,7 +12,7 @@
 "tabs.all": "Все",
 "tabs.new": "Новые",
 "tabs.assigned": "Назначенные",
-"reply": "Ответить",
+"reply": "Откликнуться",
 "assigned": "Назначено",
 "prepare_for_the_interview": "Подготовьтесь к собеседованию",
 "login_in": "Войти",
@@ -70,5 +70,11 @@
 "Start_over": "Начать заново",
 "Step": "Шаг",
 "from": "из",
-"Set_your_preferences": "Установите ваши предпочтения"
+"applies":"Отклики",
+"Set_your_preferences": "Установите ваши предпочтения",
+
+"Schedule": "График",
+"Job_Description": "Описание работы",
+"Views": "Просмотры",
+"Published": "Опубликовано"
 }
