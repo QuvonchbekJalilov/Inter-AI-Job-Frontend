@@ -6,15 +6,15 @@
         <div class="bg-white rounded-2xl py-4 flex justify-around shadow-top divide-x">
           <div class="flex-1 text-center px-2">
             <div class="text-blue-600 text-2xl font-bold">24</div>
-            <div class="text-sm text-gray-500">Откликов</div>
+            <div class="text-sm text-gray-500">{{translations.responses}}</div>
           </div>
           <div class="flex-1 text-center px-2">
             <div class="text-green-600 text-2xl font-bold">8</div>
-            <div class="text-sm text-gray-500">Вакансии</div>
+            <div class="text-sm text-gray-500">{{translations.vacancies}}</div>
           </div>
           <div class="flex-1 text-center px-2">
             <div class="text-indigo-600 text-2xl font-bold">2</div>
-            <div class="text-sm text-gray-500">Интервью</div>
+            <div class="text-sm text-gray-500">{{translations.interview}}</div>
           </div>
         </div>
 
@@ -39,6 +39,8 @@
 </template>
 
 <script setup>
+import { useI18n } from '@/i18n-lite'
+const { translations, locale, t } = useI18n()
 defineProps({
   tabs: Array,
   activeTab: String

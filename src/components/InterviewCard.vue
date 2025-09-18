@@ -5,7 +5,7 @@
         <h3 class="text-xl font-semibold text-gray-800">{{ title }}</h3>
         <p class="text-blue-600 font-medium">{{ company }}</p>
       </div>
-      <span class="px-3 py-1 text-sm rounded-full bg-blue-100 text-blue-700">Назначено</span>
+      <span class="px-3 py-1 text-sm rounded-full bg-blue-100 text-blue-700">{{translations.assigned}}</span>
     </div>
 
     <div class="flex items-center text-gray-600 space-x-2">
@@ -24,12 +24,14 @@
     </div><main class="basis-3/5 bg-gray-100"></main>
 
     <button class="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-xl">
-      Подготовиться к интервью
+      {{translations.prepare_for_the_interview}}
     </button>
   </div>
 </template>
 
 <script setup>
+import { useI18n } from '@/i18n-lite'
+const { translations, locale, t } = useI18n()
 defineProps({
   title: String,
   company: String,

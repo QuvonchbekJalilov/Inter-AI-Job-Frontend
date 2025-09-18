@@ -51,7 +51,8 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed, reactive } from 'vue'
+import { useI18n } from '@/i18n-lite'
 import VacancyCard from './VacancyCard.vue'
 import InterviewCard from './InterviewCard.vue'
 import StaticsSection from './StaticsSection.vue'
@@ -59,14 +60,22 @@ import NewsVacancyCard from "@/components/NewsVacancyCard.vue";
 
 const activeTab = ref('vacancies')
 
-const tabs = ref([
-  { name: "Все", key: "vacancies", active: true },
-  { name: "Новые", key: "newsVacancy", active: false },
-  { name: "Назначенные", key: "interview", active: false },
+const { t } = useI18n()
+
+// Agar sonlar dinamik bo'lsa, shu yerda yangilang
+const counts = reactive({
+  vacancies: 5,
+  newsVacancy: 6,
+  interview: 7,
+})
+
+const tabs = computed(() => [
+  { name: t('tabs.all', { count: counts.vacancies }), key: 'vacancies', active: activeTab.value === 'vacancies' },
+  { name: t('tabs.new', { count: counts.newsVacancy }), key: 'newsVacancy', active: activeTab.value === 'newsVacancy' },
+  { name: t('tabs.assigned', { count: counts.interview }), key: 'interview', active: activeTab.value === 'interview' },
 ])
 
 const setActiveTab = (tabKey) => {
   activeTab.value = tabKey
-  tabs.value.forEach(tab => tab.active = (tab.key === tabKey))
 }
 </script>
