@@ -6,7 +6,7 @@
           :to="{ name: 'vacancyDetail', params: { id: index + 1 } }"
           v-for="(job, index) in jobs"
           :key="index"
-          class="flex w-full max-w-lg flex-col"
+          class="flex w-full max-w-lg flex-col mb-3"
       >
         <!-- Header -->
         <div class="flex items-center">
