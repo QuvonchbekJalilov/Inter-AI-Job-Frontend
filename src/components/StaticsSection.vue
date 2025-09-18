@@ -25,14 +25,22 @@
         <button
           v-for="tab in tabs"
           :key="tab.key"
-          class="tab-btn min-w-0 basis-0 text-center px-2 text-sm rounded-xl transform transition-colors whitespace-nowrap overflow-hidden text-ellipsis"
+          class="tab-btn min-w-0 basis-0 px-3 sm:px-4 rounded-xl transform transition-colors whitespace-nowrap overflow-hidden text-ellipsis flex items-center justify-center gap-1"
           :class="tab.active
             ? 'bg-blue-600 text-white scale-100 py-2.5 font-medium'
             : 'bg-gray-100 text-gray-700 hover:bg-gray-200 scale-95 py-2'"
           :style="{ flexGrow: tab.active ? 2 : 1 }"
           @click="$emit('change-tab', tab.key)"
         >
-          {{ tab.name }}
+          <span
+            class="tab-label inline-block leading-tight px-0.5 sm:px-1"
+            :class="tab.active
+              ? 'text-[13.5px] sm:text-[14px] scale-100'
+              : 'text-[11.5px] sm:text-[12px] scale-90'"
+          >
+            {{ tab.name }}
+          </span>
+
         </button>
       </div>
     </div>
@@ -66,5 +74,11 @@ defineProps({
               background-color 160ms ease,
               color 160ms ease,
               padding 160ms ease;
+}
+
+.tab-label {
+  transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1),
+              font-size 160ms ease,
+              line-height 160ms ease;
 }
 </style>

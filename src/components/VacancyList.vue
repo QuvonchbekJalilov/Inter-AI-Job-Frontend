@@ -51,7 +51,7 @@
 </template>
 
 <script setup>
-import { ref, computed, reactive } from 'vue'
+import { ref, computed, reactive, onMounted, onBeforeUnmount } from 'vue'
 import { useI18n } from '@/i18n-lite'
 import VacancyCard from './VacancyCard.vue'
 import InterviewCard from './InterviewCard.vue'
@@ -61,6 +61,10 @@ import NewsVacancyCard from "@/components/NewsVacancyCard.vue";
 const activeTab = ref('vacancies')
 
 const { t } = useI18n()
+const isNarrow = ref(false)
+const updateNarrow = () => { isNarrow.value = window.innerWidth < 400 }
+onMounted(() => { updateNarrow(); window.addEventListener('resize', updateNarrow) })
+onBeforeUnmount(() => window.removeEventListener('resize', updateNarrow))
 
 // Agar sonlar dinamik bo'lsa, shu yerda yangilang
 const counts = reactive({
@@ -69,6 +73,7 @@ const counts = reactive({
   interview: 7,
 })
 
+const label = (k) => isNarrow.value ? t(`tabs.${k}.short`) : t(`tabs.${k}.label`)
 const tabs = computed(() => [
   { name: t('tabs.all', { count: counts.vacancies }), key: 'vacancies', active: activeTab.value === 'vacancies' },
   { name: t('tabs.new', { count: counts.newsVacancy }), key: 'newsVacancy', active: activeTab.value === 'newsVacancy' },
