@@ -60,6 +60,36 @@
               placeholder="ismoil_007u@gmail.com"
           >
         </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            <input
+                id="password"
+                :type="showPassword ? 'text' : 'password'"
+                v-model.trim="form.password"
+                autocomplete="current-password"
+                required
+                minlength="6"
+                class="w-full px-3 py-2 pr-10 bg-gray-100 border-0 rounded-lg focus:ring-2 focus:ring-blue-500 focus:bg-white"
+                placeholder="••••••••"
+                @blur="touched.password = true"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+            <input
+                id="confirm_password"
+                :type="showPassword ? 'text' : 'password'"
+                v-model.trim="form.confirm_password"
+                autocomplete="current-password"
+                required
+                minlength="6"
+                class="w-full px-3 py-2 pr-10 bg-gray-100 border-0 rounded-lg focus:ring-2 focus:ring-blue-500 focus:bg-white"
+                placeholder="••••••••"
+                @blur="touched.password = true"
+            />
+          </div>
+        </div>
 
         <div class="grid grid-cols-2 gap-4">
           <div>
@@ -330,6 +360,12 @@
           </button>
         </div>
       </div>
+
+      <!-- Footer -->
+      <p class="mt-6 text-center text-sm text-gray-500">
+        Hisobingiz bormi?
+        <RouterLink to="/login" class="text-blue-600 hover:underline">Login</RouterLink>
+      </p>
 
       <!-- Success Message -->
       <div v-if="currentStep === 5" class="text-center space-y-6">
