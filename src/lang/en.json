@@ -14,5 +14,14 @@
   "tabs.assigned": "Assigned",
   "reply":"Reply",
   "assigned":"Assigned",
-  "prepare_for_the_interview":"Prepare for the interview"
+  "prepare_for_the_interview":"Prepare for the interview",
+    "login_in":"Login In",
+    "login":"Login",
+    "sending":"sending ...",
+    "enter_your_email_and_password":"Enter your email and password.",
+    "email":"Email",
+    "dont_have_an_account":"Don't have an account?",
+    "password":"Password",
+    "register":"Register",
+    "forgot_password":"Forgot password?"
 }

@@ -4,8 +4,8 @@
       <!-- Logo -->
       <div class="text-center mb-6">
         <img src="https://www.inter-ai.uz/Logo1.svg" alt="Inter-AI" class="h-8 mx-auto mb-3" />
-        <h1 class="text-xl font-semibold">Tizimga kirish</h1>
-        <p class="text-sm text-gray-500">Email va parolingizni kiriting</p>
+        <h1 class="text-xl font-semibold">{{translations.login_in}}</h1>
+        <p class="text-sm text-gray-500">{{translations.enter_your_email_and_password}}</p>
       </div>
 
       <!-- Error banner -->
@@ -16,7 +16,7 @@
       <form @submit.prevent="onSubmit" class="space-y-4">
         <!-- Email -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1" for="email">Email</label>
+          <label class="block text-sm font-medium text-gray-700 mb-1" for="email">{{translations.email}}</label>
           <input
               id="email"
               v-model.trim="form.email"
@@ -35,13 +35,13 @@
         <!-- Password -->
         <div>
           <div class="flex items-center justify-between">
-            <label class="block text-sm font-medium text-gray-700 mb-1" for="password">Parol</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1" for="password">{{ translations.password }}</label>
             <button
                 type="button"
                 class="text-xs text-blue-600 hover:underline"
                 @click="forgotPassword"
             >
-              Parolni unutdingizmi?
+              {{translations.forgot_password}}
             </button>
           </div>
 
@@ -54,7 +54,7 @@
                 required
                 minlength="6"
                 class="w-full px-3 py-2 pr-10 bg-gray-100 border-0 rounded-lg focus:ring-2 focus:ring-blue-500 focus:bg-white"
-                placeholder="••••••••"
+                placeholder="********"
                 @blur="touched.password = true"
             />
             <button
@@ -90,27 +90,29 @@
               : 'bg-blue-600 text-white hover:bg-blue-700'
           ]"
         >
-          <span v-if="!loading">Kirish</span>
+          <span v-if="!loading">{{ translations.login }}</span>
           <span v-else class="inline-flex items-center gap-2">
             <svg class="animate-spin h-5 w-5" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/>
             </svg>
-            Yuborilmoqda...
+            {{translations.sending}}
           </span>
         </button>
       </form>
 
       <!-- Footer -->
       <p class="mt-6 text-center text-sm text-gray-500">
-        Hisobingiz yo‘qmi?
-        <RouterLink to="/register" class="text-blue-600 hover:underline">Ro‘yxatdan o‘ting</RouterLink>
+       {{translations.dont_have_an_account}}
+        <RouterLink to="/register" class="text-blue-600 hover:underline">{{translations.register}}</RouterLink>
       </p>
     </div>
   </div>
 </template>
 
 <script setup>
+import { useI18n } from '@/i18n-lite'
+const { translations, locale, t } = useI18n()
 import { reactive, ref, computed } from "vue";
 import { useRouter } from "vue-router";
 
