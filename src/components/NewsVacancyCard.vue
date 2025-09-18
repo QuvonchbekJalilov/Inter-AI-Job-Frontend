@@ -35,6 +35,9 @@
                   clip-rule="evenodd"
               />
             </svg>
+            <small class="bg-green-100 mx-2 px-2 text-green-700 text-center text-sm font-semibold py-1 rounded-full">
+              95% совпадение
+            </small>
           </div>
           <p class="text-sm leading-snug text-gray-500">
             {{ job.location }}
