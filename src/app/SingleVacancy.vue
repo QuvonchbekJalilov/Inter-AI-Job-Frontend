@@ -1,29 +1,7 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
+  <div class="min-h-screen bg-[#f2f2f2]">
     <Header />
-
-    <!-- 🔹 Back tugma -->
-    <div class="max-w-5xl pt-[100px] mx-auto px-6 mt-4">
-      <button
-          @click="goBack"
-          class="flex items-center text-blue-600 font-medium hover:underline"
-      >
-        <svg
-            class="h-5 w-5 mr-1"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            viewBox="0 0 24 24"
-        >
-          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-        </svg>
-        {{ translations.back }}
-      </button>
-    </div>
-
-    <!-- Vacancy detail -->
-    <div class="max-w-5xl mx-auto p-6 bg-white rounded-2xl shadow space-y-6">
-      <!-- Title & Employer -->
+    <div class="max-w-5xl pt-[110px] mx-auto p-6 bg-white rounded-2xl shadow space-y-6">
       <div>
         <h1 class="text-2xl font-bold mb-2">{{ vacancy.title }}</h1>
         <p class="text-gray-700 font-semibold">{{ vacancy.employer?.name }}</p>
@@ -32,14 +10,12 @@
         </p>
       </div>
 
-      <!-- Salary -->
       <div v-if="vacancy.salary_from || vacancy.salary_to" class="p-4 bg-gray-50 rounded-lg">
         <p class="text-lg font-semibold text-green-700">
           {{ formatSalary(vacancy.salary_from, vacancy.salary_to, vacancy.salary_currency, vacancy.salary_gross) }}
         </p>
       </div>
 
-      <!-- Schedule & Employment -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div class="p-4 border rounded-lg">
           <p class="text-sm text-gray-500">{{translations.Schedule}}</p>
@@ -51,7 +27,6 @@
         </div>
       </div>
 
-      <!-- Description -->
       <div>
         <h2 class="text-xl font-semibold mb-2">{{translations.Job_Description}}</h2>
         <p class="text-gray-600 whitespace-pre-line">
@@ -59,8 +34,7 @@
         </p>
       </div>
 
-      <!-- Stats -->
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="grid grid-cols-2 md:grid-cols-4 text-center gap-4">
         <div class="p-3 bg-gray-50 rounded-lg text-center">
           <p class="text-sm text-gray-500">{{translations.Views}}</p>
           <p class="font-bold">{{ vacancy.views_count }}</p>
@@ -69,17 +43,12 @@
           <p class="text-sm text-gray-500">{{translations.applies}}</p>
           <p class="font-bold">{{ vacancy.responses_count }}</p>
         </div>
-        <div class="p-3 bg-gray-50 rounded-lg text-center">
-          <p class="text-sm text-gray-500">{{ translations.Published }}</p>
-          <p class="font-bold">{{ formatDate(vacancy.published_at) }}</p>
-        </div>
-        <!-- <div class="p-3 bg-gray-50 rounded-lg text-center">
-          <p class="text-sm text-gray-500">Действительно до</p>
-          <p class="font-bold">{{ formatDate(vacancy.expires_at) }}</p>
-        </div> -->
+      </div>
+      <div class="bg-gray-50 rounded-lg text-center">
+        <p class="text-sm text-gray-500">{{ translations.Published }}</p>
+        <p class="font-bold">{{ formatDate(vacancy.published_at) }}</p>
       </div>
 
-      <!-- Action -->
       <div>
         <a
             :href="vacancy.apply_url"
@@ -96,20 +65,13 @@
 
 <script setup>
 import { ref } from "vue"
-import { useRoute, useRouter } from "vue-router"
+import { useRoute } from "vue-router"
 import Header from "@/components/Header.vue"
 import { useI18n } from '@/i18n-lite'
 const { translations, locale, t } = useI18n()
 
-// Router hooks
 const route = useRoute()
-const router = useRouter()
-const goBack = () => router.back()
-
 const vacancyId = route.params.id
-
-// 🚀 API dan keladigan demo ma'lumot
-// Bu yerda siz real API chaqirib vacancy olishni qilasiz
 const vacancy = ref({
   id: vacancyId,
   title: "Senior Backend Developer (Laravel)",
@@ -139,8 +101,6 @@ const vacancy = ref({
     name: "Полная занятость",
   },
 })
-
-// Helpers
 const formatSalary = (from, to, currency, gross) => {
   let text = ""
   if (from) text += `от ${from}`
@@ -149,7 +109,6 @@ const formatSalary = (from, to, currency, gross) => {
   if (gross) text += " (до вычета налогов)"
   return text
 }
-
 const formatDate = (dateStr) => {
   if (!dateStr) return "-"
   return new Date(dateStr).toLocaleDateString("ru-RU", {

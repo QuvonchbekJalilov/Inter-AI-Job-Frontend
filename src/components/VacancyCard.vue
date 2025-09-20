@@ -35,7 +35,7 @@
                   clip-rule="evenodd"
               />
             </svg>
-            <small class="bg-green-100 mx-2 px-2 text-green-700 text-center text-sm font-semibold py-1 rounded-full">
+            <small class="bg-green-100 mx-2 px-2 text-green-700 text-center text-sm font-medium py-1 rounded-full">
               95% совпадение
             </small>
           </div>
@@ -65,19 +65,19 @@ const jobs = [
     experience: "1–3 года",
     title: "Маркетолог. Со знанием русского языка",
     company: "OOO ROODELL",
-    location: "г. Ташкент, Чиланзарский р., Катта кани ул. 26",
+    location: "12-yanvar, 2025-yil",
   },
   {
     experience: "1–3 года",
     title: "Junior Frontend Разработчик (Vue)",
     company: "MICROS24",
-    location: "г. Ташкент, Яшнабадский р., Махтумкули 178/1",
+    location: "12-dekabr, 2025-yil",
   },
   {
     experience: "3–5 лет",
     title: "WEB Разработчик",
     company: "ROODELL",
-    location: "г. Ташкент, Навруз 1/2",
+    location: "12-Sentyabr, 2025-yil",
   },
 ]
 </script>

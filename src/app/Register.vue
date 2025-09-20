@@ -130,8 +130,8 @@
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">{{translations.age}}</label>
             <input
-                v-model="formData.age"
-                type="number"
+                v-model="formData.birthDate"
+                type="date"
                 class="w-full px-3 py-2 bg-gray-100 border-0 rounded-md focus:ring-2 focus:ring-blue-500 focus:bg-white"
                 placeholder="2004"
             >
@@ -415,9 +415,11 @@
 
 <script setup>
 import { useI18n } from '@/i18n-lite'
-const { translations, locale, t } = useI18n()
+const { translations } = useI18n()
 import { ref, reactive, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import axios from "axios"   // axios import qilish kerak
+
 const router = useRouter()
 
 const currentStep = ref(1)
@@ -429,7 +431,7 @@ const formData = reactive({
   password: '',
   confirm_password: '',
   phone: '',
-  age: '',
+  birthDate: '',
   resumeText: '',
   workField: '',
   experience: '',
@@ -439,79 +441,37 @@ const formData = reactive({
   salaryTo: ''
 })
 
-
 const touched = reactive({
   firstName: false,
   lastName: false,
   email: false,
   password: false,
   confirm_password: false,
-});
-const showPassword = ref(false);
-const loading = ref(false);
-const error = ref("");
+})
+const showPassword = ref(false)
+const loading = ref(false)
+const error = ref("")
 
 const valid = reactive({
   get email() {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email);
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)
   },
   get password() {
-    return formData.password.length >= 6;
+    return formData.password.length >= 6
   },
   get confirm() {
-    return formData.confirm_password.length >= 6 && formData.confirm_password === formData.password;
+    return formData.confirm_password.length >= 6 && formData.confirm_password === formData.password
   },
   get names() {
-    return formData.firstName.trim().length > 0 && formData.lastName.trim().length > 0;
+    return formData.firstName.trim().length > 0 && formData.lastName.trim().length > 0
   },
-});
+})
 
-const isValid = computed(() => valid.email && valid.password && valid.confirm && valid.names && valid.accept);
+const isValid = computed(() => valid.email && valid.password && valid.confirm && valid.names)
 
-async function onSubmit() {
-  touched.firstName = true;
-  touched.lastName = true;
-  touched.email = true;
-  touched.password = true;
-  touched.confirm_password = true;
-  touched.accept = true;
-  error.value = "";
-
-  if (!isValid.value) return;
-  loading.value = true;
-
-  try {
-    // === Bu yerda real API chaqirig'ini bajarasiz ===
-    // const res = await api.post('/auth/register', {
-    //   firstName: form.firstName,
-    //   lastName: form.lastName,
-    //   email: form.email,
-    //   password: form.password
-    // });
-
-    await new Promise(r => setTimeout(r, 900)); // demo delay
-
-    // Muvaffaqiyatdan so‘ng confirm email sahifasiga yoki avtomatik login:
-    router.push({ name: "Login" }); // yoki { name: "VerifyEmail" }
-  } catch (e) {
-    error.value = "Ro‘yxatdan o‘tishda xatolik yuz berdi. Keyinroq urinib ko‘ring.";
-  } finally {
-    loading.value = false;
-  }
-}
-
-const handleFileUpload = (event) => {
-  const file = event.target.files[0]
-  if (file) {
-    console.log('Tanlangan fayl:', file.name)
-  }
-}
-
-
-/* ✅ Step bo‘yicha to‘ldirilganini tekshirish */
 const isStepValid = computed(() => {
   if (currentStep.value === 1) {
-    return formData.firstName && formData.lastName && formData.email && formData.phone && formData.age
+    return formData.firstName && formData.lastName && formData.email && formData.phone && formData.birthDate
   }
   if (currentStep.value === 2) {
     return formData.resumeText.trim().length > 0
@@ -533,10 +493,50 @@ const prevStep = () => {
   if (currentStep.value > 1) currentStep.value--
 }
 
-const completeRegistration = () => {
-  if (!isStepValid.value) return
-  console.log('Registration completed:', formData)
-  router.push('/profile')
+const completeRegistration = async () => {
+  touched.firstName = true
+  touched.lastName = true
+  touched.email = true
+  touched.password = true
+  touched.confirm_password = true
+  error.value = ""
+
+  if (!isValid.value || !isStepValid.value) return
+  loading.value = true
+
+  try {
+    const { data } = await axios.post("http://127.0.0.1:8000/api/auth/register", {
+      first_name: formData.firstName,
+      last_name: formData.lastName,
+      email: formData.email,
+      password: formData.password,
+      phone: formData.phone,
+      birthDate: formData.birthDate,
+      resume_text: formData.resumeText,
+      work_field: formData.workField,
+      experience: formData.experience,
+      location: formData.location,
+      employment_type: formData.employmentType,
+      salary_from: formData.salaryFrom,
+      salary_to: formData.salaryTo,
+    })
+
+    console.log("✅ Registration success:", data)
+
+    if (data.status === "success") {
+      const storage = localStorage // yoki remember bo‘lsa sessionStorage
+      storage.setItem("token", data.data.token)
+      storage.setItem("user", JSON.stringify(data.data.user))
+      storage.setItem("expires_at", data.data.expires_at)
+      router.push({ name: "home" })
+    } else {
+      error.value = data.message || "Ro‘yxatdan o‘tishda xatolik yuz berdi."
+    }
+  } catch (e) {
+    error.value = e.response?.data?.message || "Server bilan bog‘lanishda xatolik."
+  } finally {
+    loading.value = false
+  }
 }
 
 const resetForm = () => {

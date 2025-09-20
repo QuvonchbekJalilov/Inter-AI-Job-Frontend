@@ -6,11 +6,11 @@
         <div class="bg-white rounded-2xl py-4 flex justify-around shadow-top divide-x mt-3">
           <div class="flex-1 text-center px-2">
             <div class="text-blue-600 text-2xl font-medium">24</div>
-            <div class="text-sm text-gray-500">{{translations.responses}}</div>
+            <div class="text-sm text-gray-500">{{translations.vacancies}}</div>
           </div>
           <div class="flex-1 text-center px-2">
             <div class="text-blue-600 text-2xl font-medium">8</div>
-            <div class="text-sm text-gray-500">{{translations.vacancies}}</div>
+            <div class="text-sm text-gray-500">{{translations.responses}}</div>
           </div>
           <div class="flex-1 text-center px-2">
             <div class="text-indigo-600 text-2xl font-medium">2</div>

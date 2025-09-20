@@ -35,7 +35,7 @@
                   clip-rule="evenodd"
               />
             </svg>
-            <small class="bg-green-100 mx-2 px-2 text-green-700 text-center text-sm font-semibold py-1 rounded-full">
+            <small class="bg-green-100 mx-2 px-2 text-green-700 text-center text-sm font-medium py-1 rounded-full">
               95% совпадение
             </small>
           </div>
@@ -45,8 +45,8 @@
         </div>
         <!-- Footer -->
         <div class="w-full overflow-hidden rounded-b-2xl">
-          <button class="w-full bg-blue-600 py-3 font-medium text-white">
-            {{translations.reply}}
+          <button class="w-full py-3 font-medium text-black bg-gray-300" disabled>
+            {{ translations.reply }}
           </button>
         </div>
       </router-link>
@@ -62,13 +62,13 @@ const jobs = [
     experience: "3–6 года",
     title: "Back end Developer",
     company: "OOO Inter-AI",
-    location: "г. Ташкент, Mirzo Ulug'bek р.",
+    location: "19-Sentyabr, 2025-yil",
   },
   {
     experience: "3–5 лет",
     title: "WEB Разработчик",
     company: "ROODELL",
-    location: "г. Ташкент, Навруз 1/2",
+    location: "19-Sentyabr, 2025-yil",
   },
 ]
 </script>

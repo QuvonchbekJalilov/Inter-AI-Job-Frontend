@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen pt-[225px] bg-[#f7f8fa] text-gray-900">
+  <div class="min-h-screen pt-[225px] bg-[#f2f2f2] text-gray-900">
     <div class="gap-10">
       <!-- Statistika va tablar -->
       <StaticsSection
@@ -66,7 +66,6 @@ const updateNarrow = () => { isNarrow.value = window.innerWidth < 400 }
 onMounted(() => { updateNarrow(); window.addEventListener('resize', updateNarrow) })
 onBeforeUnmount(() => window.removeEventListener('resize', updateNarrow))
 
-// Agar sonlar dinamik bo'lsa, shu yerda yangilang
 const counts = reactive({
   vacancies: 5,
   newsVacancy: 6,
@@ -76,7 +75,7 @@ const counts = reactive({
 const label = (k) => isNarrow.value ? t(`tabs.${k}.short`) : t(`tabs.${k}.label`)
 const tabs = computed(() => [
   { name: t('tabs.all', { count: counts.vacancies }), key: 'vacancies', active: activeTab.value === 'vacancies' },
-  { name: t('tabs.new', { count: counts.newsVacancy }), key: 'newsVacancy', active: activeTab.value === 'newsVacancy' },
+  { name: t('responses', { count: counts.newsVacancy }), key: 'newsVacancy', active: activeTab.value === 'newsVacancy' },
   { name: t('tabs.assigned', { count: counts.interview }), key: 'interview', active: activeTab.value === 'interview' },
 ])
 

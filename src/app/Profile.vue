@@ -1,43 +1,49 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
-    <Header></Header>
-<!--    <StaticsSection></StaticsSection>-->
-    <div class="max-w-5xl pt-[100px] mx-auto px-6 mt-4">
-      <button
-          @click="goBack"
-          class="flex items-center text-blue-600 font-medium hover:underline"
-      >
-        <svg
-            class="h-5 w-5 mr-1"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            viewBox="0 0 24 24"
-        >
-          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-        </svg>
-        Назад
-      </button>
-    </div>
-    <div class="min-h-screen bg-[#f7f8fa] py-2">
+  <div class="min-h-screen bg-[#f2f2f2]">
+    <Header v-if="user" :user="user" />
+    <div class="min-h-screen pt-[90px] bg-[#f7f8fa] py-2 mt-3">
       <div class="max-w-3xl mx-auto space-y-6">
 
-        <!-- Profil bloki -->
         <div class="bg-white border border-gray-200 rounded-2xl p-6">
+          <div class="flex items-stretch w-full max-w-md mx-auto gap-2 mb-6">
+            <button
+                v-for="tab in tabs"
+                :key="tab.code"
+                @click="changeTab(tab.code)"
+                class="tab-btn min-w-0 basis-0 px-3 sm:px-4 rounded-xl transform transition-colors whitespace-nowrap overflow-hidden text-ellipsis flex items-center justify-center gap-1"
+                :class="isActive(tab.code) ? activeClass : inactiveClass"
+                :style="{ flexGrow: isActive(tab.code) ? 2 : 1 }"
+            >
+            <span
+                class="tab-label inline-block leading-tight px-0.5 sm:px-1"
+                :class="isActive(tab.code) ? activeTextClass : inactiveTextClass"
+            >
+              {{ tab.name }}
+            </span>
+            </button>
+          </div>
           <h2 class="text-lg font-semibold mb-4 flex items-center gap-2 text-black">
             <span>👤</span> Мой профиль
           </h2>
           <div class="space-y-2 text-sm text-gray-700">
-            <div><span class="font-medium text-gray-500">Имя:</span> Ismoil Usmonov</div>
-            <div><span class="font-medium text-gray-500">Email:</span> ismoil_007u@gmail.com</div>
-            <div><span class="font-medium text-gray-500">Телефон:</span> +998919579717</div>
-            <div><span class="font-medium text-gray-500">Сфера:</span> IT</div>
-            <div><span class="font-medium text-gray-500">Локация:</span> Toshkent</div>
-            <div><span class="font-medium text-gray-500">Зарплата:</span> от 1000 ₽ до 2000 ₽</div>
+            <div><span class="font-medium text-gray-500">Имя:</span> {{ user?.first_name }} {{ user?.last_name }}</div>
+            <div><span class="font-medium text-gray-500">Email:</span> {{ user?.email }}</div>
+            <div><span class="font-medium text-gray-500">Телефон:</span> {{ user?.phone }}</div>
+            <div><span class="font-medium text-gray-500">Сфера:</span> {{ user?.preferences?.[0]?.industry?.name || '—' }}</div>
+            <div><span class="font-medium text-gray-500">Локация:</span> {{ user?.locations?.[0]?.text || '—' }}</div>
+            <div><span class="font-medium text-gray-500">Зарплата:</span>
+              от {{ user?.preferences?.[0]?.desired_salary_from || 0 }} ₽
+              до {{ user?.preferences?.[0]?.desired_salary_to || 0 }} ₽
+            </div>
           </div>
+          <button
+              class="mt-4 w-full px-4 py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-50"
+              @click="goToEdit"
+          >
+            Редактировать
+          </button>
         </div>
 
-        <!-- Rezyume -->
         <div class="bg-white border border-gray-200 rounded-2xl p-6">
           <h2 class="text-lg font-semibold mb-4 flex items-center gap-2 text-black">
             <span>📄</span> Резюме
@@ -56,7 +62,6 @@
           </button>
         </div>
 
-        <!-- AI Автоотклик -->
         <div class="bg-white border border-gray-200 rounded-2xl p-6">
           <h2 class="text-lg font-semibold mb-2 flex items-center gap-2 text-black">
             ⚡ AI Автоотклик
@@ -73,7 +78,6 @@
           </label>
         </div>
 
-        <!-- Тарифный план -->
         <div class="bg-white border border-gray-200 rounded-2xl p-6">
           <h2 class="text-lg font-semibold mb-4 flex items-center gap-2 text-black">
             💳 Тарифный план
@@ -91,7 +95,6 @@
           </p>
         </div>
 
-        <!-- Способы оплаты -->
         <div class="bg-white border border-gray-200 rounded-2xl px-6">
           <h2 class="text-lg font-semibold mb-4 flex items-center gap-2 text-black">
             💰 Способы оплаты
@@ -110,16 +113,13 @@
             >
               Купить 100 откликов
             </button>
+            <button
+                class="mt-2 w-full px-4 py-2 border border-red-300 text-red-600 rounded-lg text-sm hover:bg-red-50"
+                @click="logout"
+            >
+              Выйти
+            </button>
           </div>
-        </div>
-
-        <!-- Redakt qilish -->
-        <div class="text-center">
-          <button
-              class="px-6 pb-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm"
-          >
-            ⚙️ Редактировать профиль
-          </button>
         </div>
 
       </div>
@@ -128,26 +128,84 @@
 </template>
 
 <script setup>
-// Hozircha statik, keyin API bilan bog'laymiz
+import {ref, onMounted, computed} from 'vue'
+import axios from 'axios'
+import { useI18n } from '@/i18n-lite'
+import { useRouter } from 'vue-router'
+import Header from '@/components/Header.vue'
 
-import {ref} from "vue";
-import Header from "@/components/Header.vue";
-import StaticsSection from "@/components/StaticsSection.vue";
-import {useRoute, useRouter} from "vue-router";
-
-const route = useRoute()
 const router = useRouter()
-const goBack = () => router.back()
+const { locale } = useI18n()
 
-const tabs = ref([
-  { name: 'Vacancies', active: false },
-  { name: 'Interview', active: false },
-  { name: 'Profile', active: true },
-])
+const user = ref(null)   // foydalanuvchi ma’lumotlari
+const loading = ref(true)
+const error = ref("")
 
-const setActiveTab = (tabName) => {
-  tabs.value.forEach(tab => {
-    tab.active = tab.name === tabName
-  })
+// API dan user olish
+onMounted(async () => {
+  try {
+    const token = localStorage.getItem("token") || sessionStorage.getItem("token")
+    if (!token) {
+      router.push({ name: "login" })
+      return
+    }
+    const { data } = await axios.get("http://127.0.0.1:8000/api/auth/me", {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+    user.value = data.data
+  } catch (e) {
+    error.value = "Foydalanuvchi ma’lumotlarini olishda xatolik."
+  } finally {
+    loading.value = false
+  }
+})
+
+
+const tabs = [
+  { code: 'uz', name: 'Uzbek' },
+  { code: 'en', name: 'English' },
+  { code: 'ru', name: 'Русский' },
+]
+
+const changeTab = (code) => {
+  locale.value = code
+}
+
+const isActive = (code) => locale.value === code
+
+const activeClass = 'bg-blue-600 text-white scale-100 py-2.5'
+const inactiveClass = 'bg-gray-100 text-gray-700 hover:bg-gray-200 scale-95 py-2'
+const activeTextClass = 'text-[13.5px] sm:text-[14px] scale-100'
+const inactiveTextClass = 'text-[11.5px] sm:text-[12px] scale-90'
+
+const logout = async () => {
+  try {
+    const token = localStorage.getItem("token") || sessionStorage.getItem("token")
+    if (token) {
+      await axios.post("http://127.0.0.1:8000/api/auth/logout", {}, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+    }
+  } catch (e) {
+    console.error("Logout error", e)
+  } finally {
+    localStorage.removeItem("token")
+    localStorage.removeItem("user")
+    localStorage.removeItem("expires_at")
+    sessionStorage.removeItem("token")
+    sessionStorage.removeItem("user")
+    sessionStorage.removeItem("expires_at")
+
+    router.push({ name: "login" })
+  }
+}
+const goToEdit = () => {
+  router.push({ name: "editProfile", params: { id: user.value.id } })
 }
 </script>
+
+

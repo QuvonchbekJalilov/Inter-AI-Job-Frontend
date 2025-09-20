@@ -1,20 +1,17 @@
 <template>
-  <div class="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+  <div class="min-h-screen bg-[#f2f2f2] flex items-center justify-center p-4">
     <div class="w-full max-w-md bg-white text-black rounded-2xl shadow-lg p-7">
-      <!-- Logo -->
       <div class="text-center mb-6">
         <img src="https://www.inter-ai.uz/Logo1.svg" alt="Inter-AI" class="h-8 mx-auto mb-3" />
         <h1 class="text-xl font-semibold">{{translations.login_in}}</h1>
         <p class="text-sm text-gray-500">{{translations.enter_your_email_and_password}}</p>
       </div>
 
-      <!-- Error banner -->
       <div v-if="error" class="mb-4 rounded-lg bg-red-50 text-red-700 px-4 py-3 text-sm">
         {{ error }}
       </div>
 
       <form @submit.prevent="onSubmit" class="space-y-4">
-        <!-- Email -->
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1" for="email">{{translations.email}}</label>
           <input
@@ -32,7 +29,6 @@
           </p>
         </div>
 
-        <!-- Password -->
         <div>
           <div class="flex items-center justify-between">
             <label class="block text-sm font-medium text-gray-700 mb-1" for="password">{{ translations.password }}</label>
@@ -79,7 +75,6 @@
             Parol kamida 6 ta belgi bo‘lsin
           </p>
         </div>
-        <!-- Submit -->
         <button
             type="submit"
             :disabled="!isValid || loading"
@@ -101,7 +96,6 @@
         </button>
       </form>
 
-      <!-- Footer -->
       <p class="mt-6 text-center text-sm text-gray-500">
        {{translations.dont_have_an_account}}
         <RouterLink to="/register" class="text-blue-600 hover:underline">{{translations.register}}</RouterLink>
@@ -112,9 +106,10 @@
 
 <script setup>
 import { useI18n } from '@/i18n-lite'
-const { translations, locale, t } = useI18n()
+const { translations } = useI18n()
 import { reactive, ref, computed } from "vue";
 import { useRouter } from "vue-router";
+import axios from "axios";
 
 const router = useRouter();
 
@@ -135,7 +130,6 @@ const error = ref("");
 
 const valid = reactive({
   get email() {
-    // oddiy tekshiruv
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email);
   },
   get password() {
@@ -146,7 +140,6 @@ const valid = reactive({
 const isValid = computed(() => valid.email && valid.password);
 
 function forgotPassword() {
-  // kerakli route yoki modal
   router.push({ name: "ForgotPassword" });
 }
 
@@ -159,27 +152,37 @@ async function onSubmit() {
 
   loading.value = true;
   try {
-    // Bu yerda real login API chaqirasiz:
-    // const res = await api.post('/auth/login', { email: form.email, password: form.password });
-    // token saqlash, remember bo‘lsa localStorage, aks holda sessionStorage:
-    // (demo maqsadida 800ms kutish)
-    await new Promise(r => setTimeout(r, 800));
+    const { data } = await axios.post(
+        "http://127.0.0.1:8000/api/auth/login",
+        {
+          email: form.email,
+          password: form.password,
+        },
+    );
+    console.log(data);
 
-    const fakeToken = "demo-token";
-    (form.remember ? localStorage : sessionStorage).setItem("token", fakeToken);
+    const storage = form.remember ? localStorage : sessionStorage;
+    storage.setItem("token", data.data.token);
+    storage.setItem("user", JSON.stringify(data.data.user));
+    storage.setItem("expires_at", data.data.expires_at);
 
-    // muvaffaqiyatli bo‘lsa dashboard/profile ga o‘tkazamiz
-    router.push({ name: "Profile" });
+
+    router.push({ name: "home" });
   } catch (e) {
-    error.value = "Email yoki parol noto‘g‘ri.";
+    if (e.response?.data?.message) {
+      error.value = e.response.data.message;
+    } else {
+      error.value = "Server bilan bog‘lanishda xatolik.";
+    }
   } finally {
     loading.value = false;
   }
 }
+
 </script>
 
+
 <style scoped>
-/* ixtiyoriy: autofill fonini neytral qilish (Chrome) */
 input:-webkit-autofill {
   -webkit-box-shadow: 0 0 0 1000px #f3f4f6 inset !important;
 }

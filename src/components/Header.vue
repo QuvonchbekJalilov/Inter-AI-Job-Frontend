@@ -3,98 +3,91 @@
     <div class="max-w-7xl mx-auto flex items-center justify-between">
       <div class="flex items-center space-x-8">
         <div class="text-white px-2 mt-5 rounded font-bold text-lg">
-          <a href="/">
-            <img src="https://www.inter-ai.uz/Logo1.svg" alt="Inter-AI" class="h-8 mx-auto mb-4">
-          </a>
+          <RouterLink to="/">
+            <img src="https://www.inter-ai.uz/Logo1.svg" alt="Inter-AI" class="h-8 mx-auto mb-4" />
+          </RouterLink>
         </div>
+
         <nav class="hidden md:flex items-center space-x-6">
-          <a href="#" class="hover:text-gray-500">{{ translations.resumeProfile }}</a>
-          <a href="#" class="hover:text-gray-500">{{ translations.help }}</a>
+          <RouterLink to="#" class="hover:text-gray-500">{{ translations.resumeProfile }}</RouterLink>
+          <RouterLink to="#" class="hover:text-gray-500">{{ translations.help }}</RouterLink>
         </nav>
       </div>
+
       <div class="flex items-center space-x-4">
-        <!-- Language Dropdown -->
-        <div class="relative" ref="langRef">
-          <button
-            type="button"
-            @click="toggleLang"
-            :aria-expanded="isLangOpen ? 'true' : 'false'"
-            class="flex items-center gap-2 border rounded-full px-2.5 py-1.5 text-sm hover:bg-gray-50"
-          >
-            <img :src="currentLang.flag" alt="" class="w-5 h-5 rounded-full object-cover" />
-            <span class="hidden sm:inline font-medium">{{ currentLang.label }}</span>
-            <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
-          <transition name="fade-scale">
-            <div
-              v-if="isLangOpen"
-              class="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-xl shadow-xl py-1 z-50"
-            >
-              <button
-                v-for="l in langs"
-                :key="l.code"
-                @click="setLang(l.code)"
-                class="flex items-center w-full gap-3 px-3 py-2 text-sm hover:bg-gray-100"
-              >
-                <img :src="l.flag" alt="" class="w-5 h-5 rounded-full object-cover" />
-                <span class="font-medium">{{ l.label }}</span>
-              </button>
-            </div>
-          </transition>
-        </div>
-        <!-- User Link -->
-        <a href="/profile" class="flex items-center space-x-2 hover:text-gray-500">
-          <!-- User Icon -->
+        <button
+            v-if="showBack"
+            @click="goBack"
+            class="flex items-center text-blue-600 font-medium hover:underline"
+        >
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M5.121 17.804A9.966 9.966 0 0112 15c2.21 0 4.236.72 5.879 1.926M15 10a3 3 0 11-6 0 3 3 0 016 0z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
           </svg>
-          <span>{{ translations.profile }}</span>
-        </a>
+          <span>{{ translations.back }}</span>
+        </button>
+
+        <RouterLink
+            v-else
+            to="/profile"
+            class="flex items-center space-x-2 hover:text-gray-500"
+        >
+<!--          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">-->
+<!--            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"-->
+<!--                  d="M5.121 17.804A9.966 9.966 0 0112 15c2.21 0 4.236.72 5.879 1.926M15 10a3 3 0 11-6 0 3 3 0 016 0z"/>-->
+<!--          </svg>-->
+          <span v-if="user">{{ user?.first_name }}</span>
+          <svg class="w-9 h-9" viewBox="0 0 1000 1000" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="500" cy="500" r="396.364" fill="white" stroke="#C6C6C6" stroke-width="7.27273"/>
+            <path d="M612.317 162.336C125.918 493.239 560.25 774.264 744.155 527.855C394.377 1306.54 -83.9093 341.001 612.317 162.336Z" fill="#5078FF"/>
+            <path d="M630.583 459.366C630.583 514.87 586.313 559.865 531.704 559.865C477.094 559.865 432.825 514.87 432.825 459.366C432.825 403.861 477.094 358.866 531.704 358.866C586.313 358.866 630.583 403.861 630.583 459.366Z" fill="#5078FF"/>
+          </svg>
+<!--          <span v-else>{{ translations.profile }}</span>-->
+        </RouterLink>
       </div>
     </div>
   </header>
-
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import {computed, onMounted, ref} from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from '@/i18n-lite'
-import flagUZ from '@/assets/flags/uz.svg'
-import flagRU from '@/assets/flags/ru.svg'
-import flagGB from '@/assets/flags/gb.svg'
-const { translations, locale } = useI18n()
+import axios from "axios";
 
-const langs = [
-  { code: 'uz', label: 'UZ', flag: flagUZ },
-  { code: 'ru', label: 'RU', flag: flagRU },
-  { code: 'en', label: 'EN', flag: flagGB },
-]
+const user = ref(null)
+const loading = ref(true)
+const error = ref("")
 
-const isLangOpen = ref(false)
-const currentLang = computed(() => langs.find(l => l.code === locale.value) || langs[0])
-const toggleLang = () => { isLangOpen.value = !isLangOpen.value }
-const setLang = (code) => { locale.value = code; isLangOpen.value = false }
+onMounted(async () => {
+  try {
+    const token = localStorage.getItem("token") || sessionStorage.getItem("token")
+    if (!token) {
+      router.push({ name: "login" })
+      return
+    }
 
-const langRef = ref(null)
-const onDocClick = (e) => {
-  if (!langRef.value) return
-  if (!langRef.value.contains(e.target)) isLangOpen.value = false
+    const { data } = await axios.get("http://127.0.0.1:8000/api/auth/me", {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+
+    user.value = data.data
+  } catch (e) {
+    error.value = "Foydalanuvchi ma’lumotlarini olishda xatolik."
+  } finally {
+    loading.value = false
+  }
+})
+
+const { translations } = useI18n()
+const route = useRoute()
+const router = useRouter()
+
+const showBack = computed(() => route.meta?.headerBack === true)
+
+const goBack = () => {
+  if (window.history.length > 2) router.back()
+  else router.push('/')
 }
-onMounted(() => document.addEventListener('click', onDocClick))
-onBeforeUnmount(() => document.removeEventListener('click', onDocClick))
 </script>
-
-
-<style scoped>
-.fade-scale-enter-active, .fade-scale-leave-active {
-  transition: opacity 120ms ease, transform 120ms ease;
-  transform-origin: top right;
-}
-.fade-scale-enter-from, .fade-scale-leave-to {
-  opacity: 0;
-  transform: scale(0.95);
-}
-</style>
