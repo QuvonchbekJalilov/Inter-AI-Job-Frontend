@@ -4,7 +4,7 @@ import Page from '../app/Page.vue'
 import Login from '../app/Login.vue'
 import Register from '../app/Register.vue'
 import Profile from '../app/Profile.vue'
-import VacancyDetail from '../app/SingleVacancy.vue'
+import VacancyShow from '../app/VacancyShow.vue'
 import EditProfile from "@/app/EditProfile.vue";
 
 const routes = [
@@ -35,7 +35,7 @@ const routes = [
     {
         path: '/vacancy/:id',
         name: 'vacancyDetail',
-        component: VacancyDetail,
+        component: VacancyShow,
         props: true,
         meta: { requiresAuth: true, headerBack: true }
     },

@@ -5,7 +5,7 @@
         <img src="https://www.inter-ai.uz/Logo1.svg" alt="Inter-AI" class="h-8 mx-auto mb-4">
       </div>
 
-      <div class="mb-8">
+      <div class="mb-4">
         <div class="flex justify-between items-center mb-2">
           <div class="w-full bg-gray-200 rounded-full h-2">
             <div
@@ -20,12 +20,12 @@
       <div v-if="currentStep === 1" class="space-y-6">
         <h2 class="text-xl font-medium text-center text-gray-800 mb-6">{{ translations.tell_us_about_yourself }}</h2>
 
-        <div class="flex items-center text-blue-600 mb-4">
-          <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
-          </svg>
-          <span class="font-medium">{{translations.personal_data}}</span>
-        </div>
+<!--        <div class="flex items-center text-blue-600 mb-4">-->
+<!--          <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">-->
+<!--            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>-->
+<!--          </svg>-->
+<!--          <span class="font-medium">{{translations.personal_data}}</span>-->
+<!--        </div>-->
 
         <div class="grid grid-cols-2 gap-4">
           <div>
@@ -383,6 +383,23 @@
         {{translations.Do_you_have_an_account}}
         <RouterLink to="/login" class="text-blue-600 hover:underline">{{ translations.login }}</RouterLink>
       </p>
+      <div class="flex items-stretch w-full max-w-md mx-auto gap-2 pt-6">
+        <button
+            v-for="tab in tabs"
+            :key="tab.code"
+            @click="changeTab(tab.code)"
+            class="tab-btn min-w-0 basis-0 px-3 sm:px-4 rounded-xl transform transition-colors whitespace-nowrap overflow-hidden text-ellipsis flex items-center justify-center gap-1"
+            :class="isActive(tab.code) ? activeClass : inactiveClass"
+            :style="{ flexGrow: isActive(tab.code) ? 2 : 1 }"
+        >
+            <span
+                class="tab-label inline-block leading-tight px-0.5 sm:px-1"
+                :class="isActive(tab.code) ? activeTextClass : inactiveTextClass"
+            >
+              {{ tab.name }}
+            </span>
+        </button>
+      </div>
 
       <div v-if="currentStep === 5" class="text-center space-y-6">
         <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
@@ -533,4 +550,22 @@ const resetForm = () => {
   currentStep.value = 1
   Object.keys(formData).forEach(k => formData[k] = '')
 }
+const { locale } = useI18n()
+
+const tabs = [
+  { code: 'uz', name: 'Uzbek' },
+  { code: 'en', name: 'English' },
+  { code: 'ru', name: 'Русский' },
+]
+const changeTab = (code) => {
+  locale.value = code
+}
+
+const isActive = (code) => locale.value === code
+
+const activeClass = 'bg-blue-600 text-white scale-100 py-2.5'
+const inactiveClass = 'bg-gray-100 text-gray-700 hover:bg-gray-200 scale-95 py-2'
+const activeTextClass = 'text-[13.5px] sm:text-[14px] scale-100'
+const inactiveTextClass = 'text-[11.5px] sm:text-[12px] scale-90'
+
 </script>

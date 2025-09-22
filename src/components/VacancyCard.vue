@@ -48,11 +48,46 @@
       </router-link>
     </div>
   </div>
+  <div>
+    <ModalComponent
+        :show="showModal"
+        @refresh="startLoading"
+    />
+
+    <LoadingModal :show="showLoading" />
+  </div>
 </template>
 
 <script setup>
 import { useI18n } from '@/i18n-lite'
+import LoadingModal from "@/components/modal/LodaingModal.vue";
+import ModalComponent from "@/components/modal/UpdateModal.vue";
+import {onBeforeUnmount, onMounted, ref} from "vue";
 const { translations, locale, t } = useI18n()
+
+
+const showModal = ref(false);
+const showLoading = ref(false);
+let intervalId = null;
+
+const startLoading = () => {
+  showModal.value = false;
+  showLoading.value = true;
+
+  setTimeout(() => {
+    window.location.reload();
+  }, 2000);
+};
+
+onMounted(() => {
+  intervalId = setInterval(() => {
+    showModal.value = true;
+  }, 150000);
+});
+
+onBeforeUnmount(() => {
+  clearInterval(intervalId);
+});
 const jobs = [
   {
     experience: "1–3 года",

@@ -99,8 +99,26 @@
        {{translations.dont_have_an_account}}
         <RouterLink to="/register" class="text-blue-600 hover:underline">{{translations.register}}</RouterLink>
       </p>
+      <div class="flex items-stretch w-full max-w-md mx-auto gap-2 pt-6">
+        <button
+            v-for="tab in tabs"
+            :key="tab.code"
+            @click="changeTab(tab.code)"
+            class="tab-btn min-w-0 basis-0 px-3 sm:px-4 rounded-xl transform transition-colors whitespace-nowrap overflow-hidden text-ellipsis flex items-center justify-center gap-1"
+            :class="isActive(tab.code) ? activeClass : inactiveClass"
+            :style="{ flexGrow: isActive(tab.code) ? 2 : 1 }"
+        >
+            <span
+                class="tab-label inline-block leading-tight px-0.5 sm:px-1"
+                :class="isActive(tab.code) ? activeTextClass : inactiveTextClass"
+            >
+              {{ tab.name }}
+            </span>
+        </button>
+      </div>
     </div>
   </div>
+
 </template>
 
 <script setup>
@@ -194,6 +212,24 @@ onMounted(() => {
     }
   }
 });
+
+const { locale } = useI18n()
+const tabs = [
+  { code: 'uz', name: 'Uzbek' },
+  { code: 'en', name: 'English' },
+  { code: 'ru', name: 'Русский' },
+]
+const changeTab = (code) => {
+  locale.value = code
+}
+
+const isActive = (code) => locale.value === code
+
+const activeClass = 'bg-blue-600 text-white scale-100 py-2.5'
+const inactiveClass = 'bg-gray-100 text-gray-700 hover:bg-gray-200 scale-95 py-2'
+const activeTextClass = 'text-[13.5px] sm:text-[14px] scale-100'
+const inactiveTextClass = 'text-[11.5px] sm:text-[12px] scale-90'
+
 
 </script>
 
