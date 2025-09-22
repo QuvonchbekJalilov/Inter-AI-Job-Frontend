@@ -52,7 +52,7 @@ const startLoading = () => {
 onMounted(() => {
   intervalId = setInterval(() => {
     showModal.value = true;
-  }, 60000);
+  }, 150000);
 });
 
 onBeforeUnmount(() => {
