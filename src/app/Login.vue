@@ -107,7 +107,7 @@
 <script setup>
 import { useI18n } from '@/i18n-lite'
 const { translations } = useI18n()
-import { reactive, ref, computed } from "vue";
+import { reactive, ref, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import axios from "axios";
 
@@ -178,6 +178,25 @@ async function onSubmit() {
     loading.value = false;
   }
 }
+onMounted(() => {
+  const storage = localStorage.getItem("token")
+      ? localStorage
+      : sessionStorage;
+
+  const expiresAt = storage.getItem("expires_at");
+  if (expiresAt) {
+    const expireTime = new Date(expiresAt).getTime();
+    const now = Date.now();
+
+    if (now >= expireTime) {
+      // muddati tugagan bo‘lsa tozalash
+      storage.removeItem("token");
+      storage.removeItem("user");
+      storage.removeItem("expires_at");
+      router.push({ name: "login" });
+    }
+  }
+});
 
 </script>
 

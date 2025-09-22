@@ -15,10 +15,48 @@
 <!--        <span class="font-medium">Чаты</span>-->
 <!--      </button>-->
 <!--    </div>-->
+    <div>
+      <!-- Har 10 daqiqa chiqadigan modal -->
+      <ModalComponent
+          :show="showModal"
+          @refresh="startLoading"
+      />
+
+      <!-- Loading modal -->
+      <LoadingModal :show="showLoading" />
+    </div>
   </div>
 </template>
 
 <script setup>
+import { ref, onMounted, onBeforeUnmount } from "vue";
 import VacancyList from "@/components/VacancyList.vue";
 import Header from "@/components/Header.vue";
+import ModalComponent from "@/components/modal/UpdateModal.vue";
+import LoadingModal from "@/components/modal/LodaingModal.vue";
+
+
+const showModal = ref(false);
+const showLoading = ref(false);
+let intervalId = null;
+
+const startLoading = () => {
+  showModal.value = false;
+  showLoading.value = true;
+
+  setTimeout(() => {
+    window.location.reload();
+  }, 2000);
+};
+
+onMounted(() => {
+  intervalId = setInterval(() => {
+    showModal.value = true;
+  }, 60000);
+});
+
+onBeforeUnmount(() => {
+  clearInterval(intervalId);
+});
+
 </script>

@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen bg-[#f2f2f2]">
-    <Header v-if="user" :user="user" />
+    <Header :user="user" />
     <div class="min-h-screen pt-[90px] bg-[#f7f8fa] py-2 mt-3">
       <div class="max-w-3xl mx-auto space-y-6">
 
@@ -23,17 +23,39 @@
             </button>
           </div>
           <h2 class="text-lg font-semibold mb-4 flex items-center gap-2 text-black">
-            <span>👤</span> Мой профиль
+            <span>👤</span> {{ translations.profiles?.title }}
           </h2>
+
           <div class="space-y-2 text-sm text-gray-700">
-            <div><span class="font-medium text-gray-500">Имя:</span> {{ user?.first_name }} {{ user?.last_name }}</div>
-            <div><span class="font-medium text-gray-500">Email:</span> {{ user?.email }}</div>
-            <div><span class="font-medium text-gray-500">Телефон:</span> {{ user?.phone }}</div>
-            <div><span class="font-medium text-gray-500">Сфера:</span> {{ user?.preferences?.[0]?.industry?.name || '—' }}</div>
-            <div><span class="font-medium text-gray-500">Локация:</span> {{ user?.locations?.[0]?.text || '—' }}</div>
-            <div><span class="font-medium text-gray-500">Зарплата:</span>
-              от {{ user?.preferences?.[0]?.desired_salary_from || 0 }} ₽
-              до {{ user?.preferences?.[0]?.desired_salary_to || 0 }} ₽
+            <div>
+              <span class="font-medium text-gray-500">{{ translations.profiles?.name }}:</span>
+              {{ user?.first_name }} {{ user?.last_name }}
+            </div>
+
+            <div>
+              <span class="font-medium text-gray-500">{{ translations.profiles?.email }}:</span>
+              {{ user?.email }}
+            </div>
+
+            <div>
+              <span class="font-medium text-gray-500">{{ translations.profiles?.phone }}:</span>
+              {{ user?.phone }}
+            </div>
+
+            <div>
+              <span class="font-medium text-gray-500">{{ translations.profiles?.industry }}:</span>
+              {{ user?.preferences?.[0]?.industry?.name || '—' }}
+            </div>
+
+            <div>
+              <span class="font-medium text-gray-500">{{ translations.profiles?.location }}:</span>
+              {{ user?.locations?.[0]?.text || '—' }}
+            </div>
+
+            <div>
+              <span class="font-medium text-gray-500">{{ translations.profiles?.salary }}:</span>
+              {{ translations.profiles?.salary_from }} {{ user?.preferences?.[0]?.desired_salary_from || 0 }} ₽
+              {{ translations.profiles?.salary_to }} {{ user?.preferences?.[0]?.desired_salary_to || 0 }} ₽
             </div>
           </div>
           <button
@@ -46,28 +68,28 @@
 
         <div class="bg-white border border-gray-200 rounded-2xl p-6">
           <h2 class="text-lg font-semibold mb-4 flex items-center gap-2 text-black">
-            <span>📄</span> Резюме
+            <span>📄</span> {{ translations.resumes?.title }}
           </h2>
           <div class="flex items-center justify-between">
             <div class="text-sm text-gray-500">
-              Последнее обновление <br />
-              <span class="text-gray-700">3 дня назад</span>
+              {{ translations.resumes?.last_update }} <br />
+              <span class="text-gray-700">3 {{ translations.resumes?.days_ago }}</span>
             </div>
-            <span class="px-3 py-1 bg-green-100 text-green-600 rounded-full text-xs">Активно</span>
+            <span class="px-3 py-1 bg-green-100 text-green-600 rounded-full text-xs">{{ translations.resumes?.status_active }}</span>
           </div>
           <button
               class="mt-4 w-full px-4 py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-50"
           >
-            Обновить резюме
+            {{ translations.resumes?.update_btn }}
           </button>
         </div>
 
         <div class="bg-white border border-gray-200 rounded-2xl p-6">
           <h2 class="text-lg font-semibold mb-2 flex items-center gap-2 text-black">
-            ⚡ AI Автоотклик
+            ⚡ {{ translations.auto_apply?.title }}
           </h2>
           <p class="text-sm text-gray-600 mb-3">
-            Автоматические отклики — ИИ автоматически откликается на подходящие вакансии
+            {{ translations.auto_apply?.description }}
           </p>
           <label class="inline-flex items-center cursor-pointer">
             <input type="checkbox" class="sr-only peer" />
@@ -80,44 +102,47 @@
 
         <div class="bg-white border border-gray-200 rounded-2xl p-6">
           <h2 class="text-lg font-semibold mb-4 flex items-center gap-2 text-black">
-            💳 Тарифный план
+            💳 {{ translations.plan?.title }}
           </h2>
           <div class="mb-3 text-sm text-gray-600 flex justify-between">
-            <span>Бесплатные отклики</span>
+            <span>{{ translations.plan?.free_responses }}</span>
             <span class="text-green-600 font-medium">73/100</span>
           </div>
           <div class="w-full h-2 bg-gray-100 rounded-full overflow-hidden mb-3">
             <div class="h-2 w-[73%] bg-blue-500"></div>
           </div>
-          <p class="text-sm text-gray-500 mb-1">Осталось 73 бесплатных откликов</p>
+          <p class="text-sm text-gray-500 mb-1">73 {{ translations.plan?.left_responses }}</p>
+<!--          <p class="text-sm text-gray-700">-->
+<!--            Дополнительные отклики: <span class="font-semibold">100,000 UZS</span> (100 откликов)-->
+<!--          </p>-->
           <p class="text-sm text-gray-700">
-            Дополнительные отклики: <span class="font-semibold">100,000 UZS</span> (100 откликов)
+            {{ translations.plan?.extra_responses, { price: '100,000 UZS', count: 74 } }}
           </p>
         </div>
 
         <div class="bg-white border border-gray-200 rounded-2xl px-6">
           <h2 class="text-lg font-semibold mb-4 flex items-center gap-2 text-black">
-            💰 Способы оплаты
+            💰 {{ translations.payment?.title }}
           </h2>
-          <div class="text-center text-sm text-gray-500 mb-4">
-            Способы оплаты не добавлены
+          <div class="text-start text-sm text-gray-500 mb-4">
+            {{ translations.payment?.no_methods }}
           </div>
           <div class="space-y-3">
             <button
                 class="w-full px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm"
             >
-              Привязать карту
+              {{ translations.payment?.add_card }}
             </button>
             <button
                 class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm"
             >
-              Купить 100 откликов
+              {{ translations.payment?.buy_responses }}
             </button>
             <button
                 class="mt-2 w-full px-4 py-2 border border-red-300 text-red-600 rounded-lg text-sm hover:bg-red-50"
                 @click="logout"
             >
-              Выйти
+              {{ translations.payment?.logout }}
             </button>
           </div>
         </div>
@@ -133,11 +158,12 @@ import axios from 'axios'
 import { useI18n } from '@/i18n-lite'
 import { useRouter } from 'vue-router'
 import Header from '@/components/Header.vue'
+const { translations } = useI18n()
 
 const router = useRouter()
 const { locale } = useI18n()
 
-const user = ref(null)   // foydalanuvchi ma’lumotlari
+const user = ref(null)
 const loading = ref(true)
 const error = ref("")
 
