@@ -1,14 +1,12 @@
 <template>
   <div class="min-h-screen pt-[225px] bg-[#f2f2f2] text-gray-900">
     <div class="gap-10">
-      <!-- Statistika va tablar -->
       <StaticsSection
           :tabs="tabs"
           :active-tab="activeTab"
           @change-tab="setActiveTab"
       />
 
-      <!-- Content -->
       <main class="space-y-6 mt-6">
         <template v-if="activeTab === 'vacancies'">
           <VacancyCard

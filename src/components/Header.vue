@@ -31,17 +31,12 @@
             to="/profile"
             class="flex items-center space-x-2 hover:text-gray-500"
         >
-<!--          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">-->
-<!--            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"-->
-<!--                  d="M5.121 17.804A9.966 9.966 0 0112 15c2.21 0 4.236.72 5.879 1.926M15 10a3 3 0 11-6 0 3 3 0 016 0z"/>-->
-<!--          </svg>-->
           <span v-if="user">{{ user?.first_name }}</span>
           <svg class="w-9 h-9" viewBox="0 0 1000 1000" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="500" cy="500" r="396.364" fill="white" stroke="#C6C6C6" stroke-width="7.27273"/>
             <path d="M612.317 162.336C125.918 493.239 560.25 774.264 744.155 527.855C394.377 1306.54 -83.9093 341.001 612.317 162.336Z" fill="#5078FF"/>
             <path d="M630.583 459.366C630.583 514.87 586.313 559.865 531.704 559.865C477.094 559.865 432.825 514.87 432.825 459.366C432.825 403.861 477.094 358.866 531.704 358.866C586.313 358.866 630.583 403.861 630.583 459.366Z" fill="#5078FF"/>
           </svg>
-<!--          <span v-else>{{ translations.profile }}</span>-->
         </RouterLink>
       </div>
     </div>

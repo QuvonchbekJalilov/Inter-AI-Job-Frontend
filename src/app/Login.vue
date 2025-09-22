@@ -59,7 +59,6 @@
                 @click="showPassword = !showPassword"
                 aria-label="Parolni ko'rsatish"
             >
-              <!-- Simple eye icon -->
               <svg v-if="!showPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
                       d="M2.036 12.322a1.012 1.012 0 010-.644C3.423 7.51 7.36 5 12 5s8.577 2.51 9.964 6.678c.07.214.07.45 0 .644C20.577 16.49 16.64 19 12 19S3.423 16.49 2.036 12.322z"/>
@@ -166,7 +165,6 @@ async function onSubmit() {
     storage.setItem("user", JSON.stringify(data.data.user));
     storage.setItem("expires_at", data.data.expires_at);
 
-
     router.push({ name: "home" });
   } catch (e) {
     if (e.response?.data?.message) {
@@ -189,7 +187,6 @@ onMounted(() => {
     const now = Date.now();
 
     if (now >= expireTime) {
-      // muddati tugagan bo‘lsa tozalash
       storage.removeItem("token");
       storage.removeItem("user");
       storage.removeItem("expires_at");
@@ -199,7 +196,6 @@ onMounted(() => {
 });
 
 </script>
-
 
 <style scoped>
 input:-webkit-autofill {

@@ -1,12 +1,10 @@
 <template>
   <div class="min-h-screen bg-gray-50 flex items-center justify-center">
     <div class="w-full max-w-md bg-white text-black rounded-lg shadow-lg p-6">
-      <!-- Header with logo -->
       <div class="text-center mb-6">
         <img src="https://www.inter-ai.uz/Logo1.svg" alt="Inter-AI" class="h-8 mx-auto mb-4">
       </div>
 
-      <!-- Progress bar -->
       <div class="mb-8">
         <div class="flex justify-between items-center mb-2">
           <div class="w-full bg-gray-200 rounded-full h-2">
@@ -19,7 +17,6 @@
         <p class="text-center text-sm text-gray-500">{{ translations.Step }} {{ currentStep }} {{translations.from}} 4</p>
       </div>
 
-      <!-- Step 1: Personal Information -->
       <div v-if="currentStep === 1" class="space-y-6">
         <h2 class="text-xl font-medium text-center text-gray-800 mb-6">{{ translations.tell_us_about_yourself }}</h2>
 
@@ -60,7 +57,6 @@
               placeholder="ismoil_007u@gmail.com"
           >
         </div>
-        <!-- Password + Confirm -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">{{ translations.password }}</label>
@@ -152,7 +148,6 @@
         </button>
       </div>
 
-      <!-- Step 2: Resume Upload -->
       <div v-if="currentStep === 2" class="space-y-6">
         <h2 class="text-xl font-medium text-center text-gray-800 mb-6">{{translations.Upload_your_resume}}</h2>
 
@@ -213,7 +208,6 @@
           </div>
         </div>
 
-
         <div class="flex gap-3">
           <button
               @click="prevStep"
@@ -237,7 +231,6 @@
         </div>
       </div>
 
-      <!-- Step 3: Field Selection -->
       <div v-if="currentStep === 3" class="space-y-6">
         <h2 class="text-xl font-medium text-center text-gray-800 mb-6">{{translations.Select_a_field}}</h2>
 
@@ -314,7 +307,6 @@
         </div>
       </div>
 
-      <!-- Step 4: Preferences -->
       <div v-if="currentStep === 4" class="space-y-6">
         <h2 class="text-xl font-medium text-center text-gray-800 mb-6">{{translations.Set_your_preferences}}</h2>
 
@@ -387,13 +379,11 @@
         </div>
       </div>
 
-      <!-- Footer -->
       <p class="mt-6 text-center text-sm text-gray-500">
         {{translations.Do_you_have_an_account}}
         <RouterLink to="/login" class="text-blue-600 hover:underline">{{ translations.login }}</RouterLink>
       </p>
 
-      <!-- Success Message -->
       <div v-if="currentStep === 5" class="text-center space-y-6">
         <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
           <svg class="w-8 h-8 text-green-500" fill="currentColor" viewBox="0 0 20 20">
@@ -418,7 +408,7 @@ import { useI18n } from '@/i18n-lite'
 const { translations } = useI18n()
 import { ref, reactive, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import axios from "axios"   // axios import qilish kerak
+import axios from "axios"
 
 const router = useRouter()
 
@@ -524,7 +514,7 @@ const completeRegistration = async () => {
     console.log("✅ Registration success:", data)
 
     if (data.status === "success") {
-      const storage = localStorage // yoki remember bo‘lsa sessionStorage
+      const storage = localStorage
       storage.setItem("token", data.data.token)
       storage.setItem("user", JSON.stringify(data.data.user))
       storage.setItem("expires_at", data.data.expires_at)

@@ -93,7 +93,6 @@ const router = useRouter()
 const userId = route.params.id
 console.log('User ID:', userId)
 
-// Form data
 const form = ref({
   first_name: '',
   last_name: '',

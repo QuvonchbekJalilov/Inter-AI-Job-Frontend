@@ -4,7 +4,6 @@
       class="fixed inset-0 flex flex-col items-center justify-center bg-black/40 z-50"
   >
     <div class="rounded-full p-6 flex flex-col items-center">
-      <!-- Logo -->
       <svg class="w-20 h-20 mb-3 animate-spin-slow" width="3067" height="3067" viewBox="0 0 3067 3067" fill="none" xmlns="http://www.w3.org/2000/svg">
         <circle cx="1534" cy="1533" r="1385" fill="white"/>
         <path d="M1254.53 1111.26C294.804 1753.64 1151.8 2299.2 1514.66 1820.84C824.508 3332.51 -119.211 1458.1 1254.53 1111.26Z" fill="#5078FF"/>
@@ -16,7 +15,6 @@
         <path d="M1253.75 1111.25C1017.08 1269.67 890.889 1422.19 840.522 1554.93H630.653C729.276 1364.48 925.253 1194.19 1253.75 1111.25Z" fill="#5078FF"/>
       </svg>
 
-      <!-- Matn -->
       <p class="text-gray-300 text-lg">Loading...</p>
     </div>
   </div>

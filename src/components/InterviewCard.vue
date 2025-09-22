@@ -31,7 +31,7 @@
 
 <script setup>
 import { useI18n } from '@/i18n-lite'
-const { translations, locale, t } = useI18n()
+const { translations, t } = useI18n()
 defineProps({
   title: String,
   company: String,

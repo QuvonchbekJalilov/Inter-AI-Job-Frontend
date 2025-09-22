@@ -1,9 +1,7 @@
 <template>
   <div class="min-h-screen bg-gray-50">
-    <!-- Header -->
     <Header></Header>
 
-    <!-- Main Content -->
     <VacancyList></VacancyList>
 
     <!-- Chat Widget -->
@@ -16,13 +14,11 @@
 <!--      </button>-->
 <!--    </div>-->
     <div>
-      <!-- Har 10 daqiqa chiqadigan modal -->
       <ModalComponent
           :show="showModal"
           @refresh="startLoading"
       />
 
-      <!-- Loading modal -->
       <LoadingModal :show="showLoading" />
     </div>
   </div>

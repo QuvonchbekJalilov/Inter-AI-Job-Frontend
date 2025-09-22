@@ -1,14 +1,12 @@
 <template>
   <div class="max-w-7xl mx-auto px-4">
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <!-- 🔹 foreach jobs -->
       <router-link
           :to="{ name: 'vacancyDetail', params: { id: index + 1 } }"
           v-for="(job, index) in jobs"
           :key="index"
           class="flex w-full max-w-lg flex-col mb-3"
       >
-        <!-- Header -->
         <div class="flex items-center">
           <div
               class="relative rounded-tl-2xl rounded-tr-2xl bg-white pt-4 px-6 text-gray-500 text-sm outer"
@@ -16,7 +14,6 @@
             {{ job.experience }}
           </div>
         </div>
-        <!-- Content -->
         <div class="flex flex-col bg-white p-4 px-6 rounded-tr-2xl">
           <h2 class="mb-2 text-xl leading-tight font-medium">
             {{ job.title }}
@@ -43,7 +40,6 @@
             {{ job.location }}
           </p>
         </div>
-        <!-- Footer -->
         <div class="w-full overflow-hidden rounded-b-2xl">
           <button class="w-full py-3 font-medium text-black bg-gray-300" disabled>
             {{ translations.reply }}
@@ -56,7 +52,7 @@
 
 <script setup>
 import { useI18n } from '@/i18n-lite'
-const { translations, locale, t } = useI18n()
+const { translations, t } = useI18n()
 const jobs = [
   {
     experience: "3–6 года",

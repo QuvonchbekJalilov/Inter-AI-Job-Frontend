@@ -112,9 +112,7 @@
             <div class="h-2 w-[73%] bg-blue-500"></div>
           </div>
           <p class="text-sm text-gray-500 mb-1">73 {{ translations.plan?.left_responses }}</p>
-<!--          <p class="text-sm text-gray-700">-->
-<!--            Дополнительные отклики: <span class="font-semibold">100,000 UZS</span> (100 откликов)-->
-<!--          </p>-->
+
           <p class="text-sm text-gray-700">
             {{ translations.plan?.extra_responses, { price: '100,000 UZS', count: 74 } }}
           </p>
@@ -167,7 +165,6 @@ const user = ref(null)
 const loading = ref(true)
 const error = ref("")
 
-// API dan user olish
 onMounted(async () => {
   try {
     const token = localStorage.getItem("token") || sessionStorage.getItem("token")

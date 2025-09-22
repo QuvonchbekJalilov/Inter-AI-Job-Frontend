@@ -2,7 +2,6 @@
   <div class="fixed top-[84px] left-0 w-full bg-white border-b border-gray-200 z-20 rounded-2xl">
     <div class="max-w-7xl mx-auto px-4 py-2 border-radius">
       <div class="max-w-3xl mx-auto">
-        <!-- Stats -->
         <div class="bg-white rounded-2xl py-4 flex justify-around shadow-top divide-x mt-3">
           <div class="flex-1 text-center px-2">
             <div class="text-blue-600 text-2xl font-medium">24</div>
@@ -20,7 +19,6 @@
 
       </div>
 
-      <!-- Tabs -->
       <div class="flex items-stretch mt-3 w-full max-w-md mx-auto gap-2">
         <button
           v-for="tab in tabs"
@@ -58,12 +56,10 @@ defineProps({
 
 <style scoped>
 .shadow-top {
-  /* Tepadan yengilroq soyani beramiz */
   box-shadow:
       0 -2px 3px -1px rgba(0, 0, 0, 0.08),
       0 -2px 4px -2px rgba(0, 0, 0, 0.05),
 
-        /* Pastdan kuchliroq soyani beramiz */
       0 4px 6px -1px rgba(0, 0, 0, 0.15),
       0 2px 4px -2px rgba(0, 0, 0, 0.1);
 }
