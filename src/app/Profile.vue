@@ -22,7 +22,7 @@
             </span>
             </button>
           </div>
-          <h2 class="text-lg font-semibold mb-4 flex items-center gap-2 text-black">
+          <h2 class="text-lg font-medium mb-4 flex items-center gap-2 text-black">
             <span>👤</span> {{ translations.profiles?.title }}
           </h2>
 
@@ -62,12 +62,12 @@
               class="mt-4 w-full px-4 py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-50"
               @click="goToEdit"
           >
-            Редактировать
+            {{ translations.auto_apply?.update_button ?? 'Редактировать' }}
           </button>
         </div>
 
         <div class="bg-white border border-gray-200 rounded-2xl p-6">
-          <h2 class="text-lg font-semibold mb-4 flex items-center gap-2 text-black">
+          <h2 class="text-lg font-medium mb-4 flex items-center gap-2 text-black">
             <span>📄</span> {{ translations.resumes?.title }}
           </h2>
           <div class="flex items-center justify-between">
@@ -85,7 +85,7 @@
         </div>
 
         <div class="bg-white border border-gray-200 rounded-2xl p-6">
-          <h2 class="text-lg font-semibold mb-2 flex items-center gap-2 text-black">
+          <h2 class="text-lg font-medium mb-2 flex items-center gap-2 text-black">
             ⚡ {{ translations.auto_apply?.title }}
           </h2>
           <p class="text-sm text-gray-600 mb-3">
@@ -147,27 +147,27 @@
               <input
                   type="number"
                   v-model.number="limit"
-                  class="w-48 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                  class="w-28 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
               />
               <button
                   @click="updateLimit"
                   class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition disabled:bg-gray-300 disabled:text-gray-500"
                   :disabled="!limit"
               >
-                💾 {{ translations.auto_apply?.update_button || 'Update' }}
+                {{ translations.auto_apply?.update_button || 'Update' }}
               </button>
               <button
                   @click="editMode = false"
                   class="px-4 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500 transition"
               >
-                ❌ Cancel
+                {{ translations.auto_apply?.cancel_button || 'Cancel' }}
               </button>
             </div>
           </div>
         </div>
 
         <div class="bg-white border border-gray-200 rounded-2xl p-6">
-          <h2 class="text-lg font-semibold mb-4 flex items-center gap-2 text-black">
+          <h2 class="text-lg font-medium mb-4 flex items-center gap-2 text-black">
             💳 {{ translations.plan?.title }}
           </h2>
           <div class="mb-3 text-sm text-gray-600 flex justify-between">
@@ -185,7 +185,7 @@
         </div>
 
         <div class="bg-white border border-gray-200 rounded-2xl px-6">
-          <h2 class="text-lg font-semibold mb-4 flex items-center gap-2 text-black">
+          <h2 class="text-lg font-medium mb-4 flex items-center gap-2 text-black">
             💰 {{ translations.payment?.title }}
           </h2>
           <div class="text-start text-sm text-gray-500 mb-4">
@@ -263,6 +263,38 @@ const changeTab = (code) => {
 }
 
 const isActive = (code) => locale.value === code
+
+const activeClass = 'bg-blue-600 text-white scale-100 py-2.5'
+const inactiveClass = 'bg-gray-100 text-gray-700 hover:bg-gray-200 scale-95 py-2'
+const activeTextClass = 'text-[13.5px] sm:text-[14px] scale-100'
+const inactiveTextClass = 'text-[11.5px] sm:text-[12px] scale-90'
+
+const logout = async () => {
+  try {
+    const token = localStorage.getItem("token") || sessionStorage.getItem("token")
+    if (token) {
+      await axios.post("http://127.0.0.1:8000/api/auth/logout", {}, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+    }
+  } catch (e) {
+    console.error("Logout error", e)
+  } finally {
+    localStorage.removeItem("token")
+    localStorage.removeItem("user")
+    localStorage.removeItem("expires_at")
+    sessionStorage.removeItem("token")
+    sessionStorage.removeItem("user")
+    sessionStorage.removeItem("expires_at")
+
+    router.push({ name: "login" })
+  }
+}
+const goToEdit = () => {
+  router.push({ name: "editProfile", params: { id: user.value.id } })
+}
 
 const enabled = ref(false);
 const limit = ref(null);
@@ -360,5 +392,8 @@ onMounted(() => {
   fetchAutoApplyData();
 });
 </script>
+
+
+
 
 

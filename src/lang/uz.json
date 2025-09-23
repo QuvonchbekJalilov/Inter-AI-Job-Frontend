@@ -20,12 +20,14 @@
     "last_update": "Oxirgi yangilanish",
     "days_ago": " kun oldin",
     "status_active": "Faol",
-    "update_btn": "Rezyumeni yangilash"
+    "update_btn": "Rezyumeni ko'rish"
   },
   "auto_apply": {
     "title": "AI Avtomatik javob",
     "description": "Avtomatik javoblar — AI mos bo'lgan vakansiyalarga avtomatik javob beradi",
-    "save_button": "Saqlash"
+    "save_button": "Saqlash",
+    "update_button": "Tahrirlash",
+    "cancel_button": "Bekor qilish"
   },
   "plan": {
     "title": "Tarif rejasi",

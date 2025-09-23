@@ -20,12 +20,14 @@
     "last_update": "Last update",
     "days_ago": " days ago",
     "status_active": "Active",
-    "update_btn": "Update resume"
+    "update_btn": "View resume"
   },
   "auto_apply": {
     "title": "AI Auto Apply",
     "description": "Automatic applications — AI automatically applies to suitable vacancies",
-    "save_button": "Save"
+    "save_button": "Save",
+    "update_button": "Update",
+    "cancel_button": "Cancel"
   },
   "plan": {
     "title": "Tariff plan",
