@@ -6,6 +6,7 @@ import Register from '../app/Register.vue'
 import Profile from '../app/Profile.vue'
 import VacancyShow from '../app/VacancyShow.vue'
 import EditProfile from "@/app/EditProfile.vue";
+import InterviewCardShow from '../app/InterviewCardShow.vue'
 
 const routes = [
     {
@@ -13,6 +14,13 @@ const routes = [
         name: 'home',
         component: Page,
         meta: { requiresAuth: true }
+    },
+    {
+        path: '/interview/:id',
+        name: 'interviewDetail',
+        component: InterviewCardShow,
+        props: true,
+        meta: { requiresAuth: true, headerBack: true }
     },
     {
         path: '/login',
@@ -46,13 +54,7 @@ const routes = [
         props: true,
         meta: { requiresAuth: true, headerBack: true }
     },
-    {
-        path: '/interview/:id',
-        name: 'showInterview',
-        component: EditProfile,
-        props: true,
-        meta: { requiresAuth: true, headerBack: true }
-    },
+
 ]
 
 const router = createRouter({

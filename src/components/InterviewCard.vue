@@ -1,5 +1,9 @@
 <template>
-  <router-link to="" class="bg-white rounded-2xl shadow-md p-6 space-y-4 max-w-3xl mx-auto">
+  <div
+    class="bg-white rounded-2xl shadow-md p-6 space-y-4 max-w-3xl mx-auto cursor-pointer"
+    @click="goToDetail"
+    role="button"
+  >
     <div class="flex justify-between items-center">
       <div>
         <h3 class="text-xl font-medium text-gray-800">{{ title }}</h3>
@@ -23,19 +27,35 @@
       </ul>
     </div><main class="basis-3/5 bg-gray-100"></main>
 
-    <button class="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-xl">
+    <button
+      class="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-xl"
+      @click.stop="onPrepareClick"
+    >
       {{translations.prepare_for_the_interview}}
     </button>
-  </router-link>
+  </div>
 </template>
 
 <script setup>
 import { useI18n } from '@/i18n-lite'
+import { useRouter } from 'vue-router'
+
 const { translations, t } = useI18n()
-defineProps({
-  title: String,
-  company: String,
-  date: String,
-  questions: Array
+const router = useRouter()
+
+const props = defineProps({
+  id: { type: [String, Number], default: 1 },
+  title: { type: String, default: '' },
+  company: { type: String, default: '' },
+  date: { type: String, default: '' },
+  questions: { type: Array, default: () => [] },
 })
+
+const goToDetail = () => {
+  router.push({ name: 'interviewDetail', params: { id: props.id } })
+}
+
+const onPrepareClick = () => {
+  // Placeholder: separate action for the button can be added later
+}
 </script>
