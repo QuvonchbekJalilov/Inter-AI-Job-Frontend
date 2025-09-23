@@ -8,10 +8,7 @@
           </RouterLink>
         </div>
 
-        <nav class="hidden md:flex items-center space-x-6">
-          <RouterLink to="#" class="hover:text-gray-500">{{ translations.resumeProfile }}</RouterLink>
-          <RouterLink to="#" class="hover:text-gray-500">{{ translations.help }}</RouterLink>
-        </nav>
+
       </div>
 
       <div class="flex items-center space-x-4">
