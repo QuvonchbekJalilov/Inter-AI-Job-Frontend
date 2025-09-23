@@ -24,7 +24,8 @@
   },
   "auto_apply": {
     "title": "AI Auto Apply",
-    "description": "Automatic applications — AI automatically applies to suitable vacancies"
+    "description": "Automatic applications — AI automatically applies to suitable vacancies",
+    "save_button": "Save"
   },
   "plan": {
     "title": "Tariff plan",

@@ -46,6 +46,13 @@ const routes = [
         props: true,
         meta: { requiresAuth: true, headerBack: true }
     },
+    {
+        path: '/interview/:id',
+        name: 'showInterview',
+        component: EditProfile,
+        props: true,
+        meta: { requiresAuth: true, headerBack: true }
+    },
 ]
 
 const router = createRouter({

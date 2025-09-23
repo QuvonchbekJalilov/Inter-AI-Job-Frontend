@@ -91,13 +91,79 @@
           <p class="text-sm text-gray-600 mb-3">
             {{ translations.auto_apply?.description }}
           </p>
+
+          <!-- Checkbox -->
           <label class="inline-flex items-center cursor-pointer">
-            <input type="checkbox" class="sr-only peer" />
+            <input type="checkbox" v-model="enabled" class="sr-only peer" />
             <div
                 class="relative w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-indigo-600
-              after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:h-5 after:w-5 after:rounded-full after:transition-all peer-checked:after:translate-x-full"
+        after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white
+        after:h-5 after:w-5 after:rounded-full after:transition-all peer-checked:after:translate-x-full"
             ></div>
           </label>
+
+          <!-- Input va tugma (faqat 1-marta limit o‘rnatish uchun POST) -->
+          <div v-if="enabled && !saved" class="mt-4 flex items-center gap-3">
+            <input
+                type="number"
+                v-model.number="limit"
+                class="w-48 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                placeholder="Son kiriting"
+            />
+            <button
+                @click="saveLimit"
+                class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition disabled:bg-gray-300 disabled:text-gray-500"
+                :disabled="!limit"
+            >
+              {{ translations.auto_apply?.save_button }}
+            </button>
+          </div>
+
+          <!-- Progress bar + edit qilish -->
+          <div v-if="saved" class="mt-6">
+            <div class="flex justify-between text-sm text-gray-600 mb-1">
+              <span>{{ translations.auto_apply?.progress }}</span>
+              <span>{{ appliedCount }} / {{ limit }}</span>
+            </div>
+            <div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+              <div
+                  class="h-2 bg-indigo-600 transition-all duration-300"
+                  :style="{ width: progressPercent + '%' }"
+              ></div>
+            </div>
+
+            <!-- Edit tugmasi -->
+            <div v-if="!editMode" class="mt-4">
+              <button
+                  @click="editMode = true"
+                  class="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition"
+              >
+                ✏️ {{ translations.auto_apply?.edit_button || 'Edit limit' }}
+              </button>
+            </div>
+
+            <!-- Edit form (PATCH) -->
+            <div v-if="editMode" class="mt-4 flex items-center gap-3">
+              <input
+                  type="number"
+                  v-model.number="limit"
+                  class="w-48 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+              />
+              <button
+                  @click="updateLimit"
+                  class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition disabled:bg-gray-300 disabled:text-gray-500"
+                  :disabled="!limit"
+              >
+                💾 {{ translations.auto_apply?.update_button || 'Update' }}
+              </button>
+              <button
+                  @click="editMode = false"
+                  class="px-4 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500 transition"
+              >
+                ❌ Cancel
+              </button>
+            </div>
+          </div>
         </div>
 
         <div class="bg-white border border-gray-200 rounded-2xl p-6">
@@ -111,7 +177,7 @@
           <div class="w-full h-2 bg-gray-100 rounded-full overflow-hidden mb-3">
             <div class="h-2 w-[73%] bg-blue-500"></div>
           </div>
-          <p class="text-sm text-gray-500 mb-1">73 {{ translations.plan?.left_responses }}</p>
+          <p class="text-sm text-gray-500 mb-1">37 {{ translations.plan?.left_responses, { count: 73 } }}</p>
 
           <p class="text-sm text-gray-700">
             {{ translations.plan?.extra_responses, { price: '100,000 UZS', count: 74 } }}
@@ -198,37 +264,101 @@ const changeTab = (code) => {
 
 const isActive = (code) => locale.value === code
 
-const activeClass = 'bg-blue-600 text-white scale-100 py-2.5'
-const inactiveClass = 'bg-gray-100 text-gray-700 hover:bg-gray-200 scale-95 py-2'
-const activeTextClass = 'text-[13.5px] sm:text-[14px] scale-100'
-const inactiveTextClass = 'text-[11.5px] sm:text-[12px] scale-90'
+const enabled = ref(false);
+const limit = ref(null);
+const saved = ref(false);
+const appliedCount = ref(0);
+const editMode = ref(false); // yangi state edit qilish uchun
 
-const logout = async () => {
+const progressPercent = computed(() => {
+  if (!limit.value) return 0;
+  return Math.min((appliedCount.value / limit.value) * 100, 100);
+});
+
+async function saveLimit() {
   try {
-    const token = localStorage.getItem("token") || sessionStorage.getItem("token")
-    if (token) {
-      await axios.post("http://127.0.0.1:8000/api/auth/logout", {}, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      })
-    }
-  } catch (e) {
-    console.error("Logout error", e)
-  } finally {
-    localStorage.removeItem("token")
-    localStorage.removeItem("user")
-    localStorage.removeItem("expires_at")
-    sessionStorage.removeItem("token")
-    sessionStorage.removeItem("user")
-    sessionStorage.removeItem("expires_at")
+    const token = localStorage.getItem("token");
 
-    router.push({ name: "login" })
+    const response = await axios.post(
+        "http://127.0.0.1:8000/api/auth/settings/auto-apply",
+        {
+          auto_apply_enabled: enabled.value,
+          auto_apply_limit: limit.value,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        }
+    );
+
+    console.log("✅ Limit saqlandi:", response.data);
+
+    saved.value = true;
+    appliedCount.value = 0;
+
+    await fetchAutoApplyData();
+  } catch (error) {
+    console.error("❌ POST xatolik:", error.response?.data || error.message);
   }
 }
-const goToEdit = () => {
-  router.push({ name: "editProfile", params: { id: user.value.id } })
+
+async function updateLimit() {
+  try {
+    const token = localStorage.getItem("token");
+
+    const response = await axios.patch(
+        "http://127.0.0.1:8000/api/auth/settings/auto-apply",
+        {
+          auto_apply_enabled: enabled.value,
+          auto_apply_limit: limit.value,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        }
+    );
+
+    console.log("✏️ Limit yangilandi:", response.data);
+
+    saved.value = true;
+    editMode.value = false;
+
+    await fetchAutoApplyData();
+  } catch (error) {
+    console.error("❌ PATCH xatolik:", error.response?.data || error.message);
+  }
 }
+
+async function fetchAutoApplyData() {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await axios.get(
+        "http://127.0.0.1:8000/api/auth/settings/auto-apply",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        }
+    );
+
+    enabled.value = response.data.data.auto_apply_enabled;
+    limit.value = response.data.data.auto_apply_limit;
+    appliedCount.value = response.data.data.auto_apply_count;
+
+    saved.value = !!limit.value;
+  } catch (error) {
+    console.error("❌ GET xatolik:", error.response?.data || error.message);
+  }
+}
+
+onMounted(() => {
+  fetchAutoApplyData();
+});
 </script>
 
 

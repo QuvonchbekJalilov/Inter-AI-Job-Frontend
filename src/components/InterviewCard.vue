@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white rounded-2xl shadow-md p-6 space-y-4 max-w-3xl mx-auto">
+  <router-link to="" class="bg-white rounded-2xl shadow-md p-6 space-y-4 max-w-3xl mx-auto">
     <div class="flex justify-between items-center">
       <div>
         <h3 class="text-xl font-medium text-gray-800">{{ title }}</h3>
@@ -26,7 +26,7 @@
     <button class="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-xl">
       {{translations.prepare_for_the_interview}}
     </button>
-  </div>
+  </router-link>
 </template>
 
 <script setup>

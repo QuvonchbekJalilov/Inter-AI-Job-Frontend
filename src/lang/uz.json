@@ -24,7 +24,8 @@
   },
   "auto_apply": {
     "title": "AI Avtomatik javob",
-    "description": "Avtomatik javoblar — AI mos bo'lgan vakansiyalarga avtomatik javob beradi"
+    "description": "Avtomatik javoblar — AI mos bo'lgan vakansiyalarga avtomatik javob beradi",
+    "save_button": "Saqlash"
   },
   "plan": {
     "title": "Tarif rejasi",
