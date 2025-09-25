@@ -2,7 +2,7 @@
   <Header></Header>
   <div class="min-h-screen bg-[#f2f2f2]">
     <div class="max-w-2xl pt-[100px] mx-auto p-4">
-      <h2 class="text-xl font-bold mb-4">Foydalanuvchini tahrirlash</h2>
+      <h2 class="text-xl font-medium mb-4">Foydalanuvchini tahrirlash</h2>
 
       <div v-if="message" class="mb-3 text-sm" :class="message.includes('✅') ? 'text-green-600' : 'text-red-600'">
         {{ message }}
@@ -44,10 +44,7 @@
           <textarea v-model="form.resume_text" rows="3" class="border rounded w-full p-2"></textarea>
         </div>
 
-        <div>
-          <label class="block mb-1">Resume fayl</label>
-          <input type="file" @change="handleFileChange" />
-        </div>
+        <!-- ❌ Fayl yuklash input olib tashlandi -->
 
         <div>
           <label class="block mb-1">Tajriba</label>
@@ -75,13 +72,14 @@
           <input v-model="form.location" type="text" class="border rounded w-full p-2" />
         </div>
 
-        <button type="submit" :disabled="loading" class="bg-blue-600 text-white px-4 py-2 rounded">
+        <button type="submit" :disabled="loading" class="bg-blue-600 w-full text-white px-4 py-2 rounded">
           {{ loading ? 'Saqlanmoqda...' : 'Yangilash' }}
         </button>
       </form>
     </div>
   </div>
 </template>
+
 <script setup>
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
@@ -91,7 +89,6 @@ import Header from "@/components/Header.vue";
 const route = useRoute()
 const router = useRouter()
 const userId = route.params.id
-console.log('User ID:', userId)
 
 const form = ref({
   first_name: '',
@@ -106,24 +103,11 @@ const form = ref({
   salary_to: '',
   employment_type: '',
   location: '',
-  settings: {
-    auto_apply_enabled: false,
-    auto_apply_limit: 0,
-    notifications_enabled: true,
-    language: 'uz'
-  }
 })
 
-const resumeFile = ref(null)
 const loading = ref(false)
 const message = ref(null)
 const token = localStorage.getItem("token") || sessionStorage.getItem("token")
-
-const handleFileChange = (e) => {
-  if (e.target.files && e.target.files.length > 0) {
-    resumeFile.value = e.target.files[0]
-  }
-}
 
 onMounted(async () => {
   try {
@@ -145,12 +129,13 @@ onMounted(async () => {
     form.value.email = data.email || ''
     form.value.phone = data.phone || ''
     form.value.birth_date = data.birth_date || ''
-    form.value.settings = data.settings || form.value.settings
+    form.value.resume_text = data.resumes?.[0]?.description || ''
 
     form.value.salary_from = data.preferences?.[0]?.desired_salary_from || ''
     form.value.salary_to = data.preferences?.[0]?.desired_salary_to || ''
+    form.value.experience = data.preferences?.[0]?.experience_level || ''
     form.value.location = data.locations?.[0]?.text || ''
-    form.value.employment_type = data.job_types?.[0]?.name || ''
+    form.value.employment_type = data.job_types?.[0]?.job_type || ''
   } catch (err) {
     console.error(err)
     message.value = 'Foydalanuvchi ma’lumotlarini olishda xatolik'
@@ -164,29 +149,15 @@ const updateUser = async () => {
     loading.value = true
     message.value = null
 
-    const formData = new FormData()
-    Object.keys(form.value).forEach((key) => {
-      const value = form.value[key]
-      if (typeof value === 'object' && value !== null) {
-        formData.append(key, JSON.stringify(value))
-      } else {
-        formData.append(key, value ?? '')
-      }
-    })
-
-    if (resumeFile.value) {
-      formData.append('resume_file', resumeFile.value)
-    }
-
-    const res = await axios.put(`http://127.0.0.1:8000/api/auth/users/${userId}`, formData, {
+    const res = await axios.put(`http://127.0.0.1:8000/api/auth/users/${userId}`, form.value, {
       headers: {
-        'Content-Type': 'multipart/form-data',
-        'Authorization': `Bearer ${token}`
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/json',
+        'Content-type': 'application/json'
       }
     })
 
     message.value = 'Muvaffaqiyatli yangilandi ✅'
-    console.log('Response:', res.data)
   } catch (err) {
     console.error(err)
     message.value = err.response?.data?.message || 'Xatolik yuz berdi'
@@ -195,5 +166,3 @@ const updateUser = async () => {
   }
 }
 </script>
-<style scoped>
-</style>

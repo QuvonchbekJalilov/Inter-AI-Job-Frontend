@@ -1,70 +1,62 @@
 <template>
   <div class="max-w-7xl mx-auto px-4">
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div
+      <router-link
           v-for="(job, index) in jobs"
+          :to="{ name: 'vacancyDetail', params: { id: job.external_id } }"
           :key="index"
           class="flex w-full max-w-lg flex-col mb-3"
       >
-        <!-- Card ichidagi router-link -->
-        <router-link
-            :to="{ name: 'vacancyDetail', params: { id: job.external_id } }"
-            class="flex flex-col w-full"
-        >
-          <div class="flex items-center">
-            <div
-                class="relative rounded-tl-2xl rounded-tr-2xl bg-white pt-4 px-4 text-gray-500 text-sm outer"
-            >
-              {{ job.experience }}
+        <div class="flex items-center">
+          <div
+              class="relative rounded-tl-2xl rounded-tr-2xl bg-white pt-4 px-4 text-gray-500 text-sm outer"
+          >
+            {{ job.experience }}
+          </div>
+        </div>
+        <div class="flex flex-col bg-white p-4 px-4 rounded-tr-2xl">
+          <h2 class="mb-2 text-xl leading-tight font-medium">
+            {{ job.title }}
+          </h2>
+          <div class="mb-2 flex items-center justify-between gap-2">
+            <span class="text-gray-700 text-sm basis-2/5 truncate">
+              {{ job.company }}
+            </span>
+
+            <div class="flex items-center justify-end basis-3/5">
+              <svg
+                  class="h-5 w-5 text-blue-600 mr-1"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  aria-hidden="true"
+              >
+                <path
+                    fill-rule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.707a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    clip-rule="evenodd"
+                />
+              </svg>
+              <small
+                  class="bg-green-100 px-2 text-green-700 text-center text-sm font-medium py-1 rounded-full"
+              >
+                {{ job.score ?? '95' }}% совпадение
+              </small>
             </div>
           </div>
-          <div class="flex flex-col bg-white p-4 px-4 rounded-tr-2xl">
-            <h2 class="mb-2 text-xl leading-tight font-medium">
-              {{ job.title }}
-            </h2>
-            <div class="mb-2 flex items-center justify-between gap-2">
-        <span class="text-gray-700 text-sm basis-2/5 truncate">
-          {{ job.company }}
-        </span>
-
-              <div class="flex items-center justify-end basis-3/5">
-                <svg
-                    class="h-5 w-5 text-blue-600 mr-1"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                    aria-hidden="true"
-                >
-                  <path
-                      fill-rule="evenodd"
-                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.707a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                      clip-rule="evenodd"
-                  />
-                </svg>
-                <small
-                    class="bg-green-100 px-2 text-green-700 text-center text-sm font-medium py-1 rounded-full"
-                >
-                  {{ job.score ?? '95' }}% совпадение
-                </small>
-              </div>
-            </div>
-            <p class="text-sm leading-snug text-gray-500">
-              {{ job.location }}
-            </p>
-          </div>
-        </router-link>
-
-        <!-- Apply button tashqarida -->
+          <p class="text-sm leading-snug text-gray-500">
+            {{ job.location }}
+          </p>
+        </div>
         <div class="w-full overflow-hidden rounded-b-2xl">
           <button
               class="w-full py-3 font-medium text-white rounded-b-2xl"
               :class="job.status ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'"
               :disabled="job.status"
-              @click="applyToVacancy(job.external_id)"
           >
             {{ translations.reply }}
           </button>
         </div>
-      </div>
+      </router-link>
     </div>
   </div>
   <div>
@@ -92,43 +84,10 @@ let intervalId = null;
 
 const { proxy } = getCurrentInstance()
 const jobs = ref([])
-const CACHE_KEY = "vacancies_cache"
+
+// 🔑 Boshqa page uchun alohida cache kaliti
+const CACHE_KEY = "responses_vacancies_cache"
 const CACHE_TIME = 5 * 60 * 1000
-
-const applyToVacancy = async (external_id) => {
-  try {
-    const token = localStorage.getItem("token") || sessionStorage.getItem("token")
-
-    const { data } = await axios.post(
-        `${proxy.$locale}/v1/hh/vacancies/${external_id}/apply`,
-        {}, // body bo'sh
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "application/json",
-            "Content-Type": "application/json"
-          }
-        }
-    )
-
-    console.log("✅ Apply javobi:", data)
-
-    if (data.success && data.data) {
-      jobs.value = jobs.value.map(job =>
-          job.external_id === external_id
-              ? { ...job, status: true }
-              : job
-      )
-
-      setCache(jobs.value)
-
-      alert("Muvaffaqiyatli yuborildi ✅")
-    }
-  } catch (error) {
-    console.error("❌ Apply error:", error.response?.data || error.message)
-    alert("Xatolik: " + (error.response?.data?.message || error.message))
-  }
-}
 
 const getCache = () => {
   const cache = localStorage.getItem(CACHE_KEY)
@@ -184,9 +143,11 @@ const fetchJobs = async (forceUpdate = false) => {
         score: item.score_percent,
         status: item.status
       }))
-      jobs.value = mappedJobs
 
-      setCache(mappedJobs)
+      const filteredJobs = mappedJobs.filter(job => job.status === true)
+
+      jobs.value = filteredJobs
+      setCache(filteredJobs)
     }
   } catch (error) {
     console.error("❌ Xatolik:", error.response?.data || error.message)
@@ -194,6 +155,7 @@ const fetchJobs = async (forceUpdate = false) => {
     showLoading.value = false
   }
 }
+
 const startLoading = async () => {
   showModal.value = false
   showLoading.value = true
@@ -204,7 +166,6 @@ const startLoading = async () => {
     showLoading.value = false
   }, 1500)
 }
-
 onMounted(() => {
   fetchJobs()
 
@@ -217,6 +178,7 @@ onBeforeUnmount(() => {
   clearInterval(intervalId);
 });
 </script>
+
 
 <style scoped>
 .outer:after {

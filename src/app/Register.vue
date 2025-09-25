@@ -447,6 +447,25 @@ const formData = reactive({
   salaryFrom: '',
   salaryTo: ''
 })
+const selectedFile = ref(null)
+
+const handleFileUpload = (event) => {
+  selectedFile.value = event.target.files[0]
+}
+const uploadResume = async (token) => {
+  if (!selectedFile.value) return
+
+  const resumeForm = new FormData()
+  resumeForm.append("title", formData.resumeText)
+  resumeForm.append("file", selectedFile.value)
+
+  await axios.post("http://127.0.0.1:8000/api/v1/resumes", resumeForm, {
+    headers: {
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "multipart/form-data",
+    },
+  })
+}
 
 const touched = reactive({
   firstName: false,
@@ -535,6 +554,7 @@ const completeRegistration = async () => {
       storage.setItem("token", data.data.token)
       storage.setItem("user", JSON.stringify(data.data.user))
       storage.setItem("expires_at", data.data.expires_at)
+      await uploadResume(data.data.token)
       router.push({ name: "home" })
     } else {
       error.value = data.message || "Ro‘yxatdan o‘tishda xatolik yuz berdi."

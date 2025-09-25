@@ -54,8 +54,8 @@
 
             <div>
               <span class="font-medium text-gray-500">{{ translations.profiles?.salary }}:</span>
-              {{ translations.profiles?.salary_from }} {{ user?.preferences?.[0]?.desired_salary_from || 0 }} ₽
-              {{ translations.profiles?.salary_to }} {{ user?.preferences?.[0]?.desired_salary_to || 0 }} ₽
+              {{ translations.profiles?.salary_from }} {{ user?.preferences?.[0]?.desired_salary_from || 0 }} {{ user?.preferences?.[0]?.currency == "USD" ? '$' : 'UZS' }}
+              {{ translations.profiles?.salary_to }} {{ user?.preferences?.[0]?.desired_salary_to || 0 }} {{ user?.preferences?.[0]?.currency == "USD" ? '$' : 'UZS' }}
             </div>
           </div>
           <button
@@ -63,6 +63,12 @@
               @click="goToEdit"
           >
             {{ translations.auto_apply?.update_button ?? 'Редактировать' }}
+          </button>
+          <button
+              class="mt-4 w-full px-4 py-2 border border-red-400 rounded-lg text-sm"
+              @click="goToHeadHunter"
+          >
+            {{ 'Head Hunter Auth' }}
           </button>
         </div>
 
@@ -136,32 +142,37 @@
             <div v-if="!editMode" class="mt-4">
               <button
                   @click="editMode = true"
-                  class="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition"
+                  class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-600 transition"
               >
                 ✏️ {{ translations.auto_apply?.edit_button || 'Edit limit' }}
               </button>
             </div>
 
             <!-- Edit form (PATCH) -->
-            <div v-if="editMode" class="mt-4 flex items-center gap-3">
+            <div v-if="editMode" class="mt-4 space-y-3">
+              <!-- Input -->
               <input
                   type="number"
                   v-model.number="limit"
-                  class="w-28 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                  class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
               />
-              <button
-                  @click="updateLimit"
-                  class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition disabled:bg-gray-300 disabled:text-gray-500"
-                  :disabled="!limit"
-              >
-                {{ translations.auto_apply?.update_button || 'Update' }}
-              </button>
-              <button
-                  @click="editMode = false"
-                  class="px-4 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500 transition"
-              >
-                {{ translations.auto_apply?.cancel_button || 'Cancel' }}
-              </button>
+
+              <!-- Buttonlar yonma-yon -->
+              <div class="flex items-center gap-3">
+                <button
+                    @click="updateLimit"
+                    class="w-48 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition disabled:bg-gray-300 disabled:text-gray-500"
+                    :disabled="!limit"
+                >
+                  {{ translations.auto_apply?.update_button || 'Update' }}
+                </button>
+                <button
+                    @click="editMode = false"
+                    class="w-48 px-4 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500 transition"
+                >
+                  {{ translations.auto_apply?.cancel_button || 'Cancel' }}
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -217,12 +228,13 @@
 </template>
 
 <script setup>
-import {ref, onMounted, computed} from 'vue'
+import {ref, onMounted, computed, getCurrentInstance} from 'vue'
 import axios from 'axios'
 import { useI18n } from '@/i18n-lite'
 import { useRouter } from 'vue-router'
 import Header from '@/components/Header.vue'
 const { translations } = useI18n()
+const { proxy } = getCurrentInstance()
 
 const router = useRouter()
 const { locale } = useI18n()
@@ -230,6 +242,28 @@ const { locale } = useI18n()
 const user = ref(null)
 const loading = ref(true)
 const error = ref("")
+const goToHeadHunter = async () => {
+  try {
+    const token = localStorage.getItem("token") || sessionStorage.getItem("token")
+
+    const { data } = await axios.get(
+        proxy.$locale + "/v1/hh-accounts/authorize",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+            "Content-Type": "application/json"
+          }
+        }
+    )
+
+    if (data?.url) {
+      window.open(data.url, "_blank")
+    }
+  } catch (error) {
+    console.error("❌ HH Auth error:", error.response?.data || error.message)
+  }
+}
 
 onMounted(async () => {
   try {
