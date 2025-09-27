@@ -196,6 +196,8 @@ async function onSubmit() {
   }
 }
 onMounted(() => {
+  const track = axios.get(proxy.$locale + "/v1/visits/track");
+  console.log(track)
   const storage = localStorage.getItem("token")
       ? localStorage
       : sessionStorage;
