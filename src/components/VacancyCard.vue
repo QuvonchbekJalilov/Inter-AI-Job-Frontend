@@ -83,6 +83,9 @@ import { useI18n } from '@/i18n-lite'
 import LoadingModal from "@/components/modal/LodaingModal.vue";
 import ModalComponent from "@/components/modal/UpdateModal.vue";
 import axios from "axios";
+import { toast } from "vue3-toastify"
+import { useRouter } from 'vue-router'
+const router = useRouter()
 
 const { translations } = useI18n()
 
@@ -94,6 +97,15 @@ const { proxy } = getCurrentInstance()
 const jobs = ref([])
 const CACHE_KEY = "vacancies_cache"
 const CACHE_TIME = 5 * 60 * 1000
+const clearAuthStorage = () => {
+  localStorage.removeItem("token")
+  localStorage.removeItem("user")
+  localStorage.removeItem("expires_at")
+  sessionStorage.removeItem("token")
+  sessionStorage.removeItem("user")
+  sessionStorage.removeItem("expires_at")
+  router.push({ name: "login" })
+}
 
 const applyToVacancy = async (external_id) => {
   try {
@@ -101,7 +113,7 @@ const applyToVacancy = async (external_id) => {
 
     const { data } = await axios.post(
         `${proxy.$locale}/v1/hh/vacancies/${external_id}/apply`,
-        {}, // body bo'sh
+        {},
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -122,11 +134,11 @@ const applyToVacancy = async (external_id) => {
 
       setCache(jobs.value)
 
-      alert("Muvaffaqiyatli yuborildi ✅")
+      toast.success("Muvaffaqiyatli yuborildi ✅") // 🔥 Toastify
     }
   } catch (error) {
     console.error("❌ Apply error:", error.response?.data || error.message)
-    alert("Xatolik: " + (error.response?.data?.message || error.message))
+    toast.error("Xatolik: " + (error.response?.data?.message || error.message)) // 🔥 Toastify
   }
 }
 
@@ -160,6 +172,7 @@ const fetchJobs = async (forceUpdate = false) => {
     }
 
     const token = localStorage.getItem("token") || sessionStorage.getItem("token")
+
     const { data } = await axios.post(
         proxy.$locale + "/v1/vacancy-matches/run",
         {},
@@ -171,7 +184,6 @@ const fetchJobs = async (forceUpdate = false) => {
           }
         }
     )
-    console.log(data)
 
     if (data.status === "success" && data.data) {
       const mappedJobs = data.data.map(item => ({
@@ -185,11 +197,14 @@ const fetchJobs = async (forceUpdate = false) => {
         status: item.status
       }))
       jobs.value = mappedJobs
-
       setCache(mappedJobs)
     }
   } catch (error) {
     console.error("❌ Xatolik:", error.response?.data || error.message)
+
+    if (error.response?.status === 401) {
+      clearAuthStorage()
+    }
   } finally {
     showLoading.value = false
   }
@@ -229,7 +244,7 @@ onBeforeUnmount(() => {
       transparent 8px,
       white calc(4px + 1px)
   );
-  bottom: 0px;
+  bottom: 0;
   right: -8px;
   display: block;
   z-index: 1;

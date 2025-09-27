@@ -183,16 +183,8 @@
           </h2>
           <div class="mb-3 text-sm text-gray-600 flex justify-between">
             <span>{{ translations.plan?.free_responses }}</span>
-            <span class="text-green-600 font-medium">73/100</span>
+            <span class="text-green-600 font-medium">{{ balance?.balance }} ta</span>
           </div>
-          <div class="w-full h-2 bg-gray-100 rounded-full overflow-hidden mb-3">
-            <div class="h-2 w-[73%] bg-blue-500"></div>
-          </div>
-          <p class="text-sm text-gray-500 mb-1">37 {{ translations.plan?.left_responses, { count: 73 } }}</p>
-
-          <p class="text-sm text-gray-700">
-            {{ translations.plan?.extra_responses, { price: '100,000 UZS', count: 74 } }}
-          </p>
         </div>
 
         <div class="bg-white border border-gray-200 rounded-2xl px-6">
@@ -240,8 +232,18 @@ const router = useRouter()
 const { locale } = useI18n()
 
 const user = ref(null)
+const balance = ref({ balance: 0 })
 const loading = ref(true)
 const error = ref("")
+const clearAuthStorage = () => {
+  localStorage.removeItem("token")
+  localStorage.removeItem("user")
+  localStorage.removeItem("expires_at")
+  sessionStorage.removeItem("token")
+  sessionStorage.removeItem("user")
+  sessionStorage.removeItem("expires_at")
+  router.push({ name: "login" })
+}
 const goToHeadHunter = async () => {
   try {
     const token = localStorage.getItem("token") || sessionStorage.getItem("token")
@@ -262,24 +264,40 @@ const goToHeadHunter = async () => {
     }
   } catch (error) {
     console.error("❌ HH Auth error:", error.response?.data || error.message)
+    if (error.response?.status === 401) {
+      clearAuthStorage()
+    }
   }
 }
 
 onMounted(async () => {
+  loading.value = true
   try {
     const token = localStorage.getItem("token") || sessionStorage.getItem("token")
     if (!token) {
       router.push({ name: "login" })
       return
     }
-    const { data } = await axios.get("http://127.0.0.1:8000/api/auth/me", {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    })
-    user.value = data.data
+
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+      "Content-Type": "application/json"
+    }
+
+    const [meRes, balanceRes] = await Promise.all([
+      axios.get(proxy.$locale + "/auth/me", { headers }),
+      axios.get(proxy.$locale + "/v1/balance", { headers })
+    ])
+
+    user.value = meRes.data.data
+    balance.value = balanceRes.data
+
   } catch (e) {
     error.value = "Foydalanuvchi ma’lumotlarini olishda xatolik."
+    if (e.response?.status === 401) {
+      clearAuthStorage()
+    }
   } finally {
     loading.value = false
   }
@@ -307,23 +325,18 @@ const logout = async () => {
   try {
     const token = localStorage.getItem("token") || sessionStorage.getItem("token")
     if (token) {
-      await axios.post("http://127.0.0.1:8000/api/auth/logout", {}, {
+      await axios.post(proxy.$locale + "/auth/logout", {}, {
         headers: {
           Authorization: `Bearer ${token}`
         }
       })
     }
   } catch (e) {
-    console.error("Logout error", e)
+    if (error.response?.status === 401) {
+      clearAuthStorage()
+    }
   } finally {
-    localStorage.removeItem("token")
-    localStorage.removeItem("user")
-    localStorage.removeItem("expires_at")
-    sessionStorage.removeItem("token")
-    sessionStorage.removeItem("user")
-    sessionStorage.removeItem("expires_at")
-
-    router.push({ name: "login" })
+    clearAuthStorage()
   }
 }
 const goToEdit = () => {
@@ -346,7 +359,7 @@ async function saveLimit() {
     const token = localStorage.getItem("token");
 
     const response = await axios.post(
-        "http://127.0.0.1:8000/api/auth/settings/auto-apply",
+        proxy.$locale + "/auth/settings/auto-apply",
         {
           auto_apply_enabled: enabled.value,
           auto_apply_limit: limit.value,
@@ -358,15 +371,14 @@ async function saveLimit() {
           },
         }
     );
-
-    console.log("✅ Limit saqlandi:", response.data);
-
     saved.value = true;
     appliedCount.value = 0;
 
     await fetchAutoApplyData();
   } catch (error) {
-    console.error("❌ POST xatolik:", error.response?.data || error.message);
+    if (error.response?.status === 401) {
+      clearAuthStorage()
+    }
   }
 }
 
@@ -375,7 +387,7 @@ async function updateLimit() {
     const token = localStorage.getItem("token");
 
     const response = await axios.patch(
-        "http://127.0.0.1:8000/api/auth/settings/auto-apply",
+        proxy.$locale + "/auth/settings/auto-apply",
         {
           auto_apply_enabled: enabled.value,
           auto_apply_limit: limit.value,
@@ -388,14 +400,14 @@ async function updateLimit() {
         }
     );
 
-    console.log("✏️ Limit yangilandi:", response.data);
-
     saved.value = true;
     editMode.value = false;
 
     await fetchAutoApplyData();
   } catch (error) {
-    console.error("❌ PATCH xatolik:", error.response?.data || error.message);
+    if (error.response?.status === 401) {
+      clearAuthStorage()
+    }
   }
 }
 
@@ -403,7 +415,7 @@ async function fetchAutoApplyData() {
   try {
     const token = localStorage.getItem("token");
     const response = await axios.get(
-        "http://127.0.0.1:8000/api/auth/settings/auto-apply",
+        proxy.$locale + "/auth/settings/auto-apply",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -418,7 +430,9 @@ async function fetchAutoApplyData() {
 
     saved.value = !!limit.value;
   } catch (error) {
-    console.error("❌ GET xatolik:", error.response?.data || error.message);
+    if (error.response?.status === 401) {
+      clearAuthStorage()
+    }
   }
 }
 

@@ -124,9 +124,10 @@
 <script setup>
 import { useI18n } from '@/i18n-lite'
 const { translations } = useI18n()
-import { reactive, ref, computed, onMounted } from "vue";
+import {reactive, ref, computed, onMounted, getCurrentInstance} from "vue";
 import { useRouter } from "vue-router";
 import axios from "axios";
+const { proxy } = getCurrentInstance()
 
 const router = useRouter();
 
@@ -170,18 +171,18 @@ async function onSubmit() {
   loading.value = true;
   try {
     const { data } = await axios.post(
-        "http://127.0.0.1:8000/api/auth/login",
+        proxy.$locale + "/auth/login",
         {
           email: form.email,
           password: form.password,
         },
     );
-    console.log(data);
+    console.log(data.data.data);
 
     const storage = form.remember ? localStorage : sessionStorage;
-    storage.setItem("token", data.data.token);
-    storage.setItem("user", JSON.stringify(data.data.user));
-    storage.setItem("expires_at", data.data.expires_at);
+    storage.setItem("token", data.data.data.token);
+    storage.setItem("user", JSON.stringify(data.data.data.user));
+    storage.setItem("expires_at", data.data.data.expires_at);
 
     router.push({ name: "home" });
   } catch (e) {

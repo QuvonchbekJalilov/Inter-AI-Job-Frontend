@@ -1,6 +1,7 @@
 <template>
   <div class="min-h-screen bg-gray-50 flex items-center justify-center">
     <div class="w-full max-w-md bg-white text-black rounded-lg shadow-lg p-6">
+
       <div class="text-center mb-6">
         <img src="https://www.inter-ai.uz/Logo1.svg" alt="Inter-AI" class="h-8 mx-auto mb-4">
       </div>
@@ -19,14 +20,6 @@
 
       <div v-if="currentStep === 1" class="space-y-6">
         <h2 class="text-xl font-medium text-center text-gray-800 mb-6">{{ translations.tell_us_about_yourself }}</h2>
-
-<!--        <div class="flex items-center text-blue-600 mb-4">-->
-<!--          <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">-->
-<!--            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>-->
-<!--          </svg>-->
-<!--          <span class="font-medium">{{translations.personal_data}}</span>-->
-<!--        </div>-->
-
         <div class="grid grid-cols-2 gap-4">
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">{{translations.name}}</label>
@@ -366,15 +359,16 @@
           </button>
           <button
               @click="completeRegistration"
-              :disabled="!isStepValid"
+              :disabled="!isStepValid || btnLoading"
               :class="[
-    'flex-1 py-3 rounded-md font-medium transition-colors',
-    isStepValid
-      ? 'bg-blue-500 text-white hover:bg-blue-600'
-      : 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-50'
+    'flex-1 py-3 rounded-md font-medium transition-colors flex items-center justify-center gap-2',
+    (!isStepValid || btnLoading)
+      ? 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-50'
+      : 'bg-blue-500 text-white hover:bg-blue-600'
   ]"
           >
-            {{translations.finish}}
+            <span v-if="btnLoading" class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+            <span>{{ btnLoading ? translations.loading : translations.finish }}</span>
           </button>
         </div>
       </div>
@@ -383,6 +377,7 @@
         {{translations.Do_you_have_an_account}}
         <RouterLink to="/login" class="text-blue-600 hover:underline">{{ translations.login }}</RouterLink>
       </p>
+
       <div class="flex items-stretch w-full max-w-md mx-auto gap-2 pt-6">
         <button
             v-for="tab in tabs"
@@ -401,20 +396,22 @@
         </button>
       </div>
 
-      <div v-if="currentStep === 5" class="text-center space-y-6">
-        <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
-          <svg class="w-8 h-8 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-          </svg>
-        </div>
-        <h2 class="text-xl font-medium text-gray-800">{{translations.Registration_is_complete}}</h2>
-        <p class="text-gray-600">{{translations.wtf}}</p>
-        <button
-            @click="resetForm"
-            class="bg-blue-500 text-white px-6 py-3 rounded-md font-medium hover:bg-blue-600 transition-colors"
-        >
-          {{translations.Start_over}}
-        </button>
+    </div>
+  </div>
+  <div v-if="showVerifyModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+    <div class="bg-white p-6 rounded-xl w-96 shadow">
+      <h2 class="text-lg font-semibold mb-3">Email tasdiqlash</h2>
+      <p class="text-sm text-gray-600 mb-2">Emailingizga yuborilgan kodni kiriting:</p>
+      <input
+          v-model="formData.verificationCode"
+      type="text"
+      placeholder="123456"
+      class="border rounded w-full px-3 py-2 mb-3"
+      />
+      <p v-if="error" class="text-red-600 text-sm mb-2">{{ error }}</p>
+      <div class="flex justify-end gap-2">
+        <button @click="showVerifyModal = false" class="px-4 py-2 bg-gray-300 rounded">Bekor qilish</button>
+        <button @click="verifyEmailCode" class="px-4 py-2 bg-blue-600 text-white rounded">Tasdiqlash</button>
       </div>
     </div>
   </div>
@@ -423,9 +420,10 @@
 <script setup>
 import { useI18n } from '@/i18n-lite'
 const { translations } = useI18n()
-import { ref, reactive, computed } from 'vue'
+import {ref, reactive, computed, getCurrentInstance} from 'vue'
 import { useRouter } from 'vue-router'
 import axios from "axios"
+const { proxy } = getCurrentInstance()
 
 const router = useRouter()
 
@@ -445,9 +443,19 @@ const formData = reactive({
   location: '',
   employmentType: '',
   salaryFrom: '',
-  salaryTo: ''
+  salaryTo: '',
+  verificationCode: ''
 })
+const showVerifyModal = ref(false)
+const verificationCode = ref("")
 const selectedFile = ref(null)
+const emailVerified = ref(false)
+const registering = ref(false)
+const isSuccess = (resp) => {
+  if (!resp) return false
+  const s = resp.status
+  return s === true || s === 'success' || s === 'ok'
+}
 
 const handleFileUpload = (event) => {
   selectedFile.value = event.target.files[0]
@@ -459,7 +467,7 @@ const uploadResume = async (token) => {
   resumeForm.append("title", formData.resumeText)
   resumeForm.append("file", selectedFile.value)
 
-  await axios.post("http://127.0.0.1:8000/api/v1/resumes", resumeForm, {
+  await axios.post(proxy.$locale + "/v1/resumes", resumeForm, {
     headers: {
       "Authorization": `Bearer ${token}`,
       "Content-Type": "multipart/form-data",
@@ -476,6 +484,7 @@ const touched = reactive({
 })
 const showPassword = ref(false)
 const loading = ref(false)
+const btnLoading = ref(false)
 const error = ref("")
 
 const valid = reactive({
@@ -518,20 +527,65 @@ const nextStep = () => {
 const prevStep = () => {
   if (currentStep.value > 1) currentStep.value--
 }
+// 📌 sending-code
+const sendVerificationCode = async ({ fromRegister = false } = {}) => {
+  error.value = ''
+  try {
+    if (fromRegister) registering.value = true
+    const { data } = await axios.post(proxy.$locale + '/sending-code', {
+      email: formData.email
+    })
+    console.log('📧 Code sent:', data)
+    if (isSuccess(data)) {
+      showVerifyModal.value = true
+    } else {
+      error.value = data.message || 'Noma\'lum xatolik.'
+    }
+  } catch (e) {
+    error.value = e.response?.data?.message || 'Kod yuborishda xatolik.'
+  }
+}
+const verifyEmailCode = async () => {
+  error.value = ''
+  try {
+    const { data } = await axios.post(proxy.$locale + '/verify-email', {
+      email: formData.email,
+      code: formData.verificationCode
+    })
+    console.log('verify response', data)
 
-const completeRegistration = async () => {
+    if (isSuccess(data)) {
+      emailVerified.value = true
+      showVerifyModal.value = false
+
+      if (registering.value) {
+        await submitRegistration()
+        registering.value = false
+      } else {
+        if (typeof nextStep === 'function') nextStep()
+      }
+    } else {
+      error.value = data.message || 'Emailni tasdiqlashda xatolik.'
+    }
+  } catch (e) {
+    error.value = e.response?.data?.message || 'Server bilan bog‘lanishda xatolik.'
+  }
+}
+const submitRegistration = async () => {
   touched.firstName = true
   touched.lastName = true
   touched.email = true
   touched.password = true
   touched.confirm_password = true
-  error.value = ""
+  error.value = ''
 
-  if (!isValid.value || !isStepValid.value) return
+  if (!isValid.value || !isStepValid.value) {
+    return
+  }
+
   loading.value = true
-
   try {
-    const { data } = await axios.post("http://127.0.0.1:8000/api/auth/register", {
+    const { data } = await axios.post(proxy.$locale + '/auth/register', {
       first_name: formData.firstName,
       last_name: formData.lastName,
       email: formData.email,
@@ -544,25 +598,56 @@ const completeRegistration = async () => {
       location: formData.location,
       employment_type: formData.employmentType,
       salary_from: formData.salaryFrom,
-      salary_to: formData.salaryTo,
+      salary_to: formData.salaryTo
     })
 
-    console.log("✅ Registration success:", data)
+    console.log('✅ Registration success:', data)
 
-    if (data.status === "success") {
+    if (isSuccess(data)) {
       const storage = localStorage
-      storage.setItem("token", data.data.token)
-      storage.setItem("user", JSON.stringify(data.data.user))
-      storage.setItem("expires_at", data.data.expires_at)
-      await uploadResume(data.data.token)
-      router.push({ name: "home" })
+      storage.setItem('token', data.data.token)
+      storage.setItem('user', JSON.stringify(data.data.user))
+      storage.setItem('expires_at', data.data.expires_at)
+
+      if (typeof uploadResume === 'function') {
+        try {
+          await uploadResume(data.data.token)
+        } catch (e) {
+          console.warn('Resume upload failed:', e)
+        }
+      }
+
+      router.push({ name: 'home' })
     } else {
       error.value = data.message || "Ro‘yxatdan o‘tishda xatolik yuz berdi."
     }
   } catch (e) {
-    error.value = e.response?.data?.message || "Server bilan bog‘lanishda xatolik."
+    error.value = e.response?.data?.message || 'Server bilan bog‘lanishda xatolik.'
   } finally {
     loading.value = false
+  }
+}
+const completeRegistration = async () => {
+  touched.firstName = true
+  touched.lastName = true
+  touched.email = true
+  touched.password = true
+  touched.confirm_password = true
+  error.value = ''
+
+  if (!isValid.value || !isStepValid.value) return
+
+  btnLoading.value = true
+  try {
+    if (!emailVerified.value) {
+      await sendVerificationCode({ fromRegister: true })
+    } else {
+      await submitRegistration()
+    }
+  } catch (err) {
+    console.error("❌ Error:", err)
+  } finally {
+    btnLoading.value = false
   }
 }
 
@@ -587,5 +672,4 @@ const activeClass = 'bg-blue-600 text-white scale-100 py-2.5'
 const inactiveClass = 'bg-gray-100 text-gray-700 hover:bg-gray-200 scale-95 py-2'
 const activeTextClass = 'text-[13.5px] sm:text-[14px] scale-100'
 const inactiveTextClass = 'text-[11.5px] sm:text-[12px] scale-90'
-
 </script>

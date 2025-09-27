@@ -39,39 +39,98 @@
       </div>
 
       <div>
-        <a
-            :href="vacancy.apply_alternate_url"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="block w-full bg-blue-600 py-3 rounded-lg text-white font-medium text-center"
+        <button
+            v-if="vacancy"
+            :disabled="status"
+            @click="applyToVacancy(vacancy.id)"
+            class="block w-full py-3 rounded-lg text-white font-medium text-center"
+            :class="status
+      ? 'bg-gray-400 cursor-not-allowed'
+      : 'bg-blue-600 hover:bg-blue-700'"
         >
           {{ translations.reply }}
-        </a>
+        </button>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue"
+import {ref, onMounted, getCurrentInstance} from "vue"
 import { useRoute } from "vue-router"
 import Header from "@/components/Header.vue"
 import { useI18n } from "@/i18n-lite"
+const { proxy } = getCurrentInstance()
 
 const { translations } = useI18n()
 const route = useRoute()
 const vacancyId = route.params.id
 const vacancy = ref(null)
+const status = ref(null)
+
+const applyToVacancy = async (vacancyId) => {
+  try {
+    const token = localStorage.getItem("token") || sessionStorage.getItem("token")
+
+    const res = await fetch(
+        proxy.$locale + `/v1/hh/vacancies/${vacancyId}/apply`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({}) // bo'sh body
+        }
+    )
+
+    if (!res.ok) throw new Error(`HTTP error! ${res.status}`)
+
+    const data = await res.json()
+    console.log("✅ Apply javobi:", data)
+
+    if (data.success) {
+      status.value = true
+      vacancy.value.status = true
+      alert("Muvaffaqiyatli yuborildi ✅")
+    }
+
+  } catch (e) {
+    console.error("❌ Apply error:", e.message)
+    alert("Xatolik: " + e.message)
+  }
+}
 
 const fetchVacancy = async () => {
   try {
-    const res = await fetch(`https://api.hh.ru/vacancies/${vacancyId}`)
+    const token = localStorage.getItem("token") || sessionStorage.getItem("token")
+
+    const res = await fetch(
+        proxy.$locale + `/v1/hh/vacancies/${vacancyId}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+            "Content-Type": "application/json"
+          }
+        }
+    )
+
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`)
+    }
+
     const data = await res.json()
-    vacancy.value = data
+    vacancy.value = data.data.raw
+    status.value = data.data.status
+    console.log("✅ Vacancy:", data.data)
   } catch (e) {
-    console.error("API error:", e)
+    console.error("❌ API error:", e.message)
   }
 }
+
 
 onMounted(fetchVacancy)
 

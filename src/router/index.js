@@ -6,7 +6,7 @@ import Register from '../app/Register.vue'
 import Profile from '../app/Profile.vue'
 import VacancyShow from '../app/VacancyShow.vue'
 import EditProfile from "@/app/EditProfile.vue";
-import InterviewCardShow from '../app/InterviewCardShow.vue'
+import InterviewShow from '../app/InterviewShow.vue'
 
 const routes = [
     {
@@ -18,7 +18,7 @@ const routes = [
     {
         path: '/interview/:id',
         name: 'interviewDetail',
-        component: InterviewCardShow,
+        component: InterviewShow,
         props: true,
         meta: { requiresAuth: true, headerBack: true }
     },

@@ -100,7 +100,7 @@
   "Freelance": "Freelance",
   "salary": "Ish haqi (dan) (₽)",
   "salary2": "Ish haqi (gacha) (₽)",
-  "finish": "Tugatish",
+  "finish": "Yuborish",
   "Registration_is_complete": "Ro‘yxatdan o‘tish yakunlandi!",
   "wtf": "Inter-AI ga xush kelibsiz. Profilingiz muvaffaqiyatli yaratildi.",
   "Start_over": "Qaytadan boshlash",
@@ -111,5 +111,6 @@
   "Schedule": "Jadval",
   "Job_Description": "Ish tavsifi",
   "Views": "Ko‘rishlar",
-  "Published": "E’lon qilingan"
+  "Published": "E’lon qilingan",
+  "loading": "Yuklanmoqda..."
 }

@@ -100,7 +100,7 @@
   "Freelance":"Freelance",
   "salary":"Salary from (₽)",
   "salary2":"Salary up to (₽)",
-  "finish":"Finish",
+  "finish":"Submit",
   "Registration_is_complete":"Registration is complete!",
   "wtf":"Welcome to Inter-AI. Your profile has been successfully created.",
   "Start_over":"Start over",
@@ -111,5 +111,6 @@
   "Schedule":"Schedule",
   "Job_Description":"Job Description",
   "Views":"Views",
-  "Published":"Published"
+  "Published":"Published",
+  "loading": "Loading..."
 }
