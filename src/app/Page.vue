@@ -23,24 +23,15 @@ import {getCurrentInstance, onMounted} from "vue";
 import axios from "axios";
 const { proxy } = getCurrentInstance()
 onMounted(() => {
-  const track = axios.get(proxy.$locale + "/v1/visits/track");
-  console.log(track)
-  const storage = localStorage.getItem("token")
-      ? localStorage
-      : sessionStorage;
-
-  const expiresAt = storage.getItem("expires_at");
-  if (expiresAt) {
-    const expireTime = new Date(expiresAt).getTime();
-    const now = Date.now();
-
-    if (now >= expireTime) {
-      storage.removeItem("token");
-      storage.removeItem("user");
-      storage.removeItem("expires_at");
-      router.push({ name: "login" });
+  const token = localStorage.getItem("token") || sessionStorage.getItem("token")
+  const track = axios.get(proxy.$locale + "/v1/visits/track", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+      "Content-Type": "application/json"
     }
-  }
+  });
+  console.log(track)
 });
 
 </script>
