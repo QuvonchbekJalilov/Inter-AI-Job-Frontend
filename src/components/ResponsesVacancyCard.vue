@@ -119,9 +119,8 @@ const fetchJobs = async (forceUpdate = false) => {
     }
 
     const token = localStorage.getItem("token") || sessionStorage.getItem("token")
-    const { data } = await axios.post(
-        proxy.$locale + "/v1/vacancy-matches/run",
-        {},
+    const { data } = await axios.get(
+        proxy.$locale + "/v1/applications",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -130,7 +129,7 @@ const fetchJobs = async (forceUpdate = false) => {
           }
         }
     )
-    console.log(data)
+    console.log('data', data)
 
     if (data.status === "success" && data.data) {
       const mappedJobs = data.data.map(item => ({
@@ -147,6 +146,7 @@ const fetchJobs = async (forceUpdate = false) => {
       const filteredJobs = mappedJobs.filter(job => job.status === true)
 
       jobs.value = filteredJobs
+      console.log(jobs.value)
       setCache(filteredJobs)
     }
   } catch (error) {

@@ -101,9 +101,13 @@ const clearAuthStorage = () => {
   localStorage.removeItem("token")
   localStorage.removeItem("user")
   localStorage.removeItem("expires_at")
+  localStorage.removeItem("responses_vacancies_cache")
+  localStorage.removeItem("vacancies_cache")
   sessionStorage.removeItem("token")
   sessionStorage.removeItem("user")
   sessionStorage.removeItem("expires_at")
+  sessionStorage.removeItem("responses_vacancies_cache")
+  sessionStorage.removeItem("vacancies_cache")
   router.push({ name: "login" })
 }
 
@@ -173,9 +177,8 @@ const fetchJobs = async (forceUpdate = false) => {
 
     const token = localStorage.getItem("token") || sessionStorage.getItem("token")
 
-    const { data } = await axios.post(
-        proxy.$locale + "/v1/vacancy-matches/run",
-        {},
+    const { data } = await axios.get(
+        proxy.$locale + "/v1/vacancy-matches",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -184,6 +187,7 @@ const fetchJobs = async (forceUpdate = false) => {
           }
         }
     )
+    console.log('data', data)
 
     if (data.status === "success" && data.data) {
       const mappedJobs = data.data.map(item => ({

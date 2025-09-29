@@ -239,9 +239,13 @@ const clearAuthStorage = () => {
   localStorage.removeItem("token")
   localStorage.removeItem("user")
   localStorage.removeItem("expires_at")
+  localStorage.removeItem("responses_vacancies_cache")
+  localStorage.removeItem("vacancies_cache")
   sessionStorage.removeItem("token")
   sessionStorage.removeItem("user")
   sessionStorage.removeItem("expires_at")
+  sessionStorage.removeItem("responses_vacancies_cache")
+  sessionStorage.removeItem("vacancies_cache")
   router.push({ name: "login" })
 }
 const goToHeadHunter = async () => {

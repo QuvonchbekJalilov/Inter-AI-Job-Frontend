@@ -183,6 +183,19 @@ async function onSubmit() {
     storage.setItem("token", data.data.data.token);
     storage.setItem("user", JSON.stringify(data.data.data.user));
     storage.setItem("expires_at", data.data.data.expires_at);
+    const token = localStorage.getItem("token") || sessionStorage.getItem("token")
+    const { vacancy } = await axios.post(
+        proxy.$locale + "/v1/vacancy-matches/run",
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+            "Content-Type": "application/json"
+          }
+        }
+    )
+    console.log('vacancy', vacancy)
 
     router.push({ name: "home" });
   } catch (e) {

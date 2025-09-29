@@ -4,19 +4,18 @@
       <div class="max-w-3xl mx-auto">
         <div class="bg-white rounded-2xl py-4 flex justify-around shadow-top divide-x mt-3">
           <div class="flex-1 text-center px-2">
-            <div class="text-blue-600 text-2xl font-medium">24</div>
-            <div class="text-sm text-gray-500">{{translations.vacancies}}</div>
+            <div class="text-blue-600 text-2xl font-medium">{{ statistics.total_result }}</div>
+            <div class="text-sm text-gray-500">{{ translations.vacancies }}</div>
           </div>
           <div class="flex-1 text-center px-2">
-            <div class="text-blue-600 text-2xl font-medium">8</div>
-            <div class="text-sm text-gray-500">{{translations.responses}}</div>
+            <div class="text-blue-600 text-2xl font-medium">{{ statistics.applied }}</div>
+            <div class="text-sm text-gray-500">{{ translations.responses }}</div>
           </div>
           <div class="flex-1 text-center px-2">
-            <div class="text-indigo-600 text-2xl font-medium">2</div>
-            <div class="text-sm text-gray-500">{{translations.interview}}</div>
+            <div class="text-indigo-600 text-2xl font-medium">{{ statistics.interview }}</div>
+            <div class="text-sm text-gray-500">{{ translations.interview }}</div>
           </div>
         </div>
-
       </div>
 
       <div class="flex items-stretch mt-3 w-full max-w-md mx-auto gap-2">
@@ -47,10 +46,36 @@
 
 <script setup>
 import { useI18n } from '@/i18n-lite'
-const { translations, locale, t } = useI18n()
+import {getCurrentInstance, onMounted, ref} from "vue";
+const { proxy } = getCurrentInstance()
+import axios from "axios";
+const { translations } = useI18n()
 defineProps({
   tabs: Array,
   activeTab: String
+})
+
+
+const statistics = ref({
+  total_result: 0,
+  applied: 0,
+  interview: 0
+})
+
+onMounted(async () => {
+  try {
+    const token = localStorage.getItem("token") || sessionStorage.getItem("token")
+    const res = await axios.get(proxy.$locale + "/v1/dashboard", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      }
+    })
+    statistics.value = res.data
+  } catch (e) {
+    console.error("Statistika yuklanmadi:", e)
+  }
 })
 </script>
 

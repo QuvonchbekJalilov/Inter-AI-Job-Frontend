@@ -415,6 +415,7 @@
       </div>
     </div>
   </div>
+  <LoadingModal :show="showLoading" />
 </template>
 
 <script setup>
@@ -423,9 +424,11 @@ const { translations } = useI18n()
 import {ref, reactive, computed, getCurrentInstance} from 'vue'
 import { useRouter } from 'vue-router'
 import axios from "axios"
+import LoadingModal from "@/components/modal/LodaingModal.vue";
 const { proxy } = getCurrentInstance()
 
 const router = useRouter()
+const showLoading = ref(false);
 
 const currentStep = ref(1)
 
@@ -578,6 +581,7 @@ const submitRegistration = async () => {
   touched.password = true
   touched.confirm_password = true
   error.value = ''
+  showLoading.value = true
 
   if (!isValid.value || !isStepValid.value) {
     return
@@ -616,6 +620,19 @@ const submitRegistration = async () => {
           console.warn('Resume upload failed:', e)
         }
       }
+      const token = localStorage.getItem("token") || sessionStorage.getItem("token")
+      const { vacancy } = await axios.post(
+          proxy.$locale + "/v1/vacancy-matches/run",
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+              "Content-Type": "application/json"
+            }
+          }
+      )
+      console.log('vacancy', vacancy)
 
       router.push({ name: 'home' })
     } else {
@@ -624,6 +641,7 @@ const submitRegistration = async () => {
   } catch (e) {
     error.value = e.response?.data?.message || 'Server bilan bog‘lanishda xatolik.'
   } finally {
+    showLoading.value = false
     loading.value = false
   }
 }
