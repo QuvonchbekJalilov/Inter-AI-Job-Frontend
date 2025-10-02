@@ -37,4 +37,4 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.DO_SPACES_KEY }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.DO_SPACES_SECRET }}
           AWS_S3_ENDPOINT: ${{ secrets.DO_SPACES_ENDPOINT }}
-          SOURCE_DIR: ./build   # Vue bo‘lsa ./dist qilib qo‘yasan
+          SOURCE_DIR: ./dist   # Vue bo‘lsa ./dist qilib qo‘yasan
