@@ -4,9 +4,9 @@
     <div class="max-w-2xl pt-[100px] mx-auto p-4">
       <h2 class="text-xl font-medium mb-4">Foydalanuvchini tahrirlash</h2>
 
-      <div v-if="message" class="mb-3 text-sm" :class="message.includes('✅') ? 'text-green-600' : 'text-red-600'">
-        {{ message }}
-      </div>
+<!--      <div v-if="message" class="mb-3 text-sm" :class="message.includes('✅') ? 'text-green-600' : 'text-red-600'">-->
+<!--        {{ message }}-->
+<!--      </div>-->
 
       <form @submit.prevent="updateUser" class="space-y-4">
         <div>
@@ -78,6 +78,7 @@
       </form>
     </div>
   </div>
+  <LoadingModal :show="showLoading" />
 </template>
 
 <script setup>
@@ -85,10 +86,13 @@ import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import { useRoute, useRouter } from 'vue-router'
 import Header from "@/components/Header.vue";
+import LoadingModal from "@/components/modal/LodaingModal.vue";
+import {toast} from "vue3-toastify";
 
 const route = useRoute()
 const router = useRouter()
 const userId = route.params.id
+const showLoading = ref(false);
 
 const form = ref({
   first_name: '',
@@ -112,6 +116,7 @@ const token = localStorage.getItem("token") || sessionStorage.getItem("token")
 onMounted(async () => {
   try {
     loading.value = true
+    showLoading.value = true
     if (!token) {
       router.push({ name: "login" })
       return
@@ -141,6 +146,7 @@ onMounted(async () => {
     message.value = 'Foydalanuvchi ma’lumotlarini olishda xatolik'
   } finally {
     loading.value = false
+    showLoading.value = false
   }
 })
 
@@ -158,11 +164,19 @@ const updateUser = async () => {
     })
 
     message.value = 'Muvaffaqiyatli yangilandi ✅'
+    toast.success(message.value)
+
+    setTimeout(() => {
+      router.push({ name: "profile" })
+    }, 5000)
+
   } catch (err) {
     console.error(err)
     message.value = err.response?.data?.message || 'Xatolik yuz berdi'
+    toast.error(message.value)
   } finally {
     loading.value = false
   }
 }
+
 </script>

@@ -42,10 +42,10 @@
               {{ user?.phone }}
             </div>
 
-            <div>
-              <span class="font-medium text-gray-500">{{ translations.profiles?.industry }}:</span>
-              {{ user?.preferences?.[0]?.industry?.name || '—' }}
-            </div>
+<!--            <div>-->
+<!--              <span class="font-medium text-gray-500">{{ translations.profiles?.industry }}:</span>-->
+<!--              {{ user?.preferences?.[0]?.industry?.name || '—' }}-->
+<!--            </div>-->
 
             <div>
               <span class="font-medium text-gray-500">{{ translations.profiles?.location }}:</span>
@@ -309,6 +309,7 @@
       </div>
     </div>
   </div>
+  <LoadingModal :show="showLoading" />
 </template>
 
 <script setup>
@@ -317,6 +318,7 @@ import axios from 'axios'
 import { useI18n } from '@/i18n-lite'
 import { useRouter } from 'vue-router'
 import Header from '@/components/Header.vue'
+import LoadingModal from "@/components/modal/LodaingModal.vue";
 const { translations } = useI18n()
 const { proxy } = getCurrentInstance()
 
@@ -325,6 +327,7 @@ const { locale } = useI18n()
 const showPayment = ref(false)
 const amount = ref(100)
 const showLogoutModal = ref(false)
+const showLoading = ref(false);
 const openPayment = () => {
   showPayment.value = true
 }
@@ -384,6 +387,7 @@ const goToHeadHunter = async () => {
 
 onMounted(async () => {
   loading.value = true
+  showLoading.value = true
   try {
     const token = localStorage.getItem("token") || sessionStorage.getItem("token")
     if (!token) {
@@ -412,6 +416,7 @@ onMounted(async () => {
     }
   } finally {
     loading.value = false
+    showLoading.value = false
   }
 })
 
