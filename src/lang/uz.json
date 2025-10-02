@@ -31,7 +31,7 @@
   },
   "plan": {
     "title": "Tarif rejasi",
-    "free_responses": "Bepul javoblar",
+    "free_responses": "Bepul avtomatik javob",
     "left_responses": "{{count}} ta bepul javob qoldi",
     "extra_responses": "Qo'shimcha javoblar: {{price}} ({{count}} ta javob)"
   },
@@ -50,6 +50,7 @@
   "tabs.new": "Yangi",
   "tabs.assigned": "Biriktirilgan",
   "reply": "Topshirish",
+  "applied": "Topshirilgan",
   "assigned": "Biriktirilgan",
   "prepare_for_the_interview": "Suhbatga tayyorlaning",
   "login_in": "Kirish",
@@ -98,8 +99,8 @@
   "Part_employment": "Yarim stavka bandlik",
   "Remote_work": "Masofaviy ish",
   "Freelance": "Freelance",
-  "salary": "Ish haqi (dan) (₽)",
-  "salary2": "Ish haqi (gacha) (₽)",
+  "salary": "Ish haqi (dan) ($)",
+  "salary2": "Ish haqi (gacha) ($)",
   "finish": "Yuborish",
   "Registration_is_complete": "Ro‘yxatdan o‘tish yakunlandi!",
   "wtf": "Inter-AI ga xush kelibsiz. Profilingiz muvaffaqiyatli yaratildi.",
@@ -112,5 +113,8 @@
   "Job_Description": "Ish tavsifi",
   "Views": "Ko‘rishlar",
   "Published": "E’lon qilingan",
-  "loading": "Yuklanmoqda..."
+  "loading": "Yuklanmoqda...",
+  "source": "Manba",
+  "logout_text": "Xisobingizdan haqiqatdan ham chiqmoqchimisiz?",
+  "cancel": "Bekor qilish"
 }

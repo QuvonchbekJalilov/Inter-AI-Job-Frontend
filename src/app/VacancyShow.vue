@@ -12,7 +12,7 @@
       </div>
 
       <div v-if="vacancy.salary" class="p-4 bg-gray-50 rounded-lg">
-        <p class="text-lg font-semibold text-green-700">
+        <p class="text-lg font-medium text-green-700">
           {{ formatSalary(vacancy.salary) }}
         </p>
       </div>
@@ -35,7 +35,7 @@
 
       <div class="bg-gray-50 rounded-lg text-center">
         <p class="text-sm text-gray-500">{{ translations.Published }}</p>
-        <p class="font-bold">{{ formatDate(vacancy.published_at) }}</p>
+        <p class="font-medium">{{ formatDate(vacancy.published_at) }}</p>
       </div>
 
       <div>
@@ -53,6 +53,7 @@
       </div>
     </div>
   </div>
+  <LoadingModal :show="showLoading" />
 </template>
 
 <script setup>
@@ -60,6 +61,7 @@ import {ref, onMounted, getCurrentInstance} from "vue"
 import { useRoute } from "vue-router"
 import Header from "@/components/Header.vue"
 import { useI18n } from "@/i18n-lite"
+import LoadingModal from "@/components/modal/LodaingModal.vue";
 const { proxy } = getCurrentInstance()
 
 const { translations } = useI18n()
@@ -67,6 +69,7 @@ const route = useRoute()
 const vacancyId = route.params.id
 const vacancy = ref(null)
 const status = ref(null)
+const showLoading = ref(false);
 
 const applyToVacancy = async (vacancyId) => {
   try {
@@ -104,6 +107,7 @@ const applyToVacancy = async (vacancyId) => {
 
 const fetchVacancy = async () => {
   try {
+    showLoading.value = true
     const token = localStorage.getItem("token") || sessionStorage.getItem("token")
 
     const res = await fetch(
@@ -127,7 +131,10 @@ const fetchVacancy = async () => {
     status.value = data.data.status
     console.log("✅ Vacancy:", data.data)
   } catch (e) {
+    showLoading.value = false
     console.error("❌ API error:", e.message)
+  } finally {
+    showLoading.value = false
   }
 }
 

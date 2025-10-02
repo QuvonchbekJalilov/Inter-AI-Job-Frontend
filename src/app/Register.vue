@@ -129,13 +129,13 @@
 
         <button
             @click="nextStep"
-            :disabled="!isStepValid"
+            :disabled="!isStepValid()"
             :class="[
-    'w-full py-3 rounded-md font-medium transition-colors',
-    isStepValid
-      ? 'bg-blue-500 text-white hover:bg-blue-600'
-      : 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-50'
-  ]"
+        'w-full py-3 rounded-md font-medium transition-colors',
+        isStepValid()
+          ? 'bg-blue-500 text-white hover:bg-blue-600'
+          : 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-50'
+      ]"
         >
           {{ translations.next }}
         </button>
@@ -420,12 +420,13 @@
 
 <script setup>
 import { useI18n } from '@/i18n-lite'
-const { translations } = useI18n()
 import {ref, reactive, computed, getCurrentInstance} from 'vue'
 import { useRouter } from 'vue-router'
 import axios from "axios"
 import LoadingModal from "@/components/modal/LodaingModal.vue";
+import { toast } from "vue3-toastify"
 const { proxy } = getCurrentInstance()
+const { translations } = useI18n()
 
 const router = useRouter()
 const showLoading = ref(false);
@@ -507,12 +508,21 @@ const valid = reactive({
 
 const isValid = computed(() => valid.email && valid.password && valid.confirm && valid.names)
 
-const isStepValid = computed(() => {
+const isStepValid = () => {
   if (currentStep.value === 1) {
-    return formData.firstName && formData.lastName && formData.email && formData.phone && formData.birthDate
+    return (
+        formData.firstName &&
+        formData.lastName &&
+        formData.email &&
+        formData.phone &&
+        formData.password &&
+        formData.confirm_password &&
+        formData.password === formData.confirm_password &&
+        formData.birthDate
+    )
   }
   if (currentStep.value === 2) {
-    return formData.resumeText.trim().length > 0
+    return formData.resumeText?.trim().length > 0
   }
   if (currentStep.value === 3) {
     return formData.workField && formData.experience && formData.location
@@ -521,10 +531,36 @@ const isStepValid = computed(() => {
     return formData.employmentType && formData.salaryFrom && formData.salaryTo
   }
   return false
-})
+}
 
-const nextStep = () => {
-  if (isStepValid.value && currentStep.value < 4) currentStep.value++
+const nextStep = async () => {
+  error.value = null // eski xatolarni tozalaymiz
+
+  if (!isStepValid()) return
+
+  if (currentStep.value === 1) {
+    try {
+      const data = await axios.post(proxy.$locale + "/user-verify", {
+        email: formData.email,
+        phone: formData.phone
+      })
+      // agar backenddan xatolik kelsa
+      if (data?.success === false) {
+        error.value = data.message || "Foydalanuvchi allaqachon mavjud!"
+        return
+      }
+
+      currentStep.value++
+    } catch (err) {
+      toast.error("Bunday foydalanuvchi allaqachon mavjud.!", {
+        position: "top-right"
+      })
+    }
+  } else {
+    if (isStepValid() && currentStep.value < 4) {
+      currentStep.value++
+    }
+  }
 }
 
 const prevStep = () => {

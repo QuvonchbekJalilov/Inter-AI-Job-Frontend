@@ -64,6 +64,18 @@
           >
             {{ translations.auto_apply?.update_button ?? 'Редактировать' }}
           </button>
+          <h2 class="text-lg font-medium mb-4 mt-5 flex items-center gap-2 text-black">
+            Head Hunter authentication
+          </h2>
+
+          <div class="space-y-2 text-sm text-gray-700">
+            <div>
+              <span class="text-gray-500">
+                Avto otklik rejimini ishga tushirish uchun quyidagi tugmani bosing va Head Hunter akkauntigizdan ruxsat bering
+              </span>
+            </div>
+          </div>
+
           <button
               class="mt-4 w-full px-4 py-2 border border-red-400 rounded-lg text-sm"
               @click="goToHeadHunter"
@@ -144,7 +156,7 @@
                   @click="editMode = true"
                   class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-600 transition"
               >
-                ✏️ {{ translations.auto_apply?.edit_button || 'Edit limit' }}
+                ✏️ {{ translations.auto_apply?.edit_button || 'Add limit' }}
               </button>
             </div>
 
@@ -153,7 +165,6 @@
               <!-- Input -->
               <input
                   type="number"
-                  v-model.number="limit"
                   class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
               />
 
@@ -177,43 +188,124 @@
           </div>
         </div>
 
-        <div class="bg-white border border-gray-200 rounded-2xl p-6">
-          <h2 class="text-lg font-medium mb-4 flex items-center gap-2 text-black">
-            💳 {{ translations.plan?.title }}
-          </h2>
-          <div class="mb-3 text-sm text-gray-600 flex justify-between">
-            <span>{{ translations.plan?.free_responses }}</span>
-            <span class="text-green-600 font-medium">{{ balance?.balance }} ta</span>
-          </div>
-        </div>
+        <div class="space-y-4">
+<!--          &lt;!&ndash; Тарифный план &ndash;&gt;-->
+<!--          <div class="bg-white border border-gray-200 rounded-2xl px-6 py-6">-->
+<!--            <h2 class="text-lg font-medium mb-4 flex items-center gap-2 text-black">-->
+<!--              💳 {{ translations.plan?.title }}-->
+<!--            </h2>-->
 
-        <div class="bg-white border border-gray-200 rounded-2xl px-6">
-          <h2 class="text-lg font-medium mb-4 flex items-center gap-2 text-black">
-            💰 {{ translations.payment?.title }}
-          </h2>
-          <div class="text-start text-sm text-gray-500 mb-4">
-            {{ translations.payment?.no_methods }}
-          </div>
-          <div class="space-y-3">
-            <button
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm"
-            >
-              {{ translations.payment?.add_card }}
-            </button>
-            <button
-                class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm"
-            >
-              {{ translations.payment?.buy_responses }}
-            </button>
+<!--            <div class="mb-3 text-sm text-gray-600 flex justify-between">-->
+<!--              <span>{{ translations.plan?.free_responses }}</span>-->
+<!--              <span class="text-gray-900 font-medium">39/{{ balance?.balance }}</span>-->
+<!--            </div>-->
+<!--            <div class="w-full bg-gray-200 rounded-full h-2.5 mb-4">-->
+<!--              <div class="bg-orange-500 h-2.5 rounded-full" style="width: 78%"></div>-->
+<!--            </div>-->
+
+<!--            <div class="mb-3 text-sm text-gray-600 flex justify-between">-->
+<!--              <span>Авто отклики</span>-->
+<!--              <span class="text-gray-900 font-medium">0/100</span>-->
+<!--            </div>-->
+<!--            <div class="w-full bg-gray-200 rounded-full h-2.5 mb-4">-->
+<!--              <div class="bg-gray-400 h-2.5 rounded-full" style="width: 0%"></div>-->
+<!--            </div>-->
+
+<!--            <p class="text-xs text-gray-500 mb-3">-->
+<!--              Купите авто отклики чтобы найти более подходящую вакансию-->
+<!--            </p>-->
+
+<!--            <button-->
+<!--                class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium"-->
+<!--                @click="openPayment"-->
+<!--            >-->
+<!--              Купить 100 авто откликов-->
+<!--            </button>-->
+<!--          </div>-->
+
+<!--          &lt;!&ndash; Payment modal &ndash;&gt;-->
+<!--          <transition name="slide-up">-->
+<!--            <div-->
+<!--                v-if="showPayment"-->
+<!--                class="fixed inset-0 bg-black bg-opacity-40 flex items-end justify-center z-50"-->
+<!--                @click.self="closePayment"-->
+<!--            >-->
+<!--              <div class="bg-white w-full rounded-t-2xl p-6">-->
+<!--                <h3 class="text-base font-medium mb-4 text-center">-->
+<!--                  Выберите способ оплаты-->
+<!--                </h3>-->
+
+<!--                <div class="mb-4">-->
+<!--                  <label class="block text-sm font-medium text-gray-700 mb-1">Количество</label>-->
+<!--                  <input-->
+<!--                      type="number"-->
+<!--                      v-model="amount"-->
+<!--                      class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"-->
+<!--                  />-->
+<!--                </div>-->
+
+<!--                <div class="flex items-center justify-center gap-4">-->
+<!--                  <button-->
+<!--                      class="flex-1 flex items-center justify-center bg-[#00D36D] rounded-xl hover:bg-[#00b85e] overflow-hidden"-->
+<!--                      @click="pay('payme')"-->
+<!--                  >-->
+<!--                    <img src="../assets/payments/payme.png" alt="payme" class="w-full h-auto object-cover" />-->
+<!--                  </button>-->
+
+<!--                  <button-->
+<!--                      class="flex-1 flex items-center justify-center bg-[#006EFF] rounded-xl hover:bg-[#0058cc] overflow-hidden"-->
+<!--                      @click="pay('click')"-->
+<!--                  >-->
+<!--                    <img src="../assets/payments/click.png" alt="click" class="w-full h-auto object-cover" />-->
+<!--                  </button>-->
+<!--                </div>-->
+
+<!--                <button-->
+<!--                    class="mt-4 w-full px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm"-->
+<!--                    @click="closePayment"-->
+<!--                >-->
+<!--                  Отмена-->
+<!--                </button>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </transition>-->
+
+          <!-- Logout -->
+          <div class="bg-white border border-gray-200 rounded-2xl px-6">
             <button
                 class="mt-2 w-full px-4 py-2 border border-red-300 text-red-600 rounded-lg text-sm hover:bg-red-50"
-                @click="logout"
+                @click="showLogoutModal = true"
             >
               {{ translations.payment?.logout }}
             </button>
           </div>
         </div>
 
+      </div>
+    </div>
+  </div>
+  <!-- Modal -->
+  <div
+      v-if="showLogoutModal"
+      class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50"
+  >
+    <div class="bg-white rounded-2xl p-6 w-[90%] max-w-md shadow-lg">
+      <h2 class="text-lg font-medium text-gray-800 mb-4">
+        {{ translations.logout_text }}
+      </h2>
+      <div class="flex justify-end gap-3">
+        <button
+            class="px-4 py-2 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300"
+            @click="showLogoutModal = false"
+        >
+          {{ translations.cancel }}
+        </button>
+        <button
+            class="px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600"
+            @click="logout"
+        >
+          {{ translations.payment?.logout }}
+        </button>
       </div>
     </div>
   </div>
@@ -230,6 +322,22 @@ const { proxy } = getCurrentInstance()
 
 const router = useRouter()
 const { locale } = useI18n()
+const showPayment = ref(false)
+const amount = ref(100)
+const showLogoutModal = ref(false)
+const openPayment = () => {
+  showPayment.value = true
+}
+
+const closePayment = () => {
+  showPayment.value = false
+}
+
+const pay = (method) => {
+  console.log(`To'lov: ${method}, summa: ${amount.value}`)
+  // API chaqirish joyi
+  closePayment()
+}
 
 const user = ref(null)
 const balance = ref({ balance: 0 })
@@ -324,25 +432,6 @@ const activeClass = 'bg-blue-600 text-white scale-100 py-2.5'
 const inactiveClass = 'bg-gray-100 text-gray-700 hover:bg-gray-200 scale-95 py-2'
 const activeTextClass = 'text-[13.5px] sm:text-[14px] scale-100'
 const inactiveTextClass = 'text-[11.5px] sm:text-[12px] scale-90'
-
-const logout = async () => {
-  try {
-    const token = localStorage.getItem("token") || sessionStorage.getItem("token")
-    if (token) {
-      await axios.post(proxy.$locale + "/auth/logout", {}, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      })
-    }
-  } catch (e) {
-    if (error.response?.status === 401) {
-      clearAuthStorage()
-    }
-  } finally {
-    clearAuthStorage()
-  }
-}
 const goToEdit = () => {
   router.push({ name: "editProfile", params: { id: user.value.id } })
 }
@@ -440,10 +529,47 @@ async function fetchAutoApplyData() {
   }
 }
 
+const logout = async () => {
+  try {
+    const token = localStorage.getItem("token") || sessionStorage.getItem("token")
+    if (token) {
+      await axios.post("/auth/logout", {}, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+    }
+  } catch (error) {
+    if (error.response?.status === 401) {
+      clearAuthStorage()
+    }
+  } finally {
+    clearAuthStorage()
+    window.location.href = "/login" // logout bo‘lgach login sahifaga yuborish
+  }
+}
+
 onMounted(() => {
   fetchAutoApplyData();
 });
 </script>
+<style>
+.slide-up-enter-active,
+.slide-up-leave-active {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+.slide-up-enter-from,
+.slide-up-leave-to {
+  transform: translateY(100%);
+  opacity: 0;
+}
+.slide-up-enter-to,
+.slide-up-leave-from {
+  transform: translateY(0);
+  opacity: 1;
+}
+</style>
+
 
 
 

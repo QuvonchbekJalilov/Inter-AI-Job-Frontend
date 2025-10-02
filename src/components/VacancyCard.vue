@@ -1,68 +1,93 @@
 <template>
   <div class="max-w-7xl mx-auto px-4">
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div
-          v-for="(job, index) in jobs"
-          :key="index"
-          class="flex w-full max-w-lg flex-col mb-3"
-      >
-        <!-- Card ichidagi router-link -->
-        <router-link
-            :to="{ name: 'vacancyDetail', params: { id: job.external_id } }"
-            class="flex flex-col w-full"
+      <div v-for="job in jobs" :key="`${job.source}-${job.id}-${job.external_id ?? ''}`" class="flex w-full max-w-lg flex-col mb-3">
+
+        <!-- Agar source telegram bo‘lsa oddiy <a> -->
+        <a
+            v-if="job.source === 'telegram'"
+            :href="job.telegram?.target_message_id"
+            target="_blank"
+            class="flex w-full max-w-lg flex-col mb-3"
         >
           <div class="flex items-center">
-            <div
-                class="relative rounded-tl-2xl rounded-tr-2xl bg-white pt-4 px-4 text-gray-500 text-sm outer"
-            >
+            <div class="relative rounded-tl-2xl rounded-tr-2xl bg-white pt-4 px-4 text-gray-500 text-sm outer">
               {{ job.experience }}
             </div>
           </div>
-          <div class="flex flex-col bg-white p-4 px-4 rounded-tr-2xl">
-            <h2 class="mb-2 text-xl leading-tight font-medium">
-              {{ job.title }}
-            </h2>
+          <div class="flex flex-col bg-white px-4 rounded-tr-2xl">
+            <h2 class="mb-2 text-xl leading-tight font-medium">{{ job.title }}</h2>
             <div class="mb-2 flex items-center justify-between gap-2">
-        <span class="text-gray-700 text-sm basis-2/5 truncate">
-          {{ job.company }}
-        </span>
-
-              <div class="flex items-center justify-end basis-3/5">
-                <svg
-                    class="h-5 w-5 text-blue-600 mr-1"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                    aria-hidden="true"
-                >
+              <span class="flex items-center text-gray-700 text-sm basis-2/5 truncate">
+                <svg class="h-4 w-4 text-blue-600 mr-2 shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
                   <path
                       fill-rule="evenodd"
                       d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.707a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                       clip-rule="evenodd"
                   />
                 </svg>
-                <small
-                    class="bg-green-100 px-2 text-green-700 text-center text-sm font-medium py-1 rounded-full"
-                >
-                  {{ job.score ?? '95' }}% совпадение
-                </small>
-              </div>
+                {{ job.company }}
+              </span>
+              <small class="bg-green-100 px-2 text-green-700 text-center text-sm font-medium py-1 rounded-full">
+                {{ job.score ?? '95' }}% совпадение
+              </small>
+            </div>
+          </div>
+        </a>
+
+        <router-link
+            v-else
+            :to="{ name: 'vacancyDetail', params: { id: job.external_id } }"
+            class="flex w-full max-w-lg flex-col"
+        >
+          <div class="flex items-center">
+            <div class="relative rounded-tl-2xl rounded-tr-2xl bg-white pt-4 px-4 text-gray-500 text-sm outer">
+              {{ job.experience }}
+            </div>
+          </div>
+          <div class="flex flex-col bg-white p-4 px-4 rounded-tr-2xl">
+            <h2 class="mb-2 text-xl leading-tight font-medium">{{ job.title }}</h2>
+            <div class="mb-2 flex items-center justify-between gap-2">
+              <span class="flex items-center text-gray-700 text-sm basis-2/5 truncate">
+                <svg class="h-4 w-4 text-blue-600 mr-2 shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                  <path
+                      fill-rule="evenodd"
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.707a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                      clip-rule="evenodd"
+                  />
+                </svg>
+                {{ job.company }}
+              </span>
+              <small class="bg-green-100 px-2 text-green-700 text-center text-sm font-medium py-1 rounded-full">
+                {{ job.score ?? '95' }}% совпадение
+              </small>
             </div>
             <p class="text-sm leading-snug text-gray-500">
-              {{ job.location }}
+              {{ formatDate(job.published_at) }}
             </p>
           </div>
         </router-link>
 
-        <!-- Apply button tashqarida -->
+        <!-- Tugma -->
         <div class="w-full overflow-hidden rounded-b-2xl">
           <button
+              v-if="job.source !== 'telegram'"
               class="w-full py-3 font-medium text-white rounded-b-2xl"
               :class="job.status ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'"
-              :disabled="job.status"
-              @click="applyToVacancy(job.external_id)"
+              :disabled="job.status || !job.external_id"
+              @click="applyToVacancy(job)"
           >
-            {{ translations.reply }}
+            {{ job.status ? translations.applied : translations.reply }}
           </button>
+
+          <a
+              v-else
+              class="w-full py-3 font-medium text-white rounded-b-2xl bg-blue-600 hover:bg-blue-700 text-center block"
+              :href="job.telegram?.target_message_id"
+              target="_blank"
+          >
+            {{ translations.source }}
+          </a>
         </div>
       </div>
     </div>
@@ -111,38 +136,44 @@ const clearAuthStorage = () => {
   router.push({ name: "login" })
 }
 
-const applyToVacancy = async (external_id) => {
+const applyToVacancy = async (job) => {
   try {
-    const token = localStorage.getItem("token") || sessionStorage.getItem("token")
+    if (job.source === 'telegram') {
+      return
+    }
+
+    const token =
+        localStorage.getItem("token") || sessionStorage.getItem("token")
 
     const { data } = await axios.post(
-        `${proxy.$locale}/v1/hh/vacancies/${external_id}/apply`,
+        `${proxy.$locale}/v1/hh/vacancies/${job.external_id}/apply`,
         {},
         {
           headers: {
             Authorization: `Bearer ${token}`,
             Accept: "application/json",
-            "Content-Type": "application/json"
-          }
+            "Content-Type": "application/json",
+          },
         }
     )
 
     console.log("✅ Apply javobi:", data)
 
     if (data.success && data.data) {
-      jobs.value = jobs.value.map(job =>
-          job.external_id === external_id
-              ? { ...job, status: true }
-              : job
+      jobs.value = jobs.value.map((j) =>
+          j.external_id === job.external_id ? { ...j, status: true } : j
       )
 
       setCache(jobs.value)
 
-      toast.success("Muvaffaqiyatli yuborildi ✅") // 🔥 Toastify
+      toast.success("Muvaffaqiyatli yuborildi ✅")
     }
   } catch (error) {
     console.error("❌ Apply error:", error.response?.data || error.message)
-    toast.error("Xatolik: " + (error.response?.data?.message || error.message)) // 🔥 Toastify
+    toast.error(
+        "Xatolik: " +
+        (error.response?.data?.message || error.message)
+    )
   }
 }
 
@@ -190,16 +221,32 @@ const fetchJobs = async (forceUpdate = false) => {
     console.log('data', data)
 
     if (data.status === "success" && data.data) {
-      const mappedJobs = data.data.map(item => ({
-        id: item.vacancy.id,
-        external_id: item.vacancy.external_id,
-        title: item.vacancy.title,
-        company: item.vacancy.company,
-        location: item.vacancy.published_at,
-        experience: item.vacancy.experience,
-        score: item.score_percent,
-        status: item.status
-      }))
+      const mappedJobs = data.data.map(item => {
+        const v = item.vacancy
+        const isTelegram = v.source === 'telegram'
+
+        return {
+          id: v.id,
+          source: v.source,             // 👈 muhim
+          external_id: isTelegram ? null : v.external_id,
+          telegram: isTelegram ? {      // 👈 telegramga xos maydonlar
+            source_id: v.source_id,
+            source_message_id: v.source_message_id,
+            target_message_id: v.target_message_id,
+            message_id: v.message_id,
+          } : null,
+
+          title: v.title,
+          company: v.company,
+          experience: v.experience ?? null,
+          salary: v.salary ?? null,
+          published_at: v.published_at ?? null,
+
+          score: item.score_percent,
+          status: item.status
+        }
+      })
+
       jobs.value = mappedJobs
       setCache(mappedJobs)
     }
@@ -213,6 +260,7 @@ const fetchJobs = async (forceUpdate = false) => {
     showLoading.value = false
   }
 }
+
 const startLoading = async () => {
   showModal.value = false
   showLoading.value = true
@@ -224,6 +272,24 @@ const startLoading = async () => {
   }, 1500)
 }
 
+const formatDate = (date) => {
+  if (!date) return ''
+
+  const d = new Date(date)
+
+  const datePart = d.toLocaleDateString("ru-RU", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric"
+  })
+
+  const timePart = d.toLocaleTimeString("ru-RU", {
+    hour: "2-digit",
+    minute: "2-digit"
+  })
+
+  return `${datePart} (${timePart})`
+}
 onMounted(() => {
   fetchJobs()
 

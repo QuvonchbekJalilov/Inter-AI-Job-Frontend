@@ -31,7 +31,7 @@
   },
   "plan": {
     "title": "Tariff plan",
-    "free_responses": "Free responses",
+    "free_responses": "Free Autoresponse",
     "left_responses": "{{count}} free responses left",
     "extra_responses": "Additional responses: {{price}} ({{count}} responses)"
   },
@@ -50,6 +50,7 @@
   "tabs.new": "New",
   "tabs.assigned": "Assigned",
   "reply":"Apply",
+  "applied":"Responded",
   "assigned":"Assigned",
   "prepare_for_the_interview":"Prepare for the interview",
   "login_in":"Login In",
@@ -98,8 +99,8 @@
   "Part_employment":"Part-time employment",
   "Remote_work":"Remote work",
   "Freelance":"Freelance",
-  "salary":"Salary from (₽)",
-  "salary2":"Salary up to (₽)",
+  "salary":"Salary from ($)",
+  "salary2":"Salary up to ($)",
   "finish":"Submit",
   "Registration_is_complete":"Registration is complete!",
   "wtf":"Welcome to Inter-AI. Your profile has been successfully created.",
@@ -112,5 +113,8 @@
   "Job_Description":"Job Description",
   "Views":"Views",
   "Published":"Published",
-  "loading": "Loading..."
+  "loading": "Loading...",
+  "source": "Source",
+  "logout_text": "Are you sure you want to log out?",
+  "cancel": "Cancel"
 }
