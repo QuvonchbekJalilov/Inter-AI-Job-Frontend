@@ -1,7 +1,7 @@
 <template>
   <div class="max-w-7xl mx-auto px-4">
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div v-for="job in jobs" :key="`${job.source}-${job.id}-${job.external_id ?? ''}`" class="flex w-full max-w-lg flex-col mb-3">
+      <div v-if="jobs.length > 0" v-for="job in jobs" :key="`${job.source}-${job.id}-${job.external_id ?? ''}`" class="flex w-full max-w-lg flex-col mb-3">
 
         <!-- Agar source telegram bo‘lsa oddiy <a> -->
         <a
@@ -89,6 +89,19 @@
             {{ translations.source }}
           </a>
         </div>
+      </div>
+      <div v-else class="flex flex-col items-center justify-center py-20 text-center text-gray-600">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6 1a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <h3 class="text-lg font-medium mb-2">Sizga mos keladigan Vacansiya topilmadi iltios qaytadan login yoki registratsiya qilib ko'ring</h3>
+<!--        <p class="text-sm text-gray-500 mb-4">Mos keladigan vakansiyalarni tanlab, darhol ariza topshirishingiz mumkin.</p>-->
+        <button
+            class="px-10 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600"
+            @click="logout"
+        >
+          {{ translations.payment?.logout }}
+        </button>
       </div>
     </div>
   </div>
@@ -290,6 +303,28 @@ const formatDate = (date) => {
 
   return `${datePart} (${timePart})`
 }
+
+
+const logout = async () => {
+  try {
+    const token = localStorage.getItem("token") || sessionStorage.getItem("token")
+    if (token) {
+      await axios.post("/auth/logout", {}, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+    }
+  } catch (error) {
+    if (error.response?.status === 401) {
+      clearAuthStorage()
+    }
+  } finally {
+    clearAuthStorage()
+    window.location.href = "/login"
+  }
+}
+
 onMounted(() => {
   fetchJobs()
 

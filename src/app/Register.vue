@@ -119,7 +119,7 @@
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">{{translations.age}}</label>
             <input
-                v-model="formData.birthDate"
+                v-model="formData.birth_date"
                 type="date"
                 class="w-full px-3 py-2 bg-gray-100 border-0 rounded-md focus:ring-2 focus:ring-blue-500 focus:bg-white"
                 placeholder="2004"
@@ -210,10 +210,10 @@
           </button>
           <button
               @click="nextStep"
-              :disabled="!isStepValid"
+              :disabled="!isStepValid()"
               :class="[
     'w-full py-3 rounded-md font-medium transition-colors',
-    isStepValid
+    isStepValid()
       ? 'bg-blue-500 text-white hover:bg-blue-600'
       : 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-50'
   ]"
@@ -286,10 +286,10 @@
           </button>
           <button
               @click="nextStep"
-              :disabled="!isStepValid"
+              :disabled="!isStepValid()"
               :class="[
     'w-full py-3 rounded-md font-medium transition-colors',
-    isStepValid
+    isStepValid()
       ? 'bg-blue-500 text-white hover:bg-blue-600'
       : 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-50'
   ]"
@@ -359,10 +359,10 @@
           </button>
           <button
               @click="completeRegistration"
-              :disabled="!isStepValid || btnLoading"
+              :disabled="!isStepValid() || btnLoading"
               :class="[
     'flex-1 py-3 rounded-md font-medium transition-colors flex items-center justify-center gap-2',
-    (!isStepValid || btnLoading)
+    (!isStepValid() || btnLoading)
       ? 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-50'
       : 'bg-blue-500 text-white hover:bg-blue-600'
   ]"
@@ -440,7 +440,7 @@ const formData = reactive({
   password: '',
   confirm_password: '',
   phone: '',
-  birthDate: '',
+  birth_date: '',
   resumeText: '',
   workField: '',
   experience: '',
@@ -518,7 +518,7 @@ const isStepValid = () => {
         formData.password &&
         formData.confirm_password &&
         formData.password === formData.confirm_password &&
-        formData.birthDate
+        formData.birth_date
     )
   }
   if (currentStep.value === 2) {
@@ -619,7 +619,7 @@ const submitRegistration = async () => {
   error.value = ''
   showLoading.value = true
 
-  if (!isValid.value || !isStepValid.value) {
+  if (!isValid.value || !isStepValid()) {
     return
   }
 
@@ -631,7 +631,7 @@ const submitRegistration = async () => {
       email: formData.email,
       password: formData.password,
       phone: formData.phone,
-      birthDate: formData.birthDate,
+      birth_date: formData.birth_date,
       resume_text: formData.resumeText,
       work_field: formData.workField,
       experience: formData.experience,
@@ -689,7 +689,7 @@ const completeRegistration = async () => {
   touched.confirm_password = true
   error.value = ''
 
-  if (!isValid.value || !isStepValid.value) return
+  if (!isValid.value || !isStepValid()) return
 
   btnLoading.value = true
   try {
