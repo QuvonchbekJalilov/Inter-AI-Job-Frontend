@@ -116,6 +116,7 @@
                 placeholder="+998919579717"
             >
           </div>
+
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">{{translations.age}}</label>
             <input
@@ -404,9 +405,9 @@
       <p class="text-sm text-gray-600 mb-2">Emailingizga yuborilgan kodni kiriting:</p>
       <input
           v-model="formData.verificationCode"
-      type="text"
-      placeholder="123456"
-      class="border rounded w-full px-3 py-2 mb-3"
+          type="text"
+          placeholder="123456"
+          class="border rounded w-full px-3 py-2 mb-3"
       />
       <p v-if="error" class="text-red-600 text-sm mb-2">{{ error }}</p>
       <div class="flex justify-end gap-2">
@@ -419,7 +420,7 @@
 </template>
 
 <script setup>
-import { useI18n } from '@/i18n-lite'
+import { useI18n } from '@/i18n-lite.js'
 import {ref, reactive, computed, getCurrentInstance} from 'vue'
 import { useRouter } from 'vue-router'
 import axios from "axios"

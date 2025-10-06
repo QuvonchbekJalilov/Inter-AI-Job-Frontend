@@ -116,5 +116,6 @@
   "loading": "Loading...",
   "source": "Source",
   "logout_text": "Are you sure you want to log out?",
-  "cancel": "Cancel"
+  "cancel": "Cancel",
+  "experience": "Experience..."
 }

@@ -1,12 +1,14 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 import Page from '../app/Page.vue'
-import Login from '../app/Login.vue'
-import Register from '../app/Register.vue'
+import Login from '../app/auth/Login.vue'
+import Register from '../app/auth/Register.vue'
 import Profile from '../app/Profile.vue'
 import VacancyShow from '../app/VacancyShow.vue'
 import EditProfile from "@/app/EditProfile.vue";
 import InterviewShow from '../app/InterviewShow.vue'
+import DemoVacancy from '../app/demo/DemoVacancy.vue'
+import DemoRegister from "@/app/demo/DemoRegister.vue";
 
 const routes = [
     {
@@ -51,6 +53,20 @@ const routes = [
         path: '/users/:id',
         name: 'editProfile',
         component: EditProfile,
+        props: true,
+        meta: { requiresAuth: true, headerBack: true }
+    },
+    {
+        path: '/demo/register',
+        name: 'demoRegister',
+        component: DemoRegister,
+        props: true,
+        meta: { requiresAuth: true, headerBack: true }
+    },
+    {
+        path: '/demo/vacancy',
+        name: 'demoVacancy',
+        component: DemoVacancy,
         props: true,
         meta: { requiresAuth: true, headerBack: true }
     },

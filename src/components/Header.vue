@@ -41,11 +41,11 @@
 </template>
 
 <script setup>
-import {computed, onMounted, ref} from 'vue'
+import {computed, getCurrentInstance, onMounted, ref} from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from '@/i18n-lite'
 import axios from "axios";
-
+const { proxy } = getCurrentInstance()
 const user = ref(null)
 const loading = ref(true)
 const error = ref("")
@@ -58,7 +58,7 @@ onMounted(async () => {
       return
     }
 
-    const { data } = await axios.get("http://127.0.0.1:8000/api/auth/me", {
+    const { data } = await axios.get(proxy.$locale + "/auth/me", {
       headers: {
         Authorization: `Bearer ${token}`
       }

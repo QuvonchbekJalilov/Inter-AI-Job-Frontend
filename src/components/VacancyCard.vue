@@ -1,22 +1,21 @@
 <template>
   <div class="max-w-7xl mx-auto px-4">
+    <Vacancies :show="loadingSkeleton" :count="6" :cols="3" />
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
       <div v-if="jobs.length > 0" v-for="job in jobs" :key="`${job.source}-${job.id}-${job.external_id ?? ''}`" class="flex w-full max-w-lg flex-col mb-3">
-
-        <!-- Agar source telegram bo‘lsa oddiy <a> -->
         <a
             v-if="job.source === 'telegram'"
             :href="job.telegram?.target_message_id"
             target="_blank"
-            class="flex w-full max-w-lg flex-col mb-3"
+            class="flex w-full max-w-lg flex-col"
         >
           <div class="flex items-center">
             <div class="relative rounded-tl-2xl rounded-tr-2xl bg-white pt-4 px-4 text-gray-500 text-sm outer">
-              {{ job.experience }}
+              {{ job.experience ?? translations.experience }}
             </div>
           </div>
           <div class="flex flex-col bg-white px-4 rounded-tr-2xl">
-            <h2 class="mb-2 text-xl leading-tight font-medium">{{ job.title }}</h2>
+            <h2 class="mb-2 mt-5 text-xl leading-tight font-medium">{{ job.title }}</h2>
             <div class="mb-2 flex items-center justify-between gap-2">
               <span class="flex items-center text-gray-700 text-sm basis-2/5 truncate">
                 <svg class="h-4 w-4 text-blue-600 mr-2 shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
@@ -34,7 +33,6 @@
             </div>
           </div>
         </a>
-
         <router-link
             v-else
             :to="{ name: 'vacancyDetail', params: { id: job.external_id } }"
@@ -67,8 +65,6 @@
             </p>
           </div>
         </router-link>
-
-        <!-- Tugma -->
         <div class="w-full overflow-hidden rounded-b-2xl">
           <button
               v-if="job.source !== 'telegram'"
@@ -95,7 +91,6 @@
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6 1a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
         <h3 class="text-lg font-medium mb-2">Sizga mos keladigan Vacansiya topilmadi iltios qaytadan login yoki registratsiya qilib ko'ring</h3>
-<!--        <p class="text-sm text-gray-500 mb-4">Mos keladigan vakansiyalarni tanlab, darhol ariza topshirishingiz mumkin.</p>-->
         <button
             class="px-10 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600"
             @click="logout"
@@ -123,12 +118,14 @@ import ModalComponent from "@/components/modal/UpdateModal.vue";
 import axios from "axios";
 import { toast } from "vue3-toastify"
 import { useRouter } from 'vue-router'
+import Vacancies from "@/components/loading/Vacancies.vue";
 const router = useRouter()
 
 const { translations } = useI18n()
 
 const showModal = ref(false);
 const showLoading = ref(false);
+const loadingSkeleton = ref(true);
 let intervalId = null;
 
 const { proxy } = getCurrentInstance()
@@ -148,7 +145,6 @@ const clearAuthStorage = () => {
   sessionStorage.removeItem("vacancies_cache")
   router.push({ name: "login" })
 }
-
 const applyToVacancy = async (job) => {
   try {
     if (job.source === 'telegram') {
@@ -189,7 +185,6 @@ const applyToVacancy = async (job) => {
     )
   }
 }
-
 const getCache = () => {
   const cache = localStorage.getItem(CACHE_KEY)
   if (!cache) return null
@@ -271,6 +266,7 @@ const fetchJobs = async (forceUpdate = false) => {
     }
   } finally {
     showLoading.value = false
+    loadingSkeleton.value = false
   }
 }
 

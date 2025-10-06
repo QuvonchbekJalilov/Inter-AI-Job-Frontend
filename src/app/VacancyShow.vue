@@ -1,6 +1,7 @@
 <template>
   <div class="min-h-screen bg-[#f2f2f2]">
     <Header />
+    <VacancyShow :show="loadingSkeleton" />
     <div
         v-if="vacancy"
         class="max-w-5xl pt-[110px] mx-auto p-6 bg-white rounded-2xl shadow space-y-6"
@@ -62,6 +63,7 @@ import { useRoute } from "vue-router"
 import Header from "@/components/Header.vue"
 import { useI18n } from "@/i18n-lite"
 import LoadingModal from "@/components/modal/LodaingModal.vue";
+import VacancyShow from "@/components/loading/VacancyShow.vue";
 const { proxy } = getCurrentInstance()
 
 const { translations } = useI18n()
@@ -70,6 +72,7 @@ const vacancyId = route.params.id
 const vacancy = ref(null)
 const status = ref(null)
 const showLoading = ref(false);
+const loadingSkeleton = ref(true);
 
 const applyToVacancy = async (vacancyId) => {
   try {
@@ -135,6 +138,7 @@ const fetchVacancy = async () => {
     console.error("❌ API error:", e.message)
   } finally {
     showLoading.value = false
+    loadingSkeleton.value = false
   }
 }
 

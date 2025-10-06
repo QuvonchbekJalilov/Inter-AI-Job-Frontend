@@ -1,5 +1,6 @@
 <template>
   <div class="max-w-7xl mx-auto px-4">
+    <Vacancies :show="loadingSkeleton" :count="6" :cols="3" />
     <div v-if="jobs.length > 0" class="grid grid-cols-1 md:grid-cols-3 gap-6">
       <router-link
           v-for="(job, index) in jobs"
@@ -62,33 +63,29 @@
       </a>
     </div>
   </div>
-
   <div>
     <ModalComponent
         :show="showModal"
         @refresh="startLoading"
     />
-
     <LoadingModal :show="showLoading" />
   </div>
 </template>
-
 <script setup>
 import { onMounted, ref, getCurrentInstance, onBeforeUnmount } from "vue";
 import { useI18n } from '@/i18n-lite'
 import LoadingModal from "@/components/modal/LodaingModal.vue";
 import ModalComponent from "@/components/modal/UpdateModal.vue";
 import axios from "axios";
-
+import Vacancies from "@/components/loading/Vacancies.vue";
 const { translations } = useI18n()
-
 const showModal = ref(false);
 const showLoading = ref(false);
-let intervalId = null;
+const loadingSkeleton = ref(true);
 
+let intervalId = null;
 const { proxy } = getCurrentInstance()
 const jobs = ref([])
-
 const fetchJobs = async () => {
   try {
     const token = localStorage.getItem("token") || sessionStorage.getItem("token")
@@ -120,9 +117,9 @@ const fetchJobs = async () => {
     console.error("❌ Xatolik:", error.response?.data || error.message)
   } finally {
     showLoading.value = false
+    loadingSkeleton.value = false
   }
 }
-
 const startLoading = async () => {
   showModal.value = false
   showLoading.value = true
@@ -131,23 +128,18 @@ const startLoading = async () => {
     showLoading.value = false
   }, 1500)
 }
-
 const formatDate = (date) => {
   if (!date) return ''
-
   const d = new Date(date)
-
   const datePart = d.toLocaleDateString("ru-RU", {
     day: "2-digit",
     month: "2-digit",
     year: "numeric"
   })
-
   const timePart = d.toLocaleTimeString("ru-RU", {
     hour: "2-digit",
     minute: "2-digit"
   })
-
   return `${datePart} (${timePart})`
 }
 onMounted(() => {
@@ -156,7 +148,6 @@ onMounted(() => {
     showModal.value = true
   }, 5 * 60 * 1000)
 })
-
 onBeforeUnmount(() => {
   clearInterval(intervalId);
 })

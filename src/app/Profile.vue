@@ -5,6 +5,7 @@
       <div class="max-w-3xl mx-auto space-y-6">
 
         <div class="bg-white border border-gray-200 rounded-2xl p-6">
+          <Profile :show="loadingSkeleton" />
           <div class="flex items-stretch w-full max-w-md mx-auto gap-2 mb-6">
             <button
                 v-for="tab in tabs"
@@ -319,6 +320,7 @@ import { useI18n } from '@/i18n-lite'
 import { useRouter } from 'vue-router'
 import Header from '@/components/Header.vue'
 import LoadingModal from "@/components/modal/LodaingModal.vue";
+import Profile from "@/components/loading/Profile.vue";
 const { translations } = useI18n()
 const { proxy } = getCurrentInstance()
 
@@ -328,6 +330,7 @@ const showPayment = ref(false)
 const amount = ref(100)
 const showLogoutModal = ref(false)
 const showLoading = ref(false);
+const loadingSkeleton = ref(true)
 const openPayment = () => {
   showPayment.value = true
 }
@@ -338,7 +341,6 @@ const closePayment = () => {
 
 const pay = (method) => {
   console.log(`To'lov: ${method}, summa: ${amount.value}`)
-  // API chaqirish joyi
   closePayment()
 }
 
@@ -387,7 +389,7 @@ const goToHeadHunter = async () => {
 
 onMounted(async () => {
   loading.value = true
-  showLoading.value = true
+  // showLoading.value = true
   try {
     const token = localStorage.getItem("token") || sessionStorage.getItem("token")
     if (!token) {
@@ -416,7 +418,8 @@ onMounted(async () => {
     }
   } finally {
     loading.value = false
-    showLoading.value = false
+    loadingSkeleton.value = false
+    // showLoading.value = false
   }
 })
 
@@ -533,6 +536,7 @@ async function fetchAutoApplyData() {
     }
   }
 }
+
 
 const logout = async () => {
   try {
