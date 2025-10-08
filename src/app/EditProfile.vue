@@ -19,10 +19,10 @@
           <input v-model="form.last_name" type="text" class="border rounded w-full p-2" />
         </div>
 
-        <div>
-          <label class="block mb-1">Email</label>
-          <input v-model="form.email" disabled type="email" class="border rounded w-full p-2" />
-        </div>
+<!--        <div>-->
+<!--          <label class="block mb-1">Email</label>-->
+<!--          <input v-model="form.email" disabled type="email" class="border rounded w-full p-2" />-->
+<!--        </div>-->
 
         <div>
           <label class="block mb-1">Telefon</label>
@@ -34,10 +34,10 @@
           <input v-model="form.password" type="password" class="border rounded w-full p-2" />
         </div>
 
-        <div>
-          <label class="block mb-1">Tug‘ilgan sana</label>
-          <input v-model="form.birth_date" type="date" class="border rounded w-full p-2" />
-        </div>
+<!--        <div>-->
+<!--          <label class="block mb-1">Tug‘ilgan sana</label>-->
+<!--          <input v-model="form.birth_date" type="date" class="border rounded w-full p-2" />-->
+<!--        </div>-->
 
         <div>
           <label class="block mb-1">Resume matni</label>
@@ -46,33 +46,33 @@
 
         <!-- ❌ Fayl yuklash input olib tashlandi -->
 
-        <div>
-          <label class="block mb-1">Tajriba</label>
-          <input v-model="form.experience" type="text" class="border rounded w-full p-2" />
-        </div>
+<!--        <div>-->
+<!--          <label class="block mb-1">Tajriba</label>-->
+<!--          <input v-model="form.experience" type="text" class="border rounded w-full p-2" />-->
+<!--        </div>-->
 
-        <div class="grid grid-cols-2 gap-2">
-          <div>
-            <label class="block mb-1">Maosh (dan)</label>
-            <input v-model="form.salary_from" type="number" class="border rounded w-full p-2" />
-          </div>
-          <div>
-            <label class="block mb-1">Maosh (gacha)</label>
-            <input v-model="form.salary_to" type="number" class="border rounded w-full p-2" />
-          </div>
-        </div>
+<!--        <div class="grid grid-cols-2 gap-2">-->
+<!--          <div>-->
+<!--            <label class="block mb-1">Maosh (dan)</label>-->
+<!--            <input v-model="form.salary_from" type="number" class="border rounded w-full p-2" />-->
+<!--          </div>-->
+<!--          <div>-->
+<!--            <label class="block mb-1">Maosh (gacha)</label>-->
+<!--            <input v-model="form.salary_to" type="number" class="border rounded w-full p-2" />-->
+<!--          </div>-->
+<!--        </div>-->
 
-        <div>
-          <label class="block mb-1">Ish turi</label>
-          <input v-model="form.employment_type" type="text" class="border rounded w-full p-2" />
-        </div>
+<!--        <div>-->
+<!--          <label class="block mb-1">Ish turi</label>-->
+<!--          <input v-model="form.employment_type" type="text" class="border rounded w-full p-2" />-->
+<!--        </div>-->
 
-        <div>
-          <label class="block mb-1">Joylashuv</label>
-          <input v-model="form.location" type="text" class="border rounded w-full p-2" />
-        </div>
+<!--        <div>-->
+<!--          <label class="block mb-1">Joylashuv</label>-->
+<!--          <input v-model="form.location" type="text" class="border rounded w-full p-2" />-->
+<!--        </div>-->
 
-        <button type="submit" :disabled="loading" class="bg-blue-600 w-full text-white px-4 py-2 rounded">
+        <button type="submit" :disabled="loading" class="bg-blue-600 w-50 text-white px-4 py-2 rounded">
           {{ loading ? 'Saqlanmoqda...' : 'Yangilash' }}
         </button>
       </form>
@@ -82,7 +82,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import {ref, onMounted, getCurrentInstance} from 'vue'
 import axios from 'axios'
 import { useRoute, useRouter } from 'vue-router'
 import Header from "@/components/Header.vue";
@@ -93,20 +93,21 @@ const route = useRoute()
 const router = useRouter()
 const userId = route.params.id
 const showLoading = ref(false);
+const { proxy } = getCurrentInstance()
 
 const form = ref({
   first_name: '',
   last_name: '',
-  email: '',
+  // email: '',
   phone: '',
   password: '',
-  birth_date: '',
+  // birth_date: '',
   resume_text: '',
-  experience: '',
-  salary_from: '',
-  salary_to: '',
-  employment_type: '',
-  location: '',
+  // experience: '',
+  // salary_from: '',
+  // salary_to: '',
+  // employment_type: '',
+  // location: '',
 })
 
 const loading = ref(false)
@@ -121,7 +122,7 @@ onMounted(async () => {
       router.push({ name: "login" })
       return
     }
-    const res = await axios.get("http://127.0.0.1:8000/api/auth/me", {
+    const res = await axios.get(proxy.$locale + "/auth/me", {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -131,16 +132,16 @@ onMounted(async () => {
 
     form.value.first_name = data.first_name || ''
     form.value.last_name = data.last_name || ''
-    form.value.email = data.email || ''
+    // form.value.email = data.email || ''
     form.value.phone = data.phone || ''
-    form.value.birth_date = data.birth_date || ''
+    // form.value.birth_date = data.birth_date || ''
     form.value.resume_text = data.resumes?.[0]?.description || ''
 
-    form.value.salary_from = data.preferences?.[0]?.desired_salary_from || ''
-    form.value.salary_to = data.preferences?.[0]?.desired_salary_to || ''
-    form.value.experience = data.preferences?.[0]?.experience_level || ''
-    form.value.location = data.locations?.[0]?.text || ''
-    form.value.employment_type = data.job_types?.[0]?.job_type || ''
+    // form.value.salary_from = data.preferences?.[0]?.desired_salary_from || ''
+    // form.value.salary_to = data.preferences?.[0]?.desired_salary_to || ''
+    // form.value.experience = data.preferences?.[0]?.experience_level || ''
+    // form.value.location = data.locations?.[0]?.text || ''
+    // form.value.employment_type = data.job_types?.[0]?.job_type || ''
   } catch (err) {
     console.error(err)
     message.value = 'Foydalanuvchi ma’lumotlarini olishda xatolik'
@@ -155,7 +156,7 @@ const updateUser = async () => {
     loading.value = true
     message.value = null
 
-    const res = await axios.put(`http://127.0.0.1:8000/api/auth/users/${userId}`, form.value, {
+    const res = await axios.put(proxy.$locale + `/auth/users/${userId}`, form.value, {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Accept': 'application/json',

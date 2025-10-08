@@ -44,13 +44,17 @@
           </div>
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">{{ translations.phone }}</label>
+          <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">
+            Telefon raqam
+          </label>
           <input
-              v-model="formData.phone"
+              ref="phoneInput"
+              id="phone"
               type="tel"
-              class="w-full px-3 py-2 bg-gray-100 border-0 rounded-md focus:ring-2 focus:ring-blue-500 focus:bg-white"
-              placeholder="+998919579717"
-          >
+              v-model="formData.phone"
+              class="w-full px-3 py-2 bg-gray-100 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:bg-white"
+              placeholder="901234567"
+          />
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -108,17 +112,17 @@
           </div>
         </div>
 
-        <div class="grid grid-cols-1 gap-4">
+<!--        <div class="grid grid-cols-1 gap-4">-->
 
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">{{translations.age}}</label>
-            <input
-                v-model="formData.birth_date"
-                type="date"
-                class="w-full px-3 py-2 bg-gray-100 border-0 rounded-md focus:ring-2 focus:ring-blue-500 focus:bg-white"
-            >
-          </div>
-        </div>
+<!--          <div>-->
+<!--            <label class="block text-sm font-medium text-gray-700 mb-1">{{translations.age}}</label>-->
+<!--            <input-->
+<!--                v-model="formData.birth_date"-->
+<!--                type="date"-->
+<!--                class="w-full px-3 py-2 bg-gray-100 border-0 rounded-md focus:ring-2 focus:ring-blue-500 focus:bg-white"-->
+<!--            >-->
+<!--          </div>-->
+<!--        </div>-->
 
         <button
             @click="nextStep"
@@ -138,12 +142,12 @@
       <div v-if="currentStep === 2" class="space-y-6">
         <h2 class="text-xl font-medium text-center text-gray-800 mb-6">{{translations.Upload_your_resume}}</h2>
 
-        <div class="flex items-center text-blue-600 mb-4">
-          <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"/>
-          </svg>
-          <span class="font-medium">{{ translations.resume }}</span>
-        </div>
+<!--        <div class="flex items-center text-blue-600 mb-4">-->
+<!--          <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">-->
+<!--            <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"/>-->
+<!--          </svg>-->
+<!--          <span class="font-medium">{{ translations.resume }}</span>-->
+<!--        </div>-->
 
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">{{translations.Enter_your_resume_text}}</label>
@@ -239,11 +243,13 @@
 
 <script setup>
 import { useI18n } from '@/i18n-lite.js'
-import { ref, reactive, computed, getCurrentInstance } from 'vue'
+import {ref, reactive, computed, getCurrentInstance, onMounted} from 'vue'
 import { useRouter } from 'vue-router'
 import axios from "axios"
 import LoadingModal from "@/components/modal/LodaingModal.vue";
 import { toast } from "vue3-toastify"
+import intlTelInput from "intl-tel-input";
+import "intl-tel-input/build/css/intlTelInput.css";
 
 const { proxy } = getCurrentInstance()
 const { translations } = useI18n()
@@ -258,7 +264,7 @@ const formData = reactive({
   password: '',
   confirm_password: '',
   phone: '',
-  birth_date: '',
+  // birth_date: '',
   resumeText: '',
 })
 
@@ -322,8 +328,8 @@ const isStepValid = () => {
         formData.phone &&
         formData.password &&
         formData.confirm_password &&
-        formData.password === formData.confirm_password &&
-        formData.birth_date
+        formData.password === formData.confirm_password
+        // && formData.birth_date
     )
   }
   if (currentStep.value === 2) {
@@ -364,7 +370,7 @@ const submitRegistration = async () => {
       last_name: formData.lastName,
       password: formData.password,
       phone: formData.phone,
-      birth_date: formData.birth_date,
+      // birth_date: formData.birth_date,
       resume_text: formData.resumeText,
     })
 
@@ -448,5 +454,19 @@ const activeClass = 'bg-blue-600 text-white scale-100 py-2.5'
 const inactiveClass = 'bg-gray-100 text-gray-700 hover:bg-gray-200 scale-95 py-2'
 const activeTextClass = 'text-[13.5px] sm:text-[14px] scale-100'
 const inactiveTextClass = 'text-[11.5px] sm:text-[12px] scale-90'
+const phoneInput = ref(null);
+
+onMounted(() => {
+  if (phoneInput.value) {
+    intlTelInput(phoneInput.value, {
+      initialCountry: "uz",
+      onlyCountries: ["uz"],      // faqat O‘zbekiston
+      preferredCountries: ["uz"], // ixtiyoriy, lekin foydali
+      allowDropdown: false,       // dropdownni o‘chiradi
+      separateDialCode: true,
+      nationalMode: false,
+    });
+  }
+});
 </script>
 

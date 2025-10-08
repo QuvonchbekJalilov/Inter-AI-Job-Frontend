@@ -31,6 +31,11 @@ onMounted(() => {
   <router-view />
 </template>
 
-<style scoped>
+<style>
+.iti input[type="tel"]:focus {
+  border: 2px solid orange !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
 
 </style>

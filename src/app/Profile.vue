@@ -33,10 +33,10 @@
               {{ user?.first_name }} {{ user?.last_name }}
             </div>
 
-            <div>
-              <span class="font-medium text-gray-500">{{ translations.profiles?.email }}:</span>
-              {{ user?.email }}
-            </div>
+<!--            <div>-->
+<!--              <span class="font-medium text-gray-500">{{ translations.profiles?.email }}:</span>-->
+<!--              {{ user?.email }}-->
+<!--            </div>-->
 
             <div>
               <span class="font-medium text-gray-500">{{ translations.profiles?.phone }}:</span>
@@ -48,16 +48,16 @@
 <!--              {{ user?.preferences?.[0]?.industry?.name || '—' }}-->
 <!--            </div>-->
 
-            <div>
-              <span class="font-medium text-gray-500">{{ translations.profiles?.location }}:</span>
-              {{ user?.locations?.[0]?.text || '—' }}
-            </div>
+<!--            <div>-->
+<!--              <span class="font-medium text-gray-500">{{ translations.profiles?.location }}:</span>-->
+<!--              {{ user?.locations?.[0]?.text || '—' }}-->
+<!--            </div>-->
 
-            <div>
-              <span class="font-medium text-gray-500">{{ translations.profiles?.salary }}:</span>
-              {{ translations.profiles?.salary_from }} {{ user?.preferences?.[0]?.desired_salary_from || 0 }} {{ user?.preferences?.[0]?.currency == "USD" ? '$' : 'UZS' }}
-              {{ translations.profiles?.salary_to }} {{ user?.preferences?.[0]?.desired_salary_to || 0 }} {{ user?.preferences?.[0]?.currency == "USD" ? '$' : 'UZS' }}
-            </div>
+<!--            <div>-->
+<!--              <span class="font-medium text-gray-500">{{ translations.profiles?.salary }}:</span>-->
+<!--              {{ translations.profiles?.salary_from }} {{ user?.preferences?.[0]?.desired_salary_from || 0 }} {{ user?.preferences?.[0]?.currency == "USD" ? '$' : 'UZS' }}-->
+<!--              {{ translations.profiles?.salary_to }} {{ user?.preferences?.[0]?.desired_salary_to || 0 }} {{ user?.preferences?.[0]?.currency == "USD" ? '$' : 'UZS' }}-->
+<!--            </div>-->
           </div>
           <button
               class="mt-4 w-full px-4 py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-50"
@@ -352,12 +352,10 @@ const clearAuthStorage = () => {
   localStorage.removeItem("token")
   localStorage.removeItem("user")
   localStorage.removeItem("expires_at")
-  localStorage.removeItem("responses_vacancies_cache")
   localStorage.removeItem("vacancies_cache")
   sessionStorage.removeItem("token")
   sessionStorage.removeItem("user")
   sessionStorage.removeItem("expires_at")
-  sessionStorage.removeItem("responses_vacancies_cache")
   sessionStorage.removeItem("vacancies_cache")
   router.push({ name: "login" })
 }
@@ -387,41 +385,58 @@ const goToHeadHunter = async () => {
   }
 }
 
-onMounted(async () => {
-  loading.value = true
-  // showLoading.value = true
+const fetchAutoApplyData = async () => {
   try {
-    const token = localStorage.getItem("token") || sessionStorage.getItem("token")
+    const token = localStorage.getItem("token");
+    const response = await axios.get(proxy.$locale + "/auth/settings/auto-apply", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+      },
+    });
+
+    enabled.value = response.data.data.auto_apply_enabled;
+    limit.value = response.data.data.auto_apply_limit;
+    appliedCount.value = response.data.data.auto_apply_count;
+    saved.value = !!limit.value;
+  } catch (error) {
+    if (error.response?.status === 401) clearAuthStorage();
+  }
+};
+
+onMounted(async () => {
+  loading.value = true;
+  try {
+    const token = localStorage.getItem("token") || sessionStorage.getItem("token");
     if (!token) {
-      router.push({ name: "login" })
-      return
+      router.push({ name: "login" });
+      return;
     }
 
     const headers = {
       Authorization: `Bearer ${token}`,
       Accept: "application/json",
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
+    };
+
+    const { data: meData } = await axios.get(proxy.$locale + "/auth/me", { headers });
+    user.value = meData.data;
+
+    const balanceRes = await axios.get(proxy.$locale + "/v1/balance", { headers });
+    balance.value = balanceRes.data;
+    console.log('balanceRes.data', balanceRes.data);
+
+    if (balance.value.credit.count > 0) {
+      await fetchAutoApplyData();
     }
-
-    const [meRes, balanceRes] = await Promise.all([
-      axios.get(proxy.$locale + "/auth/me", { headers }),
-      axios.get(proxy.$locale + "/v1/balance", { headers })
-    ])
-
-    user.value = meRes.data.data
-    balance.value = balanceRes.data
-
   } catch (e) {
-    error.value = "Foydalanuvchi ma’lumotlarini olishda xatolik."
-    if (e.response?.status === 401) {
-      clearAuthStorage()
-    }
+    error.value = "Foydalanuvchi ma’lumotlarini olishda xatolik.";
+    if (e.response?.status === 401) clearAuthStorage();
   } finally {
-    loading.value = false
-    loadingSkeleton.value = false
-    // showLoading.value = false
+    loading.value = false;
+    loadingSkeleton.value = false;
   }
-})
+});
 
 
 const tabs = [
@@ -512,32 +527,6 @@ async function updateLimit() {
   }
 }
 
-async function fetchAutoApplyData() {
-  try {
-    const token = localStorage.getItem("token");
-    const response = await axios.get(
-        proxy.$locale + "/auth/settings/auto-apply",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "application/json",
-          },
-        }
-    );
-
-    enabled.value = response.data.data.auto_apply_enabled;
-    limit.value = response.data.data.auto_apply_limit;
-    appliedCount.value = response.data.data.auto_apply_count;
-
-    saved.value = !!limit.value;
-  } catch (error) {
-    if (error.response?.status === 401) {
-      clearAuthStorage()
-    }
-  }
-}
-
-
 const logout = async () => {
   try {
     const token = localStorage.getItem("token") || sessionStorage.getItem("token")
@@ -554,13 +543,10 @@ const logout = async () => {
     }
   } finally {
     clearAuthStorage()
-    window.location.href = "/login" // logout bo‘lgach login sahifaga yuborish
+    window.location.href = "/login"
   }
 }
 
-onMounted(() => {
-  fetchAutoApplyData();
-});
 </script>
 <style>
 .slide-up-enter-active,

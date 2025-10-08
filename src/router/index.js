@@ -61,14 +61,14 @@ const routes = [
         name: 'demoRegister',
         component: DemoRegister,
         props: true,
-        meta: { requiresAuth: true, headerBack: true }
+        meta: { requiresAuth: false, headerBack: true }
     },
     {
         path: '/demo/vacancy',
         name: 'demoVacancy',
         component: DemoVacancy,
         props: true,
-        meta: { requiresAuth: true, headerBack: true }
+        meta: { requiresAuth: false, headerBack: true }
     },
 
 ]
