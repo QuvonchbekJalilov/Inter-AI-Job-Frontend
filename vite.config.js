@@ -1,26 +1,31 @@
 import { fileURLToPath, URL } from 'node:url'
-
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueDevTools from 'vite-plugin-vue-devtools'
 
-// https://vite.dev/config/
-export default defineConfig({
-    base: './',
+// ✅ Production uchun to‘liq konfiguratsiya
+export default defineConfig(({ command, mode }) => ({
+    base: './', // 👈 MUHIM: barcha assets nisbiy yo‘lda yuklanadi
+    plugins: [
+        vue(),
+        vueDevTools(),
+    ],
     build: {
         outDir: 'dist',
         assetsDir: 'assets',
         sourcemap: false,
+        emptyOutDir: true, // eski build fayllarni avtomatik tozalaydi
+        rollupOptions: {
+            output: {
+                manualChunks: undefined, // CDN caching muammosini oldini oladi
+            },
+        },
     },
-  plugins: [
-    vue(),
-    vueDevTools(),
-  ],
-  resolve: {
-    alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
+    resolve: {
+        alias: {
+            '@': fileURLToPath(new URL('./src', import.meta.url))
+        },
     },
-  },
     server: {
         host: true,
         port: 5173,
@@ -29,7 +34,7 @@ export default defineConfig({
                 target: 'https://api.inter-ai.uz',
                 changeOrigin: true,
                 secure: false,
-            }
-        }
-    }
-})
+            },
+        },
+    },
+}))
