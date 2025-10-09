@@ -121,6 +121,7 @@ const completeRegistration = async () => {
   }
 };
 
+
 const isStepValid = () => {
   return formData.resumeText?.trim().length > 0 || selectedFile.value;
 };
