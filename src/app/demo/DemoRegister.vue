@@ -91,6 +91,7 @@ const handleFileUpload = (event) => {
 const uploadResume = async () => {
   const resumeForm = new FormData();
   resumeForm.append("title", formData.resumeText);
+  resumeForm.append("chat_id", formData.chat_id);
 
   if (selectedFile.value) {
     resumeForm.append("file", selectedFile.value);
@@ -109,17 +110,11 @@ const completeRegistration = async () => {
     error.value = "";
 
     const res = await uploadResume();
-
-    if (res.data.status) {
-      console.log("✅ Resume yuklandi:", res.data);
-      alert(res.data.message ?? 'ok');
-    } else {
-      alert(res.data.message ?? 'no');
-      error.value = res.data.message || "Xatolik yuz berdi";
-    }
+    console.log('res', res)
+    window.location('/demo/vacancies');
   } catch (err) {
     console.error(err);
-    alert(res.data.message ?? 'Server xatosi');
+    alert(err.response?.data?.message ?? 'Server xatosi');
     error.value = err.response?.data?.message || "Server xatosi";
   } finally {
     btnLoading.value = false;
