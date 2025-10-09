@@ -66,45 +66,69 @@
 </template>
 
 <script setup>
-import {computed, getCurrentInstance, reactive, ref} from "vue";
-import {useI18n} from "@/i18n-lite.js";
-import axios from "axios"
+import { computed, getCurrentInstance, reactive, ref } from "vue";
+import { useI18n } from "@/i18n-lite.js";
+import axios from "axios";
 
-const { proxy } = getCurrentInstance()
-const { translations } = useI18n()
-const showLoading = ref(false)
-const selectedFile = ref(null)
-const loading = ref(false)
-const btnLoading = ref(false)
-const error = ref("")
+const { proxy } = getCurrentInstance();
+const { translations } = useI18n();
+
+const showLoading = ref(false);
+const selectedFile = ref(null);
+const btnLoading = ref(false);
+const error = ref("");
 
 const formData = reactive({
+  chat_id: 1234567,
   resumeText: "",
   select_file: "",
-})
+});
 
 const handleFileUpload = (event) => {
-  selectedFile.value = event.target.files[0]
-}
+  selectedFile.value = event.target.files[0];
+};
 
-const uploadResume = async (token) => {
-  if (!selectedFile.value) return
+const uploadResume = async () => {
+  const resumeForm = new FormData();
+  resumeForm.append("title", formData.resumeText);
 
-  const resumeForm = new FormData()
-  resumeForm.append("title", formData.resumeText)
-  resumeForm.append("file", selectedFile.value)
+  if (selectedFile.value) {
+    resumeForm.append("file", selectedFile.value);
+  }
 
-  await axios.post(proxy.$locale + "/v1/resumes", resumeForm, {
+  return axios.post(proxy.$locale + "/v1/demo/resume/store", resumeForm, {
     headers: {
-      "Authorization": `Bearer ${token}`,
       "Content-Type": "multipart/form-data",
     },
-  })
-}
-const isStepValid = () => {
-    return formData.resumeText?.trim().length > 0
-}
+  });
+};
 
+const completeRegistration = async () => {
+  try {
+    btnLoading.value = true;
+    error.value = "";
+
+    const res = await uploadResume();
+
+    if (res.data.status) {
+      console.log("✅ Resume yuklandi:", res.data);
+      alert(res.data.message ?? 'ok');
+    } else {
+      alert(res.data.message ?? 'no');
+      error.value = res.data.message || "Xatolik yuz berdi";
+    }
+  } catch (err) {
+    console.error(err);
+    alert(res.data.message ?? 'Server xatosi');
+    error.value = err.response?.data?.message || "Server xatosi";
+  } finally {
+    btnLoading.value = false;
+  }
+};
+
+const isStepValid = () => {
+  return formData.resumeText?.trim().length > 0 || selectedFile.value;
+};
 </script>
 
 <style scoped>
