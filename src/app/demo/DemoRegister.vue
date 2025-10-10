@@ -99,7 +99,8 @@ const uploadResume = async () => {
 
   return axios.post(proxy.$locale + "/v1/demo/resume/store", resumeForm, {
     headers: {
-      "Content-Type": "multipart/form-data",
+      Accept: "application/json",
+      "Content-Type": "application/json"
     },
   });
 };
