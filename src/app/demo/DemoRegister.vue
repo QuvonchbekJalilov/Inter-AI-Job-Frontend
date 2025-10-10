@@ -100,7 +100,6 @@ const uploadResume = async () => {
   return axios.post(proxy.$locale + "/v1/demo/resume/store", resumeForm, {
     headers: {
       Accept: "application/json",
-      "Content-Type": "application/json"
     },
   });
 };
@@ -112,7 +111,7 @@ const completeRegistration = async () => {
 
     const res = await uploadResume();
     console.log('res', res)
-    window.location('/demo/vacancies');
+    window.location.href = "/demo/vacancy";
   } catch (err) {
     console.error(err);
     alert(err.response?.data?.message ?? 'Server xatosi');

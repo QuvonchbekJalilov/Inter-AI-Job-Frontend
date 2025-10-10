@@ -161,8 +161,11 @@ const fetchJobs = async (forceUpdate = false) => {
         return
       }
     }
-    const { data } = await axios.get(
-        proxy.$locale + "/v1/demo/vacancy-matches",
+    const { data } = await axios.post(
+        proxy.$locale + "/v1/demo/vacancy-matches/run",
+        {
+          chat_id: 1234567
+        },
         {
           headers: {
             Accept: "application/json",
