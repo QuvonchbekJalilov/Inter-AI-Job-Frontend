@@ -26,6 +26,7 @@ jobs:
 
       - name: Build project
         run: npm run build
+          cp index.html 404.html
 
       # 4️⃣ Build papkani Spaces'ga yuklash
       - name: Upload to DigitalOcean Spaces
