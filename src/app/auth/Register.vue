@@ -112,18 +112,6 @@
           </div>
         </div>
 
-<!--        <div class="grid grid-cols-1 gap-4">-->
-
-<!--          <div>-->
-<!--            <label class="block text-sm font-medium text-gray-700 mb-1">{{translations.age}}</label>-->
-<!--            <input-->
-<!--                v-model="formData.birth_date"-->
-<!--                type="date"-->
-<!--                class="w-full px-3 py-2 bg-gray-100 border-0 rounded-md focus:ring-2 focus:ring-blue-500 focus:bg-white"-->
-<!--            >-->
-<!--          </div>-->
-<!--        </div>-->
-
         <button
             @click="nextStep"
             :disabled="!isStepValid()"
@@ -140,27 +128,28 @@
 
       <!-- Step 2 -->
       <div v-if="currentStep === 2" class="space-y-6">
-        <h2 class="text-xl font-medium text-center text-gray-800 mb-6">{{translations.Upload_your_resume}}</h2>
+        <h2 class="text-xl font-medium text-center text-gray-800 mb-6">
+          {{ translations.Upload_your_resume }}
+        </h2>
 
-<!--        <div class="flex items-center text-blue-600 mb-4">-->
-<!--          <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">-->
-<!--            <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"/>-->
-<!--          </svg>-->
-<!--          <span class="font-medium">{{ translations.resume }}</span>-->
-<!--        </div>-->
-
+        <!-- Resume Text -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">{{translations.Enter_your_resume_text}}</label>
+          <label class="block text-sm font-medium text-gray-700 mb-2">{{
+              translations.Enter_your_resume_text
+            }}</label>
           <input
               v-model="formData.resumeText"
               class="w-full px-3 py-2 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               placeholder="Php Laravel Vue.js Full stack developer"
-          >
+          />
         </div>
 
-        <div class="text-center text-gray-500">{{translations.or}}</div>
+        <div class="text-center text-gray-500">{{ translations.or }}</div>
 
-        <label class="block text-sm font-medium text-gray-700 mb-2">{{translations.Upload_your_resume_file}}</label>
+        <!-- Resume File Upload -->
+        <label class="block text-sm font-medium text-gray-700 mb-2">{{
+            translations.Upload_your_resume_file
+          }}</label>
         <div
             class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-400 transition-colors cursor-pointer"
         >
@@ -171,24 +160,38 @@
               @change="handleFileUpload"
           />
           <label for="resumeUpload" class="block cursor-pointer">
-            <svg
-                class="w-12 h-12 text-gray-400 mx-auto mb-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+<!--            <svg-->
+<!--                class="w-12 h-12 text-gray-400 mx-auto mb-4"-->
+<!--                fill="none"-->
+<!--                stroke="currentColor"-->
+<!--                viewBox="0 0 24 24"-->
+<!--            >-->
+<!--              <path-->
+<!--                  stroke-linecap="round"-->
+<!--                  stroke-linejoin="round"-->
+<!--                  stroke-width="2"-->
+<!--                  d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"-->
+<!--              />-->
+<!--            </svg>-->
+            <span
+                class="inline-block px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors"
             >
-              <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-              />
-            </svg>
-            <p class="text-gray-500 mb-4">{{translations.dadafhocts}}</p>
-            <span class="inline-block px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors">
-          {{translations.select_file}}
+          {{ translations.select_file }}
         </span>
           </label>
+        </div>
+
+        <!-- Agar fayl mavjud bo‘lsa preview -->
+        <div v-if="formData.resumeFileUrl" class="mt-4 text-center">
+          <p class="text-sm text-gray-600 mb-2">
+            {{ translations.selected_file }}:
+          </p>
+          <a
+              :href="formData.resumeFileUrl"
+              target="_blank"
+              class="text-blue-500 underline"
+          >📄 {{ formData.resumeFile?.name || 'Old resume file' }}</a
+          >
         </div>
 
         <div class="flex gap-3">
@@ -196,20 +199,25 @@
               @click="prevStep"
               class="flex-1 bg-gray-100 text-gray-700 py-3 rounded-md font-medium hover:bg-gray-200 transition-colors"
           >
-            {{translations.back}}
+            {{ translations.back }}
           </button>
           <button
               @click="completeRegistration"
               :disabled="!isStepValid() || btnLoading"
               :class="[
-            'flex-1 py-3 rounded-md font-medium transition-colors flex items-center justify-center gap-2',
-            (!isStepValid() || btnLoading)
-              ? 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-50'
-              : 'bg-blue-500 text-white hover:bg-blue-600'
-          ]"
+          'flex-1 py-3 rounded-md font-medium transition-colors flex items-center justify-center gap-2',
+          (!isStepValid() || btnLoading)
+            ? 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-50'
+            : 'bg-blue-500 text-white hover:bg-blue-600'
+        ]"
           >
-            <span v-if="btnLoading" class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-            <span>{{ btnLoading ? translations.loading : translations.finish }}</span>
+        <span
+            v-if="btnLoading"
+            class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"
+        ></span>
+            <span>{{
+                btnLoading ? translations.loading : translations.finish
+              }}</span>
           </button>
         </div>
       </div>
@@ -264,7 +272,6 @@ const formData = reactive({
   password: '',
   confirm_password: '',
   phone: '',
-  // birth_date: '',
   resumeText: '',
 })
 
@@ -281,9 +288,40 @@ const isSuccess = (resp) => {
 }
 
 const handleFileUpload = (event) => {
-  selectedFile.value = event.target.files[0]
+  const file = event.target.files[0]
+  if (file) {
+    formData.value.resumeFile = file
+    formData.value.resumeFileUrl = URL.createObjectURL(file) // preview
+  }
 }
 
+const fetchResumeIfExists = async () => {
+  const chatId =
+      localStorage.getItem("chat_id") || sessionStorage.getItem("chat_id")
+
+  try {
+    const { data } = await axios.post(proxy.$locale + "/demo-resume-check", {
+      chat_id: chatId || 1234567,
+    })
+    console.log("data", data)
+
+    if (data && data.id) {
+      // Text input avtomatik to‘lishi
+      formData.value.resumeText = data.parsed_text || data.title || ""
+
+      // Fayl preview chiqishi
+      if (data.file_url) {
+        formData.value.resumeFileUrl = data.file_url
+      }
+    }
+  } catch (err) {
+    console.warn("❌ Resume check error:", err.response?.data || err)
+  }
+}
+
+onMounted(() => {
+  fetchResumeIfExists()
+})
 const uploadResume = async (token) => {
   if (!selectedFile.value) return
 
@@ -344,8 +382,10 @@ const nextStep = async () => {
 
   if (currentStep.value === 1) {
     currentStep.value++
+    await fetchResumeIfExists() // 👈 step 2 ga o‘tganda resume tekshirish
   }
 }
+
 
 const prevStep = () => {
   if (currentStep.value > 1) currentStep.value--
@@ -364,14 +404,15 @@ const submitRegistration = async () => {
   }
 
   loading.value = true
+  const chatId = localStorage.getItem("chat_id") || sessionStorage.getItem("chat_id")
   try {
     const { data } = await axios.post(proxy.$locale + '/auth/register', {
       first_name: formData.firstName,
       last_name: formData.lastName,
       password: formData.password,
       phone: formData.phone,
-      // birth_date: formData.birth_date,
       resume_text: formData.resumeText,
+      chat_id: chatId || 1234567,
     })
 
     console.log('✅ Registration success:', data)
@@ -430,11 +471,6 @@ const completeRegistration = async () => {
   } finally {
     btnLoading.value = false
   }
-}
-
-const resetForm = () => {
-  currentStep.value = 1
-  Object.keys(formData).forEach(k => formData[k] = '')
 }
 
 const { locale } = useI18n()
