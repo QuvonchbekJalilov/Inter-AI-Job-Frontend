@@ -421,6 +421,7 @@ onMounted(async () => {
 
     const { data: meData } = await axios.get(proxy.$locale + "/auth/me", { headers });
     user.value = meData.data;
+    console.log('meData', meData)
 
     const balanceRes = await axios.get(proxy.$locale + "/v1/balance", { headers });
     balance.value = balanceRes.data;
