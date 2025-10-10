@@ -3,7 +3,7 @@ name: Deploy Frontend to DigitalOcean Spaces
 on:
   push:
     branches:
-      - main   # faqat main branchga push qilinganda ishlaydi
+      - main  # faqat main branchga push bo‘lsa
 
 jobs:
   deploy:
@@ -14,7 +14,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # 2️⃣ Node.js o‘rnatish
+      # 2️⃣ Node.js versiyasini o‘rnatish
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
@@ -22,13 +22,14 @@ jobs:
 
       # 3️⃣ Dependencies install va build
       - name: Install dependencies
-        run: npm install
+        run: npm ci   # npm install o‘rniga tezroq va barqaror
 
       - name: Build project
-        run: npm run build
-          cp index.html 404.html
+        run: |
+          npm run build
+          cp dist/index.html dist/404.html   # Vue uchun 404.html nusxasi
 
-      # 4️⃣ Build papkani Spaces'ga yuklash
+      # 4️⃣ Build papkani DigitalOcean Spaces'ga yuklash
       - name: Upload to DigitalOcean Spaces
         uses: jakejarvis/s3-sync-action@master
         with:
@@ -38,4 +39,4 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.DO_SPACES_KEY }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.DO_SPACES_SECRET }}
           AWS_S3_ENDPOINT: ${{ secrets.DO_SPACES_ENDPOINT }}
-          SOURCE_DIR: ./dist   # Vue bo‘lsa ./dist qilib qo‘yasan
+          SOURCE_DIR: ./dist
