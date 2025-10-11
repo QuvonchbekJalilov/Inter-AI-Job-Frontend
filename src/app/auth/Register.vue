@@ -174,10 +174,9 @@
 <!--              />-->
 <!--            </svg>-->
             <span
-                class="inline-block px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors"
-            >
-          {{ translations.select_file }}
-        </span>
+                class="inline-block px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors">
+              {{ translations.select_file }}
+            </span>
           </label>
         </div>
 
