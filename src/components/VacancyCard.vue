@@ -214,15 +214,15 @@ const fetchJobs = async (forceUpdate = false) => {
 
     const token = localStorage.getItem("token") || sessionStorage.getItem("token")
 
-    const { data } = await axios.get(
+    const { data } = await axios.post(
         proxy.$locale + "/v1/vacancy-matches",
         {
-          headers: {
+
+        }, {headers: {
             Authorization: `Bearer ${token}`,
             Accept: "application/json",
             "Content-Type": "application/json"
-          }
-        }
+          }}
     )
     console.log('data', data)
 
