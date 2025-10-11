@@ -78,7 +78,13 @@
           </div>
 
           <button
-              class="mt-4 w-full px-4 py-2 border border-red-400 rounded-lg text-sm"
+              :disabled="user?.hh_account_status"
+              :class="[
+    'w-full py-3 rounded-lg font-medium transition-colors mt-4 px-4 border border-red-400 text-sm',
+    user?.hh_account_status
+      ? 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-60'
+      : 'border-red-400 text-black hover:bg-blue-700'
+  ]"
               @click="goToHeadHunter"
           >
             {{ 'Head Hunter Auth' }}
