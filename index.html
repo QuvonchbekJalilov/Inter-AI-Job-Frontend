@@ -8,10 +8,24 @@
       <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
       <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;800&display=swap" rel="stylesheet">
       <!--      <script src="https://cdn.tailwindcss.com"></script>-->
-    <title>Inter AI B2C</title>
+    <title>Inter-AI Vacancies</title>
+      <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+      <meta http-equiv="Pragma" content="no-cache" />
+      <meta http-equiv="Expires" content="0" />
   </head>
   <body>
     <div id="app"></div>
     <script type="module" src="/src/main.js"></script>
+    <script>
+        (function() {
+            const appVersion = "v1.0.7";
+            const lastVersion = localStorage.getItem("app_version");
+            if (lastVersion !== appVersion) {
+                localStorage.setItem("app_version", appVersion);
+                console.log("🆕 App version changed, reloading...");
+                location.reload(true);
+            }
+        })();
+    </script>
   </body>
 </html>
