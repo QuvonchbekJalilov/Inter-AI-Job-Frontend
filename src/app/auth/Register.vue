@@ -146,7 +146,6 @@
 
         <div class="text-center text-gray-500">{{ translations.or }}</div>
 
-        <!-- Resume File Upload -->
         <label class="block text-sm font-medium text-gray-700 mb-2">{{
             translations.Upload_your_resume_file
           }}</label>
@@ -160,19 +159,6 @@
               @change="handleFileUpload"
           />
           <label for="resumeUpload" class="block cursor-pointer">
-<!--            <svg-->
-<!--                class="w-12 h-12 text-gray-400 mx-auto mb-4"-->
-<!--                fill="none"-->
-<!--                stroke="currentColor"-->
-<!--                viewBox="0 0 24 24"-->
-<!--            >-->
-<!--              <path-->
-<!--                  stroke-linecap="round"-->
-<!--                  stroke-linejoin="round"-->
-<!--                  stroke-width="2"-->
-<!--                  d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"-->
-<!--              />-->
-<!--            </svg>-->
             <span
                 class="inline-block px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors">
               {{ translations.select_file }}
@@ -287,39 +273,8 @@ const isSuccess = (resp) => {
 }
 
 const handleFileUpload = (event) => {
-  const file = event.target.files[0]
-  if (file) {
-    formData.value.resumeFile = file
-    formData.value.resumeFileUrl = URL.createObjectURL(file) // preview
-  }
+  selectedFile.value = event.target.files[0]
 }
-
-const fetchResumeIfExists = async () => {
-  const chatId = localStorage.getItem("chat_id");
-
-  try {
-    const { data } = await axios.post(proxy.$locale + "/demo-resume-check", {
-      chat_id: chatId,
-    })
-    console.log("data", data)
-
-    if (data && data.id) {
-      // Text input avtomatik to‘lishi
-      formData.value.resumeText = data.parsed_text || data.title || ""
-
-      // Fayl preview chiqishi
-      if (data.file_url) {
-        formData.value.resumeFileUrl = data.file_url
-      }
-    }
-  } catch (err) {
-    console.warn("❌ Resume check error:", err.response?.data || err)
-  }
-}
-
-onMounted(() => {
-  fetchResumeIfExists()
-})
 const uploadResume = async (token) => {
   if (!selectedFile.value) return
 
@@ -380,7 +335,6 @@ const nextStep = async () => {
 
   if (currentStep.value === 1) {
     currentStep.value++
-    await fetchResumeIfExists() // 👈 step 2 ga o‘tganda resume tekshirish
   }
 }
 
