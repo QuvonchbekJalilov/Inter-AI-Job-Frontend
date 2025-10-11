@@ -110,7 +110,7 @@ const completeRegistration = async () => {
 
     const res = await uploadResume();
     console.log("res", res);
-    window.location.href = "/demo/vacancy";
+    window.location.href = "/demo-vacancy";
   } catch (err) {
     console.error(err);
     alert(err.response?.data?.message ?? "Server xatosi");
