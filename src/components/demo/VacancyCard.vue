@@ -131,7 +131,7 @@ const jobs = ref([])
 const CACHE_KEY = "vacancies_cache"
 const CACHE_TIME = 5 * 60 * 1000
 const applyToVacancy = async () => {
-  window.location.href = "/login"
+  window.location.href = "/register"
 }
 const getCache = () => {
   const cache = localStorage.getItem(CACHE_KEY)
@@ -161,10 +161,11 @@ const fetchJobs = async (forceUpdate = false) => {
         return
       }
     }
+    const chatId = localStorage.getItem("chat_id");
     const { data } = await axios.post(
         proxy.$locale + "/v1/demo/vacancy-matches/run",
         {
-          chat_id: 1234567
+          chat_id: chatId
         },
         {
           headers: {
