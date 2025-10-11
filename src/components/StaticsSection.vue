@@ -70,8 +70,7 @@ onMounted(async () => {
         Authorization: `Bearer ${token}`,
         Accept: "application/json",
         "Content-Type": "application/json"
-      },
-      params: {chat_id: chatId}
+      }
     })
     statistics.value = res.data
   } catch (e) {
