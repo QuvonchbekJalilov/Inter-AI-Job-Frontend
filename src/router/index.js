@@ -57,12 +57,12 @@ const routes = [
         meta: { requiresAuth: true, headerBack: true }
     },
     {
-        path: '/demo/register',
+        path: '/demo-register',
         name: 'demoRegister',
         component: DemoRegister,
     },
     {
-        path: '/demo/vacancy',
+        path: '/demo-vacancy',
         name: 'demoVacancy',
         component: DemoVacancy,
     },
