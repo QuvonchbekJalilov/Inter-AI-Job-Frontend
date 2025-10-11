@@ -64,9 +64,10 @@ const statistics = ref({
 
 onMounted(async () => {
   try {
-    const chatId = localStorage.getItem("chat_id")
+    const token = localStorage.getItem("token") || sessionStorage.getItem("token")
     const res = await axios.get(proxy.$locale + "/v1/dashboard", {
       headers: {
+        Authorization: `Bearer ${token}`,
         Accept: "application/json",
         "Content-Type": "application/json"
       },

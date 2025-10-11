@@ -225,7 +225,6 @@ const fetchJobs = async (forceUpdate = false) => {
           }}
     )
     console.log('data', data)
-    console.log('status', data.status)
 
     if (data.status === "success" && data.data) {
       const mappedJobs = data.data.map(item => {
