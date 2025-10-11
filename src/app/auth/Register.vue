@@ -295,12 +295,11 @@ const handleFileUpload = (event) => {
 }
 
 const fetchResumeIfExists = async () => {
-  const chatId =
-      localStorage.getItem("chat_id") || sessionStorage.getItem("chat_id")
+  const chatId = localStorage.getItem("chat_id");
 
   try {
     const { data } = await axios.post(proxy.$locale + "/demo-resume-check", {
-      chat_id: chatId || 1234567,
+      chat_id: chatId,
     })
     console.log("data", data)
 
@@ -403,7 +402,7 @@ const submitRegistration = async () => {
   }
 
   loading.value = true
-  const chatId = localStorage.getItem("chat_id") || sessionStorage.getItem("chat_id")
+  const chatId = localStorage.getItem("chat_id");
   try {
     const { data } = await axios.post(proxy.$locale + '/auth/register', {
       first_name: formData.firstName,
@@ -411,7 +410,7 @@ const submitRegistration = async () => {
       password: formData.password,
       phone: formData.phone,
       resume_text: formData.resumeText,
-      chat_id: chatId || 1234567,
+      chat_id: chatId,
     })
 
     console.log('✅ Registration success:', data)
