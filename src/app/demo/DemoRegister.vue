@@ -44,6 +44,7 @@
             </span>
           </label>
         </div>
+        <p class="text-gray-500 mb-4">{{chatId}}</p>
 
         <div class="flex gap-3">
           <button
@@ -66,7 +67,7 @@
 </template>
 
 <script setup>
-import { computed, getCurrentInstance, reactive, ref } from "vue";
+import { computed, getCurrentInstance, reactive, ref, onMounted } from "vue";
 import { useI18n } from "@/i18n-lite.js";
 import axios from "axios";
 
@@ -79,7 +80,7 @@ const btnLoading = ref(false);
 const error = ref("");
 
 const formData = reactive({
-  chat_id: 1234567,
+  chat_id: null,
   resumeText: "",
   select_file: "",
 });
@@ -98,9 +99,7 @@ const uploadResume = async () => {
   }
 
   return axios.post(proxy.$locale + "/v1/demo/resume/store", resumeForm, {
-    headers: {
-      Accept: "application/json",
-    },
+    headers: { Accept: "application/json" },
   });
 };
 
@@ -110,21 +109,42 @@ const completeRegistration = async () => {
     error.value = "";
 
     const res = await uploadResume();
-    console.log('res', res)
+    console.log("res", res);
     window.location.href = "/demo/vacancy";
   } catch (err) {
     console.error(err);
-    alert(err.response?.data?.message ?? 'Server xatosi');
+    alert(err.response?.data?.message ?? "Server xatosi");
     error.value = err.response?.data?.message || "Server xatosi";
   } finally {
     btnLoading.value = false;
   }
 };
 
-
 const isStepValid = () => {
   return formData.resumeText?.trim().length > 0 || selectedFile.value;
 };
+const chatId = computed(() => {});
+onMounted(() => {
+  const params = new URLSearchParams(window.location.search);
+  const chatId = params.get("chat_id");
+  const locale = params.get("locale") || "uz";
+
+  if (chatId) {
+    localStorage.setItem("chat_id", chatId);
+    formData.chat_id = chatId;
+    console.log("Chat ID saqlandi:", chatId);
+  } else {
+    const savedChatId = localStorage.getItem("chat_id");
+    if (savedChatId) {
+      formData.chat_id = savedChatId;
+      console.log("Chat ID localStorage’dan olindi:", savedChatId);
+    }
+  }
+
+  if (locale) {
+    localStorage.setItem("locale", locale);
+  }
+});
 </script>
 
 <style scoped>
