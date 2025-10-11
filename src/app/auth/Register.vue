@@ -258,7 +258,10 @@ const formData = reactive({
   confirm_password: '',
   phone: '',
   resumeText: '',
+  resumeFile: null,
+  resumeFileUrl: null,
 })
+
 
 const selectedFile = ref(null)
 const showPassword = ref(false)
@@ -273,8 +276,14 @@ const isSuccess = (resp) => {
 }
 
 const handleFileUpload = (event) => {
-  selectedFile.value = event.target.files[0]
+  const file = event.target.files[0]
+  if (!file) return
+
+  selectedFile.value = file
+  formData.resumeFile = file
+  formData.resumeFileUrl = URL.createObjectURL(file) // preview uchun
 }
+
 const uploadResume = async (token) => {
   if (!selectedFile.value) return
 
