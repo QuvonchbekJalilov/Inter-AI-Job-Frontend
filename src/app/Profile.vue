@@ -394,28 +394,6 @@ const goToHeadHunter = async () => {
   }
 }
 
-const fetchAutoApplyData = async () => {
-  try {
-    const token = localStorage.getItem("token");
-    const response = await axios.get(proxy.$locale + "/auth/settings/auto-apply", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/json",
-      },
-    });
-
-    const settings = response.data.data.settings;
-    console.log("settings:", settings);
-
-    enabled.value = settings.auto_apply_enabled;
-    limit.value = settings.auto_apply_limit;
-    appliedCount.value = settings.auto_apply_count;
-    saved.value = !!limit.value;
-  } catch (error) {
-    if (error.response?.status === 401) clearAuthStorage();
-  }
-};
-
 const tabs = [
   { code: 'uz', name: 'Uzbek' },
   { code: 'en', name: 'English' },
@@ -446,6 +424,28 @@ const progressPercent = computed(() => {
   if (!limit.value) return 0;
   return Math.min((appliedCount.value / limit.value) * 100, 100);
 });
+
+const fetchAutoApplyData = async () => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await axios.get(proxy.$locale + "/auth/settings/auto-apply", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+      },
+    });
+
+    const settings = response.data.data.settings;
+    console.log("settings:", settings);
+
+    enabled.value = settings.auto_apply_enabled;
+    limit.value = settings.auto_apply_limit;
+    appliedCount.value = settings.auto_apply_count;
+    saved.value = !!limit.value;
+  } catch (error) {
+    if (error.response?.status === 401) clearAuthStorage();
+  }
+};
 
 const saveLimit = async () => {
   try {
@@ -529,6 +529,7 @@ onMounted(async () => {
     const balanceRes = await axios.get(proxy.$locale + "/v1/balance", { headers });
     balance.value = balanceRes.data;
     console.log("balanceRes.data", balanceRes.data);
+    saved.value = balanceRes.data.credit.limit;
 
     if (balance.value.credit.count >= 0) {
       await fetchAutoApplyData();
