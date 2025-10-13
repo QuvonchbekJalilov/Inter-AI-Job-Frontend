@@ -405,16 +405,16 @@ const fetchAutoApplyData = async () => {
     });
 
     const settings = response.data.data.settings;
-    console.log("settings", settings);
+    console.log("settings:", settings);
+
     enabled.value = settings.auto_apply_enabled;
     limit.value = settings.auto_apply_limit;
     appliedCount.value = settings.auto_apply_count;
-    saved.value = !!limit.value; // agar limit mavjud bo‘lsa — save bosilgan deb hisoblanadi
+    saved.value = !!limit.value;
   } catch (error) {
     if (error.response?.status === 401) clearAuthStorage();
   }
 };
-
 
 const tabs = [
   { code: 'uz', name: 'Uzbek' },
@@ -475,11 +475,15 @@ const saveLimit = async () => {
 const updateLimit = async () => {
   try {
     const token = localStorage.getItem("token");
-    await axios.patch(
+
+    // yangi qiymat eskisiga qo‘shiladi
+    const newLimit = Number(limit.value || 0) + Number(addedLimit.value || 0);
+
+    const response = await axios.patch(
         proxy.$locale + "/auth/settings/auto-apply",
         {
-          auto_apply_enabled: enabled.value,
-          auto_apply_limit: limit.value,
+          auto_apply_enabled: true, // doim yoqilgan holatda
+          auto_apply_limit: newLimit,
         },
         {
           headers: {
@@ -489,10 +493,16 @@ const updateLimit = async () => {
         }
     );
 
+    console.log("update response", response.data);
+
+    limit.value = newLimit;
     saved.value = true;
     editMode.value = false;
+    addedLimit.value = null;
+
     await fetchAutoApplyData();
   } catch (error) {
+    console.error("updateLimit error", error);
     if (error.response?.status === 401) clearAuthStorage();
   }
 };
@@ -520,7 +530,7 @@ onMounted(async () => {
     balance.value = balanceRes.data;
     console.log("balanceRes.data", balanceRes.data);
 
-    if (balance.value.credit.count > 0) {
+    if (balance.value.credit.count >= 0) {
       await fetchAutoApplyData();
     }
   } catch (e) {
