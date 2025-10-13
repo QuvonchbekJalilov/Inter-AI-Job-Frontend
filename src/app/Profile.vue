@@ -529,6 +529,7 @@ onMounted(async () => {
     saved.value = meData.data?.settings?.auto_apply_limit;
     limit.value = meData.data?.settings?.auto_apply_limit;
     appliedCount.value = meData.data?.settings?.auto_apply_count;
+    enabled.value = meData.data?.settings?.auto_apply_enabled;
     console.log('appliedCount || saved', meData.data?.settings?.auto_apply_count, meData.data?.settings?.auto_apply_limit)
     console.log("balanceRes.data", balanceRes.data);
     console.log("meData", meData);
