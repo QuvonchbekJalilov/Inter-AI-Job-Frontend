@@ -2,10 +2,6 @@
   <div class="min-h-screen bg-gray-50 flex items-center justify-center">
     <div class="w-full max-w-md bg-white text-black rounded-lg shadow-lg p-6">
 
-      <div class="text-center mb-6">
-        <img src="https://www.inter-ai.uz/Logo1.svg" alt="Inter-AI" class="h-8 mx-auto mb-4">
-      </div>
-
       <div class="space-y-6">
         <h2 class="text-xl font-medium text-center text-gray-800 mb-6">{{translations.Upload_your_resume}}</h2>
         <div>
@@ -40,9 +36,6 @@
             >
           </div>
         </div>
-
-<!--        <div class="text-center text-gray-500">{{translations.or}}</div>-->
-
         <label class="block text-sm font-medium text-gray-700 mb-2">{{translations.Upload_your_resume_file}}</label>
         <div
             class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-400 transition-colors cursor-pointer"
