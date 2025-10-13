@@ -1,6 +1,11 @@
 <template>
   <div class="min-h-screen bg-gray-50 flex items-center justify-center">
     <div class="w-full max-w-md bg-white text-black rounded-lg shadow-lg p-6">
+
+      <div class="text-center mb-6">
+        <img src="https://www.inter-ai.uz/Logo1.svg" alt="Inter-AI" class="h-8 mx-auto mb-4">
+      </div>
+
       <div class="space-y-6">
         <h2 class="text-xl font-medium text-center text-gray-800 mb-6">{{translations.Upload_your_resume}}</h2>
         <div>
@@ -9,7 +14,7 @@
             <input
                 v-model="formData.firstName"
                 type="text"
-                class="w-full px-3 py-2 bg-gray-100 border-0 rounded-md focus:ring-2 focus:ring-blue-500 focus:bg-white"
+                class="w-full px-3 py-2 bg-gray-100 border-0 rounded-md focus:ring-2 focus:ring-blue-500 focus:bg-white"~
                 placeholder="Ismoil Usmonov"
             >
           </div>
