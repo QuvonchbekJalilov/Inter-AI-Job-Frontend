@@ -129,29 +129,38 @@
             ></div>
           </label>
 
-          <!-- Input va tugma (faqat 1-marta limit o‘rnatish uchun POST) -->
-          <div v-if="enabled && !saved" class="mt-4 flex items-center gap-3">
+          <!-- Agar foydalanuvchi avto apply yoqmagan bo‘lsa, hech narsa chiqmaydi -->
+          <div v-if="!enabled">
+            <p class="text-gray-500 text-sm">
+              {{ translations.auto_apply?.disabled_message || "Auto apply hozircha o‘chirilgan." }}
+            </p>
+          </div>
+
+          <!-- 1️⃣ Enabled bo‘lsa va hali limit yo‘q -->
+          <div v-else-if="enabled && !saved" class="mt-4 flex items-center gap-3">
             <input
                 type="number"
                 v-model.number="limit"
                 class="w-48 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-                placeholder="Son kiriting"
+                placeholder="Limit kiriting"
             />
             <button
                 @click="saveLimit"
                 class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition disabled:bg-gray-300 disabled:text-gray-500"
                 :disabled="!limit"
             >
-              {{ translations.auto_apply?.save_button }}
+              {{ translations.auto_apply?.save_button || "Create" }}
             </button>
           </div>
 
-          <!-- Progress bar + edit qilish -->
-          <div v-if="saved" class="mt-6">
+          <!-- 2️⃣ Limit saqlangan bo‘lsa -->
+          <div v-else-if="saved" class="mt-6">
+            <!-- Progress bar -->
             <div class="flex justify-between text-sm text-gray-600 mb-1">
-              <span>{{ translations.auto_apply?.progress }}</span>
+              <span>{{ translations.auto_apply?.progress || "Auto Apply progress" }}</span>
               <span>{{ appliedCount }} / {{ limit }}</span>
             </div>
+
             <div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
               <div
                   class="h-2 bg-indigo-600 transition-all duration-300"
@@ -159,38 +168,35 @@
               ></div>
             </div>
 
-            <!-- Edit tugmasi -->
+            <!-- Edit qismi -->
             <div v-if="!editMode" class="mt-4">
               <button
                   @click="editMode = true"
-                  class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-600 transition"
+                  class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
               >
-                ✏️ {{ translations.auto_apply?.edit_button || 'Add limit' }}
+                ✏️ {{ translations.auto_apply?.edit_button || "Edit limit" }}
               </button>
             </div>
 
-            <!-- Edit form (PATCH) -->
-            <div v-if="editMode" class="mt-4 space-y-3">
-              <!-- Input -->
+            <div v-else class="mt-4 space-y-3">
               <input
                   type="number"
+                  v-model.number="limit"
                   class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
               />
-
-              <!-- Buttonlar yonma-yon -->
               <div class="flex items-center gap-3">
                 <button
                     @click="updateLimit"
                     class="w-48 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition disabled:bg-gray-300 disabled:text-gray-500"
                     :disabled="!limit"
                 >
-                  {{ translations.auto_apply?.update_button || 'Update' }}
+                  {{ translations.auto_apply?.update_button || "Update" }}
                 </button>
                 <button
                     @click="editMode = false"
                     class="w-48 px-4 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500 transition"
                 >
-                  {{ translations.auto_apply?.cancel_button || 'Cancel' }}
+                  {{ translations.auto_apply?.cancel_button || "Cancel" }}
                 </button>
               </div>
             </div>
@@ -406,7 +412,7 @@ const fetchAutoApplyData = async () => {
     enabled.value = response.data.data.auto_apply_enabled;
     limit.value = response.data.data.auto_apply_limit;
     appliedCount.value = response.data.data.auto_apply_count;
-    saved.value = !!limit.value;
+    saved.value = !!limit.value && limit.value > 0;
   } catch (error) {
     if (error.response?.status === 401) clearAuthStorage();
   }
@@ -424,18 +430,16 @@ onMounted(async () => {
     const headers = {
       Authorization: `Bearer ${token}`,
       Accept: "application/json",
-      "Content-Type": "application/json",
     };
 
     const { data: meData } = await axios.get(proxy.$locale + "/auth/me", { headers });
     user.value = meData.data;
-    console.log('meData', meData)
 
-    const balanceRes = await axios.get(proxy.$locale + "/v1/balance", { headers });
-    balance.value = balanceRes.data;
-    console.log('balanceRes.data', balanceRes.data);
+    const { data: balanceRes } = await axios.get(proxy.$locale + "/v1/balance", { headers });
+    balance.value = balanceRes;
 
-    if (balance.value.credit.count > 0) {
+    // faqat kredit bo‘lsa avto apply ma’lumotini ol
+    if (balance.value.credit.count >= 0) {
       await fetchAutoApplyData();
     }
   } catch (e) {
@@ -443,10 +447,8 @@ onMounted(async () => {
     if (e.response?.status === 401) clearAuthStorage();
   } finally {
     loading.value = false;
-    loadingSkeleton.value = false;
   }
 });
-
 
 const tabs = [
   { code: 'uz', name: 'Uzbek' },
