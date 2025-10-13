@@ -531,6 +531,7 @@ onMounted(async () => {
     console.log("balanceRes.data", balanceRes.data);
     saved.value = meData.data.settinges.auto_apply_limit;
     appliedCount.value = meData.data.settinges.auto_apply_count;
+    console.log('appliedCount', appliedCount)
 
     if (balance.value.credit.count >= 0) {
       await fetchAutoApplyData();
