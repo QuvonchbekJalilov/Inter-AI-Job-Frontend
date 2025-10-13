@@ -39,6 +39,7 @@
               v-model="form.phone"
               class="w-full px-3 py-2 bg-gray-100 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:bg-white"
               placeholder="901234567"
+              @input="limitPhoneLength"
           />
         </div>
 
@@ -252,6 +253,14 @@ onMounted(() => {
     });
   }
 });
+
+const limitPhoneLength = (e) => {
+  let val = e.target.value.replace(/\D/g, ''); // faqat raqamlar
+  if (val.length > 9) {
+    val = val.slice(0, 9);
+  }
+  form.value.phone = val;
+};
 onMounted(() => {
   const track = axios.post(proxy.$locale + "/visits/track", {}, {
     headers: {
