@@ -455,13 +455,20 @@ const phoneInput = ref(null);
 
 onMounted(() => {
   if (phoneInput.value) {
-    intlTelInput(phoneInput.value, {
+    const iti = intlTelInput(phoneInput.value, {
       initialCountry: "uz",
-      onlyCountries: ["uz"],      // faqat O‘zbekiston
-      preferredCountries: ["uz"], // ixtiyoriy, lekin foydali
-      allowDropdown: false,       // dropdownni o‘chiradi
+      onlyCountries: ["uz"],
+      preferredCountries: ["uz"],
+      allowDropdown: false,
       separateDialCode: true,
       nationalMode: false,
+    });
+
+    phoneInput.value.addEventListener("input", () => {
+      const digits = phoneInput.value.value.replace(/\D/g, '');
+      if (digits.length > 9) {
+        iti.setNumber("+998" + digits.slice(0, 9));
+      }
     });
   }
 });
