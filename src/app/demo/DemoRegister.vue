@@ -4,6 +4,39 @@
       <div class="space-y-6">
         <h2 class="text-xl font-medium text-center text-gray-800 mb-6">{{translations.Upload_your_resume}}</h2>
         <div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">{{translations.name}}</label>
+              <input
+                  v-model="formData.firstName"
+                  type="text"
+                  class="w-full px-3 py-2 bg-gray-100 border-0 rounded-md focus:ring-2 focus:ring-blue-500 focus:bg-white"
+                  placeholder="Ismoil"
+              >
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">{{translations.surname}}</label>
+              <input
+                  v-model="formData.lastName"
+                  type="text"
+                  class="w-full px-3 py-2 bg-gray-100 border-0 rounded-md focus:ring-2 focus:ring-blue-500 focus:bg-white"
+                  placeholder="Usmonov"
+              >
+            </div>
+          </div>
+          <div>
+            <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">
+              Telefon raqam
+            </label>
+            <input
+                ref="phoneInput"
+                id="phone"
+                type="tel"
+                v-model="formData.phone"
+                class="w-full px-3 py-2 bg-gray-100 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:bg-white"
+                placeholder="901234567"
+            />
+          </div>
           <label class="block text-sm font-medium text-gray-700 mb-2">{{translations.Enter_your_resume_text}}</label>
           <input
               v-model="formData.resumeText"
