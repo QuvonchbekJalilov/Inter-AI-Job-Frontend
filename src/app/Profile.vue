@@ -419,6 +419,7 @@ const limit = ref(null);
 const saved = ref(false);
 const appliedCount = ref(0);
 const editMode = ref(false); // yangi state edit qilish uchun
+const addedLimit = ref(null);
 
 const progressPercent = computed(() => {
   if (!limit.value) return 0;
