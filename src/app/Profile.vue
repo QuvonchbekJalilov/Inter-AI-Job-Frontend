@@ -129,69 +129,72 @@
             ></div>
           </label>
 
-          <!-- Input va tugma (faqat 1-marta limit o‘rnatish uchun POST) -->
-          <div v-if="enabled && !saved" class="mt-4 flex items-center gap-3">
-            <input
-                type="number"
-                v-model.number="limit"
-                class="w-48 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-                placeholder="Son kiriting"
-            />
-            <button
-                @click="saveLimit"
-                class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition disabled:bg-gray-300 disabled:text-gray-500"
-                :disabled="!limit"
-            >
-              {{ translations.auto_apply?.save_button }}
-            </button>
-          </div>
+          <div v-if="enabled" class="mt-6">
 
-          <!-- Progress bar + edit qilish -->
-          <div v-if="saved" class="mt-6">
-            <div class="flex justify-between text-sm text-gray-600 mb-1">
-              <span>{{ translations.auto_apply?.progress }}</span>
-              <span>{{ appliedCount }} / {{ limit }}</span>
-            </div>
-            <div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
-              <div
-                  class="h-2 bg-indigo-600 transition-all duration-300"
-                  :style="{ width: progressPercent + '%' }"
-              ></div>
+            <!-- Progress har doim bor -->
+            <div class="mb-4">
+              <div class="flex justify-between text-sm text-gray-600 mb-1">
+                <span>{{ translations.auto_apply?.progress || 'Progress' }}</span>
+                <span>{{ appliedCount }} / {{ limit || 0 }}</span>
+              </div>
+              <div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                <div
+                    class="h-2 bg-indigo-600 transition-all duration-300"
+                    :style="{ width: progressPercent + '%' }"
+                ></div>
+              </div>
             </div>
 
-            <!-- Edit tugmasi -->
-            <div v-if="!editMode" class="mt-4">
+            <!-- Agar hali limit yo‘q bo‘lsa — save -->
+            <div v-if="!saved" class="flex items-center gap-3">
+              <input
+                  type="number"
+                  v-model.number="limit"
+                  class="w-48 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                  placeholder="Son kiriting"
+              />
               <button
-                  @click="editMode = true"
-                  class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-600 transition"
+                  @click="saveLimit"
+                  class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition disabled:bg-gray-300 disabled:text-gray-500"
+                  :disabled="!limit"
               >
-                ✏️ {{ translations.auto_apply?.edit_button || 'Add limit' }}
+                {{ translations.auto_apply?.save_button || 'Save' }}
               </button>
             </div>
 
-            <!-- Edit form (PATCH) -->
-            <div v-if="editMode" class="mt-4 space-y-3">
-              <!-- Input -->
-              <input
-                  type="number"
-                  class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-              />
+            <!-- Agar limit allaqachon bor bo‘lsa -->
+            <div v-else>
+              <div v-if="!editMode" class="mt-4">
+                <button
+                    @click="editMode = true"
+                    class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+                >
+                  ✏️ {{ translations.auto_apply?.edit_button || 'Update limit' }}
+                </button>
+              </div>
 
-              <!-- Buttonlar yonma-yon -->
-              <div class="flex items-center gap-3">
-                <button
-                    @click="updateLimit"
-                    class="w-48 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition disabled:bg-gray-300 disabled:text-gray-500"
-                    :disabled="!limit"
-                >
-                  {{ translations.auto_apply?.update_button || 'Update' }}
-                </button>
-                <button
-                    @click="editMode = false"
-                    class="w-48 px-4 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500 transition"
-                >
-                  {{ translations.auto_apply?.cancel_button || 'Cancel' }}
-                </button>
+              <!-- Edit form -->
+              <div v-if="editMode" class="mt-4 space-y-3">
+                <input
+                    type="number"
+                    v-model.number="limit"
+                    class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                />
+                <div class="flex items-center gap-3">
+                  <button
+                      @click="updateLimit"
+                      class="w-48 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition disabled:bg-gray-300 disabled:text-gray-500"
+                      :disabled="!limit"
+                  >
+                    {{ translations.auto_apply?.update_button || 'Update' }}
+                  </button>
+                  <button
+                      @click="editMode = false"
+                      class="w-48 px-4 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500 transition"
+                  >
+                    {{ translations.auto_apply?.cancel_button || 'Cancel' }}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -403,52 +406,15 @@ const fetchAutoApplyData = async () => {
       },
     });
 
-    // ✅ settings ichidan olish kerak
     const settings = response.data.data.settings;
-
     enabled.value = settings.auto_apply_enabled;
     limit.value = settings.auto_apply_limit;
     appliedCount.value = settings.auto_apply_count;
-    saved.value = !!limit.value;
+    saved.value = !!limit.value; // agar limit mavjud bo‘lsa — save bosilgan deb hisoblanadi
   } catch (error) {
     if (error.response?.status === 401) clearAuthStorage();
   }
 };
-
-onMounted(async () => {
-  loading.value = true;
-  try {
-    const token = localStorage.getItem("token") || sessionStorage.getItem("token");
-    if (!token) {
-      router.push({ name: "login" });
-      return;
-    }
-
-    const headers = {
-      Authorization: `Bearer ${token}`,
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    };
-
-    const { data: meData } = await axios.get(proxy.$locale + "/auth/me", { headers });
-    user.value = meData.data;
-    console.log('meData', meData)
-
-    const balanceRes = await axios.get(proxy.$locale + "/v1/balance", { headers });
-    balance.value = balanceRes.data;
-    console.log('balanceRes.data', balanceRes.data);
-
-    if (balance.value.credit.count > 0) {
-      await fetchAutoApplyData();
-    }
-  } catch (e) {
-    error.value = "Foydalanuvchi ma’lumotlarini olishda xatolik.";
-    if (e.response?.status === 401) clearAuthStorage();
-  } finally {
-    loading.value = false;
-    loadingSkeleton.value = false;
-  }
-});
 
 
 const tabs = [
@@ -482,11 +448,10 @@ const progressPercent = computed(() => {
   return Math.min((appliedCount.value / limit.value) * 100, 100);
 });
 
-async function saveLimit() {
+const saveLimit = async () => {
   try {
     const token = localStorage.getItem("token");
-
-    const response = await axios.post(
+    await axios.post(
         proxy.$locale + "/auth/settings/auto-apply",
         {
           auto_apply_enabled: enabled.value,
@@ -499,22 +464,19 @@ async function saveLimit() {
           },
         }
     );
+
     saved.value = true;
     appliedCount.value = 0;
-
     await fetchAutoApplyData();
   } catch (error) {
-    if (error.response?.status === 401) {
-      clearAuthStorage()
-    }
+    if (error.response?.status === 401) clearAuthStorage();
   }
-}
+};
 
-async function updateLimit() {
+const updateLimit = async () => {
   try {
     const token = localStorage.getItem("token");
-
-    const response = await axios.patch(
+    await axios.patch(
         proxy.$locale + "/auth/settings/auto-apply",
         {
           auto_apply_enabled: enabled.value,
@@ -530,14 +492,46 @@ async function updateLimit() {
 
     saved.value = true;
     editMode.value = false;
-
     await fetchAutoApplyData();
   } catch (error) {
-    if (error.response?.status === 401) {
-      clearAuthStorage()
-    }
+    if (error.response?.status === 401) clearAuthStorage();
   }
-}
+};
+
+onMounted(async () => {
+  loading.value = true;
+  try {
+    const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+    if (!token) {
+      router.push({ name: "login" });
+      return;
+    }
+
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    };
+
+    const { data: meData } = await axios.get(proxy.$locale + "/auth/me", { headers });
+    user.value = meData.data;
+    console.log("meData", meData);
+
+    const balanceRes = await axios.get(proxy.$locale + "/v1/balance", { headers });
+    balance.value = balanceRes.data;
+    console.log("balanceRes.data", balanceRes.data);
+
+    if (balance.value.credit.count > 0) {
+      await fetchAutoApplyData();
+    }
+  } catch (e) {
+    error.value = "Foydalanuvchi ma’lumotlarini olishda xatolik.";
+    if (e.response?.status === 401) clearAuthStorage();
+  } finally {
+    loading.value = false;
+    loadingSkeleton.value = false;
+  }
+});
 
 const logout = async () => {
   try {
