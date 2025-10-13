@@ -129,38 +129,29 @@
             ></div>
           </label>
 
-          <!-- Agar foydalanuvchi avto apply yoqmagan bo‘lsa, hech narsa chiqmaydi -->
-          <div v-if="!enabled">
-            <p class="text-gray-500 text-sm">
-              {{ translations.auto_apply?.disabled_message || "Auto apply hozircha o‘chirilgan." }}
-            </p>
-          </div>
-
-          <!-- 1️⃣ Enabled bo‘lsa va hali limit yo‘q -->
-          <div v-else-if="enabled && !saved" class="mt-4 flex items-center gap-3">
+          <!-- Input va tugma (faqat 1-marta limit o‘rnatish uchun POST) -->
+          <div v-if="enabled && !saved" class="mt-4 flex items-center gap-3">
             <input
                 type="number"
                 v-model.number="limit"
                 class="w-48 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-                placeholder="Limit kiriting"
+                placeholder="Son kiriting"
             />
             <button
                 @click="saveLimit"
                 class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition disabled:bg-gray-300 disabled:text-gray-500"
                 :disabled="!limit"
             >
-              {{ translations.auto_apply?.save_button || "Create" }}
+              {{ translations.auto_apply?.save_button }}
             </button>
           </div>
 
-          <!-- 2️⃣ Limit saqlangan bo‘lsa -->
-          <div v-else-if="saved" class="mt-6">
-            <!-- Progress bar -->
+          <!-- Progress bar + edit qilish -->
+          <div v-if="saved" class="mt-6">
             <div class="flex justify-between text-sm text-gray-600 mb-1">
-              <span>{{ translations.auto_apply?.progress || "Auto Apply progress" }}</span>
+              <span>{{ translations.auto_apply?.progress }}</span>
               <span>{{ appliedCount }} / {{ limit }}</span>
             </div>
-
             <div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
               <div
                   class="h-2 bg-indigo-600 transition-all duration-300"
@@ -168,35 +159,38 @@
               ></div>
             </div>
 
-            <!-- Edit qismi -->
+            <!-- Edit tugmasi -->
             <div v-if="!editMode" class="mt-4">
               <button
                   @click="editMode = true"
-                  class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+                  class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-600 transition"
               >
-                ✏️ {{ translations.auto_apply?.edit_button || "Edit limit" }}
+                ✏️ {{ translations.auto_apply?.edit_button || 'Add limit' }}
               </button>
             </div>
 
-            <div v-else class="mt-4 space-y-3">
+            <!-- Edit form (PATCH) -->
+            <div v-if="editMode" class="mt-4 space-y-3">
+              <!-- Input -->
               <input
                   type="number"
-                  v-model.number="limit"
                   class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
               />
+
+              <!-- Buttonlar yonma-yon -->
               <div class="flex items-center gap-3">
                 <button
                     @click="updateLimit"
                     class="w-48 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition disabled:bg-gray-300 disabled:text-gray-500"
                     :disabled="!limit"
                 >
-                  {{ translations.auto_apply?.update_button || "Update" }}
+                  {{ translations.auto_apply?.update_button || 'Update' }}
                 </button>
                 <button
                     @click="editMode = false"
                     class="w-48 px-4 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500 transition"
                 >
-                  {{ translations.auto_apply?.cancel_button || "Cancel" }}
+                  {{ translations.auto_apply?.cancel_button || 'Cancel' }}
                 </button>
               </div>
             </div>
@@ -415,7 +409,6 @@ const fetchAutoApplyData = async () => {
     saved.value = !!limit.value;
   } catch (error) {
     if (error.response?.status === 401) clearAuthStorage();
-    loadingSkeleton.value = false;
   }
 };
 
@@ -448,7 +441,6 @@ onMounted(async () => {
   } catch (e) {
     error.value = "Foydalanuvchi ma’lumotlarini olishda xatolik.";
     if (e.response?.status === 401) clearAuthStorage();
-    loadingSkeleton.value = false;
   } finally {
     loading.value = false;
     loadingSkeleton.value = false;
@@ -512,7 +504,6 @@ async function saveLimit() {
     if (error.response?.status === 401) {
       clearAuthStorage()
     }
-    loadingSkeleton.value = false;
   }
 }
 
@@ -542,7 +533,6 @@ async function updateLimit() {
     if (error.response?.status === 401) {
       clearAuthStorage()
     }
-    loadingSkeleton.value = false;
   }
 }
 
