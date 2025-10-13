@@ -529,7 +529,8 @@ onMounted(async () => {
     const balanceRes = await axios.get(proxy.$locale + "/v1/balance", { headers });
     balance.value = balanceRes.data;
     console.log("balanceRes.data", balanceRes.data);
-    saved.value = balanceRes.data.credit.limit;
+    saved.value = meData.data.settinges.auto_apply_limit;
+    appliedCount.value = meData.data.settinges.auto_apply_count;
 
     if (balance.value.credit.count >= 0) {
       await fetchAutoApplyData();
