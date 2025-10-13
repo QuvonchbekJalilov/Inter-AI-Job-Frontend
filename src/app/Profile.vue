@@ -403,9 +403,12 @@ const fetchAutoApplyData = async () => {
       },
     });
 
-    enabled.value = response.data.data.auto_apply_enabled;
-    limit.value = response.data.data.auto_apply_limit;
-    appliedCount.value = response.data.data.auto_apply_count;
+    // ✅ settings ichidan olish kerak
+    const settings = response.data.data.settings;
+
+    enabled.value = settings.auto_apply_enabled;
+    limit.value = settings.auto_apply_limit;
+    appliedCount.value = settings.auto_apply_count;
     saved.value = !!limit.value;
   } catch (error) {
     if (error.response?.status === 401) clearAuthStorage();
@@ -557,6 +560,7 @@ const logout = async () => {
 }
 
 </script>
+
 <style>
 .slide-up-enter-active,
 .slide-up-leave-active {
@@ -573,9 +577,3 @@ const logout = async () => {
   opacity: 1;
 }
 </style>
-
-
-
-
-
-
