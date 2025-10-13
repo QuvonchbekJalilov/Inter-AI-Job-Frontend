@@ -405,6 +405,7 @@ const fetchAutoApplyData = async () => {
     });
 
     const settings = response.data.data.settings;
+    console.log("settings", settings);
     enabled.value = settings.auto_apply_enabled;
     limit.value = settings.auto_apply_limit;
     appliedCount.value = settings.auto_apply_count;
