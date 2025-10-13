@@ -412,7 +412,7 @@ const fetchAutoApplyData = async () => {
     enabled.value = response.data.data.auto_apply_enabled;
     limit.value = response.data.data.auto_apply_limit;
     appliedCount.value = response.data.data.auto_apply_count;
-    saved.value = !!limit.value && limit.value > 0;
+    saved.value = !!limit.value;
   } catch (error) {
     if (error.response?.status === 401) clearAuthStorage();
   }
@@ -430,16 +430,18 @@ onMounted(async () => {
     const headers = {
       Authorization: `Bearer ${token}`,
       Accept: "application/json",
+      "Content-Type": "application/json",
     };
 
     const { data: meData } = await axios.get(proxy.$locale + "/auth/me", { headers });
     user.value = meData.data;
+    console.log('meData', meData)
 
-    const { data: balanceRes } = await axios.get(proxy.$locale + "/v1/balance", { headers });
-    balance.value = balanceRes;
+    const balanceRes = await axios.get(proxy.$locale + "/v1/balance", { headers });
+    balance.value = balanceRes.data;
+    console.log('balanceRes.data', balanceRes.data);
 
-    // faqat kredit bo‘lsa avto apply ma’lumotini ol
-    if (balance.value.credit.count >= 0) {
+    if (balance.value.credit.count > 0) {
       await fetchAutoApplyData();
     }
   } catch (e) {
@@ -447,8 +449,10 @@ onMounted(async () => {
     if (e.response?.status === 401) clearAuthStorage();
   } finally {
     loading.value = false;
+    loadingSkeleton.value = false;
   }
 });
+
 
 const tabs = [
   { code: 'uz', name: 'Uzbek' },
