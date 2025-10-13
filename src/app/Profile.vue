@@ -102,11 +102,13 @@
             </div>
             <span class="px-3 py-1 bg-green-100 text-green-600 rounded-full text-xs">{{ translations.resumes?.status_active }}</span>
           </div>
-          <button
-              class="mt-4 w-full px-4 py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-50"
+          <a
+              :href="user?.resumes[0]?.file_url"
+              target="_blank"
+              class="mt-4 w-full px-4 py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-50 text-center block"
           >
-            {{ translations.resumes?.update_btn }}
-          </button>
+            {{ translations.resumes?.view_btn || 'Rezyumeni ko‘rish' }}
+          </a>
         </div>
 
         <div class="bg-white border border-gray-200 rounded-2xl p-6">
