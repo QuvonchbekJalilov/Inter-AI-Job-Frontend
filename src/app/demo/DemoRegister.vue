@@ -6,36 +6,27 @@
         <div>
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">{{translations.name}}</label>
+              <label class="block text-sm font-medium text-gray-700 mb-1">{{translations.name}} {{translations.surname}}</label>
               <input
                   v-model="formData.firstName"
                   type="text"
                   class="w-full px-3 py-2 bg-gray-100 border-0 rounded-md focus:ring-2 focus:ring-blue-500 focus:bg-white"
-                  placeholder="Ismoil"
+                  placeholder="Ismoil Usmonov"
               >
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">{{translations.surname}}</label>
+              <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">
+                Telefon raqam
+              </label>
               <input
-                  v-model="formData.lastName"
-                  type="text"
-                  class="w-full px-3 py-2 bg-gray-100 border-0 rounded-md focus:ring-2 focus:ring-blue-500 focus:bg-white"
-                  placeholder="Usmonov"
-              >
+                  ref="phoneInput"
+                  id="phone"
+                  type="tel"
+                  v-model="formData.phone"
+                  class="w-full px-3 py-2 bg-gray-100 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:bg-white"
+                  placeholder="901234567"
+              />
             </div>
-          </div>
-          <div>
-            <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">
-              Telefon raqam
-            </label>
-            <input
-                ref="phoneInput"
-                id="phone"
-                type="tel"
-                v-model="formData.phone"
-                class="w-full px-3 py-2 bg-gray-100 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:bg-white"
-                placeholder="901234567"
-            />
           </div>
           <label class="block text-sm font-medium text-gray-700 mb-2">{{translations.Enter_your_resume_text}}</label>
           <input
@@ -58,20 +49,6 @@
               @change="handleFileUpload"
           />
           <label for="resumeUpload" class="block cursor-pointer">
-<!--            <svg-->
-<!--                class="w-12 h-12 text-gray-400 mx-auto mb-4"-->
-<!--                fill="none"-->
-<!--                stroke="currentColor"-->
-<!--                viewBox="0 0 24 24"-->
-<!--            >-->
-<!--              <path-->
-<!--                  stroke-linecap="round"-->
-<!--                  stroke-linejoin="round"-->
-<!--                  stroke-width="2"-->
-<!--                  d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"-->
-<!--              />-->
-<!--            </svg>-->
-<!--            <p class="text-gray-500 mb-4">{{translations.dadafhocts}}</p>-->
             <span class="inline-block px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors">
               {{translations.select_file}}
             </span>
@@ -103,6 +80,7 @@
 import { computed, getCurrentInstance, reactive, ref, onMounted } from "vue";
 import { useI18n } from "@/i18n-lite.js";
 import axios from "axios";
+import intlTelInput from "intl-tel-input";
 
 const { proxy } = getCurrentInstance();
 const { translations } = useI18n();
@@ -115,6 +93,8 @@ const error = ref("");
 const formData = reactive({
   chat_id: null,
   resumeText: "",
+  firstName: "",
+  phone: "",
   select_file: "",
 });
 
@@ -176,6 +156,27 @@ onMounted(() => {
 
   if (locale) {
     localStorage.setItem("locale", locale);
+  }
+});
+const phoneInput = ref(null);
+
+onMounted(() => {
+  if (phoneInput.value) {
+    const iti = intlTelInput(phoneInput.value, {
+      initialCountry: "uz",
+      onlyCountries: ["uz"],
+      preferredCountries: ["uz"],
+      allowDropdown: false,
+      separateDialCode: true,
+      nationalMode: false,
+    });
+
+    phoneInput.value.addEventListener("input", () => {
+      const digits = phoneInput.value.value.replace(/\D/g, '');
+      if (digits.length > 9) {
+        iti.setNumber("+998" + digits.slice(0, 9));
+      }
+    });
   }
 });
 </script>
