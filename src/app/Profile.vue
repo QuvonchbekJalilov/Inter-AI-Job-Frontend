@@ -419,7 +419,6 @@ const limit = ref(null);
 const saved = ref(false);
 const appliedCount = ref(0);
 const editMode = ref(false); // yangi state edit qilish uchun
-const addedLimit = ref(null);
 
 const progressPercent = computed(() => {
   if (!limit.value) return 0;
@@ -478,7 +477,7 @@ const updateLimit = async () => {
     const token = localStorage.getItem("token");
 
     // yangi qiymat eskisiga qo‘shiladi
-    const newLimit = Number(limit.value || 0) + Number(addedLimit.value || 0);
+    const newLimit = Number(limit.value || 0);
 
     const response = await axios.patch(
         proxy.$locale + "/auth/settings/auto-apply",
@@ -499,7 +498,6 @@ const updateLimit = async () => {
     limit.value = newLimit;
     saved.value = true;
     editMode.value = false;
-    addedLimit.value = null;
 
     await fetchAutoApplyData();
   } catch (error) {
