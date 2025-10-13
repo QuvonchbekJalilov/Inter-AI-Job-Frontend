@@ -39,7 +39,6 @@
               v-model="form.phone"
               class="w-full px-3 py-2 bg-gray-100 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:bg-white"
               placeholder="901234567"
-              @input="limitPhoneLength"
           />
         </div>
 
@@ -243,24 +242,23 @@ const phoneInput = ref(null);
 
 onMounted(() => {
   if (phoneInput.value) {
-    intlTelInput(phoneInput.value, {
+    const iti = intlTelInput(phoneInput.value, {
       initialCountry: "uz",
-      onlyCountries: ["uz"],      // faqat O‘zbekiston
-      preferredCountries: ["uz"], // ixtiyoriy, lekin foydali
-      allowDropdown: false,       // dropdownni o‘chiradi
+      onlyCountries: ["uz"],
+      preferredCountries: ["uz"],
+      allowDropdown: false,
       separateDialCode: true,
       nationalMode: false,
     });
+
+    phoneInput.value.addEventListener("input", () => {
+      const digits = phoneInput.value.value.replace(/\D/g, '');
+      if (digits.length > 9) {
+        iti.setNumber("+998" + digits.slice(0, 9));
+      }
+    });
   }
 });
-
-const limitPhoneLength = (e) => {
-  let val = e.target.value.replace(/\D/g, ''); // faqat raqamlar
-  if (val.length > 9) {
-    val = val.slice(0, 9);
-  }
-  form.value.phone = val;
-};
 onMounted(() => {
   const track = axios.post(proxy.$locale + "/visits/track", {}, {
     headers: {
