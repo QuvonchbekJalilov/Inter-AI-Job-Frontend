@@ -415,6 +415,7 @@ const fetchAutoApplyData = async () => {
     saved.value = !!limit.value;
   } catch (error) {
     if (error.response?.status === 401) clearAuthStorage();
+    loadingSkeleton.value = false;
   }
 };
 
@@ -447,6 +448,7 @@ onMounted(async () => {
   } catch (e) {
     error.value = "Foydalanuvchi ma’lumotlarini olishda xatolik.";
     if (e.response?.status === 401) clearAuthStorage();
+    loadingSkeleton.value = false;
   } finally {
     loading.value = false;
     loadingSkeleton.value = false;
@@ -510,6 +512,7 @@ async function saveLimit() {
     if (error.response?.status === 401) {
       clearAuthStorage()
     }
+    loadingSkeleton.value = false;
   }
 }
 
@@ -539,6 +542,7 @@ async function updateLimit() {
     if (error.response?.status === 401) {
       clearAuthStorage()
     }
+    loadingSkeleton.value = false;
   }
 }
 
