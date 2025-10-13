@@ -36,7 +36,7 @@
           >
         </div>
 
-        <div class="text-center text-gray-500">{{translations.or}}</div>
+<!--        <div class="text-center text-gray-500">{{translations.or}}</div>-->
 
         <label class="block text-sm font-medium text-gray-700 mb-2">{{translations.Upload_your_resume_file}}</label>
         <div
@@ -54,7 +54,6 @@
             </span>
           </label>
         </div>
-        <p class="text-gray-500 mb-4">{{chatId}}</p>
 
         <div class="flex gap-3">
           <button
