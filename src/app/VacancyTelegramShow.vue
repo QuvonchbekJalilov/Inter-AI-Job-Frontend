@@ -8,7 +8,7 @@
             <div>
                 <h3 class="text-2xl font-medium mb-2">{{ vacancy.title }}</h3>
                 <p class="text-gray-700 font-medium">{{ vacancy.company }}</p>
-                <p class="text-gray-500">Source: {{ vacancy.source_id }}</p>
+                <!-- <p class="text-gray-500">Source: {{ vacancy.source_id }}</p> -->
             </div>
 
             <!-- Description -->
@@ -34,19 +34,12 @@
                     </div>
                 </div>
 
-                <div class="p-4 border rounded-lg">
-                    <p class="text-sm text-gray-500">Language</p>
-                    <p class="font-medium uppercase">{{ vacancy.language }}</p>
-                </div>
+               
             </div>
 
             <!-- Telegram Links -->
             <div class="p-4 bg-gray-50 rounded-lg text-sm text-gray-600 space-y-2">
-                <div v-if="vacancy.source_message_id">
-                    📤 <a :href="vacancy.source_message_id" target="_blank" class="text-blue-600 hover:underline">
-                        Original Telegram Post
-                    </a>
-                </div>
+                
                 <div v-if="vacancy.target_message_id">
                     📥 <a :href="vacancy.target_message_id" target="_blank" class="text-blue-600 hover:underline">
                         Shared via Inter-AI Bot
@@ -55,12 +48,12 @@
             </div>
 
             <!-- Action -->
-            <div>
+            <!-- <div>
                 <button @click="openTelegramLink"
                     class="block w-full py-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium text-center">
                     {{ translations.Open_in_Telegram }}
                 </button>
-            </div>
+            </div> -->
         </div>
     </div>
     <LoadingModal :show="showLoading" />
