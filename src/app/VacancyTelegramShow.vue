@@ -30,21 +30,41 @@ const route = useRoute()
 const vacancy = ref(null)
 const loading = ref(true)
 const error = ref(null)
+const id = route.params.id
 
-onMounted(async () => {
-    try {
-        const id = params.get('id')
-        console.log('Fetching vacancy with ID:', id)
-        const { data } = await axios.get(`/v1/telegram/vacancies/${id}`)
-        if (data.success) {
-            vacancy.value = data.data
-        } else {
-            error.value = data.message || 'Vacancy not found'
+
+
+const fetchVacancy = async () => {
+  try {
+    showLoading.value = true
+    const token = localStorage.getItem("token") || sessionStorage.getItem("token")
+
+    const res = await fetch(
+        proxy.$locale + `/v1/telegram/vacancies/${id}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+            "Content-Type": "application/json"
+          }
         }
-    } catch (err) {
-        error.value = err.response?.data?.message || 'Failed to load vacancy'
-    } finally {
-        loading.value = false
+    )
+
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`)
     }
-})
+
+    const data = await res.json()
+    
+    console.log("✅ Vacancy:", data)
+  } catch (e) {
+    console.error("❌ API error:", e.message)
+  } finally {
+    loading.value = false
+  }
+}
+
+
+onMounted(fetchVacancy)
 </script>
