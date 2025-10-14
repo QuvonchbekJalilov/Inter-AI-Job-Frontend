@@ -162,6 +162,28 @@ const selectedFile = ref(null)
 const loading = ref(false)
 const btnLoading = ref(false)
 const error = ref("")
+const chatId = computed(() => {});
+onMounted(() => {
+  const params = new URLSearchParams(window.location.search);
+  const chatId = params.get("chat_id");
+  const locale = params.get("locale") || "uz";
+
+  if (chatId) {
+    localStorage.setItem("chat_id", chatId);
+    formData.chat_id = chatId;
+    console.log("Chat ID saqlandi:", chatId);
+  } else {
+    const savedChatId = localStorage.getItem("chat_id");
+    if (savedChatId) {
+      formData.chat_id = savedChatId;
+      console.log("Chat ID localStorage’dan olindi:", savedChatId);
+    }
+  }
+
+  if (locale) {
+    localStorage.setItem("locale", locale);
+  }
+});
 
 const isSuccess = (resp) => {
   if (!resp) return false
@@ -303,6 +325,7 @@ const activeClass = 'bg-blue-600 text-white scale-100 py-2.5'
 const inactiveClass = 'bg-gray-100 text-gray-700 hover:bg-gray-200 scale-95 py-2'
 const activeTextClass = 'text-[13.5px] sm:text-[14px] scale-100'
 const inactiveTextClass = 'text-[11.5px] sm:text-[12px] scale-90'
+
 const phoneInput = ref(null);
 
 onMounted(() => {
