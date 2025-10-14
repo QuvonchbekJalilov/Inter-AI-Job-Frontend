@@ -78,7 +78,8 @@
           <router-link
             v-if="job.source === 'telegram'"
             :to="{ name: 'vacancyTelegramDetail', params: { id: job.id } }"
-            class="flex w-full max-w-lg flex-col"
+            class="w-full py-3 font-medium text-white rounded-b-2xl bg-blue-600 hover:bg-blue-700 text-center block"
+
         >
             {{ translations.source }}
           </router-link>
