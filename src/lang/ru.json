@@ -118,5 +118,7 @@
   "logout_text": "Вы уверены, что хотите выйти из системы?",
   "cancel": "Отмена",
   "experience": "Опыт...",
-  "Contact" : "Контакт"
+  "Contact" : "Контакт",
+  "possible_ai_questions": "Возможные вопросы от AI"
+
 }

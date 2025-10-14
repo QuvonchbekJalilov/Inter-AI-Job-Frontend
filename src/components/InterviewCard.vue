@@ -41,7 +41,7 @@
 
         <div>
           <h4 class="text-gray-700 font-medium mb-2">
-            Возможные вопросы от AI:
+            {{ translations.possible_ai_questions }}
           </h4>
           <ul class="list-decimal list-inside space-y-1 text-gray-600">
             <li v-for="(q,i) in item.questions_preview" :key="i">{{ q }}</li>
@@ -50,7 +50,7 @@
 
         <button
           class="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-xl"
-          @click.stop="onPrepareClick(item.id)"
+          @click="goToDetail(item.id)"
         >
           {{ translations.prepare_for_the_interview }}
         </button>

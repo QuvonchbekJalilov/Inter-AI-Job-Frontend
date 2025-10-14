@@ -18,16 +18,18 @@
         </div>
 
         <div>
-          <h2 class="text-xl font-medium mb-2">Возможные вопросы от AI:</h2>
+          <h2 class="text-xl font-medium mb-2">
+            {{ translations.possible_ai_questions }}
+          </h2>
           <ul class="list-decimal list-inside space-y-2 text-gray-700">
             <li v-for="(q, i) in interview.questions" :key="i">{{ q }}</li>
           </ul>
         </div>
 
         <div class="pt-2">
-          <button class="w-full bg-blue-600 py-3 rounded-lg text-white font-medium">
+          <!-- <button class="w-full bg-blue-600 py-3 rounded-lg text-white font-medium">
             {{ translations.prepare_for_the_interview }}
-          </button>
+          </button> -->
         </div>
       </div>
     </div>

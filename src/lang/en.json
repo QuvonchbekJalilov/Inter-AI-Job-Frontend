@@ -118,5 +118,7 @@
   "logout_text": "Are you sure you want to log out?",
   "cancel": "Cancel",
   "experience": "Experience...",
-  "Contact" : "Contact"
+  "Contact" : "Contact",
+  "possible_ai_questions": "Possible questions from AI"
+
 }
