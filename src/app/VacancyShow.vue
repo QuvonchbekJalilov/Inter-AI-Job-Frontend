@@ -143,7 +143,17 @@ const fetchVacancy = async () => {
 }
 
 
-onMounted(fetchVacancy)
+onMounted(async () => {
+  const token = localStorage.getItem("token") || sessionStorage.getItem("token")
+
+  if (!token) {
+    console.warn("⚠️ Token topilmadi, foydalanuvchi login qilmagan.")
+    return
+  }
+
+  await fetchVacancy()
+})
+
 
 const formatSalary = (salary) => {
   if (!salary) return "-"

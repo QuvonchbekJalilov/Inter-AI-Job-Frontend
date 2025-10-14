@@ -19,9 +19,31 @@
 <script setup>
 import VacancyList from "@/components/VacancyList.vue";
 import Header from "@/components/Header.vue";
-import {getCurrentInstance, onMounted} from "vue";
+import {computed, getCurrentInstance, onMounted} from "vue";
 import axios from "axios";
 const { proxy } = getCurrentInstance()
+const chatId = computed(() => {});
+onMounted(() => {
+  const params = new URLSearchParams(window.location.search);
+  const chatId = params.get("chat_id");
+  const locale = params.get("locale") || "uz";
+
+  if (chatId) {
+    localStorage.setItem("chat_id", chatId);
+    formData.chat_id = chatId;
+    console.log("Chat ID saqlandi:", chatId);
+  } else {
+    const savedChatId = localStorage.getItem("chat_id");
+    if (savedChatId) {
+      formData.chat_id = savedChatId;
+      console.log("Chat ID localStorage’dan olindi:", savedChatId);
+    }
+  }
+
+  if (locale) {
+    localStorage.setItem("locale", locale);
+  }
+});
 onMounted(() => {
   const token = localStorage.getItem("token") || sessionStorage.getItem("token")
   const track = axios.get(proxy.$locale + "/v1/visits/track", {
