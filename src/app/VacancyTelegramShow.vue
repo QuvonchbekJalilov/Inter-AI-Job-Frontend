@@ -33,7 +33,8 @@ const error = ref(null)
 
 onMounted(async () => {
     try {
-        const id = route.params.id
+        const id = params.get('id')
+        console.log('Fetching vacancy with ID:', id)
         const { data } = await axios.get(`/v1/telegram/vacancies/${id}`)
         if (data.success) {
             vacancy.value = data.data
