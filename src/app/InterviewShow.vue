@@ -9,13 +9,12 @@
             <h3 class="text-2xl font-medium mb-1">{{ interview.title }}</h3>
             <p class="text-gray-700 font-semibold">{{ interview.company }}</p>
             <div class="mt-2 flex items-center text-gray-600 space-x-2">
-              <!-- <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2v-7H3v7a2 2 0 002 2z"/>
-              </svg> -->
               <span>{{ interview.date }}</span>
             </div>
           </div>
-          <span class="px-3 py-1 text-sm rounded-full bg-blue-100 text-blue-700">{{ translations.assigned }}</span>
+          <span class="px-3 py-1 text-sm rounded-full bg-blue-100 text-blue-700">
+            {{ translations.assigned }}
+          </span>
         </div>
 
         <div>
@@ -36,44 +35,64 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted, getCurrentInstance } from 'vue'
 import { useRoute } from 'vue-router'
 import Header from '@/components/Header.vue'
 import { useI18n } from '@/i18n-lite'
 
+const { proxy } = getCurrentInstance()
 const { translations } = useI18n()
 const route = useRoute()
 const interviewId = route.params.id
 
-// Static mock data for now; will be replaced by backend later
 const interview = ref({
   id: interviewId,
-  title: 'Frontend разработчик',
-  company: 'TechStart',
-  date: '15 декабря 2024 в 14:00',
-  questions: [
-    'Расскажите о своем опыте работы с React',
-    'Как вы оптимизируете производительность веб-приложений?',
-    'Опыт работы с TypeScript?',
-    'Как вы тестируете свой код?',
-        'Расскажите о своем опыте работы с React',
-    'Как вы оптимизируете производительность веб-приложений?',
-    'Опыт работы с TypeScript?',
-    'Как вы тестируете свой код?',
-        'Расскажите о своем опыте работы с React',
-    'Как вы оптимизируете производительность веб-приложений?',
-    'Опыт работы с TypeScript?',
-    'Как вы тестируете свой код?',
-        'Расскажите о своем опыте работы с React',
-    'Как вы оптимизируете производительность веб-приложений?',
-    'Опыт работы с TypeScript?',
-    'Как вы тестируете свой код?',
-        'Расскажите о своем опыте работы с React',
-    'Как вы оптимизируете производительность веб-приложений?',
-    'Опыт работы с TypeScript?',
-    'Как вы тестируете свой код?'
-  ]
+  title: '',
+  company: '',
+  date: '',
+  questions: []
 })
+
+const fetchInterview = async () => {
+  try {
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token')
+
+    const res = await fetch(`${proxy.$locale}/v1/interviews/${interviewId}`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      }
+    })
+
+    if (!res.ok) throw new Error(`HTTP error! ${res.status}`)
+
+    const data = await res.json()
+    console.log('✅ Interview:', data)
+
+    if (data.success && data.data) {
+      const item = data.data
+      interview.value = {
+        id: item.id,
+        title: item.vacancy?.title || 'Без названия',
+        company: item.vacancy?.company || '—',
+        date: new Date(item.created_at).toLocaleDateString('ru-RU', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        }),
+        questions: item.questions || []
+      }
+    }
+  } catch (e) {
+    console.error('❌ API error:', e.message)
+  }
+}
+
+onMounted(fetchInterview)
 </script>
 
 <style scoped>
