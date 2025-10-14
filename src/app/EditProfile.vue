@@ -10,7 +10,7 @@
 
       <form @submit.prevent="updateUser" class="space-y-4">
         <div>
-          <label class="block mb-1">{{ translations.profiles.full_name }}</label>
+          <label class="block mb-1">{{ translations.full_name }}</label>
           <input v-model="form.first_name" type="text" class="border rounded w-full p-2" />
         </div>
 

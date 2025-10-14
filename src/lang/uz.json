@@ -7,7 +7,6 @@
   "profiles": {
     "title": "Mening profilim",
     "name": "Ism",
-    "full_name": "Ism Familiya",
     "email": "Email",
     "phone": "Telefon",
     "industry": "Soha",
@@ -43,6 +42,7 @@
     "buy_responses": "100 ta javob sotib olish",
     "logout": "Chiqish"
   },
+  "full_name": "Ism Familiya",
   "language": "Til",
   "responses": "Topshirilganlar",
   "vacancies": "Umumiy",

@@ -7,7 +7,6 @@
   "profiles": {
     "title": "My Profile",
     "name": "Name",
-    "full_name": "Full name",
     "email": "Email",
     "phone": "Phone",
     "industry": "Industry",
@@ -43,6 +42,7 @@
     "buy_responses": "Buy 100 responses",
     "logout": "Logout"
   },
+  "full_name": "Full name",
   "language": "Language",
   "responses": "Responses",
   "vacancies": "General",
