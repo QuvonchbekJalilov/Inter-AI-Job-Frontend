@@ -7,6 +7,7 @@
   "profiles": {
     "title": "Mening profilim",
     "name": "Ism",
+    "full_name": "Ism Familiya",
     "email": "Email",
     "phone": "Telefon",
     "industry": "Soha",

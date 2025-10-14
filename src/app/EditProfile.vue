@@ -10,14 +10,14 @@
 
       <form @submit.prevent="updateUser" class="space-y-4">
         <div>
-          <label class="block mb-1">Ism</label>
+          <label class="block mb-1">{{ translations.full_name }}</label>
           <input v-model="form.first_name" type="text" class="border rounded w-full p-2" />
         </div>
 
-        <div>
-          <label class="block mb-1">Familiya</label>
-          <input v-model="form.last_name" type="text" class="border rounded w-full p-2" />
-        </div>
+<!--        <div>-->
+<!--          <label class="block mb-1">Familiya</label>-->
+<!--          <input v-model="form.last_name" type="text" class="border rounded w-full p-2" />-->
+<!--        </div>-->
 
 <!--        <div>-->
 <!--          <label class="block mb-1">Email</label>-->
@@ -25,24 +25,24 @@
 <!--        </div>-->
 
         <div>
-          <label class="block mb-1">Telefon</label>
+          <label class="block mb-1">{{ translations.phone }}</label>
           <input v-model="form.phone" disabled type="text" class="border rounded w-full p-2" />
         </div>
 
-        <div>
-          <label class="block mb-1">Parol (agar o‘zgartirmoqchi bo‘lsang)</label>
-          <input v-model="form.password" type="password" class="border rounded w-full p-2" />
-        </div>
+<!--        <div>-->
+<!--          <label class="block mb-1">Parol (agar o‘zgartirmoqchi bo‘lsang)</label>-->
+<!--          <input v-model="form.password" type="password" class="border rounded w-full p-2" />-->
+<!--        </div>-->
 
 <!--        <div>-->
 <!--          <label class="block mb-1">Tug‘ilgan sana</label>-->
 <!--          <input v-model="form.birth_date" type="date" class="border rounded w-full p-2" />-->
 <!--        </div>-->
 
-        <div>
-          <label class="block mb-1">Resume matni</label>
-          <textarea v-model="form.resume_text" rows="3" class="border rounded w-full p-2"></textarea>
-        </div>
+<!--        <div>-->
+<!--          <label class="block mb-1">Resume matni</label>-->
+<!--          <textarea v-model="form.resume_text" rows="3" class="border rounded w-full p-2"></textarea>-->
+<!--        </div>-->
 
         <!-- ❌ Fayl yuklash input olib tashlandi -->
 
@@ -88,6 +88,9 @@ import { useRoute, useRouter } from 'vue-router'
 import Header from "@/components/Header.vue";
 import LoadingModal from "@/components/modal/LodaingModal.vue";
 import {toast} from "vue3-toastify";
+import { useI18n } from '@/i18n-lite.js'
+
+const { translations } = useI18n()
 
 const route = useRoute()
 const router = useRouter()
@@ -97,12 +100,12 @@ const { proxy } = getCurrentInstance()
 
 const form = ref({
   first_name: '',
-  last_name: '',
+  // last_name: '',
   // email: '',
   phone: '',
-  password: '',
+  // password: '',
   // birth_date: '',
-  resume_text: '',
+  // resume_text: '',
   // experience: '',
   // salary_from: '',
   // salary_to: '',
@@ -131,11 +134,11 @@ onMounted(async () => {
     console.log('User data:', data)
 
     form.value.first_name = data.first_name || ''
-    form.value.last_name = data.last_name || ''
+    // form.value.last_name = data.last_name || ''
     // form.value.email = data.email || ''
     form.value.phone = data.phone || ''
     // form.value.birth_date = data.birth_date || ''
-    form.value.resume_text = data.resumes?.[0]?.description || ''
+    // form.value.resume_text = data.resumes?.[0]?.description || ''
 
     // form.value.salary_from = data.preferences?.[0]?.desired_salary_from || ''
     // form.value.salary_to = data.preferences?.[0]?.desired_salary_to || ''
