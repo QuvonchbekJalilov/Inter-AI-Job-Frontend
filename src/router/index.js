@@ -79,7 +79,7 @@ const routes = [
 ]
 
 const router = createRouter({
-    history: createWebHistory(),
+    history: createWebHashHistory(),
     routes
 })
 router.beforeEach((to, from, next) => {
