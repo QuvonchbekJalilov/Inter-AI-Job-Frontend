@@ -149,13 +149,8 @@ const { translations } = useI18n()
 const router = useRouter()
 const showLoading = ref(false)
 
-const currentStep = ref(1)
-
 const formData = reactive({
   firstName: '',
-  lastName: '',
-  password: '',
-  confirm_password: '',
   phone: '',
   resumeText: '',
   resumeFile: null,
@@ -164,7 +159,6 @@ const formData = reactive({
 
 
 const selectedFile = ref(null)
-const showPassword = ref(false)
 const loading = ref(false)
 const btnLoading = ref(false)
 const error = ref("")
@@ -201,62 +195,25 @@ const uploadResume = async (token) => {
 
 const touched = reactive({
   firstName: false,
-  lastName: false,
-  password: false,
-  confirm_password: false,
 })
 
 const valid = reactive({
-  get password() {
-    return formData.password.length >= 6
-  },
-  get confirm() {
-    return formData.confirm_password.length >= 6 && formData.confirm_password === formData.password
-  },
   get names() {
-    return formData.firstName.trim().length > 0 && formData.lastName.trim().length > 0
+    return formData.firstName.trim().length > 0
   },
 })
 
-const isValid = computed(() => valid.password && valid.confirm && valid.names)
+const isValid = computed(() => valid.names)
 
 const isStepValid = () => {
-  if (currentStep.value === 1) {
-    return (
-        formData.firstName &&
-        formData.lastName &&
-        formData.phone &&
-        formData.password &&
-        formData.confirm_password &&
-        formData.password === formData.confirm_password
-        // && formData.birth_date
-    )
-  }
-  if (currentStep.value === 2) {
-    return formData.resumeText?.trim().length > 0
-  }
-  return false
-}
-
-const nextStep = async () => {
-  error.value = null
-  if (!isStepValid()) return
-
-  if (currentStep.value === 1) {
-    currentStep.value++
-  }
-}
-
-
-const prevStep = () => {
-  if (currentStep.value > 1) currentStep.value--
+  return (
+      formData.firstName &&
+      formData.phone
+  )
 }
 
 const submitRegistration = async () => {
   touched.firstName = true
-  touched.lastName = true
-  touched.password = true
-  touched.confirm_password = true
   error.value = ''
   showLoading.value = true
 
@@ -269,8 +226,6 @@ const submitRegistration = async () => {
   try {
     const { data } = await axios.post(proxy.$locale + '/auth/register', {
       first_name: formData.firstName,
-      last_name: formData.lastName,
-      password: formData.password,
       phone: formData.phone,
       resume_text: formData.resumeText,
       chat_id: chatId,
@@ -317,9 +272,6 @@ const submitRegistration = async () => {
 
 const completeRegistration = async () => {
   touched.firstName = true
-  touched.lastName = true
-  touched.password = true
-  touched.confirm_password = true
   error.value = ''
 
   if (!isValid.value || !isStepValid()) return
