@@ -64,6 +64,7 @@ import Header from "@/components/Header.vue"
 import { useI18n } from "@/i18n-lite"
 import LoadingModal from "@/components/modal/LodaingModal.vue";
 import VacancyShow from "@/components/loading/VacancyShow.vue";
+import {toast} from "vue3-toastify";
 const { proxy } = getCurrentInstance()
 
 const { translations } = useI18n()
@@ -99,12 +100,17 @@ const applyToVacancy = async (vacancyId) => {
     if (data.success) {
       status.value = true
       vacancy.value.status = true
-      alert("Muvaffaqiyatli yuborildi ✅")
+      toast.error(
+          "Xatolik: siz Vacansiyaga topshirish uchun Profile qismiga o'tib Head Hunter dan login qiling"
+      )
     }
 
   } catch (e) {
     console.error("❌ Apply error:", e.message)
-    alert("Xatolik: " + e.message)
+    toast.error(
+        "Xatolik: " +
+        (error.response?.data?.message || error.message)
+    )
   }
 }
 

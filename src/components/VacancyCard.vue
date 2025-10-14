@@ -177,8 +177,7 @@ const applyToVacancy = async (job) => {
   } catch (error) {
     console.error("❌ Apply error:", error.response?.data || error.message)
     toast.error(
-        "Xatolik: " +
-        (error.response?.data?.message || error.message)
+        "Xatolik: siz Vacansiyaga topshirish uchun Profile qismiga o'tib Head Hunter dan login qiling"
     )
   }
 }
