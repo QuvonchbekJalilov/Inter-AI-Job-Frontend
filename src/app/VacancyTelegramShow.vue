@@ -57,7 +57,7 @@ const fetchVacancy = async () => {
     }
 
     const data = await res.json()
-    
+    vacancy.value = data
     console.log("✅ Vacancy:", data)
   } catch (e) {
     console.error("❌ API error:", e.message)

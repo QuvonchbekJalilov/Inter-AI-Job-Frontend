@@ -75,14 +75,13 @@
             {{ job.status ? translations.applied : translations.reply }}
           </button>
 
-          <a
-              v-else
-              class="w-full py-3 font-medium text-white rounded-b-2xl bg-blue-600 hover:bg-blue-700 text-center block"
-              :href="job.telegram?.target_message_id"
-              target="_blank"
-          >
+          <router-link
+            v-if="job.source === 'telegram'"
+            :to="{ name: 'vacancyTelegramDetail', params: { id: job.id } }"
+            class="flex w-full max-w-lg flex-col"
+        >
             {{ translations.source }}
-          </a>
+          </router-link>
         </div>
       </div>
       <div v-else class="flex flex-col items-center justify-center py-20 text-center text-gray-600">
