@@ -37,7 +37,7 @@ const id = route.params.id
 
 const fetchVacancy = async () => {
   try {
-    showLoading.value = true
+    loading.value = true
     const token = localStorage.getItem("token") || sessionStorage.getItem("token")
 
     const res = await fetch(
