@@ -8,7 +8,9 @@ import VacancyShow from '../app/VacancyShow.vue'
 import EditProfile from "@/app/EditProfile.vue";
 import InterviewShow from '../app/InterviewShow.vue'
 import DemoVacancy from '../app/demo/DemoVacancy.vue'
-import DemoRegister from "@/app/demo/DemoRegister.vue";
+import DemoRegister from "@/app/demo/DemoRegister.vue"
+import VacancyTelegramShow from '../app/VacancyTelegramShow.vue'
+
 
 const routes = [
     {
@@ -46,6 +48,13 @@ const routes = [
         path: '/vacancy/:id',
         name: 'vacancyDetail',
         component: VacancyShow,
+        props: true,
+        meta: { requiresAuth: true, headerBack: true }
+    },
+    {
+        path: '/v1/telegram/vacancies/:id',
+        name: 'vacancyTelegramDetail',
+        component: VacancyTelegramShow,
         props: true,
         meta: { requiresAuth: true, headerBack: true }
     },

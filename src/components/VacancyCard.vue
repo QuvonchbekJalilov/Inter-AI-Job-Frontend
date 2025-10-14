@@ -3,10 +3,9 @@
     <Vacancies :show="loadingSkeleton" :count="6" :cols="3" />
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
       <div v-if="jobs.length > 0" v-for="job in jobs" :key="`${job.source}-${job.id}-${job.external_id ?? ''}`" class="flex w-full max-w-lg flex-col mb-3">
-        <a
+        <router-link
             v-if="job.source === 'telegram'"
-            :href="job.telegram?.target_message_id"
-            target="_blank"
+            :to="{ name: 'vacancyTelegramDetail', params: { id: job.id } }"
             class="flex w-full max-w-lg flex-col"
         >
           <div class="flex items-center">
@@ -32,7 +31,7 @@
               </small>
             </div>
           </div>
-        </a>
+        </router-link>
         <router-link
             v-else
             :to="{ name: 'vacancyDetail', params: { id: job.external_id } }"
