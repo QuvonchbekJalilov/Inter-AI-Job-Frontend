@@ -478,14 +478,11 @@ const updateLimit = async () => {
   try {
     const token = localStorage.getItem("token");
 
-    // Avvalgi limitni saqlaymiz
-    const oldLimit = Number(limit.value || 0);
-
     // Yangi kiritilgan qiymat (masalan: 2)
     const addedValue = Number(tempLimit.value || 0);
 
     // Yangi limit — eski + yangi
-    const newLimit = oldLimit + addedValue;
+    const newLimit = limit.value + addedValue;
 
     const response = await axios.patch(
         proxy.$locale + "/auth/settings/auto-apply",
