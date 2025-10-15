@@ -418,7 +418,7 @@ const goToEdit = () => {
 const enabled = ref(false);
 const limit = ref(null);
 const tempLimit = ref(null);
-const newLimit = ref(computed());
+const newLimit = ref(null);
 const saved = ref(false);
 const appliedCount = ref(0);
 const editMode = ref(false); // yangi state edit qilish uchun
@@ -489,7 +489,7 @@ const updateLimit = async () => {
         proxy.$locale + "/auth/settings/auto-apply",
         {
           auto_apply_enabled: true,
-          auto_apply_limit: newLimit,
+          auto_apply_limit: newLimit.value,
         },
         {
           headers: {
@@ -502,7 +502,7 @@ const updateLimit = async () => {
     console.log("update response", response.data);
 
     // Limitni yangilaymiz
-    limit.value = newLimit;
+    limit.value = newLimit.value;
     saved.value = true;
     editMode.value = false;
 
