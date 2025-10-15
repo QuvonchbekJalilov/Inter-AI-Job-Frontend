@@ -90,12 +90,6 @@
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6 1a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
         <h3 class="text-lg font-medium mb-2">Sizga mos keladigan Vacansiya topilmadi iltios qaytadan login yoki registratsiya qilib ko'ring</h3>
-        <button
-            class="px-10 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600"
-            @click="logout"
-        >
-          {{ translations.payment?.logout }}
-        </button>
       </div>
     </div>
   </div>
@@ -322,27 +316,6 @@ const formatDate = (date) => {
   })
 
   return `${datePart} (${timePart})`
-}
-
-
-const logout = async () => {
-  try {
-    const token = localStorage.getItem("token") || sessionStorage.getItem("token")
-    if (token) {
-      await axios.post("/auth/logout", {}, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      })
-    }
-  } catch (error) {
-    if (error.response?.status === 401) {
-      clearAuthStorage()
-    }
-  } finally {
-    clearAuthStorage()
-    window.location.href = "/login"
-  }
 }
 
 onMounted(() => {
