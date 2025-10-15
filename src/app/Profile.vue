@@ -184,7 +184,7 @@
                 <button
                     @click="updateLimit"
                     class="w-48 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition disabled:bg-gray-300 disabled:text-gray-500"
-                    :disabled="!limit"
+                    :disabled="!tempLimit"
                 >
                   {{ translations.auto_apply?.update_button || 'Update' }}
                 </button>
@@ -479,17 +479,28 @@ const updateLimit = async () => {
   try {
     const token = localStorage.getItem("token");
 
-    const oldLimit = Number(limit.value || 0);
+    // 🟢 1. Avval so‘nggi limitni serverdan olish
+    const latest = await axios.get(proxy.$locale + "/auth/settings/auto-apply", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+      },
+    });
 
+    const serverLimit = Number(latest.data.data.settings.auto_apply_limit || 0);
+
+    // 🟢 2. Yangi qo‘shiladigan qiymat
     const addedValue = Number(tempLimit.value || 0);
 
-    newLimit.value = oldLimit + addedValue;
+    // 🟢 3. Yangi limit — serverdagi oxirgi limit + qo‘shiladigan
+    const newValue = serverLimit + addedValue;
 
+    // 🟢 4. Serverga PATCH yuborish
     const response = await axios.patch(
         proxy.$locale + "/auth/settings/auto-apply",
         {
           auto_apply_enabled: true,
-          auto_apply_limit: newLimit.value,
+          auto_apply_limit: newValue,
         },
         {
           headers: {
@@ -501,13 +512,13 @@ const updateLimit = async () => {
 
     console.log("update response", response.data);
 
-    // Limitni yangilaymiz
-    limit.value = newLimit.value;
+    // 🟢 5. Frontend state'ni yangilaymiz
+    limit.value = newValue;
+    newLimit.value = newValue;
+    tempLimit.value = null;
     saved.value = true;
     editMode.value = false;
 
-    // Yangilashdan so‘ng serverdan qayta olish shart emas (fetchAutoApplyData),
-    // chunki biz allaqachon local state’ni yangiladik.
   } catch (error) {
     console.error("updateLimit error", error);
     if (error.response?.status === 401) clearAuthStorage();
