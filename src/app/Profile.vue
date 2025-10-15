@@ -184,7 +184,7 @@
                 <button
                     @click="updateLimit"
                     class="w-48 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition disabled:bg-gray-300 disabled:text-gray-500"
-                    :disabled="!tempLimit"
+                    :disabled="!limit"
                 >
                   {{ translations.auto_apply?.update_button || 'Update' }}
                 </button>
@@ -478,17 +478,20 @@ const updateLimit = async () => {
   try {
     const token = localStorage.getItem("token");
 
+    // Avvalgi limitni saqlaymiz
     const oldLimit = Number(limit.value || 0);
+
+    // Yangi kiritilgan qiymat (masalan: 2)
     const addedValue = Number(tempLimit.value || 0);
 
-    // Qo‘shamiz
-    const total = oldLimit + addedValue;
+    // Yangi limit — eski + yangi
+    const newLimit = oldLimit + addedValue;
 
     const response = await axios.patch(
         proxy.$locale + "/auth/settings/auto-apply",
         {
           auto_apply_enabled: true,
-          auto_apply_limit: total,
+          auto_apply_limit: newLimit,
         },
         {
           headers: {
@@ -500,20 +503,18 @@ const updateLimit = async () => {
 
     console.log("update response", response.data);
 
-    // Shunchaki limitni yangilaymiz
-    limit.value = total;
-    tempLimit.value = null;
+    // Limitni yangilaymiz
+    limit.value = newLimit;
     saved.value = true;
     editMode.value = false;
 
-    // ❌ fetchAutoApplyData chaqirmaymiz
-    // ❌ newLimit ishlatmaymiz
+    // Yangilashdan so‘ng serverdan qayta olish shart emas (fetchAutoApplyData),
+    // chunki biz allaqachon local state’ni yangiladik.
   } catch (error) {
     console.error("updateLimit error", error);
     if (error.response?.status === 401) clearAuthStorage();
   }
 };
-
 
 
 onMounted(async () => {
