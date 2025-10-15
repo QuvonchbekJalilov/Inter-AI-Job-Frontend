@@ -477,20 +477,12 @@ const saveLimit = async () => {
 const updateLimit = async () => {
   try {
     const token = localStorage.getItem("token");
-
-    // Yangi kiritilgan qiymat (masalan: 2)
-    const addedValue = Number(tempLimit.value || 0);
-    alert('1-soni', addedValue)
-
-    // Yangi limit — eski + yangi
-    const newLimit = limit.value + addedValue;
-    alert('soni', newLimit)
-
+    const auto_apply_limit = limit.value + tempLimit.value || 0;
     const response = await axios.patch(
         proxy.$locale + "/auth/settings/auto-apply",
         {
           auto_apply_enabled: true,
-          auto_apply_limit: newLimit,
+          auto_apply_limit: auto_apply_limit,
         },
         {
           headers: {
@@ -500,11 +492,10 @@ const updateLimit = async () => {
         }
     );
 
-    alert('response', response.data)
+    alert('auto_apply_limit', auto_apply_limit)
     console.log("update response", response.data);
 
-    // Limitni yangilaymiz
-    limit.value = newLimit;
+    limit.value = auto_apply_limit;
     saved.value = true;
     editMode.value = false;
 
