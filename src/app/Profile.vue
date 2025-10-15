@@ -495,7 +495,7 @@ const updateLimit = async () => {
     console.log("auto_apply_limit", auto_apply_limit);
     console.log("update response", response.data);
 
-    limit.value = auto_apply_limit;
+    limit.value = response.data.data.auto_apply_limit;
     saved.value = true;
     editMode.value = false;
 
