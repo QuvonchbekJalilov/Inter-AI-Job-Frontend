@@ -418,7 +418,7 @@ const goToEdit = () => {
 const enabled = ref(false);
 const limit = ref(null);
 const tempLimit = ref(null);
-const newLimit = ref(null);
+const newLimit = ref(computed());
 const saved = ref(false);
 const appliedCount = ref(0);
 const editMode = ref(false); // yangi state edit qilish uchun
@@ -479,14 +479,11 @@ const updateLimit = async () => {
   try {
     const token = localStorage.getItem("token");
 
-    // Avvalgi limitni saqlaymiz
     const oldLimit = Number(limit.value || 0);
 
-    // Yangi kiritilgan qiymat (masalan: 2)
     const addedValue = Number(tempLimit.value || 0);
 
-    // Yangi limit — eski + yangi
-    const newLimit = oldLimit + addedValue;
+    newLimit.value = oldLimit + addedValue;
 
     const response = await axios.patch(
         proxy.$locale + "/auth/settings/auto-apply",
