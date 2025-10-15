@@ -492,7 +492,7 @@ const updateLimit = async () => {
         }
     );
 
-    alert('auto_apply_limit', auto_apply_limit)
+    console.log("auto_apply_limit", auto_apply_limit);
     console.log("update response", response.data);
 
     limit.value = auto_apply_limit;
