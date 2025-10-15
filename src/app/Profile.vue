@@ -480,6 +480,7 @@ const updateLimit = async () => {
 
     // Yangi kiritilgan qiymat (masalan: 2)
     const addedValue = Number(tempLimit.value || 0);
+    alert('1-soni', addedValue)
 
     // Yangi limit — eski + yangi
     const newLimit = limit.value + addedValue;
@@ -499,6 +500,7 @@ const updateLimit = async () => {
         }
     );
 
+    alert('response', response.data)
     console.log("update response", response.data);
 
     // Limitni yangilaymiz
