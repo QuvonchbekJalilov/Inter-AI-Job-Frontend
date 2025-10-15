@@ -150,7 +150,7 @@
           <div v-if="saved" class="mt-6">
             <div class="flex justify-between text-sm text-gray-600 mb-1">
               <span>{{ translations.auto_apply?.progress }}</span>
-              <span>{{ appliedCount }} / {{ newLimit }}</span>
+              <span>{{ appliedCount }} / {{ newLimit ?? limit }}</span>
             </div>
             <div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
               <div
