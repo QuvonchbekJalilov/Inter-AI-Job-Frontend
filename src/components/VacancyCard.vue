@@ -199,33 +199,6 @@ const setCache = (data) => {
 
 const user = ref(null)
 
-onMounted(async () => {
-  showLoading.value = true;
-  try {
-    const token = localStorage.getItem("token") || sessionStorage.getItem("token");
-    if (!token) {
-      router.push({ name: "login" });
-      return;
-    }
-
-    const headers = {
-      Authorization: `Bearer ${token}`,
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    };
-
-    const { data: meData } = await axios.get(proxy.$locale + "/auth/me", { headers });
-    user.value = meData.data;
-    console.log("meData", meData);
-  } catch (e) {
-    error.value = "Foydalanuvchi ma’lumotlarini olishda xatolik.";
-    if (e.response?.status === 401) clearAuthStorage();
-  } finally {
-    showLoading.value = false;
-    loadingSkeleton.value = false;
-  }
-});
-
 const fetchJobs = async (forceUpdate = false) => {
   showLoading.value = true
 
@@ -294,6 +267,32 @@ const fetchJobs = async (forceUpdate = false) => {
     loadingSkeleton.value = false
   }
 }
+onMounted(async () => {
+  showLoading.value = true;
+  try {
+    const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+    if (!token) {
+      router.push({ name: "login" });
+      return;
+    }
+
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    };
+
+    const { data: meData } = await axios.get(proxy.$locale + "/auth/me", { headers });
+    user.value = meData.data;
+    console.log("meData", meData);
+  } catch (e) {
+    error.value = "Foydalanuvchi ma’lumotlarini olishda xatolik.";
+    if (e.response?.status === 401) clearAuthStorage();
+  } finally {
+    showLoading.value = false;
+    loadingSkeleton.value = false;
+  }
+});
 
 const startLoading = async () => {
   showModal.value = false

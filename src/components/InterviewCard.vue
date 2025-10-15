@@ -2,27 +2,13 @@
   <div class="min-h-screen bg-gray-50 p-6">
     <h1 class="text-2xl font-semibold mb-6">{{ translations.interviews }}</h1>
 
-    <div v-if="loading" class="text-gray-500 text-center">
-      <div class="flex flex-col items-center justify-center py-20 text-center text-gray-600">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6 1a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-        <h3 class="text-lg font-medium mb-2">Siz hali hech qanday vakansiyaga topshirmagansiz</h3>
-        <p class="text-sm text-gray-500 mb-4">Mos keladigan vakansiyalarni tanlab, darhol ariza topshirishingiz mumkin.</p>
-        <a
-            href="/"
-            class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-        >
-          Vakansiyalarni ko‘rish
-        </a>
-      </div>
-    </div>
+    <Vacancies v-if="loading"  :show="loading" :count="6" :cols="3" />
 
     <div v-else-if="error" class="text-red-500 text-center">
       {{ error }}
     </div>
 
-    <div v-else-if="interviews.length" class="space-y-6">
+    <div v-else-if="interviews.length > 0" class="space-y-6">
       <!-- loop directly here -->
       <div
         v-for="item in interviews"
@@ -68,9 +54,18 @@
         </button>
       </div>
     </div>
-
-    <div v-else class="text-gray-500 text-center">
-      {{ translations.no_interviews_yet }}
+    <div v-else class="flex flex-col items-center justify-center py-20 text-center text-gray-600">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6 1a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <h3 class="text-lg font-medium mb-2">Siz hali hech qanday vakansiyaga topshirmagansiz</h3>
+      <p class="text-sm text-gray-500 mb-4">Mos keladigan vakansiyalarni tanlab, darhol ariza topshirishingiz mumkin.</p>
+      <a
+          href="/"
+          class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+      >
+        Vakansiyalarni ko‘rish
+      </a>
     </div>
   </div>
 </template>
@@ -80,6 +75,7 @@ import { ref, onMounted, getCurrentInstance } from "vue";
 import axios from "axios";
 import { useRouter } from "vue-router";
 import { useI18n } from "@/i18n-lite";
+import Vacancies from "@/components/loading/Vacancies.vue";
 
 const { proxy } = getCurrentInstance();
 const router = useRouter();
