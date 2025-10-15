@@ -174,9 +174,8 @@
               <!-- Input -->
               <input
                   type="number"
-                  v-model.number="tempLimit"
+                  v-model.number="limit"
                   class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-                  placeholder="Qo‘shiladigan son"
               />
 
               <!-- Buttonlar yonma-yon -->
@@ -477,16 +476,13 @@ const updateLimit = async () => {
   try {
     const token = localStorage.getItem("token");
 
-    const oldLimit = Number(limit.value || 0);
-
-    const addedValue = Number(tempLimit.value || 0);
-
-    const newLimit = oldLimit + addedValue;
+    // yangi qiymat eskisiga qo‘shiladi
+    const newLimit = Number(limit.value || 0);
 
     const response = await axios.patch(
         proxy.$locale + "/auth/settings/auto-apply",
         {
-          auto_apply_enabled: true,
+          auto_apply_enabled: true, // doim yoqilgan holatda
           auto_apply_limit: newLimit,
         },
         {
@@ -502,12 +498,13 @@ const updateLimit = async () => {
     limit.value = newLimit;
     saved.value = true;
     editMode.value = false;
+
+    await fetchAutoApplyData();
   } catch (error) {
     console.error("updateLimit error", error);
     if (error.response?.status === 401) clearAuthStorage();
   }
 };
-
 
 onMounted(async () => {
   loading.value = true;
