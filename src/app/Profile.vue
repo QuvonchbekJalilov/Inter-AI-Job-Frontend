@@ -150,7 +150,7 @@
           <div v-if="saved" class="mt-6">
             <div class="flex justify-between text-sm text-gray-600 mb-1">
               <span>{{ translations.auto_apply?.progress }}</span>
-              <span>{{ appliedCount }} / {{ limit }}</span>
+              <span>{{ appliedCount }} / {{ newLimit }}</span>
             </div>
             <div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
               <div
@@ -418,6 +418,7 @@ const goToEdit = () => {
 const enabled = ref(false);
 const limit = ref(null);
 const tempLimit = ref(null);
+const newLimit = ref(null);
 const saved = ref(false);
 const appliedCount = ref(0);
 const editMode = ref(false); // yangi state edit qilish uchun
