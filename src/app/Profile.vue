@@ -477,7 +477,7 @@ const saveLimit = async () => {
 const updateLimit = async () => {
   try {
     const token = localStorage.getItem("token");
-    const auto_apply_limit = limit.value + tempLimit.value || 0;
+    const auto_apply_limit = tempLimit.value || 0;
     const response = await axios.patch(
         proxy.$locale + "/auth/settings/auto-apply",
         {
