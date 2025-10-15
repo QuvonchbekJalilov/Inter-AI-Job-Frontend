@@ -174,7 +174,9 @@
               <!-- Input -->
               <input
                   type="number"
+                  v-model.number="tempLimit"
                   class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                  placeholder="Qo‘shiladigan son"
               />
 
               <!-- Buttonlar yonma-yon -->
@@ -415,6 +417,7 @@ const goToEdit = () => {
 
 const enabled = ref(false);
 const limit = ref(null);
+const tempLimit = ref(null);
 const saved = ref(false);
 const appliedCount = ref(0);
 const editMode = ref(false); // yangi state edit qilish uchun
@@ -475,13 +478,19 @@ const updateLimit = async () => {
   try {
     const token = localStorage.getItem("token");
 
-    // yangi qiymat eskisiga qo‘shiladi
-    const newLimit = Number(limit.value || 0);
+    // Avvalgi limitni saqlaymiz
+    const oldLimit = Number(limit.value || 0);
+
+    // Yangi kiritilgan qiymat (masalan: 2)
+    const addedValue = Number(tempLimit.value || 0);
+
+    // Yangi limit — eski + yangi
+    const newLimit = oldLimit + addedValue;
 
     const response = await axios.patch(
         proxy.$locale + "/auth/settings/auto-apply",
         {
-          auto_apply_enabled: true, // doim yoqilgan holatda
+          auto_apply_enabled: true,
           auto_apply_limit: newLimit,
         },
         {
@@ -494,16 +503,19 @@ const updateLimit = async () => {
 
     console.log("update response", response.data);
 
+    // Limitni yangilaymiz
     limit.value = newLimit;
     saved.value = true;
     editMode.value = false;
 
-    await fetchAutoApplyData();
+    // Yangilashdan so‘ng serverdan qayta olish shart emas (fetchAutoApplyData),
+    // chunki biz allaqachon local state’ni yangiladik.
   } catch (error) {
     console.error("updateLimit error", error);
     if (error.response?.status === 401) clearAuthStorage();
   }
 };
+
 
 onMounted(async () => {
   loading.value = true;
