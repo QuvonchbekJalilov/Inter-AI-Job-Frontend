@@ -483,6 +483,7 @@ const updateLimit = async () => {
 
     // Yangi limit — eski + yangi
     const newLimit = limit.value + addedValue;
+    alert('soni', newLimit)
 
     const response = await axios.patch(
         proxy.$locale + "/auth/settings/auto-apply",
