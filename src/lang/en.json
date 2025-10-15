@@ -120,6 +120,8 @@
   "cancel": "Cancel",
   "experience": "Experience...",
   "Contact" : "Contact",
-  "possible_ai_questions": "Possible questions from AI"
+  "possible_ai_questions": "Possible questions from AI",
+  "shared_via_bot": "Shared via Inter-AI Bot"
+
 
 }

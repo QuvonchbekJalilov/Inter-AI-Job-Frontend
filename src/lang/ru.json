@@ -120,6 +120,8 @@
   "cancel": "Отмена",
   "experience": "Опыт...",
   "Contact" : "Контакт",
-  "possible_ai_questions": "Возможные вопросы от AI"
+  "possible_ai_questions": "Возможные вопросы от AI",
+  "shared_via_bot": "Поделено через Inter-AI бот"
+
 
 }
