@@ -48,7 +48,7 @@
           />
         </div>
 
-        <div class="text-center text-gray-500">{{ translations.or }}</div>
+<!--        <div class="text-center text-gray-500">{{ translations.or }}</div>-->
 
         <!-- Resume File Upload -->
         <label class="block text-sm font-medium text-gray-700 mb-2">
@@ -73,13 +73,14 @@
 
         <!-- Preview -->
         <div v-if="formData.resumeFileUrl" class="mt-4 text-center">
-          <p class="text-sm text-gray-600 mb-2">{{ translations.selected_file }}:</p>
+          <p class="text-sm text-gray-600 mb-2">{{ translations.selected_file }}</p>
           <a
               :href="formData.resumeFileUrl"
               target="_blank"
               class="text-blue-500 underline"
           >
-            📄 {{ formData.resumeFile?.name || 'Old resume file' }}
+<!--            📄 -->
+            {{ formData.resumeFile?.name || 'Old resume file' }}
           </a>
         </div>
 
