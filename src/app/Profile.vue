@@ -150,7 +150,7 @@
           <div v-if="saved" class="mt-6">
             <div class="flex justify-between text-sm text-gray-600 mb-1">
               <span>{{ translations.auto_apply?.progress }}</span>
-              <span>{{ appliedCount }} / {{ newLimit ?? limit }}</span>
+              <span>{{ appliedCount }} / {{ limit }}</span>
             </div>
             <div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
               <div
@@ -418,7 +418,6 @@ const goToEdit = () => {
 const enabled = ref(false);
 const limit = ref(null);
 const tempLimit = ref(null);
-const newLimit = ref(null);
 const saved = ref(false);
 const appliedCount = ref(0);
 const editMode = ref(false); // yangi state edit qilish uchun
@@ -479,28 +478,17 @@ const updateLimit = async () => {
   try {
     const token = localStorage.getItem("token");
 
-    // 🟢 1. Avval so‘nggi limitni serverdan olish
-    const latest = await axios.get(proxy.$locale + "/auth/settings/auto-apply", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/json",
-      },
-    });
-
-    const serverLimit = Number(latest.data.data.settings.auto_apply_limit || 0);
-
-    // 🟢 2. Yangi qo‘shiladigan qiymat
+    const oldLimit = Number(limit.value || 0);
     const addedValue = Number(tempLimit.value || 0);
 
-    // 🟢 3. Yangi limit — serverdagi oxirgi limit + qo‘shiladigan
-    const newValue = serverLimit + addedValue;
+    // Qo‘shamiz
+    const total = oldLimit + addedValue;
 
-    // 🟢 4. Serverga PATCH yuborish
     const response = await axios.patch(
         proxy.$locale + "/auth/settings/auto-apply",
         {
           auto_apply_enabled: true,
-          auto_apply_limit: newValue,
+          auto_apply_limit: total,
         },
         {
           headers: {
@@ -512,18 +500,20 @@ const updateLimit = async () => {
 
     console.log("update response", response.data);
 
-    // 🟢 5. Frontend state'ni yangilaymiz
-    limit.value = newValue;
-    newLimit.value = newValue;
+    // Shunchaki limitni yangilaymiz
+    limit.value = total;
     tempLimit.value = null;
     saved.value = true;
     editMode.value = false;
 
+    // ❌ fetchAutoApplyData chaqirmaymiz
+    // ❌ newLimit ishlatmaymiz
   } catch (error) {
     console.error("updateLimit error", error);
     if (error.response?.status === 401) clearAuthStorage();
   }
 };
+
 
 
 onMounted(async () => {
