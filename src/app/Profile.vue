@@ -438,7 +438,6 @@ const fetchAutoApplyData = async () => {
     });
 
     const settings = response.data.data.settings;
-    console.log("settings:", settings);
 
     enabled.value = settings.auto_apply_enabled;
     limit.value = settings.auto_apply_limit;
@@ -492,15 +491,9 @@ const updateLimit = async () => {
         }
     );
 
-    console.log("auto_apply_limit", auto_apply_limit);
-    console.log("update response", response.data);
-
     limit.value = response.data.data.auto_apply_limit;
     saved.value = true;
     editMode.value = false;
-
-    // Yangilashdan so‘ng serverdan qayta olish shart emas (fetchAutoApplyData),
-    // chunki biz allaqachon local state’ni yangiladik.
   } catch (error) {
     console.error("updateLimit error", error);
     if (error.response?.status === 401) clearAuthStorage();
@@ -532,12 +525,6 @@ onMounted(async () => {
     limit.value = meData.data?.settings?.auto_apply_limit;
     appliedCount.value = meData.data?.settings?.auto_apply_count;
     enabled.value = meData.data?.settings?.auto_apply_enabled;
-    console.log('appliedCount || saved', meData.data?.settings?.auto_apply_count, meData.data?.settings?.auto_apply_limit)
-    console.log("balanceRes.data", balanceRes.data);
-    console.log("meData", meData);
-
-
-
     if (balance.value.credit.count >= 0) {
       await fetchAutoApplyData();
     }
