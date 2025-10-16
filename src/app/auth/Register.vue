@@ -74,9 +74,6 @@
                 </span>
                 <span class="font-medium text-sm sm:text-base text-green-700">{{ translations.resume_file_ready }}</span>
               </div>
-              <p class="text-xs text-gray-500">
-                {{ formData.resumeFile?.name || translations.resume_file_default_name }}
-              </p>
               <div class="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
                 <button
                     type="button"
