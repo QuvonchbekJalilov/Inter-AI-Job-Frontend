@@ -78,14 +78,11 @@
           </div>
 
           <a
+              v-if="hhUrl"
               :href="hhUrl"
               target="_blank"
               rel="noopener noreferrer"
               class="w-full py-3 rounded-lg font-medium transition-colors mt-4 px-4 border border-red-400 text-sm text-center block"
-              :class="user?.hh_account_status
-      ? 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-60 pointer-events-none'
-      : 'border-red-400 text-black hover:bg-blue-700'"
-              @click.prevent="handleHeadHunterAuth"
           >
             {{ 'Head Hunter Auth' }}
           </a>
@@ -373,7 +370,6 @@ import LoadingModal from "@/components/modal/LodaingModal.vue";
 import Profile from "@/components/loading/Profile.vue";
 const { translations } = useI18n()
 const { proxy } = getCurrentInstance()
-const hhUrl = ref(null)
 
 const router = useRouter()
 const { locale } = useI18n()
@@ -632,6 +628,22 @@ const logout = async () => {
   }
 }
 
+const hhUrl = ref(null)
+onMounted(async () => {
+  const token = localStorage.getItem("token") || sessionStorage.getItem("token")
+  try {
+    const { data } = await axios.get(proxy.$locale + "/v1/hh-accounts/authorize", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      }
+    })
+    hhUrl.value = data?.url
+  } catch (error) {
+    console.error("HH authorize error", error)
+  }
+})
 </script>
 
 <style>
