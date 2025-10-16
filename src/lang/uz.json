@@ -28,7 +28,11 @@
     "save_button": "Saqlash",
     "update_button": "Tahrirlash",
     "cancel_button": "Bekor qilish",
-    "enable_hint": "Avto javob rejimidan foydalanish uchun tugmani yoqing."
+    "enable_hint": "Avto javob rejimidan foydalanish uchun tugmani yoqing.",
+    "hh_modal_title": "HeadHunter akkaunti kerak",
+    "hh_modal_description": "Avto javob funksiyasi HeadHunter dagi akkauntingiz bog‘langan bo‘lsa ishlaydi. Iltimos, hisobingizni tasdiqlang.",
+    "hh_modal_action": "Head Hunter Auth",
+    "hh_modal_cancel": "Bekor qilish"
   },
   "plan": {
     "title": "Tarif rejasi",

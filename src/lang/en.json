@@ -28,7 +28,11 @@
     "save_button": "Save",
     "update_button": "Update",
     "cancel_button": "Cancel",
-    "enable_hint": "Turn the switch on to enable auto apply."
+    "enable_hint": "Turn the switch on to enable auto apply.",
+    "hh_modal_title": "HeadHunter account required",
+    "hh_modal_description": "Auto apply works only after you connect your HeadHunter account. Please authorize to continue.",
+    "hh_modal_action": "Head Hunter Auth",
+    "hh_modal_cancel": "Cancel"
   },
   "plan": {
     "title": "Tariff plan",

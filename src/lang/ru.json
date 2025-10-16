@@ -28,7 +28,11 @@
     "save_button": "Сохранить",
     "update_button": "Редактировать",
     "cancel_button": "Отмена",
-    "enable_hint": "Чтобы активировать автоотклик, включите переключатель выше."
+    "enable_hint": "Чтобы активировать автоотклик, включите переключатель выше.",
+    "hh_modal_title": "Требуется аккаунт HeadHunter",
+    "hh_modal_description": "Функция автоотклика работает только после привязки аккаунта HeadHunter. Пожалуйста, авторизуйтесь.",
+    "hh_modal_action": "Head Hunter Auth",
+    "hh_modal_cancel": "Отмена"
   },
   "plan": {
     "title": "Тарифный план",

@@ -310,6 +310,33 @@
   </div>
   <!-- Modal -->
   <div
+      v-if="showHhModal"
+      class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50"
+  >
+    <div class="bg-white rounded-2xl p-6 w-[90%] max-w-md shadow-lg space-y-4">
+      <h2 class="text-lg font-medium text-gray-800">
+        {{ translations.auto_apply?.hh_modal_title }}
+      </h2>
+      <p class="text-sm text-gray-600">
+        {{ translations.auto_apply?.hh_modal_description }}
+      </p>
+      <div class="flex flex-col sm:flex-row sm:justify-end gap-3">
+        <button
+            class="w-full sm:w-auto px-4 py-2 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300"
+            @click="closeHhModal"
+        >
+          {{ translations.auto_apply?.hh_modal_cancel }}
+        </button>
+        <button
+            class="w-full sm:w-auto px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700"
+            @click="handleHeadHunterAuth"
+        >
+          {{ translations.auto_apply?.hh_modal_action }}
+        </button>
+      </div>
+    </div>
+  </div>
+  <div
       v-if="showLogoutModal"
       class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50"
   >
@@ -353,6 +380,7 @@ const showPayment = ref(false)
 const amount = ref(100)
 const showLogoutModal = ref(false)
 const showLoading = ref(false);
+const showHhModal = ref(false);
 const loadingSkeleton = ref(true)
 const openPayment = () => {
   showPayment.value = true
@@ -371,6 +399,7 @@ const user = ref(null)
 const balance = ref({ balance: 0 })
 const loading = ref(true)
 const error = ref("")
+const hhAccountActive = computed(() => !!user.value?.hh_account_status)
 const clearAuthStorage = () => {
   localStorage.removeItem("token")
   localStorage.removeItem("user")
@@ -456,6 +485,9 @@ const fetchAutoApplyData = async () => {
     limit.value = settings.auto_apply_limit;
     appliedCount.value = settings.auto_apply_count;
     saved.value = !!limit.value;
+    if (!hhAccountActive.value) {
+      enabled.value = false;
+    }
   } catch (error) {
     if (error.response?.status === 401) clearAuthStorage();
   }
@@ -515,6 +547,11 @@ const updateLimit = async () => {
 
 const toggleAutoApply = async () => {
   try {
+    if (enabled.value && !hhAccountActive.value) {
+      enabled.value = false;
+      showHhModal.value = true;
+      return;
+    }
     const token = localStorage.getItem("token");
     await axios.patch(
         proxy.$locale + "/auth/settings/auto-apply",
@@ -537,6 +574,15 @@ const toggleAutoApply = async () => {
       enabled.value = !enabled.value;
     }
   }
+};
+
+const closeHhModal = () => {
+  showHhModal.value = false;
+};
+
+const handleHeadHunterAuth = async () => {
+  showHhModal.value = false;
+  await goToHeadHunter();
 };
 
 
