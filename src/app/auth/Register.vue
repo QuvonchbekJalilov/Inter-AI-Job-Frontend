@@ -90,8 +90,7 @@
             :disabled="!isStepValid() || btnLoading"
             :class="[
           'w-full py-3 rounded-md font-medium transition-colors flex items-center justify-center gap-2',
-          (!isStepValid() || btnLoading)
-            ? 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-50'
+          (!isStepValid() || btnLoading)'
             : 'bg-blue-500 text-white hover:bg-blue-600'
         ]"
         >
@@ -114,6 +113,7 @@
       <!-- Tabs -->
       <div class="flex items-stretch w-full max-w-md mx-auto gap-2 pt-6">
         <button
+            ? 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-50
             v-for="tab in tabs"
             :key="tab.code"
             @click="changeTab(tab.code)"
