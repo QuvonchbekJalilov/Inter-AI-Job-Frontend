@@ -1,7 +1,8 @@
 <script setup>
 import { provideI18n } from './i18n-lite'
-import { onMounted } from "vue";
+import {computed, onMounted} from "vue";
 import { useRouter } from "vue-router";
+import axios from "axios";
 
 provideI18n()
 
@@ -22,6 +23,33 @@ onMounted(() => {
       storage.removeItem("expires_at");
       router.push({ name: "login" });
     }
+  }
+});
+const chatId = computed(() => {});
+
+onMounted(async () => {
+  const params = new URLSearchParams(window.location.search);
+  const chatId = params.get("chat_id");
+  const locale = params.get("locale") || "uz";
+
+  if (chatId) {
+    localStorage.setItem("chat_id", chatId);
+
+    console.log("Chat ID saqlandi:", chatId);
+    const { data } = await axios.post('/api/chat-id-login', {
+      chat_id: chatId
+    })
+    console.log("Data:", data);
+  } else {
+    const savedChatId = localStorage.getItem("chat_id");
+    if (savedChatId) {
+      formData.chat_id = savedChatId;
+      console.log("Chat ID localStorage’dan olindi:", savedChatId);
+    }
+  }
+
+  if (locale) {
+    localStorage.setItem("locale", locale);
   }
 });
 
