@@ -66,9 +66,13 @@
         >
           <div class="flex flex-col items-center gap-4">
             <template v-if="hasResumeFile">
-              <div class="flex flex-col items-center gap-2 text-green-600">
-                <span class="text-xl leading-none">✔</span>
-                <span class="font-medium text-sm sm:text-base">{{ translations.resume_file_ready }}</span>
+              <div class="flex items-center gap-2 text-green-600">
+                <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-green-100 text-green-600 shadow-sm">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                </span>
+                <span class="font-medium text-sm sm:text-base text-green-700">{{ translations.resume_file_ready }}</span>
               </div>
               <p class="text-xs text-gray-500">
                 {{ formData.resumeFile?.name || translations.resume_file_default_name }}
