@@ -257,7 +257,7 @@ const submitRegistration = async () => {
     console.log('✅ Registration success:', data)
 
     // 🔽 Yangi qo‘shimcha — telefon mavjud bo‘lsa
-    if (data.code === 422 || data.message?.includes('already') || data.message?.includes('mavjud')) {
+    if (!isSuccess(data)) {
       alert("❗ Ushbu telefon raqami bilan allaqachon ro‘yxatdan o‘tilgan.")
       showLoading.value = false
       loading.value = false
