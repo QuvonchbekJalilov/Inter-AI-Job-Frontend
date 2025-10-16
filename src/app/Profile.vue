@@ -120,6 +120,12 @@
           <p class="text-sm text-gray-600 mb-3">
             {{ translations.auto_apply?.description }}
           </p>
+          <p
+              v-if="!enabled"
+              class="text-sm text-amber-600 bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 mb-3"
+          >
+            {{ translations.auto_apply?.enable_hint }}
+          </p>
 
           <!-- Checkbox -->
           <label class="inline-flex items-center cursor-pointer">
@@ -154,7 +160,7 @@
           </div>
 
           <!-- Progress bar + edit qilish -->
-          <div v-if="enabled && saved" class="mt-6">
+          <div v-if="saved" class="mt-6">
             <div class="flex justify-between text-sm text-gray-600 mb-1">
               <span>{{ translations.auto_apply?.progress }}</span>
               <span>{{ appliedCount }} / {{ limit }}</span>
@@ -523,9 +529,6 @@ const toggleAutoApply = async () => {
         }
     );
     await fetchAutoApplyData();
-    if (!enabled.value) {
-      editMode.value = false;
-    }
   } catch (error) {
     console.error("toggleAutoApply error", error);
     if (error.response?.status === 401) {

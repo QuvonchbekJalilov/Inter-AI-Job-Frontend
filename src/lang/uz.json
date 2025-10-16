@@ -27,7 +27,8 @@
     "description": "Avtomatik javoblar — AI mos bo'lgan vakansiyalarga avtomatik javob beradi",
     "save_button": "Saqlash",
     "update_button": "Tahrirlash",
-    "cancel_button": "Bekor qilish"
+    "cancel_button": "Bekor qilish",
+    "enable_hint": "Avto javob rejimidan foydalanish uchun tugmani yoqing."
   },
   "plan": {
     "title": "Tarif rejasi",

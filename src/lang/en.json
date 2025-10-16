@@ -27,7 +27,8 @@
     "description": "Automatic applications — AI automatically applies to suitable vacancies",
     "save_button": "Save",
     "update_button": "Update",
-    "cancel_button": "Cancel"
+    "cancel_button": "Cancel",
+    "enable_hint": "Turn the switch on to enable auto apply."
   },
   "plan": {
     "title": "Tariff plan",
