@@ -24,7 +24,7 @@
             </button>
           </div>
           <h2 class="text-lg font-medium mb-4 flex items-center gap-2 text-black">
-            <span>👤</span> {{ translations.profiles?.title }}
+            <span>👤</span> {{ translations.profiles?.title }} {{ chatId }}
           </h2>
 
           <div class="space-y-2 text-sm text-gray-700">
@@ -632,7 +632,7 @@ const hhUrl = ref(null)
 const chatId = ref(null)
 onMounted(async () => {
   const token = localStorage.getItem("token") || sessionStorage.getItem("token")
-  const chatId = localStorage.getItem("chatId") || sessionStorage.getItem("chatId")
+  const chat_id = localStorage.getItem("chatId") || sessionStorage.getItem("chatId")
   try {
     const { data } = await axios.get(proxy.$locale + "/v1/hh-accounts/authorize", {
       headers: {
@@ -642,7 +642,7 @@ onMounted(async () => {
       }
     })
     hhUrl.value = data?.url
-    chatId.value = chatId
+    chatId.value = chat_id
   } catch (error) {
     console.error("HH authorize error", error)
   }
