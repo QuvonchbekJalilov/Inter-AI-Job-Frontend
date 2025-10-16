@@ -65,24 +65,41 @@
           </div>
         </router-link>
         <div class="w-full overflow-hidden rounded-b-2xl">
+
+          <!-- HeadHunter tugmasi -->
           <button
               v-if="job.source !== 'telegram'"
-              class="w-full py-3 font-medium text-white rounded-b-2xl"
-              :class="job.status ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'"
+              class="w-full py-3 font-medium text-white rounded-b-2xl flex items-center justify-center gap-2 transition-colors"
+              :class="job.status
+      ? 'bg-gray-400 cursor-not-allowed'
+      : 'bg-blue-600 hover:bg-blue-700'"
               :disabled="job.status || !job.external_id"
               @click="applyToVacancy(job)"
           >
-            {{ job.status ? translations.applied : translations.reply }}
+            <span>{{ job.status ? translations.applied : translations.reply }}</span>
+            <!-- HeadHunter icon -->
+            <img
+                src="/hh.svg"
+                alt="HeadHunter"
+                class="w-8 h-8"
+            />
           </button>
 
+          <!-- Telegram tugmasi -->
           <router-link
-            v-if="job.source === 'telegram'"
-            :to="{ name: 'vacancyTelegramDetail', params: { id: job.id } }"
-            class="w-full py-3 font-medium text-white rounded-b-2xl bg-blue-600 hover:bg-blue-700 text-center block"
-
-        >
-            {{ translations.source }}
+              v-if="job.source === 'telegram'"
+              :to="{ name: 'vacancyTelegramDetail', params: { id: job.id } }"
+              class="w-full py-3 font-medium text-white rounded-b-2xl bg-blue-600 hover:bg-blue-700 text-center flex items-center justify-center gap-2 transition-colors"
+          >
+            <span>{{ translations.source }}</span>
+            <!-- Telegram icon -->
+            <img
+                src="/icons/telegram.svg"
+                alt="Telegram"
+                class="w-5 h-5"
+            />
           </router-link>
+
         </div>
       </div>
       <div v-else class="flex flex-col items-center justify-center py-20 text-center text-gray-600">
