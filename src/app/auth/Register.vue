@@ -286,12 +286,14 @@ const submitRegistration = async () => {
 
   loading.value = true
   const chatId = localStorage.getItem("chat_id");
+  const locale = localStorage.getItem("locale");
   try {
     const { data } = await axios.post(proxy.$locale + '/auth/register', {
       first_name: formData.firstName,
       phone: formData.phone,
       resume_text: formData.resumeText,
       chat_id: chatId,
+      language: locale,
     })
 
     console.log('✅ Registration success:', data)
@@ -315,15 +317,6 @@ const submitRegistration = async () => {
       storage.setItem('token', data.data.token)
       storage.setItem('user', JSON.stringify(data.data.user))
       storage.setItem('expires_at', data.data.expires_at)
-
-      // ✅ Muvaffaqiyatli ro‘yxatdan o‘tganligi haqida xabar
-      toast.success(
-          locale.value === 'uz'
-              ? "✅ Ro‘yxatdan o‘tish muvaffaqiyatli yakunlandi!"
-              : locale.value === 'ru'
-                  ? "✅ Регистрация успешно завершена!"
-                  : "✅ Registration completed successfully!"
-      )
 
       try {
         await uploadResume(data.data.token)
