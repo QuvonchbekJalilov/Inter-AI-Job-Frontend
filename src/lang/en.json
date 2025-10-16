@@ -32,7 +32,9 @@
     "hh_modal_title": "HeadHunter account required",
     "hh_modal_description": "Auto apply works only after you connect your HeadHunter account. Please authorize to continue.",
     "hh_modal_action": "Head Hunter Auth",
-    "hh_modal_cancel": "Cancel"
+    "hh_modal_cancel": "Cancel",
+    "hh_required": "Connect your Head Hunter account via the button below to enable auto apply.",
+    "hh_connected": "Your Head Hunter account is linked. Auto apply is ready to use."
   },
   "plan": {
     "title": "Tariff plan",

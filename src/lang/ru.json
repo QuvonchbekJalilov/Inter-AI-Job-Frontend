@@ -32,7 +32,9 @@
     "hh_modal_title": "Требуется аккаунт HeadHunter",
     "hh_modal_description": "Функция автоотклика работает только после привязки аккаунта HeadHunter. Пожалуйста, авторизуйтесь.",
     "hh_modal_action": "Head Hunter Auth",
-    "hh_modal_cancel": "Отмена"
+    "hh_modal_cancel": "Отмена",
+    "hh_required": "Чтобы включить автоотклик, привяжите аккаунт Head Hunter через кнопку ниже.",
+    "hh_connected": "Аккаунт Head Hunter успешно привязан. Вы можете пользоваться автооткликом."
   },
   "plan": {
     "title": "Тарифный план",

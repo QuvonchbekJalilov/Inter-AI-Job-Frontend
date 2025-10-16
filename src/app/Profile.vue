@@ -72,7 +72,7 @@
           <div class="space-y-2 text-sm text-gray-700">
             <div>
               <span class="text-gray-500">
-                Avto otklik rejimini ishga tushirish uchun quyidagi tugmani bosing va Head Hunter akkauntigizdan ruxsat bering
+                {{ hhAccountActive ? translations.auto_apply?.hh_connected : translations.auto_apply?.hh_required }}
               </span>
             </div>
           </div>
