@@ -97,8 +97,10 @@
           </h2>
           <div class="flex items-center justify-between">
             <div class="text-sm text-gray-500">
-              {{ translations.resumes?.last_update }} <br />
-              <span class="text-gray-700">3 {{ translations.resumes?.days_ago }}</span>
+             
+              <span class="text-gray-700">
+                {{ user?.resumes?.[0]?.title  }}
+              </span>
             </div>
             <span class="px-3 py-1 bg-green-100 text-green-600 rounded-full text-xs">{{ translations.resumes?.status_active }}</span>
           </div>
@@ -121,7 +123,12 @@
 
           <!-- Checkbox -->
           <label class="inline-flex items-center cursor-pointer">
-            <input type="checkbox" v-model="enabled" class="sr-only peer" />
+            <input
+                type="checkbox"
+                v-model="enabled"
+                class="sr-only peer"
+                @change="toggleAutoApply"
+            />
             <div
                 class="relative w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-indigo-600
                 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white
@@ -147,7 +154,7 @@
           </div>
 
           <!-- Progress bar + edit qilish -->
-          <div v-if="saved" class="mt-6">
+          <div v-if="enabled && saved" class="mt-6">
             <div class="flex justify-between text-sm text-gray-600 mb-1">
               <span>{{ translations.auto_apply?.progress }}</span>
               <span>{{ appliedCount }} / {{ limit }}</span>
@@ -500,6 +507,35 @@ const updateLimit = async () => {
   }
 };
 
+const toggleAutoApply = async () => {
+  try {
+    const token = localStorage.getItem("token");
+    await axios.patch(
+        proxy.$locale + "/auth/settings/auto-apply",
+        {
+          auto_apply_enabled: enabled.value,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        }
+    );
+    await fetchAutoApplyData();
+    if (!enabled.value) {
+      editMode.value = false;
+    }
+  } catch (error) {
+    console.error("toggleAutoApply error", error);
+    if (error.response?.status === 401) {
+      clearAuthStorage();
+    } else {
+      enabled.value = !enabled.value;
+    }
+  }
+};
+
 
 onMounted(async () => {
   loading.value = true;
@@ -518,6 +554,7 @@ onMounted(async () => {
 
     const { data: meData } = await axios.get(proxy.$locale + "/auth/me", { headers });
     user.value = meData.data;
+    //console.log("User data:", user.value);
 
     const balanceRes = await axios.get(proxy.$locale + "/v1/balance", { headers });
     balance.value = balanceRes.data;
