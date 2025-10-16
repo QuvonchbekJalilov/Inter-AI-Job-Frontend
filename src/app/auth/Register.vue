@@ -103,13 +103,13 @@
         </button>
       </div>
 
-      <!-- Footer -->
-      <p class="mt-6 text-center text-sm text-gray-500">
-        {{ translations.Do_you_have_an_account }}
-        <RouterLink to="/login" class="text-blue-600 hover:underline">
-          {{ translations.login }}
-        </RouterLink>
-      </p>
+<!--      &lt;!&ndash; Footer &ndash;&gt;-->
+<!--      <p class="mt-6 text-center text-sm text-gray-500">-->
+<!--        {{ translations.Do_you_have_an_account }}-->
+<!--        <RouterLink to="/login" class="text-blue-600 hover:underline">-->
+<!--          {{ translations.login }}-->
+<!--        </RouterLink>-->
+<!--      </p>-->
 
       <!-- Tabs -->
       <div class="flex items-stretch w-full max-w-md mx-auto gap-2 pt-6">
