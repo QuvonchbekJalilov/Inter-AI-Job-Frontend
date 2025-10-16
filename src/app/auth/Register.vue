@@ -256,9 +256,15 @@ const submitRegistration = async () => {
 
     console.log('✅ Registration success:', data)
 
-    // 🔽 Yangi qo‘shimcha — telefon mavjud bo‘lsa
+    // 🔽 Telefon raqami mavjud bo‘lsa — toast orqali xabar
     if (!isSuccess(data)) {
-      alert("❗ Ushbu telefon raqami bilan allaqachon ro‘yxatdan o‘tilgan.")
+      toast.error(
+          locale.value === 'uz'
+              ? "❗ Ushbu telefon raqami bilan allaqachon ro‘yxatdan o‘tilgan."
+              : locale.value === 'ru'
+                  ? "❗ Этот номер телефона уже зарегистрирован."
+                  : "❗ This phone number is already registered."
+      )
       showLoading.value = false
       loading.value = false
       return
@@ -269,6 +275,15 @@ const submitRegistration = async () => {
       storage.setItem('token', data.data.token)
       storage.setItem('user', JSON.stringify(data.data.user))
       storage.setItem('expires_at', data.data.expires_at)
+
+      // ✅ Muvaffaqiyatli ro‘yxatdan o‘tganligi haqida xabar
+      toast.success(
+          locale.value === 'uz'
+              ? "✅ Ro‘yxatdan o‘tish muvaffaqiyatli yakunlandi!"
+              : locale.value === 'ru'
+                  ? "✅ Регистрация успешно завершена!"
+                  : "✅ Registration completed successfully!"
+      )
 
       try {
         await uploadResume(data.data.token)
@@ -294,10 +309,23 @@ const submitRegistration = async () => {
       error.value = data.message || "Ro‘yxatdan o‘tishda xatolik yuz berdi."
     }
   } catch (e) {
-    // 🔽 Backend 422 xato qaytarsa — alertda ko‘rsatish
+    // 🔽 Backend 422 xato qaytarsa — toast orqali ko‘rsatish
     if (e.response?.status === 422) {
-      alert("❗ Ushbu telefon raqami bilan allaqachon ro‘yxatdan o‘tilgan.")
+      toast.error(
+          locale.value === 'uz'
+              ? "❗ Ushbu telefon raqami bilan allaqachon ro‘yxatdan o‘tilgan."
+              : locale.value === 'ru'
+                  ? "❗ Этот номер телефона уже зарегистрирован."
+                  : "❗ This phone number is already registered."
+      )
     } else {
+      toast.error(
+          locale.value === 'uz'
+              ? "❌ Server bilan bog‘lanishda xatolik yuz berdi."
+              : locale.value === 'ru'
+                  ? "❌ Произошла ошибка при подключении к серверу."
+                  : "❌ An error occurred while connecting to the server."
+      )
       error.value = e.response?.data?.message || 'Server bilan bog‘lanishda xatolik.'
     }
   } finally {
@@ -305,6 +333,7 @@ const submitRegistration = async () => {
     loading.value = false
   }
 }
+
 
 const completeRegistration = async () => {
   touched.firstName = true
