@@ -256,6 +256,14 @@ const submitRegistration = async () => {
 
     console.log('✅ Registration success:', data)
 
+    // 🔽 Yangi qo‘shimcha — telefon mavjud bo‘lsa
+    if (data.code === 422 || data.message?.includes('already') || data.message?.includes('mavjud')) {
+      alert("❗ Ushbu telefon raqami bilan allaqachon ro‘yxatdan o‘tilgan.")
+      showLoading.value = false
+      loading.value = false
+      return
+    }
+
     if (isSuccess(data)) {
       const storage = localStorage
       storage.setItem('token', data.data.token)
@@ -286,7 +294,12 @@ const submitRegistration = async () => {
       error.value = data.message || "Ro‘yxatdan o‘tishda xatolik yuz berdi."
     }
   } catch (e) {
-    error.value = e.response?.data?.message || 'Server bilan bog‘lanishda xatolik.'
+    // 🔽 Backend 422 xato qaytarsa — alertda ko‘rsatish
+    if (e.response?.status === 422) {
+      alert("❗ Ushbu telefon raqami bilan allaqachon ro‘yxatdan o‘tilgan.")
+    } else {
+      error.value = e.response?.data?.message || 'Server bilan bog‘lanishda xatolik.'
+    }
   } finally {
     showLoading.value = false
     loading.value = false
@@ -308,6 +321,7 @@ const completeRegistration = async () => {
     btnLoading.value = false
   }
 }
+
 
 const { locale } = useI18n()
 
