@@ -54,34 +54,55 @@
         <label class="block text-sm font-medium text-gray-700 mb-2">
           {{ translations.Upload_your_resume_file }}
         </label>
+        <input
+            ref="resumeInput"
+            id="resumeUpload"
+            type="file"
+            class="hidden"
+            @change="handleFileUpload"
+        />
         <div
-            class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-400 transition-colors cursor-pointer"
+            class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-400 transition-colors"
         >
-          <input
-              id="resumeUpload"
-              type="file"
-              class="hidden"
-              @change="handleFileUpload"
-          />
-          <label for="resumeUpload" class="block cursor-pointer">
-        <span
-            class="inline-block px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors">
-          {{ translations.select_file }}
-        </span>
-          </label>
-        </div>
-
-        <!-- Preview -->
-        <div v-if="formData.resumeFileUrl" class="mt-4 text-center">
-          <p class="text-sm text-gray-600 mb-2">{{ translations.selected_file }}</p>
-          <a
-              :href="formData.resumeFileUrl"
-              target="_blank"
-              class="text-blue-500 underline"
-          >
-<!--            📄 -->
-            {{ formData.resumeFile?.name || 'Old resume file' }}
-          </a>
+          <div class="flex flex-col items-center gap-4">
+            <template v-if="hasResumeFile">
+              <div class="flex flex-col items-center gap-2 text-green-600">
+                <span class="text-xl leading-none">✔</span>
+                <span class="font-medium text-sm sm:text-base">{{ translations.resume_file_ready }}</span>
+              </div>
+              <p class="text-xs text-gray-500">
+                {{ formData.resumeFile?.name || translations.resume_file_default_name }}
+              </p>
+              <div class="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
+                <button
+                    type="button"
+                    class="px-4 py-2 rounded-md bg-blue-500 text-white hover:bg-blue-600 transition-colors text-sm font-medium"
+                    @click="viewResume"
+                >
+                  {{ translations.resume_view }}
+                </button>
+                <button
+                    type="button"
+                    class="px-6 sm:px-8 py-2 rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors text-sm font-medium"
+                    @click="openFileDialog"
+                >
+                  {{ translations.resume_change }}
+                </button>
+              </div>
+            </template>
+            <template v-else>
+              <div class="text-sm text-gray-500">
+                {{ translations.resume_upload_hint }}
+              </div>
+              <button
+                  type="button"
+                  class="px-4 py-2 rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors text-sm font-medium"
+                  @click="openFileDialog"
+              >
+                {{ translations.select_file }}
+              </button>
+            </template>
+          </div>
         </div>
 
         <!-- Submit -->
@@ -149,6 +170,7 @@ const { proxy } = getCurrentInstance()
 const { translations } = useI18n()
 const router = useRouter()
 const showLoading = ref(false)
+const resumeInput = ref(null)
 
 const formData = reactive({
   firstName: '',
@@ -163,6 +185,8 @@ const selectedFile = ref(null)
 const loading = ref(false)
 const btnLoading = ref(false)
 const error = ref("")
+const hasResumeFile = computed(() => Boolean(formData.resumeFileUrl))
+
 const chatId = computed(() => {});
 onMounted(() => {
   const params = new URLSearchParams(window.location.search);
@@ -196,9 +220,24 @@ const handleFileUpload = (event) => {
   const file = event.target.files[0]
   if (!file) return
 
+  if (formData.resumeFileUrl) {
+    URL.revokeObjectURL(formData.resumeFileUrl)
+  }
+
   selectedFile.value = file
   formData.resumeFile = file
   formData.resumeFileUrl = URL.createObjectURL(file) // preview uchun
+  event.target.value = ''
+}
+
+const openFileDialog = () => {
+  resumeInput.value?.click()
+}
+
+const viewResume = () => {
+  if (formData.resumeFileUrl) {
+    window.open(formData.resumeFileUrl, "_blank", "noopener")
+  }
 }
 
 const uploadResume = async (token) => {
