@@ -153,7 +153,7 @@ let intervalId = null;
 const { proxy } = getCurrentInstance()
 const jobs = ref([])
 const CACHE_KEY = "vacancies_cache"
-const CACHE_TIME = 5 * 60 * 1000
+const CACHE_TIME = 30 * 60 * 1000
 const clearAuthStorage = () => {
   localStorage.removeItem("token")
   localStorage.removeItem("user")
@@ -328,7 +328,7 @@ const startLoading = async () => {
 
   setTimeout(() => {
     showLoading.value = false
-  }, 1500)
+  }, 9000)
 }
 
 const formatDate = (date) => {

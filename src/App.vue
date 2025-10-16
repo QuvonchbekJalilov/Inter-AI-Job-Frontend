@@ -31,6 +31,8 @@ onMounted(async () => {
   const params = new URLSearchParams(window.location.search);
   const chatId = params.get("chat_id");
   const locale = params.get("locale") || "uz";
+  console.log("chatId:", chatId);
+
 
   if (chatId) {
     localStorage.setItem("chat_id", chatId);
