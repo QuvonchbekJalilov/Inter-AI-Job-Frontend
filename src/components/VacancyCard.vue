@@ -262,7 +262,6 @@ const fetchJobs = async (forceUpdate = false) => {
   }
 }
 onMounted(async () => {
-  showLoading.value = true;
   try {
     const token = localStorage.getItem("token") || sessionStorage.getItem("token");
     if (!token) {
@@ -282,9 +281,6 @@ onMounted(async () => {
   } catch (e) {
     error.value = "Foydalanuvchi ma’lumotlarini olishda xatolik.";
     if (e.response?.status === 401) clearAuthStorage();
-  } finally {
-    showLoading.value = false;
-    loadingSkeleton.value = false;
   }
 });
 
