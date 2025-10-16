@@ -629,8 +629,10 @@ const logout = async () => {
 }
 
 const hhUrl = ref(null)
+const chatId = ref(null)
 onMounted(async () => {
   const token = localStorage.getItem("token") || sessionStorage.getItem("token")
+  const chatId = localStorage.getItem("chatId") || sessionStorage.getItem("chatId")
   try {
     const { data } = await axios.get(proxy.$locale + "/v1/hh-accounts/authorize", {
       headers: {
@@ -640,6 +642,7 @@ onMounted(async () => {
       }
     })
     hhUrl.value = data?.url
+    chatId.value = chatId
   } catch (error) {
     console.error("HH authorize error", error)
   }
