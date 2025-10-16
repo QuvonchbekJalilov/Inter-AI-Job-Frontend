@@ -27,7 +27,7 @@
                 {{ job.company }}
               </span>
               <small class="bg-green-100 px-2 text-green-700 text-center text-sm font-medium py-1 rounded-full">
-                {{ job.score ?? '95' }}% совпадение
+                {{ job.score ?? '95' }}% {{ translations.accordance }}
               </small>
             </div>
           </div>
@@ -56,7 +56,7 @@
                 {{ job.company }}
               </span>
               <small class="bg-green-100 px-2 text-green-700 text-center text-sm font-medium py-1 rounded-full">
-                {{ job.score ?? '95' }}% совпадение
+                {{ job.score ?? '95' }}% {{ translations.accordance }}
               </small>
             </div>
             <p class="text-sm leading-snug text-gray-500">
