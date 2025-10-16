@@ -44,7 +44,7 @@
           <input
               v-model="formData.resumeText"
               class="w-full px-3 py-2 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Digital Marketing, SMM, SEO, Google Ads, Brand Management, Content Marketing"
+              :placeholder="translations.resume_placeholder"
           >
         </div>
 
@@ -392,4 +392,3 @@ onMounted(() => {
   }
 });
 </script>
-
