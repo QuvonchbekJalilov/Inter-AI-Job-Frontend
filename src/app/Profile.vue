@@ -77,18 +77,18 @@
             </div>
           </div>
 
-          <button
-              :disabled="user?.hh_account_status"
-              :class="[
-    'w-full py-3 rounded-lg font-medium transition-colors mt-4 px-4 border border-red-400 text-sm',
-    user?.hh_account_status
-      ? 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-60'
-      : 'border-red-400 text-black hover:bg-blue-700'
-  ]"
-              @click="goToHeadHunter"
+          <a
+              :href="hhUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="w-full py-3 rounded-lg font-medium transition-colors mt-4 px-4 border border-red-400 text-sm text-center block"
+              :class="user?.hh_account_status
+      ? 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-60 pointer-events-none'
+      : 'border-red-400 text-black hover:bg-blue-700'"
+              @click.prevent="handleHeadHunterAuth"
           >
             {{ 'Head Hunter Auth' }}
-          </button>
+          </a>
         </div>
 
         <div class="bg-white border border-gray-200 rounded-2xl p-6">
@@ -373,6 +373,7 @@ import LoadingModal from "@/components/modal/LodaingModal.vue";
 import Profile from "@/components/loading/Profile.vue";
 const { translations } = useI18n()
 const { proxy } = getCurrentInstance()
+const hhUrl = ref(null)
 
 const router = useRouter()
 const { locale } = useI18n()
@@ -412,29 +413,15 @@ const clearAuthStorage = () => {
   router.push({ name: "login" })
 }
 const goToHeadHunter = async () => {
-  try {
-    const token = localStorage.getItem("token") || sessionStorage.getItem("token")
-
-    const { data } = await axios.get(
-        proxy.$locale + "/v1/hh-accounts/authorize",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "application/json",
-            "Content-Type": "application/json"
-          }
-        }
-    )
-
-    if (data?.url) {
-      window.open(data.url, "_blank")
+  const token = localStorage.getItem("token") || sessionStorage.getItem("token")
+  const { data } = await axios.get(proxy.$locale + "/v1/hh-accounts/authorize", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+      "Content-Type": "application/json"
     }
-  } catch (error) {
-    console.error("❌ HH Auth error:", error.response?.data || error.message)
-    if (error.response?.status === 401) {
-      clearAuthStorage()
-    }
-  }
+  })
+  hhUrl.value = data?.url
 }
 
 const tabs = [
@@ -581,9 +568,11 @@ const closeHhModal = () => {
 };
 
 const handleHeadHunterAuth = async () => {
-  showHhModal.value = false;
-  await goToHeadHunter();
-};
+  await goToHeadHunter()
+  if (hhUrl.value) {
+    window.location.href = hhUrl.value
+  }
+}
 
 
 onMounted(async () => {
