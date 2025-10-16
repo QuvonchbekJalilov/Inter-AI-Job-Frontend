@@ -122,7 +122,7 @@ onMounted(async () => {
     loading.value = true
     showLoading.value = true
     if (!token) {
-      router.push({ name: "login" })
+      router.push({ name: "register" })
       return
     }
     const res = await axios.get(proxy.$locale + "/auth/me", {

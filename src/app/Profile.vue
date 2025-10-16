@@ -406,7 +406,7 @@ const clearAuthStorage = () => {
   sessionStorage.removeItem("user")
   sessionStorage.removeItem("expires_at")
   sessionStorage.removeItem("vacancies_cache")
-  router.push({ name: "login" })
+  router.push({ name: "register" })
 }
 const goToHeadHunter = async () => {
   const token = localStorage.getItem("token") || sessionStorage.getItem("token")
@@ -576,7 +576,7 @@ onMounted(async () => {
   try {
     const token = localStorage.getItem("token") || sessionStorage.getItem("token");
     if (!token) {
-      router.push({ name: "login" });
+      router.push({ name: "register" });
       return;
     }
 
@@ -624,7 +624,7 @@ const logout = async () => {
     }
   } finally {
     clearAuthStorage()
-    window.location.href = "/login"
+    window.location.href = "/register"
   }
 }
 

@@ -14,7 +14,15 @@
             </div>
           </div>
           <div class="flex flex-col bg-white px-4 rounded-tr-2xl">
-            <h2 class="mb-2 mt-5 text-xl leading-tight font-medium">{{ job.title }}</h2>
+            <div class="flex items-start justify-between mb-2">
+              <h2 class="mb-2 mt-5 text-xl leading-tight font-medium">{{ job.title }}</h2>
+              <!-- Telegram icon -->
+              <img
+                  src="/icons/telegram.svg"
+                  alt="Telegram"
+                  class="w-6 h-6 mt-5 object-contain ml-2 shrink-0"
+              />
+            </div>
             <div class="mb-2 flex items-center justify-between gap-2">
               <span class="flex items-center text-gray-700 text-sm basis-2/5 truncate">
                 <svg class="h-4 w-4 text-blue-600 mr-2 shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
@@ -43,7 +51,17 @@
             </div>
           </div>
           <div class="flex flex-col bg-white p-4 px-4 rounded-tr-2xl">
-            <h2 class="mb-2 text-xl leading-tight font-medium">{{ job.title }}</h2>
+            <div class="flex items-start justify-between mb-2">
+              <h2 class="text-xl leading-tight font-medium w-4/5 truncate">
+                {{ job.title }}
+              </h2>
+
+              <img
+                  src="/HeadHunter_logo.png"
+                  alt="HeadHunter"
+                  class="w-6 h-6 object-contain ml-2 shrink-0"
+              />
+            </div>
             <div class="mb-2 flex items-center justify-between gap-2">
               <span class="flex items-center text-gray-700 text-sm basis-2/5 truncate">
                 <svg class="h-4 w-4 text-blue-600 mr-2 shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
@@ -77,12 +95,6 @@
               @click="applyToVacancy(job)"
           >
             <span>{{ job.status ? translations.applied : translations.reply }}</span>
-            <!-- HeadHunter icon -->
-            <img
-                src="/hh.svg"
-                alt="HeadHunter"
-                class="w-8 h-8"
-            />
           </button>
 
           <!-- Telegram tugmasi -->
@@ -92,12 +104,6 @@
               class="w-full py-3 font-medium text-white rounded-b-2xl bg-blue-600 hover:bg-blue-700 text-center flex items-center justify-center gap-2 transition-colors"
           >
             <span>{{ translations.source }}</span>
-            <!-- Telegram icon -->
-            <img
-                src="/icons/telegram.svg"
-                alt="Telegram"
-                class="w-5 h-5"
-            />
           </router-link>
 
         </div>
@@ -170,7 +176,7 @@ let intervalId = null;
 const { proxy } = getCurrentInstance()
 const jobs = ref([])
 const CACHE_KEY = "vacancies_cache"
-const CACHE_TIME = 30 * 60 * 1000
+const CACHE_TIME = 60 * 60 * 1000
 const clearAuthStorage = () => {
   localStorage.removeItem("token")
   localStorage.removeItem("user")
@@ -180,7 +186,7 @@ const clearAuthStorage = () => {
   sessionStorage.removeItem("user")
   sessionStorage.removeItem("expires_at")
   sessionStorage.removeItem("vacancies_cache")
-  router.push({ name: "login" })
+  router.push({ name: "register" })
 }
 const applyToVacancy = async (job) => {
   try {
@@ -318,7 +324,7 @@ onMounted(async () => {
   try {
     const token = localStorage.getItem("token") || sessionStorage.getItem("token");
     if (!token) {
-      router.push({ name: "login" });
+      router.push({ name: "register" });
       return;
     }
 
@@ -345,7 +351,7 @@ const startLoading = async () => {
 
   setTimeout(() => {
     showLoading.value = false
-  }, 9000)
+  }, 18000)
 }
 
 const formatDate = (date) => {
