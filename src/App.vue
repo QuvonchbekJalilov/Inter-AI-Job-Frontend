@@ -21,7 +21,7 @@ onMounted(() => {
       storage.removeItem("token");
       storage.removeItem("user");
       storage.removeItem("expires_at");
-      router.push({ name: "login" });
+      router.push({ name: "register" });
     }
   }
 });
@@ -31,8 +31,7 @@ onMounted(async () => {
   const params = new URLSearchParams(window.location.search);
   const chatId = params.get("chat_id");
   const locale = params.get("locale") || "uz";
-  console.log("chatId:", chatId);
-
+  console.log("chatId, Language:", chatId, locale);
 
   if (chatId) {
     localStorage.setItem("chat_id", chatId);
@@ -52,6 +51,7 @@ onMounted(async () => {
 
   if (locale) {
     localStorage.setItem("locale", locale);
+    console.log("Chat ID saqlandi:", locale);
   }
 });
 
