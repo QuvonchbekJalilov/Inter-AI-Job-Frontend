@@ -99,12 +99,40 @@
         @refresh="startLoading"
     />
 
+    <div
+        v-if="showHhModal"
+        class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50"
+    >
+      <div class="bg-white rounded-2xl p-6 w-[90%] max-w-md shadow-lg space-y-4">
+        <h2 class="text-lg font-medium text-gray-800">
+          {{ translations.auto_apply?.hh_modal_title }}
+        </h2>
+        <p class="text-sm text-gray-600">
+          {{ translations.auto_apply?.hh_modal_description }}
+        </p>
+        <div class="flex flex-col sm:flex-row sm:justify-end gap-3">
+          <button
+              class="w-full sm:w-auto px-4 py-2 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300"
+              @click="closeHhModal"
+          >
+            {{ translations.auto_apply?.hh_modal_cancel }}
+          </button>
+          <button
+              class="w-full sm:w-auto px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700"
+              @click="handleHeadHunterAuth"
+          >
+            {{ translations.auto_apply?.hh_modal_action }}
+          </button>
+        </div>
+      </div>
+    </div>
+
     <LoadingModal :show="showLoading" />
   </div>
 </template>
 
 <script setup>
-import { onMounted, ref, getCurrentInstance, onBeforeUnmount } from "vue";
+import { onMounted, ref, getCurrentInstance, onBeforeUnmount, computed } from "vue";
 import { useI18n } from '@/i18n-lite'
 import LoadingModal from "@/components/modal/LodaingModal.vue";
 import ModalComponent from "@/components/modal/UpdateModal.vue";
@@ -119,6 +147,7 @@ const { translations } = useI18n()
 const showModal = ref(false);
 const showLoading = ref(false);
 const loadingSkeleton = ref(true);
+const showHhModal = ref(false);
 let intervalId = null;
 
 const { proxy } = getCurrentInstance()
@@ -139,6 +168,11 @@ const clearAuthStorage = () => {
 const applyToVacancy = async (job) => {
   try {
     if (job.source === 'telegram') {
+      return
+    }
+
+    if (!hhAccountActive.value) {
+      showHhModal.value = true;
       return
     }
 
@@ -192,6 +226,8 @@ const setCache = (data) => {
 }
 
 const user = ref(null)
+const error = ref("")
+const hhAccountActive = computed(() => !!user.value?.hh_account_status)
 
 const fetchJobs = async (forceUpdate = false) => {
   showLoading.value = true
@@ -325,6 +361,45 @@ onMounted(() => {
 onBeforeUnmount(() => {
   clearInterval(intervalId);
 });
+
+const closeHhModal = () => {
+  showHhModal.value = false
+}
+
+const handleHeadHunterAuth = async () => {
+  showHhModal.value = false
+  await goToHeadHunter()
+}
+
+const goToHeadHunter = async () => {
+  try {
+    const token = localStorage.getItem("token") || sessionStorage.getItem("token")
+    if (!token) {
+      clearAuthStorage()
+      return
+    }
+
+    const { data } = await axios.get(
+        proxy.$locale + "/v1/hh-accounts/authorize",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+            "Content-Type": "application/json"
+          }
+        }
+    )
+
+    if (data?.url) {
+      window.open(data.url, "_blank")
+    }
+  } catch (error) {
+    console.error("❌ HH Auth error:", error.response?.data || error.message)
+    if (error.response?.status === 401) {
+      clearAuthStorage()
+    }
+  }
+}
 </script>
 
 <style scoped>
