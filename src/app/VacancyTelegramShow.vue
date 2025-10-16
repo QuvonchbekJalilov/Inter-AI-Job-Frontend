@@ -37,21 +37,21 @@
                
             </div>
 
-            <!-- Telegram Links -->
-            <div class="p-4 bg-gray-50 rounded-lg text-sm text-gray-600 space-y-2">
-                
-                <div v-if="vacancy.target_message_id">
-                    📥 <a :href="vacancy.target_message_id" target="_blank" class="text-blue-600 hover:underline">
-                        Shared via Inter-AI Bot
-                    </a>
-                </div>
-            </div>
+<!--            &lt;!&ndash; Telegram Links &ndash;&gt;-->
+<!--            <div class="p-4 bg-gray-50 rounded-lg text-sm text-gray-600 space-y-2">-->
+<!--                -->
+<!--                <div v-if="vacancy.target_message_id">-->
+<!--                    📥 <a :href="vacancy.target_message_id" target="_blank" class="text-blue-600 hover:underline">-->
+<!--                        Shared via Inter-AI Bot-->
+<!--                    </a>-->
+<!--                </div>-->
+<!--            </div>-->
 
             <!-- Action -->
             <div>
                 <button @click="openTelegramLink"
                     class="block w-full py-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium text-center">
-                    {{ translations.source }}
+                    {{ translations.all_information }}
                 </button>
             </div>
         </div>
