@@ -53,15 +53,23 @@
       <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6 1a9 9 0 11-18 0 9 9 0 0118 0z" />
       </svg>
-      <h3 class="text-lg font-medium mb-2">Siz hali hech qanday vakansiyaga topshirmagansiz</h3>
-      <p class="text-sm text-gray-500 mb-4">Mos keladigan vakansiyalarni tanlab, darhol ariza topshirishingiz mumkin.</p>
+
+      <h3 class="text-lg font-medium mb-2">
+        {{ translations.no_vacancies_title }}
+      </h3>
+
+      <p class="text-sm text-gray-500 mb-4">
+        {{ translations.no_vacancies_description }}
+      </p>
+
       <a
           href="/"
           class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
       >
-        Vakansiyalarni ko‘rish
+        {{ translations.view_vacancies }}
       </a>
     </div>
+
   </div>
   <div>
     <ModalComponent

@@ -6,7 +6,15 @@
         <div v-if="vacancy" class="max-w-5xl pt-[110px] mx-auto p-6 bg-white rounded-2xl shadow space-y-6">
             <!-- Title and Company -->
             <div>
-                <h3 class="text-2xl font-medium mb-2">{{ vacancy.title }}</h3>
+                <div class="flex items-start justify-between mb-2">
+                  <h3 class="mb-2 mt-5 text-xl leading-tight font-medium">{{ vacancy.title }}</h3>
+                  <!-- Telegram icon -->
+                  <img
+                      src="/icons/telegram.svg"
+                      alt="Telegram"
+                      class="w-6 h-6 mt-5 object-contain ml-2 shrink-0"
+                  />
+                </div>
                 <p class="text-gray-700 font-medium">{{ vacancy.company }}</p>
                 <!-- <p class="text-gray-500">Source: {{ vacancy.source_id }}</p> -->
             </div>

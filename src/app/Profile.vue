@@ -76,16 +76,25 @@
               </span>
             </div>
           </div>
+          <div>
+            <button
+                v-if="user?.hh_account_status"
+                disabled
+                class="w-full py-3 rounded-lg font-medium transition-colors mt-4 px-4 border border-gray-300 text-gray-500 bg-gray-200 cursor-not-allowed opacity-70 text-center"
+            >
+              {{ translations.hh_auth_connected || 'HeadHunter hisobingiz ulangan' }}
+            </button>
 
-          <a
-              v-if="hhUrl"
-              :href="hhUrl"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="w-full py-3 rounded-lg font-medium transition-colors mt-4 px-4 border border-red-400 text-sm text-center block"
-          >
-            {{ 'Head Hunter Auth' }}
-          </a>
+            <a
+                v-else-if="hhUrl"
+                :href="hhUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="w-full py-3 rounded-lg font-medium transition-colors mt-4 px-4 border border-red-400 text-sm text-center block text-black hover:bg-blue-700 hover:text-white"
+            >
+              {{ translations.hh_auth || 'HeadHunter orqali ulanish' }}
+            </a>
+          </div>
         </div>
 
         <div class="bg-white border border-gray-200 rounded-2xl p-6">
@@ -588,7 +597,7 @@ onMounted(async () => {
 
     const { data: meData } = await axios.get(proxy.$locale + "/auth/me", { headers });
     user.value = meData.data;
-    //console.log("User data:", user.value);
+    console.log("User data:", meData.data);
 
     const balanceRes = await axios.get(proxy.$locale + "/v1/balance", { headers });
     balance.value = balanceRes.data;

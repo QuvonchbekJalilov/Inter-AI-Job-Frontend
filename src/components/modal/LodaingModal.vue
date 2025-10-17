@@ -15,12 +15,15 @@
         <path d="M1253.75 1111.25C1017.08 1269.67 890.889 1422.19 840.522 1554.93H630.653C729.276 1364.48 925.253 1194.19 1253.75 1111.25Z" fill="#5078FF"/>
       </svg>
 
-      <p class="text-gray-300 text-lg">Loading...</p>
+      <p class="text-gray-300 text-lg">{{ translations.thinking }}...</p>
     </div>
   </div>
 </template>
 
 <script setup>
+import {useI18n} from "@/i18n-lite.js";
+
+const { translations } = useI18n()
 defineProps({
   show: { type: Boolean, default: false },
 });

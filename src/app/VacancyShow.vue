@@ -7,7 +7,15 @@
         class="max-w-5xl pt-[110px] mx-auto p-6 bg-white rounded-2xl shadow space-y-6"
     >
       <div>
-        <h3 class="text-2xl font-medium mb-2">{{ vacancy.name }}</h3>
+        <div class="flex items-start justify-between mb-2">
+          <h3 class="mb-2 mt-5 text-xl leading-tight font-medium">{{ vacancy.name }}</h3>
+          <!-- Telegram icon -->
+          <img
+              src="/HeadHunter_logo.png"
+              alt="Telegram"
+              class="w-6 h-6 mt-5 object-contain ml-2 shrink-0"
+          />
+        </div>
         <p class="text-gray-700 font-medium">{{ vacancy.employer?.name }}</p>
         <p class="text-gray-500">{{ vacancy.area?.name }}</p>
       </div>

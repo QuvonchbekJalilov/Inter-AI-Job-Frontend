@@ -83,8 +83,6 @@
           </div>
         </router-link>
         <div class="w-full overflow-hidden rounded-b-2xl">
-
-          <!-- HeadHunter tugmasi -->
           <button
               v-if="job.source !== 'telegram'"
               class="w-full py-3 font-medium text-white rounded-b-2xl flex items-center justify-center gap-2 transition-colors"
@@ -112,7 +110,9 @@
         <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6 1a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
-        <h3 class="text-lg font-medium mb-2">Sizga mos keladigan Vacansiya topilmadi iltios qaytadan login yoki registratsiya qilib ko'ring</h3>
+        <h3 class="text-lg font-medium mb-2">
+          {{ translations.no_matching_vacancies }}
+        </h3>
       </div>
     </div>
   </div>

@@ -1,6 +1,7 @@
 {
   "salom": "Hello",
   "all_information": "Get more information",
+  "thinking": "Thinking...",
   "accordance": "accordance",
   "welcome": "Welcome, {name}!",
   "resumeProfile": "Resume & Profile",
@@ -26,7 +27,7 @@
   },
   "auto_apply": {
     "title": "AI Auto Apply",
-    "description": "Automatic applications — AI automatically applies to suitable vacancies",
+    "description": "Automatic applies — AI automatically applies only to HeadHunter vacancies",
     "save_button": "Save",
     "update_button": "Update",
     "cancel_button": "Cancel",
@@ -136,7 +137,12 @@
   "experience": "Experience...",
   "Contact" : "Contact",
   "possible_ai_questions": "Possible questions from AI",
-  "shared_via_bot": "Shared via Inter-AI Bot"
+  "shared_via_bot": "Shared via Inter-AI Bot",
+  "no_vacancies_title": "You haven't applied to any vacancies yet",
+  "no_vacancies_description": "You can select suitable vacancies and apply immediately.",
+  "view_vacancies": "View vacancies",
+  "no_matching_vacancies": "No suitable vacancies found. Please try logging in or registering again.",
+  "hh_auth_connected": "Your HeadHunter account is connected"
 
 
 }
