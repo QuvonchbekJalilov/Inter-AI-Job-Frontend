@@ -38,10 +38,10 @@ onMounted(async () => {
     localStorage.setItem("chat_id", chatId);
 
     console.log("Chat ID saqlandi:", chatId);
-    const { data } = await axios.post('/api/chat-id-login', {
-      chat_id: chatId
-    })
-    console.log("Data:", data);
+    // const { data } = await axios.post('/api/chat-id-login', {
+    //   chat_id: chatId
+    // })
+    // console.log("Data:", data);
   } else {
     const savedChatId = localStorage.getItem("chat_id");
     if (savedChatId) {
