@@ -294,6 +294,7 @@ const fetchJobs = async (forceUpdate = false) => {
     loadingSkeleton.value = false
   }
 }
+console.log("Mapped titles:", mappedJobs.map(j => j.title))
 
 const startLoading = async () => {
   showModal.value = false
