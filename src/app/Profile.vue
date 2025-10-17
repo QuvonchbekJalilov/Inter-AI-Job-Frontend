@@ -407,9 +407,18 @@ const loading = ref(true)
 const error = ref("")
 const hhAccountActive = computed(() => !!user.value?.hh_account_status)
 const clearAuthStorage = () => {
-  localStorage.clear()
-  sessionStorage.clear()
-
+  localStorage.removeItem("token")
+  localStorage.removeItem("user")
+  localStorage.removeItem("expires_at")
+  localStorage.removeItem("vacancies_cache")
+  localStorage.removeItem("dashboard_cache")
+  localStorage.removeItem("dashboard_cache_time")
+  sessionStorage.removeItem("token")
+  sessionStorage.removeItem("user")
+  sessionStorage.removeItem("expires_at")
+  sessionStorage.removeItem("vacancies_cache")
+  sessionStorage.removeItem("dashboard_cache")
+  sessionStorage.removeItem("dashboard_cache_time")
   router.push({ name: "register" })
 }
 const goToHeadHunter = async () => {
