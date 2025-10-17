@@ -44,43 +44,66 @@
           <input
               v-model="formData.resumeText"
               class="w-full px-3 py-2 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Php Laravel Vue.js Full stack developer"
-          />
+              :placeholder="translations.resume_placeholder"
+          >
         </div>
 
-        <div class="text-center text-gray-500">{{ translations.or }}</div>
+<!--        <div class="text-center text-gray-500">{{ translations.or }}</div>-->
 
         <!-- Resume File Upload -->
         <label class="block text-sm font-medium text-gray-700 mb-2">
           {{ translations.Upload_your_resume_file }}
         </label>
+        <input
+            ref="resumeInput"
+            id="resumeUpload"
+            type="file"
+            class="hidden"
+            @change="handleFileUpload"
+        />
         <div
-            class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-400 transition-colors cursor-pointer"
+            class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-400 transition-colors"
         >
-          <input
-              id="resumeUpload"
-              type="file"
-              class="hidden"
-              @change="handleFileUpload"
-          />
-          <label for="resumeUpload" class="block cursor-pointer">
-        <span
-            class="inline-block px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors">
-          {{ translations.select_file }}
-        </span>
-          </label>
-        </div>
-
-        <!-- Preview -->
-        <div v-if="formData.resumeFileUrl" class="mt-4 text-center">
-          <p class="text-sm text-gray-600 mb-2">{{ translations.selected_file }}:</p>
-          <a
-              :href="formData.resumeFileUrl"
-              target="_blank"
-              class="text-blue-500 underline"
-          >
-            📄 {{ formData.resumeFile?.name || 'Old resume file' }}
-          </a>
+          <div class="flex flex-col items-center gap-4">
+            <template v-if="hasResumeFile">
+              <div class="flex items-center gap-2 text-green-600">
+                <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-green-100 text-green-600 shadow-sm">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                </span>
+                <span class="font-medium text-sm sm:text-base text-green-700">{{ translations.resume_file_ready }}</span>
+              </div>
+              <div class="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
+                <button
+                    type="button"
+                    class="px-4 py-2 rounded-md bg-blue-500 text-white hover:bg-blue-600 transition-colors text-sm font-medium"
+                    @click="viewResume"
+                >
+                  {{ translations.resume_view }}
+                </button>
+                <button
+                    type="button"
+                    class="px-6 sm:px-8 py-2 rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors text-sm font-medium"
+                    @click="openFileDialog"
+                >
+                  {{ translations.resume_change }}
+                </button>
+              </div>
+            </template>
+            <template v-else>
+              <div class="text-sm text-gray-500">
+                {{ translations.resume_upload_hint }}
+              </div>
+              <button
+                  type="button"
+                  class="px-4 py-2 rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors text-sm font-medium"
+                  @click="openFileDialog"
+              >
+                {{ translations.select_file }}
+              </button>
+            </template>
+          </div>
         </div>
 
         <!-- Submit -->
@@ -102,13 +125,13 @@
         </button>
       </div>
 
-      <!-- Footer -->
-      <p class="mt-6 text-center text-sm text-gray-500">
-        {{ translations.Do_you_have_an_account }}
-        <RouterLink to="/login" class="text-blue-600 hover:underline">
-          {{ translations.login }}
-        </RouterLink>
-      </p>
+<!--      &lt;!&ndash; Footer &ndash;&gt;-->
+<!--      <p class="mt-6 text-center text-sm text-gray-500">-->
+<!--        {{ translations.Do_you_have_an_account }}-->
+<!--        <RouterLink to="/login" class="text-blue-600 hover:underline">-->
+<!--          {{ translations.login }}-->
+<!--        </RouterLink>-->
+<!--      </p>-->
 
       <!-- Tabs -->
       <div class="flex items-stretch w-full max-w-md mx-auto gap-2 pt-6">
@@ -148,6 +171,7 @@ const { proxy } = getCurrentInstance()
 const { translations } = useI18n()
 const router = useRouter()
 const showLoading = ref(false)
+const resumeInput = ref(null)
 
 const formData = reactive({
   firstName: '',
@@ -162,6 +186,8 @@ const selectedFile = ref(null)
 const loading = ref(false)
 const btnLoading = ref(false)
 const error = ref("")
+const hasResumeFile = computed(() => Boolean(formData.resumeFileUrl))
+
 const chatId = computed(() => {});
 onMounted(() => {
   const params = new URLSearchParams(window.location.search);
@@ -195,9 +221,24 @@ const handleFileUpload = (event) => {
   const file = event.target.files[0]
   if (!file) return
 
+  if (formData.resumeFileUrl) {
+    URL.revokeObjectURL(formData.resumeFileUrl)
+  }
+
   selectedFile.value = file
   formData.resumeFile = file
   formData.resumeFileUrl = URL.createObjectURL(file) // preview uchun
+  event.target.value = ''
+}
+
+const openFileDialog = () => {
+  resumeInput.value?.click()
+}
+
+const viewResume = () => {
+  if (formData.resumeFileUrl) {
+    window.open(formData.resumeFileUrl, "_blank", "noopener")
+  }
 }
 
 const uploadResume = async (token) => {
@@ -245,15 +286,31 @@ const submitRegistration = async () => {
 
   loading.value = true
   const chatId = localStorage.getItem("chat_id");
+  const locale = localStorage.getItem("locale");
   try {
     const { data } = await axios.post(proxy.$locale + '/auth/register', {
       first_name: formData.firstName,
       phone: formData.phone,
       resume_text: formData.resumeText,
       chat_id: chatId,
+      language: locale,
     })
 
     console.log('✅ Registration success:', data)
+
+    // 🔽 Telefon raqami mavjud bo‘lsa — toast orqali xabar
+    if (!isSuccess(data)) {
+      toast.error(
+          locale.value === 'uz'
+              ? "❗ Ushbu telefon raqami bilan allaqachon ro‘yxatdan o‘tilgan."
+              : locale.value === 'ru'
+                  ? "❗ Этот номер телефона уже зарегистрирован."
+                  : "❗ This phone number is already registered."
+      )
+      showLoading.value = false
+      loading.value = false
+      return
+    }
 
     if (isSuccess(data)) {
       const storage = localStorage
@@ -285,12 +342,31 @@ const submitRegistration = async () => {
       error.value = data.message || "Ro‘yxatdan o‘tishda xatolik yuz berdi."
     }
   } catch (e) {
-    error.value = e.response?.data?.message || 'Server bilan bog‘lanishda xatolik.'
+    // 🔽 Backend 422 xato qaytarsa — toast orqali ko‘rsatish
+    if (e.response?.status === 422) {
+      toast.error(
+          locale.value === 'uz'
+              ? "❗ Ushbu telefon raqami bilan allaqachon ro‘yxatdan o‘tilgan."
+              : locale.value === 'ru'
+                  ? "❗ Этот номер телефона уже зарегистрирован."
+                  : "❗ This phone number is already registered."
+      )
+    } else {
+      toast.error(
+          locale.value === 'uz'
+              ? "❌ Server bilan bog‘lanishda xatolik yuz berdi."
+              : locale.value === 'ru'
+                  ? "❌ Произошла ошибка при подключении к серверу."
+                  : "❌ An error occurred while connecting to the server."
+      )
+      error.value = e.response?.data?.message || 'Server bilan bog‘lanishda xatolik.'
+    }
   } finally {
     showLoading.value = false
     loading.value = false
   }
 }
+
 
 const completeRegistration = async () => {
   touched.firstName = true
@@ -307,6 +383,7 @@ const completeRegistration = async () => {
     btnLoading.value = false
   }
 }
+
 
 const { locale } = useI18n()
 
@@ -348,4 +425,3 @@ onMounted(() => {
   }
 });
 </script>
-

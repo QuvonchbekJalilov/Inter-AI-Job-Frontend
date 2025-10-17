@@ -63,6 +63,22 @@ const statistics = ref({
 })
 
 onMounted(async () => {
+  const cacheKey = "dashboard_cache"
+  const cacheTimeKey = "dashboard_cache_time"
+  const cacheDuration = 60 * 60 * 1000 // 1 soat = 3600000 ms
+
+  const now = Date.now()
+  const cachedData = localStorage.getItem(cacheKey)
+  const cachedTime = localStorage.getItem(cacheTimeKey)
+
+  // ⏱️ Agar 1 soatdan kam vaqt o'tgan bo'lsa — cache ishlatamiz
+  if (cachedData && cachedTime && now - cachedTime < cacheDuration) {
+    statistics.value = JSON.parse(cachedData)
+    console.log("✅ Statistika cache'dan olindi")
+    return
+  }
+
+  // 🔄 1 soatdan oshgan bo'lsa yoki cache yo'q bo'lsa — yangilaymiz
   try {
     const token = localStorage.getItem("token") || sessionStorage.getItem("token")
     const res = await axios.get(proxy.$locale + "/v1/dashboard", {
@@ -72,9 +88,16 @@ onMounted(async () => {
         "Content-Type": "application/json"
       }
     })
+
     statistics.value = res.data
+
+    // 🔐 Ma’lumotni va vaqtni saqlaymiz
+    localStorage.setItem(cacheKey, JSON.stringify(res.data))
+    localStorage.setItem(cacheTimeKey, now.toString())
+
+    console.log("♻️ Statistika yangilandi va cache'ga saqlandi")
   } catch (e) {
-    console.error("Statistika yuklanmadi:", e)
+    console.error("❌ Statistika yuklanmadi:", e)
   }
 })
 </script>

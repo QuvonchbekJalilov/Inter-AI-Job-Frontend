@@ -2,8 +2,8 @@
   <div class="min-h-screen bg-[#f2f2f2]">
     <Header />
 
-    <div class="pt-[110px] md:pt-[120px] pb-6">
-      <div class="bg-white px-3 shadow overflow-hidden space-y-6">
+    <div class="pt-[110px] md:pt-[120px]">
+      <div class="max-w-5xl mx-auto p-6 bg-white rounded-2xl shadow space-y-6">
         <div class="flex items-start justify-between">
           <div>
             <h3 class="text-2xl font-medium mb-1">{{ interview.title }}</h3>

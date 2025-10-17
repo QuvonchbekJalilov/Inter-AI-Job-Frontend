@@ -24,7 +24,7 @@
             </button>
           </div>
           <h2 class="text-lg font-medium mb-4 flex items-center gap-2 text-black">
-            <span>👤</span> {{ translations.profiles?.title }}
+            <span>👤</span> {{ translations.profiles?.title }} {{ chatId }}
           </h2>
 
           <div class="space-y-2 text-sm text-gray-700">
@@ -72,23 +72,29 @@
           <div class="space-y-2 text-sm text-gray-700">
             <div>
               <span class="text-gray-500">
-                Avto otklik rejimini ishga tushirish uchun quyidagi tugmani bosing va Head Hunter akkauntigizdan ruxsat bering
+                {{ hhAccountActive ? translations.auto_apply?.hh_connected : translations.auto_apply?.hh_required }}
               </span>
             </div>
           </div>
+          <div>
+            <button
+                v-if="user?.hh_account_status"
+                disabled
+                class="w-full py-3 rounded-lg font-medium transition-colors mt-4 px-4 border border-gray-300 text-gray-500 bg-gray-200 cursor-not-allowed opacity-70 text-center"
+            >
+              {{ translations.hh_auth_connected || 'HeadHunter hisobingiz ulangan' }}
+            </button>
 
-          <button
-              :disabled="user?.hh_account_status"
-              :class="[
-    'w-full py-3 rounded-lg font-medium transition-colors mt-4 px-4 border border-red-400 text-sm',
-    user?.hh_account_status
-      ? 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-60'
-      : 'border-red-400 text-black hover:bg-blue-700'
-  ]"
-              @click="goToHeadHunter"
-          >
-            {{ 'Head Hunter Auth' }}
-          </button>
+            <a
+                v-else-if="hhUrl"
+                :href="hhUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="w-full py-3 rounded-lg font-medium transition-colors mt-4 px-4 border border-red-400 text-sm text-center block text-black hover:bg-blue-700 hover:text-white"
+            >
+              {{ translations.hh_auth || 'HeadHunter orqali ulanish' }}
+            </a>
+          </div>
         </div>
 
         <div class="bg-white border border-gray-200 rounded-2xl p-6">
@@ -97,8 +103,10 @@
           </h2>
           <div class="flex items-center justify-between">
             <div class="text-sm text-gray-500">
-              {{ translations.resumes?.last_update }} <br />
-              <span class="text-gray-700">3 {{ translations.resumes?.days_ago }}</span>
+             
+              <span class="text-gray-700">
+                {{ user?.resumes?.[0]?.title  }}
+              </span>
             </div>
             <span class="px-3 py-1 bg-green-100 text-green-600 rounded-full text-xs">{{ translations.resumes?.status_active }}</span>
           </div>
@@ -118,10 +126,21 @@
           <p class="text-sm text-gray-600 mb-3">
             {{ translations.auto_apply?.description }}
           </p>
+          <p
+              v-if="!enabled"
+              class="text-sm text-amber-600 bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 mb-3"
+          >
+            {{ translations.auto_apply?.enable_hint }}
+          </p>
 
           <!-- Checkbox -->
           <label class="inline-flex items-center cursor-pointer">
-            <input type="checkbox" v-model="enabled" class="sr-only peer" />
+            <input
+                type="checkbox"
+                v-model="enabled"
+                class="sr-only peer"
+                @change="toggleAutoApply"
+            />
             <div
                 class="relative w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-indigo-600
                 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white
@@ -297,6 +316,33 @@
   </div>
   <!-- Modal -->
   <div
+      v-if="showHhModal"
+      class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50"
+  >
+    <div class="bg-white rounded-2xl p-6 w-[90%] max-w-md shadow-lg space-y-4">
+      <h2 class="text-lg font-medium text-gray-800">
+        {{ translations.auto_apply?.hh_modal_title }}
+      </h2>
+      <p class="text-sm text-gray-600">
+        {{ translations.auto_apply?.hh_modal_description }}
+      </p>
+      <div class="flex flex-col sm:flex-row sm:justify-end gap-3">
+        <button
+            class="w-full sm:w-auto px-4 py-2 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300"
+            @click="closeHhModal"
+        >
+          {{ translations.auto_apply?.hh_modal_cancel }}
+        </button>
+        <button
+            class="w-full sm:w-auto px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700"
+            @click="handleHeadHunterAuth"
+        >
+          {{ translations.auto_apply?.hh_modal_action }}
+        </button>
+      </div>
+    </div>
+  </div>
+  <div
       v-if="showLogoutModal"
       class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50"
   >
@@ -340,6 +386,7 @@ const showPayment = ref(false)
 const amount = ref(100)
 const showLogoutModal = ref(false)
 const showLoading = ref(false);
+const showHhModal = ref(false);
 const loadingSkeleton = ref(true)
 const openPayment = () => {
   showPayment.value = true
@@ -358,6 +405,7 @@ const user = ref(null)
 const balance = ref({ balance: 0 })
 const loading = ref(true)
 const error = ref("")
+const hhAccountActive = computed(() => !!user.value?.hh_account_status)
 const clearAuthStorage = () => {
   localStorage.removeItem("token")
   localStorage.removeItem("user")
@@ -367,32 +415,18 @@ const clearAuthStorage = () => {
   sessionStorage.removeItem("user")
   sessionStorage.removeItem("expires_at")
   sessionStorage.removeItem("vacancies_cache")
-  router.push({ name: "login" })
+  router.push({ name: "register" })
 }
 const goToHeadHunter = async () => {
-  try {
-    const token = localStorage.getItem("token") || sessionStorage.getItem("token")
-
-    const { data } = await axios.get(
-        proxy.$locale + "/v1/hh-accounts/authorize",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "application/json",
-            "Content-Type": "application/json"
-          }
-        }
-    )
-
-    if (data?.url) {
-      window.open(data.url, "_blank")
+  const token = localStorage.getItem("token") || sessionStorage.getItem("token")
+  const { data } = await axios.get(proxy.$locale + "/v1/hh-accounts/authorize", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+      "Content-Type": "application/json"
     }
-  } catch (error) {
-    console.error("❌ HH Auth error:", error.response?.data || error.message)
-    if (error.response?.status === 401) {
-      clearAuthStorage()
-    }
-  }
+  })
+  hhUrl.value = data?.url
 }
 
 const tabs = [
@@ -438,12 +472,14 @@ const fetchAutoApplyData = async () => {
     });
 
     const settings = response.data.data.settings;
-    console.log("settings:", settings);
 
     enabled.value = settings.auto_apply_enabled;
     limit.value = settings.auto_apply_limit;
     appliedCount.value = settings.auto_apply_count;
     saved.value = !!limit.value;
+    if (!hhAccountActive.value) {
+      enabled.value = false;
+    }
   } catch (error) {
     if (error.response?.status === 401) clearAuthStorage();
   }
@@ -477,19 +513,12 @@ const saveLimit = async () => {
 const updateLimit = async () => {
   try {
     const token = localStorage.getItem("token");
-
-    // Yangi kiritilgan qiymat (masalan: 2)
-    const addedValue = Number(tempLimit.value || 0);
-
-    // Yangi limit — eski + yangi
-    const newLimit = limit.value + addedValue;
-    alert('soni', newLimit)
-
+    const auto_apply_limit = tempLimit.value || 0;
     const response = await axios.patch(
         proxy.$locale + "/auth/settings/auto-apply",
         {
           auto_apply_enabled: true,
-          auto_apply_limit: newLimit,
+          auto_apply_limit: auto_apply_limit,
         },
         {
           headers: {
@@ -499,20 +528,56 @@ const updateLimit = async () => {
         }
     );
 
-    console.log("update response", response.data);
-
-    // Limitni yangilaymiz
-    limit.value = newLimit;
+    limit.value = response.data.data.auto_apply_limit;
     saved.value = true;
     editMode.value = false;
-
-    // Yangilashdan so‘ng serverdan qayta olish shart emas (fetchAutoApplyData),
-    // chunki biz allaqachon local state’ni yangiladik.
   } catch (error) {
     console.error("updateLimit error", error);
     if (error.response?.status === 401) clearAuthStorage();
   }
 };
+
+const toggleAutoApply = async () => {
+  try {
+    if (enabled.value && !hhAccountActive.value) {
+      enabled.value = false;
+      showHhModal.value = true;
+      return;
+    }
+    const token = localStorage.getItem("token");
+    await axios.patch(
+        proxy.$locale + "/auth/settings/auto-apply",
+        {
+          auto_apply_enabled: enabled.value,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        }
+    );
+    await fetchAutoApplyData();
+  } catch (error) {
+    console.error("toggleAutoApply error", error);
+    if (error.response?.status === 401) {
+      clearAuthStorage();
+    } else {
+      enabled.value = !enabled.value;
+    }
+  }
+};
+
+const closeHhModal = () => {
+  showHhModal.value = false;
+};
+
+const handleHeadHunterAuth = async () => {
+  await goToHeadHunter()
+  if (hhUrl.value) {
+    window.location.href = hhUrl.value
+  }
+}
 
 
 onMounted(async () => {
@@ -520,7 +585,7 @@ onMounted(async () => {
   try {
     const token = localStorage.getItem("token") || sessionStorage.getItem("token");
     if (!token) {
-      router.push({ name: "login" });
+      router.push({ name: "register" });
       return;
     }
 
@@ -532,6 +597,7 @@ onMounted(async () => {
 
     const { data: meData } = await axios.get(proxy.$locale + "/auth/me", { headers });
     user.value = meData.data;
+    console.log("User data:", meData.data);
 
     const balanceRes = await axios.get(proxy.$locale + "/v1/balance", { headers });
     balance.value = balanceRes.data;
@@ -539,12 +605,6 @@ onMounted(async () => {
     limit.value = meData.data?.settings?.auto_apply_limit;
     appliedCount.value = meData.data?.settings?.auto_apply_count;
     enabled.value = meData.data?.settings?.auto_apply_enabled;
-    console.log('appliedCount || saved', meData.data?.settings?.auto_apply_count, meData.data?.settings?.auto_apply_limit)
-    console.log("balanceRes.data", balanceRes.data);
-    console.log("meData", meData);
-
-
-
     if (balance.value.credit.count >= 0) {
       await fetchAutoApplyData();
     }
@@ -573,10 +633,29 @@ const logout = async () => {
     }
   } finally {
     clearAuthStorage()
-    window.location.href = "/login"
+    window.location.href = "/register"
   }
 }
 
+const hhUrl = ref(null)
+const chatId = ref(null)
+onMounted(async () => {
+  const token = localStorage.getItem("token") || sessionStorage.getItem("token")
+  const chat_id = localStorage.getItem("chatId") || sessionStorage.getItem("chatId")
+  try {
+    const { data } = await axios.get(proxy.$locale + "/v1/hh-accounts/authorize", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      }
+    })
+    hhUrl.value = data?.url
+    chatId.value = chat_id
+  } catch (error) {
+    console.error("HH authorize error", error)
+  }
+})
 </script>
 
 <style>

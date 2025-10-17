@@ -1,5 +1,8 @@
 {
   "salom": "Salom",
+  "all_information": "Batafsil ma'lumot olish",
+  "thinking": "O‘ylayapman...",
+  "accordance": "moslik",
   "welcome": "Xush kelibsiz, {name}!",
   "resumeProfile": "Rezyume va profil",
   "help": "Yordam",
@@ -23,11 +26,18 @@
     "update_btn": "Rezyumeni ko'rish"
   },
   "auto_apply": {
-    "title": "AI Avtomatik javob",
-    "description": "Avtomatik javoblar — AI mos bo'lgan vakansiyalarga avtomatik javob beradi",
+    "title": "AI avtomatik topshirish",
+    "description": "Avtomatik topshirish — AI faqat HeadHunter vakansiyalariga avtomatik tarzda ariza topshiradi",
     "save_button": "Saqlash",
     "update_button": "Tahrirlash",
-    "cancel_button": "Bekor qilish"
+    "cancel_button": "Bekor qilish",
+    "enable_hint": "Avto javob rejimidan foydalanish uchun tugmani yoqing.",
+    "hh_modal_title": "HeadHunter akkaunti kerak",
+    "hh_modal_description": "Avto javob funksiyasi HeadHunter dagi akkauntingiz bog‘langan bo‘lsa ishlaydi. Iltimos, hisobingizni tasdiqlang.",
+    "hh_modal_action": "Head Hunter Auth",
+    "hh_modal_cancel": "Bekor qilish",
+    "hh_required": "Avto javob rejimini yoqish uchun quyidagi tugma orqali Head Hunter akkauntingizni bog‘lang.",
+    "hh_connected": "Head Hunter akkauntingiz bog‘langan. Avto javob funksiyasidan foydalanishingiz mumkin."
   },
   "plan": {
     "title": "Tarif rejasi",
@@ -63,7 +73,7 @@
   "password": "Parol",
   "register": "Ro‘yxatdan o‘tish",
   "forgot_password": "Parolni unutdingizmi?",
-  "tell_us_about_yourself": "O‘zingiz haqingizda ayting",
+  "tell_us_about_yourself": "Ro'yxatdan o'tish",
   "personal_data": "Shaxsiy ma’lumotlar",
   "name": "Ism",
   "surname": "Familiya",
@@ -90,7 +100,13 @@
   "select_file": "Faylni tanlang",
   "dadafhocts": "Faylni bu yerga olib keling yoki tanlash uchun bosing",
   "Upload_your_resume_file": "Rezyume faylingizni yuklang",
-  "Enter_your_resume_text": "Rezyume matningizni kiriting",
+  "Enter_your_resume_text": "Sohangizni yozing",
+  "resume_placeholder": "Marketing, Sotuv menejeri",
+  "resume_upload_hint": "Rezyume faylini tanlash uchun tugmani bosing.",
+  "resume_file_ready": "Rezyume fayli qo‘shildi",
+  "resume_view": "Ko‘rish",
+  "resume_change": "O‘zgartirish",
+  "resume_file_default_name": "Rezyume fayli",
   "Do_you_have_an_account": "Hisobingiz bormi?",
   "Upload_your_resume": "Rezyumeni yuklang",
   "Work_preferences": "Ish afzalliklari",
@@ -121,7 +137,12 @@
   "experience": "Tajriba...",
   "Contact" : "Aloqa",
   "possible_ai_questions": "Sun’iy intellekt tomonidan berilishi mumkin bo‘lgan savollar",
-  "shared_via_bot": "Inter-AI bot orqali ulashilgan"
+  "shared_via_bot": "Inter-AI bot orqali ulashilgan",
+  "no_vacancies_title": "Siz hali hech qanday vakansiyaga topshirmagansiz",
+  "no_vacancies_description": "Mos keladigan vakansiyalarni tanlab, darhol ariza topshirishingiz mumkin.",
+  "view_vacancies": "Vakansiyalarni ko‘rish",
+  "no_matching_vacancies": "Sizga mos keladigan vakansiya topilmadi. Iltimos, qaytadan login yoki ro‘yxatdan o‘tib ko‘ring.",
+  "hh_auth_connected": "HeadHunter hisobingiz ulangan"
 
 
 }

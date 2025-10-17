@@ -1,5 +1,8 @@
 {
   "salom": "Hello",
+  "all_information": "Get more information",
+  "thinking": "Thinking...",
+  "accordance": "accordance",
   "welcome": "Welcome, {name}!",
   "resumeProfile": "Resume & Profile",
   "help": "Help",
@@ -24,10 +27,17 @@
   },
   "auto_apply": {
     "title": "AI Auto Apply",
-    "description": "Automatic applications — AI automatically applies to suitable vacancies",
+    "description": "Automatic applies — AI automatically applies only to HeadHunter vacancies",
     "save_button": "Save",
     "update_button": "Update",
-    "cancel_button": "Cancel"
+    "cancel_button": "Cancel",
+    "enable_hint": "Turn the switch on to enable auto apply.",
+    "hh_modal_title": "HeadHunter account required",
+    "hh_modal_description": "Auto apply works only after you connect your HeadHunter account. Please authorize to continue.",
+    "hh_modal_action": "Head Hunter Auth",
+    "hh_modal_cancel": "Cancel",
+    "hh_required": "Connect your Head Hunter account via the button below to enable auto apply.",
+    "hh_connected": "Your Head Hunter account is linked. Auto apply is ready to use."
   },
   "plan": {
     "title": "Tariff plan",
@@ -63,7 +73,7 @@
   "password":"Password",
   "register":"Register",
   "forgot_password":"Forgot password?",
-  "tell_us_about_yourself":"Tell us about yourself",
+  "tell_us_about_yourself":"Sign up",
   "personal_data":"Personal data",
   "name":"Name",
   "surname":"Surname",
@@ -90,7 +100,13 @@
   "select_file":"Select file",
   "dadafhocts":"Drag and drop a file here or click to select",
   "Upload_your_resume_file":"Upload your resume file",
-  "Enter_your_resume_text":"Enter your resume text",
+  "Enter_your_resume_text":"Enter your industry",
+  "resume_placeholder":"Marketing, Sales Manager",
+  "resume_upload_hint":"Click the button to upload your resume file.",
+  "resume_file_ready":"Resume file added",
+  "resume_view":"View",
+  "resume_change":"Change",
+  "resume_file_default_name":"Resume file",
   "Do_you_have_an_account":"Do you have an account?",
   "Upload_your_resume":"Upload your resume",
   "Work_preferences":"Work preferences",
@@ -121,7 +137,12 @@
   "experience": "Experience...",
   "Contact" : "Contact",
   "possible_ai_questions": "Possible questions from AI",
-  "shared_via_bot": "Shared via Inter-AI Bot"
+  "shared_via_bot": "Shared via Inter-AI Bot",
+  "no_vacancies_title": "You haven't applied to any vacancies yet",
+  "no_vacancies_description": "You can select suitable vacancies and apply immediately.",
+  "view_vacancies": "View vacancies",
+  "no_matching_vacancies": "No suitable vacancies found. Please try logging in or registering again.",
+  "hh_auth_connected": "Your HeadHunter account is connected"
 
 
 }

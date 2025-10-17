@@ -14,7 +14,15 @@
             </div>
           </div>
           <div class="flex flex-col bg-white px-4 rounded-tr-2xl">
-            <h2 class="mb-2 mt-5 text-xl leading-tight font-medium">{{ job.title }}</h2>
+            <div class="flex items-start justify-between mb-2">
+              <h2 class="mb-2 mt-5 text-xl leading-tight font-medium">{{ job.title }}</h2>
+              <!-- Telegram icon -->
+              <img
+                  src="/icons/telegram.svg"
+                  alt="Telegram"
+                  class="w-6 h-6 mt-5 object-contain ml-2 shrink-0"
+              />
+            </div>
             <div class="mb-2 flex items-center justify-between gap-2">
               <span class="flex items-center text-gray-700 text-sm basis-2/5 truncate">
                 <svg class="h-4 w-4 text-blue-600 mr-2 shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
@@ -27,7 +35,7 @@
                 {{ job.company }}
               </span>
               <small class="bg-green-100 px-2 text-green-700 text-center text-sm font-medium py-1 rounded-full">
-                {{ job.score ?? '95' }}% совпадение
+                {{ job.score ?? '95' }}% {{ translations.accordance }}
               </small>
             </div>
           </div>
@@ -43,7 +51,17 @@
             </div>
           </div>
           <div class="flex flex-col bg-white p-4 px-4 rounded-tr-2xl">
-            <h2 class="mb-2 text-xl leading-tight font-medium">{{ job.title }}</h2>
+            <div class="flex items-start justify-between mb-2">
+              <h2 class="text-xl leading-tight font-medium w-4/5 truncate">
+                {{ job.title }}
+              </h2>
+
+              <img
+                  src="/HeadHunter_logo.png"
+                  alt="HeadHunter"
+                  class="w-6 h-6 object-contain ml-2 shrink-0"
+              />
+            </div>
             <div class="mb-2 flex items-center justify-between gap-2">
               <span class="flex items-center text-gray-700 text-sm basis-2/5 truncate">
                 <svg class="h-4 w-4 text-blue-600 mr-2 shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
@@ -56,7 +74,7 @@
                 {{ job.company }}
               </span>
               <small class="bg-green-100 px-2 text-green-700 text-center text-sm font-medium py-1 rounded-full">
-                {{ job.score ?? '95' }}% совпадение
+                {{ job.score ?? '95' }}% {{ translations.accordance }}
               </small>
             </div>
             <p class="text-sm leading-snug text-gray-500">
@@ -67,35 +85,34 @@
         <div class="w-full overflow-hidden rounded-b-2xl">
           <button
               v-if="job.source !== 'telegram'"
-              class="w-full py-3 font-medium text-white rounded-b-2xl"
-              :class="job.status ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'"
+              class="w-full py-3 font-medium text-white rounded-b-2xl flex items-center justify-center gap-2 transition-colors"
+              :class="job.status
+      ? 'bg-gray-400 cursor-not-allowed'
+      : 'bg-blue-600 hover:bg-blue-700'"
               :disabled="job.status || !job.external_id"
               @click="applyToVacancy(job)"
           >
-            {{ job.status ? translations.applied : translations.reply }}
+            <span>{{ job.status ? translations.applied : translations.reply }}</span>
           </button>
 
+          <!-- Telegram tugmasi -->
           <router-link
-            v-if="job.source === 'telegram'"
-            :to="{ name: 'vacancyTelegramDetail', params: { id: job.id } }"
-            class="w-full py-3 font-medium text-white rounded-b-2xl bg-blue-600 hover:bg-blue-700 text-center block"
-
-        >
-            {{ translations.source }}
+              v-if="job.source === 'telegram'"
+              :to="{ name: 'vacancyTelegramDetail', params: { id: job.id } }"
+              class="w-full py-3 font-medium text-white rounded-b-2xl bg-blue-600 hover:bg-blue-700 text-center flex items-center justify-center gap-2 transition-colors"
+          >
+            <span>{{ translations.source }}</span>
           </router-link>
+
         </div>
       </div>
       <div v-else class="flex flex-col items-center justify-center py-20 text-center text-gray-600">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6 1a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
-        <h3 class="text-lg font-medium mb-2">Sizga mos keladigan Vacansiya topilmadi iltios qaytadan login yoki registratsiya qilib ko'ring</h3>
-        <button
-            class="px-10 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600"
-            @click="logout"
-        >
-          {{ translations.payment?.logout }}
-        </button>
+        <h3 class="text-lg font-medium mb-2">
+          {{ translations.no_matching_vacancies }}
+        </h3>
       </div>
     </div>
   </div>
@@ -105,12 +122,40 @@
         @refresh="startLoading"
     />
 
+    <div
+        v-if="showHhModal"
+        class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50"
+    >
+      <div class="bg-white rounded-2xl p-6 w-[90%] max-w-md shadow-lg space-y-4">
+        <h2 class="text-lg font-medium text-gray-800">
+          {{ translations.auto_apply?.hh_modal_title }}
+        </h2>
+        <p class="text-sm text-gray-600">
+          {{ translations.auto_apply?.hh_modal_description }}
+        </p>
+        <div class="flex flex-col sm:flex-row sm:justify-end gap-3">
+          <button
+              class="w-full sm:w-auto px-4 py-2 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300"
+              @click="closeHhModal"
+          >
+            {{ translations.auto_apply?.hh_modal_cancel }}
+          </button>
+          <button
+              class="w-full sm:w-auto px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700"
+              @click="handleHeadHunterAuth"
+          >
+            {{ translations.auto_apply?.hh_modal_action }}
+          </button>
+        </div>
+      </div>
+    </div>
+
     <LoadingModal :show="showLoading" />
   </div>
 </template>
 
 <script setup>
-import { onMounted, ref, getCurrentInstance, onBeforeUnmount } from "vue";
+import { onMounted, ref, getCurrentInstance, onBeforeUnmount, computed } from "vue";
 import { useI18n } from '@/i18n-lite'
 import LoadingModal from "@/components/modal/LodaingModal.vue";
 import ModalComponent from "@/components/modal/UpdateModal.vue";
@@ -125,12 +170,13 @@ const { translations } = useI18n()
 const showModal = ref(false);
 const showLoading = ref(false);
 const loadingSkeleton = ref(true);
+const showHhModal = ref(false);
 let intervalId = null;
 
 const { proxy } = getCurrentInstance()
 const jobs = ref([])
 const CACHE_KEY = "vacancies_cache"
-const CACHE_TIME = 5 * 60 * 1000
+const CACHE_TIME = 60 * 60 * 1000
 const clearAuthStorage = () => {
   localStorage.removeItem("token")
   localStorage.removeItem("user")
@@ -140,11 +186,16 @@ const clearAuthStorage = () => {
   sessionStorage.removeItem("user")
   sessionStorage.removeItem("expires_at")
   sessionStorage.removeItem("vacancies_cache")
-  router.push({ name: "login" })
+  router.push({ name: "register" })
 }
 const applyToVacancy = async (job) => {
   try {
     if (job.source === 'telegram') {
+      return
+    }
+
+    if (!hhAccountActive.value) {
+      showHhModal.value = true;
       return
     }
 
@@ -198,33 +249,8 @@ const setCache = (data) => {
 }
 
 const user = ref(null)
-
-onMounted(async () => {
-  showLoading.value = true;
-  try {
-    const token = localStorage.getItem("token") || sessionStorage.getItem("token");
-    if (!token) {
-      router.push({ name: "login" });
-      return;
-    }
-
-    const headers = {
-      Authorization: `Bearer ${token}`,
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    };
-
-    const { data: meData } = await axios.get(proxy.$locale + "/auth/me", { headers });
-    user.value = meData.data;
-    console.log("meData", meData);
-  } catch (e) {
-    error.value = "Foydalanuvchi ma’lumotlarini olishda xatolik.";
-    if (e.response?.status === 401) clearAuthStorage();
-  } finally {
-    showLoading.value = false;
-    loadingSkeleton.value = false;
-  }
-});
+const error = ref("")
+const hhAccountActive = computed(() => !!user.value?.hh_account_status)
 
 const fetchJobs = async (forceUpdate = false) => {
   showLoading.value = true
@@ -294,6 +320,28 @@ const fetchJobs = async (forceUpdate = false) => {
     loadingSkeleton.value = false
   }
 }
+onMounted(async () => {
+  try {
+    const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+    if (!token) {
+      router.push({ name: "register" });
+      return;
+    }
+
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    };
+
+    const { data: meData } = await axios.get(proxy.$locale + "/auth/me", { headers });
+    user.value = meData.data;
+    console.log("meData", meData);
+  } catch (e) {
+    error.value = "Foydalanuvchi ma’lumotlarini olishda xatolik.";
+    if (e.response?.status === 401) clearAuthStorage();
+  }
+});
 console.log("Mapped titles:", mappedJobs.map(j => j.title))
 
 const startLoading = async () => {
@@ -304,7 +352,7 @@ const startLoading = async () => {
 
   setTimeout(() => {
     showLoading.value = false
-  }, 1500)
+  }, 18000)
 }
 
 const formatDate = (date) => {
@@ -326,27 +374,6 @@ const formatDate = (date) => {
   return `${datePart} (${timePart})`
 }
 
-
-const logout = async () => {
-  try {
-    const token = localStorage.getItem("token") || sessionStorage.getItem("token")
-    if (token) {
-      await axios.post("/auth/logout", {}, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      })
-    }
-  } catch (error) {
-    if (error.response?.status === 401) {
-      clearAuthStorage()
-    }
-  } finally {
-    clearAuthStorage()
-    window.location.href = "/login"
-  }
-}
-
 onMounted(() => {
   fetchJobs()
 
@@ -358,6 +385,45 @@ onMounted(() => {
 onBeforeUnmount(() => {
   clearInterval(intervalId);
 });
+
+const closeHhModal = () => {
+  showHhModal.value = false
+}
+
+const handleHeadHunterAuth = async () => {
+  showHhModal.value = false
+  await goToHeadHunter()
+}
+
+const goToHeadHunter = async () => {
+  try {
+    const token = localStorage.getItem("token") || sessionStorage.getItem("token")
+    if (!token) {
+      clearAuthStorage()
+      return
+    }
+
+    const { data } = await axios.get(
+        proxy.$locale + "/v1/hh-accounts/authorize",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+            "Content-Type": "application/json"
+          }
+        }
+    )
+
+    if (data?.url) {
+      window.open(data.url, "_blank")
+    }
+  } catch (error) {
+    console.error("❌ HH Auth error:", error.response?.data || error.message)
+    if (error.response?.status === 401) {
+      clearAuthStorage()
+    }
+  }
+}
 </script>
 
 <style scoped>

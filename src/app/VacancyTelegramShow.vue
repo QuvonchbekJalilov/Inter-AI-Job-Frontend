@@ -6,7 +6,15 @@
         <div v-if="vacancy" class="max-w-5xl pt-[110px] mx-auto p-6 bg-white rounded-2xl shadow space-y-6">
             <!-- Title and Company -->
             <div>
-                <h3 class="text-2xl font-medium mb-2">{{ vacancy.title }}</h3>
+                <div class="flex items-start justify-between mb-2">
+                  <h3 class="mb-2 mt-5 text-xl leading-tight font-medium">{{ vacancy.title }}</h3>
+                  <!-- Telegram icon -->
+                  <img
+                      src="/icons/telegram.svg"
+                      alt="Telegram"
+                      class="w-6 h-6 mt-5 object-contain ml-2 shrink-0"
+                  />
+                </div>
                 <p class="text-gray-700 font-medium">{{ vacancy.company }}</p>
                 <!-- <p class="text-gray-500">Source: {{ vacancy.source_id }}</p> -->
             </div>
@@ -37,21 +45,21 @@
                
             </div>
 
-            <!-- Telegram Links -->
-            <div class="p-4 bg-gray-50 rounded-lg text-sm text-gray-600 space-y-2">
-                
-                <div v-if="vacancy.target_message_id">
-                    📥 <a :href="vacancy.target_message_id" target="_blank" class="text-blue-600 hover:underline">
-                        Shared via Inter-AI Bot
-                    </a>
-                </div>
-            </div>
+<!--            &lt;!&ndash; Telegram Links &ndash;&gt;-->
+<!--            <div class="p-4 bg-gray-50 rounded-lg text-sm text-gray-600 space-y-2">-->
+<!--                -->
+<!--                <div v-if="vacancy.target_message_id">-->
+<!--                    📥 <a :href="vacancy.target_message_id" target="_blank" class="text-blue-600 hover:underline">-->
+<!--                        Shared via Inter-AI Bot-->
+<!--                    </a>-->
+<!--                </div>-->
+<!--            </div>-->
 
             <!-- Action -->
             <div>
                 <button @click="openTelegramLink"
                     class="block w-full py-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium text-center">
-                    {{ translations.source }}
+                    {{ translations.all_information }}
                 </button>
             </div>
         </div>

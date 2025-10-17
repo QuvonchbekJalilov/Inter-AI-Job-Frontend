@@ -1,5 +1,8 @@
 {
   "salom": "Привет",
+  "all_information": "Получить больше информации",
+  "thinking": "Думаю...",
+  "accordance": "совпадение",
   "welcome": "Добро пожаловать, {name}!",
   "resumeProfile": "Резюме и профиль",
   "help": "Помощь",
@@ -24,10 +27,17 @@
   },
   "auto_apply": {
     "title": "AI Автоотклик",
-    "description": "Автоматические отклики — ИИ автоматически откликается на подходящие вакансии",
+    "description": "Автоматические отклики — AI автоматически подает заявки только на вакансии HeadHunter",
     "save_button": "Сохранить",
     "update_button": "Редактировать",
-    "cancel_button": "Отмена"
+    "cancel_button": "Отмена",
+    "enable_hint": "Чтобы активировать автоотклик, включите переключатель выше.",
+    "hh_modal_title": "Требуется аккаунт HeadHunter",
+    "hh_modal_description": "Функция автоотклика работает только после привязки аккаунта HeadHunter. Пожалуйста, авторизуйтесь.",
+    "hh_modal_action": "Head Hunter Auth",
+    "hh_modal_cancel": "Отмена",
+    "hh_required": "Чтобы включить автоотклик, привяжите аккаунт Head Hunter через кнопку ниже.",
+    "hh_connected": "Аккаунт Head Hunter успешно привязан. Вы можете пользоваться автооткликом."
   },
   "plan": {
     "title": "Тарифный план",
@@ -63,7 +73,7 @@
   "password": "Пароль",
   "register": "Регистрация",
   "forgot_password": "Забыли пароль?",
-  "tell_us_about_yourself": "Расскажите о себе",
+  "tell_us_about_yourself": "Регистрация",
   "personal_data": "Личные данные",
   "name": "Имя",
   "surname": "Фамилия",
@@ -90,7 +100,13 @@
   "select_file": "Выберите файл",
   "dadafhocts": "Перетащите файл сюда или нажмите для выбора",
   "Upload_your_resume_file": "Загрузите файл резюме",
-  "Enter_your_resume_text": "Введите текст резюме",
+  "Enter_your_resume_text": "Напишите свою отрасль",
+  "resume_placeholder": "Маркетинг, менеджер по продажам",
+  "resume_upload_hint": "Нажмите кнопку, чтобы выбрать файл резюме.",
+  "resume_file_ready": "Файл резюме добавлен",
+  "resume_view": "Посмотреть",
+  "resume_change": "Заменить",
+  "resume_file_default_name": "Файл резюме",
   "Do_you_have_an_account": "У вас есть аккаунт?",
   "Upload_your_resume": "Загрузите ваше резюме",
   "Work_preferences": "Предпочтения по работе",
@@ -121,7 +137,12 @@
   "experience": "Опыт...",
   "Contact" : "Контакт",
   "possible_ai_questions": "Возможные вопросы от AI",
-  "shared_via_bot": "Поделено через Inter-AI бот"
+  "shared_via_bot": "Поделено через Inter-AI бот",
+  "no_vacancies_title": "Вы еще не откликались ни на одну вакансию",
+  "no_vacancies_description": "Вы можете выбрать подходящие вакансии и сразу отправить отклик.",
+  "view_vacancies": "Посмотреть вакансии",
+  "no_matching_vacancies": "Подходящих вакансий не найдено. Пожалуйста, попробуйте снова войти или зарегистрироваться.",
+  "hh_auth_connected": "Ваша учетная запись HeadHunter подключена"
 
 
 }
