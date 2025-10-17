@@ -115,7 +115,7 @@ onMounted(async () => {
       loading.value = false
       console.error("❌ Statistika yuklanmadi:", e)
     }
-  }, 8000)
+  }, 6000)
 })
 </script>
 
