@@ -75,9 +75,9 @@ const counts = reactive({
 
 const label = (k) => isNarrow.value ? t(`tabs.${k}.short`) : t(`tabs.${k}.label`)
 const tabs = computed(() => [
-  { name: t('tabs.all', { count: counts.vacancies }), key: 'vacancies', active: activeTab.value === 'vacancies' },
+  { name: t('vacancies', { count: counts.vacancies }), key: 'vacancies', active: activeTab.value === 'vacancies' },
   { name: t('responses', { count: counts.newsVacancy }), key: 'newsVacancy', active: activeTab.value === 'newsVacancy' },
-  { name: t('tabs.assigned', { count: counts.interview }), key: 'interview', active: activeTab.value === 'interview' },
+  { name: t('interview', { count: counts.interview }), key: 'interview', active: activeTab.value === 'interview' },
 ])
 
 const setActiveTab = (tabKey) => {
