@@ -3,16 +3,30 @@
     <div class="max-w-7xl mx-auto px-4 py-2 border-radius">
       <div class="max-w-3xl mx-auto">
         <div class="bg-white rounded-2xl py-4 flex justify-around shadow-top divide-x mt-3">
+          <!-- 1. Umumiy -->
           <div class="flex-1 text-center px-2">
-            <div class="text-blue-600 text-2xl font-medium">{{ statistics.total_result }}</div>
+            <div class="text-blue-600 text-2xl font-medium min-h-[28px]">
+              <span v-if="loading" class="loading-dots"></span>
+              <span v-else>{{ statistics.total_result }}</span>
+            </div>
             <div class="text-sm text-gray-500">{{ translations.vacancies }}</div>
           </div>
+
+          <!-- 2. Topshirilgan -->
           <div class="flex-1 text-center px-2">
-            <div class="text-blue-600 text-2xl font-medium">{{ statistics.applied }}</div>
+            <div class="text-blue-600 text-2xl font-medium min-h-[28px]">
+              <span v-if="loading" class="loading-dots"></span>
+              <span v-else>{{ statistics.applied }}</span>
+            </div>
             <div class="text-sm text-gray-500">{{ translations.responses }}</div>
           </div>
+
+          <!-- 3. Suhbat -->
           <div class="flex-1 text-center px-2">
-            <div class="text-indigo-600 text-2xl font-medium">{{ statistics.interview }}</div>
+            <div class="text-indigo-600 text-2xl font-medium min-h-[28px]">
+              <span v-if="loading" class="loading-dots"></span>
+              <span v-else>{{ statistics.interview }}</span>
+            </div>
             <div class="text-sm text-gray-500">{{ translations.interview }}</div>
           </div>
         </div>
@@ -62,6 +76,8 @@ const statistics = ref({
   interview: 0
 })
 
+const loading = ref(true) // 🔹 loading holati
+
 onMounted(async () => {
   setTimeout(async () => {
     try {
@@ -74,11 +90,13 @@ onMounted(async () => {
         }
       })
       statistics.value = res.data
+      loading.value = false // ✅ yuklandi
       console.log("✅ Statistika 8 sekunddan keyin yuklandi")
     } catch (e) {
+      loading.value = false // ❌ xatolikda ham to‘xtatish
       console.error("❌ Statistika yuklanmadi:", e)
     }
-  }, 8000) // 8000 ms = 8 sekund
+  }, 8000)
 })
 </script>
 
@@ -104,5 +122,14 @@ onMounted(async () => {
   transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1),
               font-size 160ms ease,
               line-height 160ms ease;
+}
+.loading-dots::after {
+  content: '...';
+  animation: dots 1.5s steps(4, end) infinite;
+}
+@keyframes dots {
+  0%, 30% { content: '.'; }
+  60% { content: '..'; }
+  80%, 100% { content: '...'; }
 }
 </style>
