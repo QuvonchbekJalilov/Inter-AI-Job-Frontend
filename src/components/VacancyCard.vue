@@ -342,7 +342,6 @@ onMounted(async () => {
     if (e.response?.status === 401) clearAuthStorage();
   }
 });
-console.log("Mapped titles:", mappedJobs.map(j => j.title))
 
 const startLoading = async () => {
   showModal.value = false
