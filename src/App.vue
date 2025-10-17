@@ -28,7 +28,8 @@ onMounted(() => {
 const chatId = computed(() => {});
 
 onMounted(async () => {
-  const params = new URLSearchParams(window.location.search);
+  const queryString = window.location.search || window.location.hash.split('?')[1] || '';
+  const params = new URLSearchParams(queryString);
   const chatId = params.get("chat_id");
   const locale = params.get("locale") || "uz";
   console.log("chatId, Language:", chatId, locale);
