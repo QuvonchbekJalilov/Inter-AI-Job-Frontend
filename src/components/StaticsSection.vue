@@ -63,19 +63,22 @@ const statistics = ref({
 })
 
 onMounted(async () => {
-  try {
-    const token = localStorage.getItem("token") || sessionStorage.getItem("token")
-    const res = await axios.get(proxy.$locale + "/v1/dashboard", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      }
-    })
-    statistics.value = res.data
-  } catch (e) {
-    console.error("Statistika yuklanmadi:", e)
-  }
+  setTimeout(async () => {
+    try {
+      const token = localStorage.getItem("token") || sessionStorage.getItem("token")
+      const res = await axios.get(proxy.$locale + "/v1/dashboard", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        }
+      })
+      statistics.value = res.data
+      console.log("✅ Statistika 8 sekunddan keyin yuklandi")
+    } catch (e) {
+      console.error("❌ Statistika yuklanmadi:", e)
+    }
+  }, 8000) // 8000 ms = 8 sekund
 })
 </script>
 
