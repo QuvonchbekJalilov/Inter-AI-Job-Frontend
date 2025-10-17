@@ -36,7 +36,6 @@
           />
         </div>
 
-        <!-- Resume Text -->
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">
             {{ translations.Enter_your_resume_text }}
@@ -48,9 +47,6 @@
           >
         </div>
 
-<!--        <div class="text-center text-gray-500">{{ translations.or }}</div>-->
-
-        <!-- Resume File Upload -->
         <label class="block text-sm font-medium text-gray-700 mb-2">
           {{ translations.Upload_your_resume_file }}
         </label>
@@ -105,35 +101,76 @@
             </template>
           </div>
         </div>
+        <div class="mt-4 space-y-2 text-sm text-gray-700">
+          <!-- Yuqoridagi izoh -->
+          <p v-if="locale === 'uz'">
+            Davom etishdan oldin, iltimos, shaxsiy ma’lumotlaringizni qayta ishlash shartlariga roziligingizni tasdiqlang.
+            <a
+                href="http://inter-ai.uz/oferta_uz.docx"
+                target="_blank"
+                class="text-blue-600 hover:underline font-medium"
+            >Ommaviy ofertani</a>
+            o‘qib chiqing.
+          </p>
 
-        <!-- Submit -->
+          <p v-else-if="locale === 'ru'">
+            Перед продолжением, пожалуйста, подтвердите согласие с условиями обработки ваших персональных данных.
+            Ознакомьтесь с <a
+              href="http://inter-ai.uz/oferta_ru.docx"
+              target="_blank"
+              class="text-blue-600 hover:underline font-medium"
+          >Публичной офертой</a>.
+          </p>
+
+          <p v-else>
+            Before continuing, please confirm your consent to the processing of your personal data.
+            Read the <a
+              href="http://inter-ai.uz/oferta_en.docx"
+              target="_blank"
+              class="text-blue-600 hover:underline font-medium"
+          >Public Offer</a>.
+          </p>
+
+          <!-- Checkbox -->
+          <div class="flex items-start gap-2 mt-3">
+            <input
+                id="offerAgreement"
+                type="checkbox"
+                v-model="acceptedOffer"
+                class="mt-1 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 cursor-pointer"
+            />
+
+            <label for="offerAgreement" class="cursor-pointer select-none">
+              <template v-if="locale === 'uz'">
+                Shaxsiy ma’lumotlarimni qayta ishlashga roziman
+              </template>
+              <template v-else-if="locale === 'ru'">
+                Даю согласие на обработку моих персональных данных
+              </template>
+              <template v-else>
+                I agree to the processing of my personal data
+              </template>
+            </label>
+          </div>
+        </div>
+
         <button
             @click="completeRegistration"
-            :disabled="!isStepValid() || btnLoading"
+            :disabled="!isStepValid() || btnLoading || !acceptedOffer"
             :class="[
-          'w-full py-3 rounded-md font-medium transition-colors flex items-center justify-center gap-2',
-          (!isStepValid() || btnLoading)
-            ? 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-50'
-            : 'bg-blue-500 text-white hover:bg-blue-600'
-        ]"
+    'w-full py-3 rounded-md font-medium transition-colors flex items-center justify-center gap-2',
+    (!isStepValid() || btnLoading || !acceptedOffer)
+      ? 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-50'
+      : 'bg-blue-500 text-white hover:bg-blue-600'
+  ]"
         >
-      <span
-          v-if="btnLoading"
-          class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"
-      ></span>
+  <span
+      v-if="btnLoading"
+      class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"
+  ></span>
           <span>{{ btnLoading ? translations.loading : translations.finish }}</span>
         </button>
       </div>
-
-<!--      &lt;!&ndash; Footer &ndash;&gt;-->
-<!--      <p class="mt-6 text-center text-sm text-gray-500">-->
-<!--        {{ translations.Do_you_have_an_account }}-->
-<!--        <RouterLink to="/login" class="text-blue-600 hover:underline">-->
-<!--          {{ translations.login }}-->
-<!--        </RouterLink>-->
-<!--      </p>-->
-
-      <!-- Tabs -->
       <div class="flex items-stretch w-full max-w-md mx-auto gap-2 pt-6">
         <button
             v-for="tab in tabs"
@@ -187,8 +224,8 @@ const loading = ref(false)
 const btnLoading = ref(false)
 const error = ref("")
 const hasResumeFile = computed(() => Boolean(formData.resumeFileUrl))
+const acceptedOffer = ref(false);
 
-const chatId = computed(() => {});
 onMounted(() => {
   const params = new URLSearchParams(window.location.search);
   const chatId = params.get("chat_id");
@@ -298,7 +335,6 @@ const submitRegistration = async () => {
 
     console.log('✅ Registration success:', data)
 
-    // 🔽 Telefon raqami mavjud bo‘lsa — toast orqali xabar
     if (!isSuccess(data)) {
       toast.error(
           locale.value === 'uz'
@@ -342,7 +378,6 @@ const submitRegistration = async () => {
       error.value = data.message || "Ro‘yxatdan o‘tishda xatolik yuz berdi."
     }
   } catch (e) {
-    // 🔽 Backend 422 xato qaytarsa — toast orqali ko‘rsatish
     if (e.response?.status === 422) {
       toast.error(
           locale.value === 'uz'
@@ -383,7 +418,6 @@ const completeRegistration = async () => {
     btnLoading.value = false
   }
 }
-
 
 const { locale } = useI18n()
 
