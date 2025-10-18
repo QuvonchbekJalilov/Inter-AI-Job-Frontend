@@ -82,7 +82,7 @@ const goBack = () => {
   if (window.history.state && window.history.length > 2) {
     router.back()
   } else {
-    router.push({ name: "home" })
+    router.back()
   }
 }
 
