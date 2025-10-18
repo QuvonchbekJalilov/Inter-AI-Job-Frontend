@@ -71,13 +71,13 @@
                 <span class="font-medium text-sm sm:text-base text-green-700">{{ translations.resume_file_ready }}</span>
               </div>
               <div class="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
-                <button
-                    type="button"
-                    class="px-4 py-2 rounded-md bg-blue-500 text-white hover:bg-blue-600 transition-colors text-sm font-medium"
-                    @click="viewResume"
-                >
-                  {{ translations.resume_view }}
-                </button>
+<!--                <button-->
+<!--                    type="button"-->
+<!--                    class="px-4 py-2 rounded-md bg-blue-500 text-white hover:bg-blue-600 transition-colors text-sm font-medium"-->
+<!--                    @click="viewResume"-->
+<!--                >-->
+<!--                  {{ translations.resume_view }}-->
+<!--                </button>-->
                 <button
                     type="button"
                     class="px-6 sm:px-8 py-2 rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors text-sm font-medium"
