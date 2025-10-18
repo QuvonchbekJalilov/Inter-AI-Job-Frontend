@@ -15,14 +15,15 @@
         <path d="M1253.75 1111.25C1017.08 1269.67 890.889 1422.19 840.522 1554.93H630.653C729.276 1364.48 925.253 1194.19 1253.75 1111.25Z" fill="#5078FF"/>
       </svg>
 
-      <p class="text-gray-300 text-lg">{{ translations.thinking }}...</p>
+      <p class="text-white text-lg">{{ translations.thinking }}<span v-if="loading" class="loading-dots"></span></p>
     </div>
   </div>
 </template>
 
 <script setup>
 import {useI18n} from "@/i18n-lite.js";
-
+import {ref} from "vue";
+const loading = ref(true)
 const { translations } = useI18n()
 defineProps({
   show: { type: Boolean, default: false },
@@ -40,5 +41,17 @@ defineProps({
 }
 .animate-spin-slow {
   animation: spin-slow 2s linear infinite;
+}
+.loading-dots::after {
+  content: '';
+  animation: dots 1.5s infinite;
+}
+
+@keyframes dots {
+  0%   { content: ''; }
+  25%  { content: '.'; }
+  50%  { content: '..'; }
+  75%  { content: '...'; }
+  100% { content: ''; }
 }
 </style>

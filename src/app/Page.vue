@@ -1,38 +1,78 @@
 <template>
-  <div class="min-h-screen bg-gray-50" style="height: 100vh; overflow-y: auto;">
-    <Header></Header>
+  <div ref="scrollContainer" class="min-h-screen bg-gray-50" style="height: 100vh; overflow-y: auto;">
+    <Header />
+    <keep-alive>
+      <VacancyList />
+    </keep-alive>
 
-    <VacancyList></VacancyList>
-
-    <!-- Chat Widget -->
-<!--    <div class="fixed bottom-6 right-6">-->
-<!--      <button class="bg-black text-white px-4 py-3 rounded-full shadow-lg hover:bg-gray-800 transition-colors flex items-center space-x-2">-->
-<!--        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">-->
-<!--          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>-->
-<!--        </svg>-->
-<!--        <span class="font-medium">Чаты</span>-->
-<!--      </button>-->
-<!--    </div>-->
+    <div class="fixed bottom-6 right-6">
+      <a
+          href="https://t.me/sening_kanaling_yoki_boting"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="backdrop-blur-md bg-black/40 border border-blue-500 text-white px-4 py-3 rounded-full shadow-lg hover:bg-black/60 transition-all flex items-center space-x-2"
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+          />
+        </svg>
+        <span class="font-medium">{{ translations.chat }}</span>
+      </a>
+    </div>
   </div>
 </template>
 
 <script setup>
-import VacancyList from "@/components/VacancyList.vue";
-import Header from "@/components/Header.vue";
-import {computed, getCurrentInstance, onMounted} from "vue";
+import { ref, onMounted, onBeforeUnmount, getCurrentInstance } from "vue";
 import axios from "axios";
-const { proxy } = getCurrentInstance()
+import Header from "@/components/Header.vue";
+import VacancyList from "@/components/VacancyList.vue";
+import {useI18n} from "@/i18n-lite.js";
+
+const { translations } = useI18n()
+const { proxy } = getCurrentInstance();
+
+const scrollContainer = ref(null);
+
+function saveScroll() {
+  if (!scrollContainer.value) return;
+  sessionStorage.setItem("vacancy_scroll", String(scrollContainer.value.scrollTop));
+}
+
+function restoreScroll() {
+  if (!scrollContainer.value) return;
+  const saved = sessionStorage.getItem("vacancy_scroll");
+  if (saved) {
+    setTimeout(() => {
+      scrollContainer.value.scrollTop = parseInt(saved);
+    }, 0);
+  }
+}
 
 onMounted(() => {
-  const token = localStorage.getItem("token") || sessionStorage.getItem("token")
-  const track = axios.get(proxy.$locale + "/v1/visits/track", {
+  restoreScroll();
+
+  if (scrollContainer.value) {
+    scrollContainer.value.addEventListener("scroll", saveScroll, { passive: true });
+  }
+
+  const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+  axios.get(proxy.$locale + "/v1/visits/track", {
     headers: {
       Authorization: `Bearer ${token}`,
       Accept: "application/json",
-      "Content-Type": "application/json"
-    }
-  });
-  console.log(track)
+      "Content-Type": "application/json",
+    },
+  }).catch(() => {});
 });
 
+onBeforeUnmount(() => {
+  if (scrollContainer.value) {
+    scrollContainer.value.removeEventListener("scroll", saveScroll);
+  }
+});
 </script>

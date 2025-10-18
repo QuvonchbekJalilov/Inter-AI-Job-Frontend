@@ -1,7 +1,8 @@
 {
   "salom": "Привет",
+  "chat": "Чаты",
   "all_information": "Получить больше информации",
-  "thinking": "Думаю...",
+  "thinking": "Думаю",
   "accordance": "совпадение",
   "welcome": "Добро пожаловать, {name}!",
   "resumeProfile": "Резюме и профиль",

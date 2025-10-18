@@ -117,7 +117,7 @@
                 v-if="btnLoading"
                 class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"
             ></span>
-          <span>{{ btnLoading ? 'Yuklanmoqda...' : 'Tugatish' }}</span>
+          <span>{{ btnLoading ? translations.finish : translations.finish }}</span>
         </button>
 
       </div>
