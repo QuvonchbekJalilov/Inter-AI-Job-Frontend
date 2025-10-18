@@ -107,16 +107,16 @@
             @click="completeRegistration"
             :disabled="!isStepValid() || btnLoading || !acceptedOffer"
             :class="[
-      'w-full py-3 rounded-md font-medium transition-colors flex items-center justify-center gap-2',
-      (!isStepValid() || btnLoading || !acceptedOffer)
-        ? 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-50'
-        : 'bg-blue-500 text-white hover:bg-blue-600'
-    ]"
-        >
-    <span
-        v-if="btnLoading"
-        class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"
-    ></span>
+              'w-full py-3 rounded-md font-medium transition-colors flex items-center justify-center gap-2',
+              (!isStepValid() || btnLoading || !acceptedOffer)
+                ? 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-50'
+                : 'bg-blue-500 text-white hover:bg-blue-600'
+            ]"
+                >
+            <span
+                v-if="btnLoading"
+                class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"
+            ></span>
           <span>{{ btnLoading ? 'Yuklanmoqda...' : 'Tugatish' }}</span>
         </button>
 
