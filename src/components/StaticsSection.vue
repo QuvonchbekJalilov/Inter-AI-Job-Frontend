@@ -77,10 +77,10 @@ const statistics = ref({
 const loading = ref(true)
 
 onMounted(() => {
-  console.log("⏳ 5 soniya kutilyapti...")
+  //console.log("⏳ 5 soniya kutilyapti...")
 
   setTimeout(async () => {
-    console.log("🚀 Serverga so‘rov yuborilmoqda...")
+    //console.log("🚀 Serverga so‘rov yuborilmoqda...")
 
     try {
       const token = localStorage.getItem("token") || sessionStorage.getItem("token")
@@ -93,7 +93,7 @@ onMounted(() => {
       })
 
       statistics.value = res.data
-      console.log("✅ Statistika serverdan muvaffaqiyatli olindi")
+      //console.log("✅ Statistika serverdan muvaffaqiyatli olindi")
     } catch (e) {
       console.error("❌ Statistika yuklanmadi:", e)
     } finally {

@@ -33,7 +33,7 @@ onMounted(async () => {
   const chatId = params.get("chat_id");
   const token = params.get("token");
   const locale = params.get("locale") || "uz";
-  console.log("chatId, Language:", chatId, locale, token);
+  //console.log("chatId, Language:", chatId, locale, token);
 
   if (chatId) {
     localStorage.setItem("chat_id", chatId);
@@ -47,7 +47,7 @@ onMounted(async () => {
   } else {
     const savedChatId = localStorage.getItem("chat_id");
     if (savedChatId) {
-      console.log("Chat ID localStorage’dan olindi:", savedChatId);
+      //console.log("Chat ID localStorage’dan olindi:", savedChatId);
     }
   }
 
