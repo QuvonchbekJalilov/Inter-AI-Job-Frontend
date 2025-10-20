@@ -29,6 +29,7 @@
 
           <div class="space-y-2 text-sm text-gray-700">
             <div>
+            <h1>{{ testToken }}</h1>
               <span class="font-medium text-gray-500">{{ translations.profiles?.name }}:</span>
               {{ user?.first_name }} {{ user?.last_name }}
             </div>
@@ -388,6 +389,7 @@ const showLogoutModal = ref(false)
 const showLoading = ref(false);
 const showHhModal = ref(false);
 const loadingSkeleton = ref(true)
+const testToken = localStorage.getItem("token") || sessionStorage.getItem("token")
 const openPayment = () => {
   showPayment.value = true
 }
