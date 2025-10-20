@@ -7,7 +7,7 @@
 
     <div class="fixed bottom-6 right-6">
       <a
-          href="https://t.me/sening_kanaling_yoki_boting"
+          href="https://t.me/inter_ai_support_bot"
           target="_blank"
           rel="noopener noreferrer"
           class="backdrop-blur-md bg-black/40 border border-blue-500 text-white px-4 py-3 rounded-full shadow-lg hover:bg-black/60 transition-all flex items-center space-x-2"
