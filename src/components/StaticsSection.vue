@@ -75,25 +75,13 @@ const statistics = ref({
 })
 
 const loading = ref(true)
-const CACHE_KEY = "dashboard_cache"
-const CACHE_TIME_KEY = "dashboard_cache_time"
-const CACHE_DURATION = 60 * 60 * 1000
 
-onMounted(async () => {
-  const now = Date.now()
-  const cacheData = localStorage.getItem(CACHE_KEY)
-  const cacheTime = localStorage.getItem(CACHE_TIME_KEY)
-
-  if (cacheData && cacheTime && now - parseInt(cacheTime) < CACHE_DURATION) {
-    statistics.value = JSON.parse(cacheData)
-    loading.value = false
-    console.log("⚡ Statistika cache'dan yuklandi")
-    return
-  }
-
-  console.log("⏳ Serverdan statistika yuklanmoqda...")
+onMounted(() => {
+  console.log("⏳ 5 soniya kutilyapti...")
 
   setTimeout(async () => {
+    console.log("🚀 Serverga so‘rov yuborilmoqda...")
+
     try {
       const token = localStorage.getItem("token") || sessionStorage.getItem("token")
       const res = await axios.get(proxy.$locale + "/v1/dashboard", {
@@ -105,19 +93,16 @@ onMounted(async () => {
       })
 
       statistics.value = res.data
-      loading.value = false
-
-      localStorage.setItem(CACHE_KEY, JSON.stringify(res.data))
-      localStorage.setItem(CACHE_TIME_KEY, now.toString())
-
-      console.log("✅ Statistika serverdan yuklandi va cache'landi")
+      console.log("✅ Statistika serverdan muvaffaqiyatli olindi")
     } catch (e) {
-      loading.value = false
       console.error("❌ Statistika yuklanmadi:", e)
+    } finally {
+      loading.value = false
     }
   }, 5000)
 })
 </script>
+
 
 
 <style scoped>
