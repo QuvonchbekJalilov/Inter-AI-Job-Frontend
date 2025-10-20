@@ -24,7 +24,8 @@
             </button>
           </div>
           <h2 class="text-lg font-medium mb-4 flex items-center gap-2 text-black">
-            <span>👤</span> {{ translations.profiles?.title }} {{ chatId }}
+            <span>👤</span> {{ translations.profiles?.title }}
+<!--            {{ chatId }}-->
           </h2>
 
           <div class="space-y-2 text-sm text-gray-700">
