@@ -245,7 +245,6 @@ let intervalId = null;
 
 const { proxy } = getCurrentInstance()
 const jobs = ref([])
-const CACHE_KEY = "vacancies_cache"
 const CACHE_TIME = 60 * 60 * 1000
 
 const showCoverModal = ref(false);
@@ -312,15 +311,13 @@ const clearAuthStorage = () => {
   localStorage.removeItem("token")
   localStorage.removeItem("user")
   localStorage.removeItem("expires_at")
+  localStorage.removeItem("token")
   localStorage.removeItem("vacancies_cache")
   localStorage.removeItem("dashboard_cache")
   localStorage.removeItem("dashboard_cache_time")
   sessionStorage.removeItem("token")
   sessionStorage.removeItem("user")
   sessionStorage.removeItem("expires_at")
-  sessionStorage.removeItem("vacancies_cache")
-  sessionStorage.removeItem("dashboard_cache")
-  sessionStorage.removeItem("dashboard_cache_time")
   router.push({ name: "register" })
 }
 const applyToVacancy = async (job) => {
@@ -355,9 +352,6 @@ const applyToVacancy = async (job) => {
       jobs.value = jobs.value.map((j) =>
           j.external_id === job.external_id ? { ...j, status: true } : j
       )
-
-      setCache(jobs.value)
-
       toast.success("Muvaffaqiyatli yuborildi ✅")
     }
   } catch (error) {
@@ -366,21 +360,6 @@ const applyToVacancy = async (job) => {
         "Xatolik: siz Vacansiyaga topshirish uchun Profile qismiga o'tib Head Hunter dan login qiling"
     )
   }
-}
-const getCache = () => {
-  const cache = localStorage.getItem(CACHE_KEY)
-  if (!cache) return null
-
-  const parsed = JSON.parse(cache)
-  const isExpired = Date.now() - parsed.timestamp > CACHE_TIME
-  return isExpired ? null : parsed.data
-}
-
-const setCache = (data) => {
-  localStorage.setItem(
-      CACHE_KEY,
-      JSON.stringify({ data, timestamp: Date.now() })
-  )
 }
 
 const user = ref(null)
@@ -391,16 +370,26 @@ const fetchJobs = async (forceUpdate = false) => {
   showLoading.value = true
 
   try {
-    if (!forceUpdate) {
-      const cachedData = getCache()
-      if (cachedData) {
-        jobs.value = cachedData
-        showLoading.value = false
-        return
-      }
+    const token = localStorage.getItem("token") || sessionStorage.getItem("token")
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+      "Content-Type": "application/json"
     }
 
-    const token = localStorage.getItem("token") || sessionStorage.getItem("token")
+    let data;
+
+    if (forceUpdate) {
+      // 🔁 Har 1 soatda POST so‘rov
+      const res = await axios.post(`${proxy.$locale}/v1/vacancy-matches/run`, {}, { headers })
+      data = res.data
+      console.log("🕐 POST /run orqali yangilandi:", data)
+    } else {
+      // 🔹 Boshqa paytlarda GET orqali ma’lumot olish
+      const res = await axios.get(`${proxy.$locale}/v1/vacancy-matches`, { headers })
+      data = res.data
+      console.log("📦 GET /vacancy-matches orqali olib kelindi:", data)
+    }
 
     const { data } = await axios.post(
         proxy.$locale + "/v1/vacancy-matches/run",
@@ -421,40 +410,35 @@ const fetchJobs = async (forceUpdate = false) => {
 
         return {
           id: v.id,
-          source: v.source,             // 👈 muhim
+          source: v.source,
           external_id: isTelegram ? null : v.external_id,
-          telegram: isTelegram ? {      // 👈 telegramga xos maydonlar
+          telegram: isTelegram ? {
             source_id: v.source_id,
             source_message_id: v.source_message_id,
             target_message_id: v.target_message_id,
             message_id: v.message_id,
           } : null,
-
           title: v.title,
           company: v.company,
           experience: v.experience ?? null,
           salary: v.salary ?? null,
           published_at: v.published_at ?? null,
-
           score: item.score_percent,
           status: item.status
         }
       })
 
       jobs.value = mappedJobs
-      setCache(mappedJobs)
     }
   } catch (error) {
     console.error("❌ Xatolik:", error.response?.data || error.message)
-
-    if (error.response?.status === 401) {
-      clearAuthStorage()
-    }
+    if (error.response?.status === 401) clearAuthStorage()
   } finally {
     showLoading.value = false
     loadingSkeleton.value = false
   }
 }
+
 onMounted(async () => {
   try {
     const token = localStorage.getItem("token") || sessionStorage.getItem("token");
@@ -509,12 +493,15 @@ const formatDate = (date) => {
 }
 
 onMounted(() => {
+  // Dastlab GET bilan ma’lumot olish
   fetchJobs()
 
+  // Har 1 soatda POST bilan yangilash
   intervalId = setInterval(() => {
-    showModal.value = true
-  }, CACHE_TIME)
+    fetchJobs(true) // forceUpdate = true → POST so‘rov
+  }, CACHE_TIME) // CACHE_TIME = 60 * 60 * 1000 (1 soat)
 })
+
 
 onBeforeUnmount(() => {
   clearInterval(intervalId);
