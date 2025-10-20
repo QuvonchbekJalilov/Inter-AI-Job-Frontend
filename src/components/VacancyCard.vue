@@ -349,7 +349,7 @@ const applyToVacancy = async (job) => {
         }
     )
 
-    console.log("✅ Apply javobi:", data)
+   // console.log("✅ Apply javobi:", data)
 
     if (data.success && data.data) {
       jobs.value = jobs.value.map((j) =>
@@ -412,7 +412,7 @@ const fetchJobs = async (forceUpdate = false) => {
             "Content-Type": "application/json"
           }}
     )
-    console.log('data', data)
+   // console.log('data', data)
 
     if (data.status === "success" && data.data) {
       const mappedJobs = data.data.map(item => {
@@ -471,7 +471,7 @@ onMounted(async () => {
 
     const { data: meData } = await axios.get(proxy.$locale + "/auth/me", { headers });
     user.value = meData.data;
-    console.log("meData", meData);
+   // console.log("meData", meData);
   } catch (e) {
     error.value = "Foydalanuvchi ma’lumotlarini olishda xatolik.";
     if (e.response?.status === 401) clearAuthStorage();

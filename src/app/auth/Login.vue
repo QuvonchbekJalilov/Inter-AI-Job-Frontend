@@ -189,7 +189,7 @@ async function onSubmit() {
           password: form.password,
         },
     );
-    console.log(data.data.data);
+   // console.log(data.data.data);
 
     const storage = form.remember ? localStorage : sessionStorage;
     storage.setItem("token", data.data.data.token);
@@ -207,7 +207,7 @@ async function onSubmit() {
           }
         }
     )
-    console.log('vacancy', vacancy)
+   // console.log('vacancy', vacancy)
 
     router.push({ name: "home" });
   } catch (e) {
@@ -266,7 +266,7 @@ onMounted(() => {
       "Content-Type": "application/json"
     }
   });
-  console.log("track", track)
+ // console.log("track", track)
 });
 
 </script>

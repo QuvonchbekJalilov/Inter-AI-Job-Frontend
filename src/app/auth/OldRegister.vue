@@ -575,7 +575,7 @@ const sendVerificationCode = async ({ fromRegister = false } = {}) => {
     const { data } = await axios.post(proxy.$locale + '/sending-code', {
       email: formData.email
     })
-    console.log('📧 Code sent:', data)
+   // console.log('📧 Code sent:', data)
     if (isSuccess(data)) {
       showVerifyModal.value = true
     } else {
@@ -592,7 +592,7 @@ const verifyEmailCode = async () => {
       email: formData.email,
       code: formData.verificationCode
     })
-    console.log('verify response', data)
+    //console.log('verify response', data)
 
     if (isSuccess(data)) {
       emailVerified.value = true
@@ -642,7 +642,7 @@ const submitRegistration = async () => {
       salary_to: formData.salaryTo
     })
 
-    console.log('✅ Registration success:', data)
+    //console.log('✅ Registration success:', data)
 
     if (isSuccess(data)) {
       const storage = localStorage
@@ -669,7 +669,7 @@ const submitRegistration = async () => {
             }
           }
       )
-      console.log('vacancy', vacancy)
+      //console.log('vacancy', vacancy)
 
       router.push({ name: 'home' })
     } else {

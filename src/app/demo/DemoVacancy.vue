@@ -29,7 +29,7 @@ onMounted(() => {
       "Content-Type": "application/json"
     }
   });
-  console.log("track", track)
+ // console.log("track", track)
 });
 
 </script>

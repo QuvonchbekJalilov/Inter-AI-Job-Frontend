@@ -185,12 +185,12 @@ onMounted(() => {
   if (chatId) {
     localStorage.setItem("chat_id", chatId);
     formData.chat_id = chatId;
-    console.log("Chat ID saqlandi:", chatId);
+   // console.log("Chat ID saqlandi:", chatId);
   } else {
     const savedChatId = localStorage.getItem("chat_id");
     if (savedChatId) {
       formData.chat_id = savedChatId;
-      console.log("Chat ID localStorage’dan olindi:", savedChatId);
+     // console.log("Chat ID localStorage’dan olindi:", savedChatId);
     }
   }
 
@@ -284,7 +284,7 @@ const submitRegistration = async () => {
       language: locale,
     })
 
-    console.log('✅ Registration success:', data)
+   // console.log('✅ Registration success:', data)
 
     if (!isSuccess(data)) {
       toast.error(

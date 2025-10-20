@@ -400,7 +400,7 @@ const closePayment = () => {
 }
 
 const pay = (method) => {
-  console.log(`To'lov: ${method}, summa: ${amount.value}`)
+ // console.log(`To'lov: ${method}, summa: ${amount.value}`)
   closePayment()
 }
 

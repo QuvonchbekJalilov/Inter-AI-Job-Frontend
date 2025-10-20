@@ -131,7 +131,7 @@ onMounted(async () => {
       }
     })
     const data = res.data.data
-    console.log('User data:', data)
+    //console.log('User data:', data)
 
     form.value.first_name = data.first_name || ''
     // form.value.last_name = data.last_name || ''

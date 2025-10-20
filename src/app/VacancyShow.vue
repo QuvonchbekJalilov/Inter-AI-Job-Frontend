@@ -103,7 +103,7 @@ const applyToVacancy = async (vacancyId) => {
     if (!res.ok) throw new Error(`HTTP error! ${res.status}`)
 
     const data = await res.json()
-    console.log("✅ Apply javobi:", data)
+    //console.log("✅ Apply javobi:", data)
 
     if (data.success) {
       status.value = true
@@ -146,7 +146,7 @@ const fetchVacancy = async () => {
     const data = await res.json()
     vacancy.value = data.data.raw
     status.value = data.data.status
-    console.log("✅ Vacancy:", data.data)
+   // console.log("✅ Vacancy:", data.data)
   } catch (e) {
     showLoading.value = false
     console.error("❌ API error:", e.message)

@@ -71,7 +71,7 @@ const fetchInterview = async () => {
     if (!res.ok) throw new Error(`HTTP error! ${res.status}`)
 
     const data = await res.json()
-    console.log('✅ Interview:', data)
+   // console.log('✅ Interview:', data)
 
     if (data.success && data.data) {
       const item = data.data

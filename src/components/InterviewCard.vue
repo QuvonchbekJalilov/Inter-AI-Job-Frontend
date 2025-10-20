@@ -100,7 +100,7 @@ const fetchInterviews = async () => {
 
     if (data.success) {
       interviews.value = data.data;
-      console.log("✅ Interviews:", data.data);
+     // console.log("✅ Interviews:", data.data);
     } else {
       error.value = "No interviews found";
     }
