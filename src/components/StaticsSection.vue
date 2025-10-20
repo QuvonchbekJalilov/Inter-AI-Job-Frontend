@@ -4,15 +4,26 @@
       <div class="max-w-3xl mx-auto">
         <div class="bg-white rounded-2xl py-4 flex justify-around shadow-top divide-x mt-3">
           <div class="flex-1 text-center px-2">
-            <div class="text-blue-600 text-2xl font-medium">{{ statistics.total_result }}</div>
+            <div class="text-blue-600 text-2xl font-medium min-h-[28px]">
+              <span v-if="loading" class="loading-dots"></span>
+              <span v-else>{{ statistics.total_result }}</span>
+            </div>
             <div class="text-sm text-gray-500">{{ translations.vacancies }}</div>
           </div>
+
           <div class="flex-1 text-center px-2">
-            <div class="text-blue-600 text-2xl font-medium">{{ statistics.applied }}</div>
+            <div class="text-blue-600 text-2xl font-medium min-h-[28px]">
+              <span v-if="loading" class="loading-dots"></span>
+              <span v-else>{{ statistics.applied }}</span>
+            </div>
             <div class="text-sm text-gray-500">{{ translations.responses }}</div>
           </div>
+
           <div class="flex-1 text-center px-2">
-            <div class="text-indigo-600 text-2xl font-medium">{{ statistics.interview }}</div>
+            <div class="text-indigo-600 text-2xl font-medium min-h-[28px]">
+              <span v-if="loading" class="loading-dots"></span>
+              <span v-else>{{ statistics.interview }}</span>
+            </div>
             <div class="text-sm text-gray-500">{{ translations.interview }}</div>
           </div>
         </div>
@@ -46,15 +57,16 @@
 
 <script setup>
 import { useI18n } from '@/i18n-lite'
-import {getCurrentInstance, onMounted, ref} from "vue";
+import { getCurrentInstance, onMounted, ref } from "vue"
+import axios from "axios"
+
 const { proxy } = getCurrentInstance()
-import axios from "axios";
 const { translations } = useI18n()
+
 defineProps({
   tabs: Array,
   activeTab: String
 })
-
 
 const statistics = ref({
   total_result: 0,
@@ -62,45 +74,36 @@ const statistics = ref({
   interview: 0
 })
 
-onMounted(async () => {
-  const cacheKey = "dashboard_cache"
-  const cacheTimeKey = "dashboard_cache_time"
-  const cacheDuration = 60 * 60 * 1000 // 1 soat = 3600000 ms
+const loading = ref(true)
 
-  const now = Date.now()
-  const cachedData = localStorage.getItem(cacheKey)
-  const cachedTime = localStorage.getItem(cacheTimeKey)
+onMounted(() => {
+  console.log("⏳ 5 soniya kutilyapti...")
 
-  // ⏱️ Agar 1 soatdan kam vaqt o'tgan bo'lsa — cache ishlatamiz
-  if (cachedData && cachedTime && now - cachedTime < cacheDuration) {
-    statistics.value = JSON.parse(cachedData)
-    console.log("✅ Statistika cache'dan olindi")
-    return
-  }
+  setTimeout(async () => {
+    console.log("🚀 Serverga so‘rov yuborilmoqda...")
 
-  // 🔄 1 soatdan oshgan bo'lsa yoki cache yo'q bo'lsa — yangilaymiz
-  try {
-    const token = localStorage.getItem("token") || sessionStorage.getItem("token")
-    const res = await axios.get(proxy.$locale + "/v1/dashboard", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      }
-    })
+    try {
+      const token = localStorage.getItem("token") || sessionStorage.getItem("token")
+      const res = await axios.get(proxy.$locale + "/v1/dashboard", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        }
+      })
 
-    statistics.value = res.data
-
-    // 🔐 Ma’lumotni va vaqtni saqlaymiz
-    localStorage.setItem(cacheKey, JSON.stringify(res.data))
-    localStorage.setItem(cacheTimeKey, now.toString())
-
-    console.log("♻️ Statistika yangilandi va cache'ga saqlandi")
-  } catch (e) {
-    console.error("❌ Statistika yuklanmadi:", e)
-  }
+      statistics.value = res.data
+      console.log("✅ Statistika serverdan muvaffaqiyatli olindi")
+    } catch (e) {
+      console.error("❌ Statistika yuklanmadi:", e)
+    } finally {
+      loading.value = false
+    }
+  }, 5000)
 })
 </script>
+
+
 
 <style scoped>
 .shadow-top {
@@ -124,5 +127,14 @@ onMounted(async () => {
   transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1),
               font-size 160ms ease,
               line-height 160ms ease;
+}
+.loading-dots::after {
+  content: '...';
+  animation: dots 1.5s steps(4, end) infinite;
+}
+@keyframes dots {
+  0%, 30% { content: '.'; }
+  60% { content: '..'; }
+  80%, 100% { content: '...'; }
 }
 </style>

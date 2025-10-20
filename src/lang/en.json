@@ -1,7 +1,8 @@
 {
   "salom": "Hello",
+  "chat": "Chats",
   "all_information": "Get more information",
-  "thinking": "Thinking...",
+  "thinking": "Thinking",
   "accordance": "accordance",
   "welcome": "Welcome, {name}!",
   "resumeProfile": "Resume & Profile",

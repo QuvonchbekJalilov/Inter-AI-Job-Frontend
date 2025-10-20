@@ -87,10 +87,10 @@
               v-if="job.source !== 'telegram'"
               class="w-full py-3 font-medium text-white rounded-b-2xl flex items-center justify-center gap-2 transition-colors"
               :class="job.status
-      ? 'bg-gray-400 cursor-not-allowed'
-      : 'bg-blue-600 hover:bg-blue-700'"
+    ? 'bg-gray-400 cursor-not-allowed'
+    : 'bg-blue-600 hover:bg-blue-700'"
               :disabled="job.status || !job.external_id"
-              @click="applyToVacancy(job)"
+              @click="openCoverLetterModal(job)"
           >
             <span>{{ job.status ? translations.applied : translations.reply }}</span>
           </button>
@@ -151,6 +151,76 @@
     </div>
 
     <LoadingModal :show="showLoading" />
+
+
+    <!-- Cover Letter Modal -->
+    <Transition name="fade">
+      <div
+          v-if="showCoverModal"
+          class="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
+      >
+        <div
+            class="bg-white rounded-2xl p-6 w-full max-w-lg shadow-xl relative overflow-hidden"
+        >
+          <h2 class="text-xl font-semibold mb-4">Cover Letter</h2>
+
+          <!-- Loading holati -->
+          <div v-if="coverLatterLoading" class="space-y-3 animate-pulse">
+            <div class="h-5 bg-gray-200 rounded w-1/3"></div>
+            <div class="h-24 bg-gray-200 rounded"></div>
+            <div class="h-24 bg-gray-200 rounded"></div>
+            <div class="h-5 bg-gray-200 rounded w-1/2"></div>
+          </div>
+
+          <!-- Yuklanib bo‘lgach textarea chiqadi -->
+          <div v-else>
+        <textarea
+            v-model="coverLetter"
+            rows="8"
+            class="w-full border rounded-xl p-3 resize-none focus:ring-2 focus:ring-blue-500 outline-none"
+            placeholder="Bu yerda sizning cover letterningiz bo‘ladi..."
+        ></textarea>
+
+            <div class="flex justify-end gap-3 mt-4">
+              <button
+                  class="px-4 py-2 rounded-lg bg-gray-300 hover:bg-gray-400"
+                  @click="showCoverModal = false"
+              >
+                Bekor qilish
+              </button>
+
+              <button
+                  class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center gap-2"
+                  @click="handleCoverLetterSubmit"
+              >
+                <svg
+                    v-if="coverLatterLoadingSubmit"
+                    class="animate-spin h-4 w-4 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                >
+                  <circle
+                      class="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      stroke-width="4"
+                  ></circle>
+                  <path
+                      class="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                  ></path>
+                </svg>
+                <span>Tasdiqlash va Yuborish</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Transition>
   </div>
 </template>
 
@@ -177,15 +247,80 @@ const { proxy } = getCurrentInstance()
 const jobs = ref([])
 const CACHE_KEY = "vacancies_cache"
 const CACHE_TIME = 60 * 60 * 1000
+
+const showCoverModal = ref(false);
+const coverLatterLoading = ref(false);
+const coverLatterLoadingSubmit = ref(false);
+const coverLetter = ref("");
+const selectedJob = ref(null);
+
+const openCoverLetterModal = async (job) => {
+  selectedJob.value = job;
+  showCoverModal.value = true;
+  coverLatterLoading.value =true;
+
+  try {
+    const token =
+        localStorage.getItem("token") || sessionStorage.getItem("token");
+
+    const { data } = await axios.get(`${proxy.$locale}/v1/cover-letter`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+      },
+    });
+
+    coverLetter.value = data.cover_letter || "";
+  } catch (error) {
+    console.error("❌ Cover letterni olishda xato:", error);
+    toast.error("Cover letterni yuklab bo‘lmadi");
+  } finally {
+    coverLatterLoading.value = false;
+  }
+};
+
+const handleCoverLetterSubmit = async () => {
+  try {
+    coverLatterLoadingSubmit.value = true;
+    const token =
+        localStorage.getItem("token") || sessionStorage.getItem("token");
+
+    await axios.put(
+        `${proxy.$locale}/v1/cover-letter`,
+        { cover_letter: coverLetter.value },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        }
+    );
+
+    toast.success("Cover letter yangilandi ✅");
+
+    showCoverModal.value = false;
+    await applyToVacancy(selectedJob.value);
+  } catch (error) {
+    console.error("❌ Cover letter update xato:", error);
+    toast.error("Cover letterni saqlashda xatolik yuz berdi");
+  } finally {
+    coverLatterLoadingSubmit.value = false;
+  }
+};
 const clearAuthStorage = () => {
   localStorage.removeItem("token")
   localStorage.removeItem("user")
   localStorage.removeItem("expires_at")
   localStorage.removeItem("vacancies_cache")
+  localStorage.removeItem("dashboard_cache")
+  localStorage.removeItem("dashboard_cache_time")
   sessionStorage.removeItem("token")
   sessionStorage.removeItem("user")
   sessionStorage.removeItem("expires_at")
   sessionStorage.removeItem("vacancies_cache")
+  sessionStorage.removeItem("dashboard_cache")
+  sessionStorage.removeItem("dashboard_cache_time")
   router.push({ name: "register" })
 }
 const applyToVacancy = async (job) => {

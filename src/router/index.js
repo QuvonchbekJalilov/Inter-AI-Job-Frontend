@@ -80,7 +80,29 @@ const routes = [
 
 const router = createRouter({
     history: createWebHashHistory(),
-    routes
+    routes,
+    scrollBehavior(to, from, savedPosition) {
+        // Agar browser orqaga qaytish bo‘lsa (router.back())
+        if (savedPosition) {
+            return savedPosition
+        }
+
+        // Agar ro‘yxatdan vacancy sahifasiga kirayotgan bo‘lsa, pozitsiyani saqlab qo‘yamiz
+        if (from.name === 'home' && to.name === 'vacancy-show') {
+            sessionStorage.setItem('vacancy_scroll', window.scrollY)
+        }
+
+        // Ro‘yxatga qaytganda scroll pozitsiyani tiklaymiz
+        if (from.name === 'vacancy-show' && to.name === 'home') {
+            const scroll = sessionStorage.getItem('vacancy_scroll')
+            if (scroll) {
+                return { left: 0, top: parseInt(scroll) }
+            }
+        }
+
+        return { top: 0 }
+    },
+
 })
 router.beforeEach((to, from, next) => {
     const token = localStorage.getItem("token") || sessionStorage.getItem("token");

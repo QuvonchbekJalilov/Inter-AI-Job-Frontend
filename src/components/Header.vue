@@ -79,7 +79,11 @@ const router = useRouter()
 const showBack = computed(() => route.meta?.headerBack === true)
 
 const goBack = () => {
-  if (window.history.length > 2) router.back()
-  else router.push('/')
+  if (window.history.state && window.history.length > 2) {
+    router.back()
+  } else {
+    router.back()
+  }
 }
+
 </script>

@@ -36,7 +36,6 @@
           />
         </div>
 
-        <!-- Resume Text -->
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">
             {{ translations.Enter_your_resume_text }}
@@ -48,9 +47,6 @@
           >
         </div>
 
-<!--        <div class="text-center text-gray-500">{{ translations.or }}</div>-->
-
-        <!-- Resume File Upload -->
         <label class="block text-sm font-medium text-gray-700 mb-2">
           {{ translations.Upload_your_resume_file }}
         </label>
@@ -75,13 +71,13 @@
                 <span class="font-medium text-sm sm:text-base text-green-700">{{ translations.resume_file_ready }}</span>
               </div>
               <div class="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
-                <button
-                    type="button"
-                    class="px-4 py-2 rounded-md bg-blue-500 text-white hover:bg-blue-600 transition-colors text-sm font-medium"
-                    @click="viewResume"
-                >
-                  {{ translations.resume_view }}
-                </button>
+<!--                <button-->
+<!--                    type="button"-->
+<!--                    class="px-4 py-2 rounded-md bg-blue-500 text-white hover:bg-blue-600 transition-colors text-sm font-medium"-->
+<!--                    @click="viewResume"-->
+<!--                >-->
+<!--                  {{ translations.resume_view }}-->
+<!--                </button>-->
                 <button
                     type="button"
                     class="px-6 sm:px-8 py-2 rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors text-sm font-medium"
@@ -105,35 +101,26 @@
             </template>
           </div>
         </div>
+        <Offer v-model="acceptedOffer" :locale="locale" />
 
-        <!-- Submit -->
         <button
             @click="completeRegistration"
-            :disabled="!isStepValid() || btnLoading"
+            :disabled="!isStepValid() || btnLoading || !acceptedOffer"
             :class="[
-          'w-full py-3 rounded-md font-medium transition-colors flex items-center justify-center gap-2',
-          (!isStepValid() || btnLoading)
-            ? 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-50'
-            : 'bg-blue-500 text-white hover:bg-blue-600'
-        ]"
-        >
-      <span
-          v-if="btnLoading"
-          class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"
-      ></span>
-          <span>{{ btnLoading ? translations.loading : translations.finish }}</span>
+              'w-full py-3 rounded-md font-medium transition-colors flex items-center justify-center gap-2',
+              (!isStepValid() || btnLoading || !acceptedOffer)
+                ? 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-50'
+                : 'bg-blue-500 text-white hover:bg-blue-600'
+            ]"
+                >
+            <span
+                v-if="btnLoading"
+                class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"
+            ></span>
+          <span>{{ btnLoading ? translations.finish : translations.finish }}</span>
         </button>
+
       </div>
-
-<!--      &lt;!&ndash; Footer &ndash;&gt;-->
-<!--      <p class="mt-6 text-center text-sm text-gray-500">-->
-<!--        {{ translations.Do_you_have_an_account }}-->
-<!--        <RouterLink to="/login" class="text-blue-600 hover:underline">-->
-<!--          {{ translations.login }}-->
-<!--        </RouterLink>-->
-<!--      </p>-->
-
-      <!-- Tabs -->
       <div class="flex items-stretch w-full max-w-md mx-auto gap-2 pt-6">
         <button
             v-for="tab in tabs"
@@ -166,6 +153,7 @@ import LoadingModal from "@/components/modal/LodaingModal.vue";
 import { toast } from "vue3-toastify"
 import intlTelInput from "intl-tel-input";
 import "intl-tel-input/build/css/intlTelInput.css";
+import Offer from "@/components/Offer.vue";
 
 const { proxy } = getCurrentInstance()
 const { translations } = useI18n()
@@ -187,8 +175,8 @@ const loading = ref(false)
 const btnLoading = ref(false)
 const error = ref("")
 const hasResumeFile = computed(() => Boolean(formData.resumeFileUrl))
+const acceptedOffer = ref(false)
 
-const chatId = computed(() => {});
 onMounted(() => {
   const params = new URLSearchParams(window.location.search);
   const chatId = params.get("chat_id");
@@ -298,7 +286,6 @@ const submitRegistration = async () => {
 
     console.log('✅ Registration success:', data)
 
-    // 🔽 Telefon raqami mavjud bo‘lsa — toast orqali xabar
     if (!isSuccess(data)) {
       toast.error(
           locale.value === 'uz'
@@ -342,7 +329,6 @@ const submitRegistration = async () => {
       error.value = data.message || "Ro‘yxatdan o‘tishda xatolik yuz berdi."
     }
   } catch (e) {
-    // 🔽 Backend 422 xato qaytarsa — toast orqali ko‘rsatish
     if (e.response?.status === 422) {
       toast.error(
           locale.value === 'uz'
@@ -383,7 +369,6 @@ const completeRegistration = async () => {
     btnLoading.value = false
   }
 }
-
 
 const { locale } = useI18n()
 
