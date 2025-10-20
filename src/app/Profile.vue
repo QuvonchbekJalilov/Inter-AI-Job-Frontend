@@ -30,7 +30,7 @@
 
           <div class="space-y-2 text-sm text-gray-700">
             <div>
-            <h1>{{ testToken }}</h1>
+            <!-- <h1>{{ testToken }}</h1> -->
               <span class="font-medium text-gray-500">{{ translations.profiles?.name }}:</span>
               {{ user?.first_name }} {{ user?.last_name }}
             </div>
@@ -42,7 +42,7 @@
 
             <div>
               <span class="font-medium text-gray-500">{{ translations.profiles?.phone }}:</span>
-              {{ user?.phone }}
+              +998 {{ user?.phone }}
             </div>
 
 <!--            <div>-->
