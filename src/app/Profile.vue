@@ -413,7 +413,6 @@ const clearAuthStorage = () => {
   localStorage.removeItem("token")
   localStorage.removeItem("user")
   localStorage.removeItem("expires_at")
-  localStorage.removeItem("vacancies_cache")
   sessionStorage.removeItem("token")
   sessionStorage.removeItem("user")
   sessionStorage.removeItem("expires_at")

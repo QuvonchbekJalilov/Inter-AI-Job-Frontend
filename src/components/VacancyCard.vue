@@ -312,9 +312,6 @@ const clearAuthStorage = () => {
   localStorage.removeItem("user")
   localStorage.removeItem("expires_at")
   localStorage.removeItem("token")
-  localStorage.removeItem("vacancies_cache")
-  localStorage.removeItem("dashboard_cache")
-  localStorage.removeItem("dashboard_cache_time")
   sessionStorage.removeItem("token")
   sessionStorage.removeItem("user")
   sessionStorage.removeItem("expires_at")
@@ -377,34 +374,22 @@ const fetchJobs = async (forceUpdate = false) => {
       "Content-Type": "application/json"
     }
 
-    let data;
+    let response;
 
     if (forceUpdate) {
       // 🔁 Har 1 soatda POST so‘rov
-      const res = await axios.post(`${proxy.$locale}/v1/vacancy-matches/run`, {}, { headers })
-      data = res.data
-      console.log("🕐 POST /run orqali yangilandi:", data)
+      response = await axios.post(`${proxy.$locale}/v1/vacancy-matches/run`, {}, { headers })
+      console.log("🕐 POST /run orqali yangilandi:", response.data)
     } else {
       // 🔹 Boshqa paytlarda GET orqali ma’lumot olish
-      const res = await axios.get(`${proxy.$locale}/v1/vacancy-matches`, { headers })
-      data = res.data
-      console.log("📦 GET /vacancy-matches orqali olib kelindi:", data)
+      response = await axios.get(`${proxy.$locale}/v1/vacancy-matches`, { headers })
+      console.log("📦 GET /vacancy-matches orqali olib kelindi:", response.data)
     }
 
-    const { data } = await axios.post(
-        proxy.$locale + "/v1/vacancy-matches/run",
-        {
+    const result = response.data
 
-        }, {headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "application/json",
-            "Content-Type": "application/json"
-          }}
-    )
-   // console.log('data', data)
-
-    if (data.status === "success" && data.data) {
-      const mappedJobs = data.data.map(item => {
+    if (result.status === "success" && result.data) {
+      const mappedJobs = result.data.map(item => {
         const v = item.vacancy
         const isTelegram = v.source === 'telegram'
 
@@ -438,6 +423,7 @@ const fetchJobs = async (forceUpdate = false) => {
     loadingSkeleton.value = false
   }
 }
+
 
 onMounted(async () => {
   try {
