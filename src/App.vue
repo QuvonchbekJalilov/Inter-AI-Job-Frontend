@@ -55,6 +55,9 @@ onMounted(async () => {
     localStorage.setItem("locale", locale);
     //console.log("Chat ID saqlandi:", locale);
   }
+  if (token) {
+    router.push({ name: 'home' })
+  }
 });
 
 onMounted(() => {
