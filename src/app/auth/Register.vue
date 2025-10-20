@@ -391,6 +391,12 @@ const inactiveTextClass = 'text-[11.5px] sm:text-[12px] scale-90'
 const phoneInput = ref(null);
 
 onMounted(() => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    router.push({ name: 'home' })
+  }
+});
+onMounted(() => {
   if (phoneInput.value) {
     const iti = intlTelInput(phoneInput.value, {
       initialCountry: "uz",
