@@ -489,7 +489,7 @@ const fetchAutoApplyData = async () => {
 const saveLimit = async () => {
   try {
     const token = localStorage.getItem("token");
-    await axios.post(
+    await axios.patch(
         proxy.$locale + "/auth/settings/auto-apply",
         {
           auto_apply_enabled: enabled.value,
