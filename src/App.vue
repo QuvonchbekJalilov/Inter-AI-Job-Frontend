@@ -39,7 +39,7 @@ onMounted(async () => {
     localStorage.setItem("chat_id", chatId);
     localStorage.setItem("token", token);
 
-    console.log("Chat ID saqlandi:", chatId, token);
+    //console.log("Chat ID saqlandi:", chatId, token);
     // const { data } = await axios.post('/api/chat-id-login', {
     //   chat_id: chatId
     // })
@@ -53,7 +53,7 @@ onMounted(async () => {
 
   if (locale) {
     localStorage.setItem("locale", locale);
-    console.log("Chat ID saqlandi:", locale);
+    //console.log("Chat ID saqlandi:", locale);
   }
 });
 
