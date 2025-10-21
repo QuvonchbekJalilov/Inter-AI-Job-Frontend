@@ -52,8 +52,9 @@ onMounted(async () => {
   }
   if (token) {
     window.location.href = "/";
-  } else {
-    console.log("Chat ID saqlandi:", chatId, token);
+  }
+
+  if (chatId){
     const { res } = await axios.post('/api/auth/chat-id-login', {
       chat_id: chatId
     })
