@@ -390,6 +390,7 @@ const showLogoutModal = ref(false)
 const showLoading = ref(false);
 const showHhModal = ref(false);
 const loadingSkeleton = ref(true)
+const testToken = localStorage.getItem("token") || sessionStorage.getItem("token")
 const openPayment = () => {
   showPayment.value = true
 }
@@ -409,10 +410,13 @@ const loading = ref(true)
 const error = ref("")
 const hhAccountActive = computed(() => !!user.value?.hh_account_status)
 const clearAuthStorage = () => {
-  const token = localStorage.getItem("token") || sessionStorage.getItem("token")
-  if (!token){
-    router.push({ name: "register" })
-  }
+  localStorage.removeItem("token")
+  localStorage.removeItem("user")
+  localStorage.removeItem("expires_at")
+  sessionStorage.removeItem("token")
+  sessionStorage.removeItem("user")
+  sessionStorage.removeItem("expires_at")
+  router.push({ name: "register" })
 }
 const goToHeadHunter = async () => {
   const token = localStorage.getItem("token") || sessionStorage.getItem("token")
