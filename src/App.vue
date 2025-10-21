@@ -7,48 +7,36 @@ import LoadingModal from "@/components/modal/LodaingModal.vue";
 provideI18n()
 const router = useRouter()
 
-onMounted(() => {
-  const storage = localStorage.getItem("token")
-      ? localStorage
-      : sessionStorage;
-
-  const expiresAt = storage.getItem("expires_at");
-  if (expiresAt) {
-    const expireTime = new Date(expiresAt).getTime();
-    const now = Date.now();
-
-    if (now >= expireTime) {
-      storage.removeItem("token");
-      storage.removeItem("user");
-      storage.removeItem("expires_at");
-      router.push({ name: "register" });
-      window.location.href = "/register";
-    }
-  }
-});
-const chatId = computed(() => {});
-
 onMounted(async () => {
   const queryString = window.location.search || window.location.hash.split('?')[1] || '';
   const params = new URLSearchParams(queryString);
   const chatId = params.get("chat_id");
   const token = params.get("token");
   const locale = params.get("locale") || "uz";
-  //console.log("chatId, Language:", chatId, locale, token);
+  const TOKEN = localStorage.getItem("token")
+
+  if (TOKEN) {
+    router.push({ path: "/" });
+    window.location.href = "/"
+  } else {
+    alert('ok')
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    localStorage.removeItem("expires_at");
+    router.push({ name: "register" });
+    window.location.href = "/register"
+  }
 
   if (chatId) {
     localStorage.setItem("chat_id", chatId);
     localStorage.setItem("token", token);
   } else {
     const savedChatId = localStorage.getItem("chat_id");
-    if (savedChatId) {
-      //console.log("Chat ID localStorage’dan olindi:", savedChatId);
-    }
+    if (savedChatId) {}
   }
 
   if (locale) {
     localStorage.setItem("locale", locale);
-    //console.log("Chat ID saqlandi:", locale);
   }
 });
 
