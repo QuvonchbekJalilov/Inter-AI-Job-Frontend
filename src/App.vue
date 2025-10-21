@@ -6,13 +6,17 @@ import axios from "axios";
 import LoadingModal from "@/components/modal/LodaingModal.vue";
 
 provideI18n()
+const router = useRouter()
+
 
 const { proxy } = getCurrentInstance()
 const showLoading = ref(false)
 
 
-onMounted(() => {
+onMounted(async () => {
+
   showLoading.value = true
+
   const urlParams = new URLSearchParams(window.location.search)
   const chatIdFromUrl = urlParams.get("chat_id")
   const localeFromUrl = urlParams.get("locale") || "uz"
@@ -25,28 +29,24 @@ onMounted(() => {
 
   try {
     if (token) {
-      axios.get(proxy.$locale + "/auth/check-token", {
+      await axios.get(proxy.$locale + "/auth/check-token", {
         headers: { Authorization: `Bearer ${token}` },
       })
-      console.log("✅ check-token javob oldi!")
       window.location.href = "/"
       return
     }
 
     if (chatId) {
-      console.log("💬 Chat ID orqali login:", chatId)
       const res = await axios.post(proxy.$locale + "/auth/chat-id-login", { chat_id: chatId })
       const TOKEN = res.data?.data?.token
 
       if (TOKEN) {
-        console.log("✅ Chat ID orqali token olindi")
         localStorage.setItem("token", TOKEN)
         window.location.href = "/"
         return
       }
     }
   } catch (error) {
-    console.error("❌ Token yoki chat login xatosi:", error)
     localStorage.removeItem("token")
   } finally {
     showLoading.value = false
