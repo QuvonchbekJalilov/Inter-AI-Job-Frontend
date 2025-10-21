@@ -36,16 +36,16 @@
           />
         </div>
 
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">
-            {{ translations.Enter_your_resume_text }}
-          </label>
-          <input
-              v-model="formData.resumeText"
-              class="w-full px-3 py-2 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              :placeholder="translations.resume_placeholder"
-          >
-        </div>
+<!--        <div>-->
+<!--          <label class="block text-sm font-medium text-gray-700 mb-2">-->
+<!--            {{ translations.Enter_your_resume_text }}-->
+<!--          </label>-->
+<!--          <input-->
+<!--              v-model="formData.resumeText"-->
+<!--              class="w-full px-3 py-2 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"-->
+<!--              :placeholder="translations.resume_placeholder"-->
+<!--          >-->
+<!--        </div>-->
 
         <label class="block text-sm font-medium text-gray-700 mb-2">
           {{ translations.Upload_your_resume_file }}
@@ -164,7 +164,7 @@ const resumeInput = ref(null)
 const formData = reactive({
   firstName: '',
   phone: '',
-  resumeText: '',
+  // resumeText: '',
   resumeFile: null,
   resumeFileUrl: null,
 })
@@ -231,7 +231,7 @@ const uploadResume = async (token) => {
   if (!selectedFile.value) return
 
   const resumeForm = new FormData()
-  resumeForm.append("title", formData.resumeText)
+  // resumeForm.append("title", formData.resumeText)
   resumeForm.append("file", selectedFile.value)
 
   await axios.post(proxy.$locale + "/v1/resumes", resumeForm, {
@@ -277,7 +277,7 @@ const submitRegistration = async () => {
     const { data } = await axios.post(proxy.$locale + '/auth/register', {
       first_name: formData.firstName,
       phone: formData.phone,
-      resume_text: formData.resumeText,
+      // resume_text: formData.resumeText,
       chat_id: chatId,
       language: locale,
     })
