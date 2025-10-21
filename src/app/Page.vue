@@ -55,8 +55,6 @@ function restoreScroll() {
 }
 
 onMounted(async () => {
-  showLoading.value = true
-
   // 1️⃣ URL paramlarni o‘qi
   const urlParams = new URLSearchParams(window.location.search)
   const chatIdFromUrl = urlParams.get("chat_id")
@@ -92,7 +90,6 @@ onMounted(async () => {
     console.error("❌ Token yoki chat login xatosi:", error)
     localStorage.removeItem("token")
   } finally {
-    showLoading.value = false
   }
 })
 
