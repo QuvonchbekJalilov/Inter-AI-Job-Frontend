@@ -145,6 +145,7 @@
 </template>
 
 <script setup>
+//9ta
 import { useI18n } from '@/i18n-lite.js'
 import {ref, reactive, computed, getCurrentInstance, onMounted} from 'vue'
 import { useRouter } from 'vue-router'
@@ -160,6 +161,8 @@ const { translations } = useI18n()
 const router = useRouter()
 const showLoading = ref(false)
 const resumeInput = ref(null)
+//qo'shilgan 1
+const redirecting = ref(false)
 
 const formData = reactive({
   firstName: '',
@@ -321,9 +324,14 @@ const submitRegistration = async () => {
             }
           }
       )
-
+// qo'shilgan 2
+      redirecting.value = true
+//
       router.push({ name: 'home' })
       window.location.href = "/";
+      //qo'shilgan 3
+      return
+      //
     } else {
       error.value = data.message || "Ro‘yxatdan o‘tishda xatolik yuz berdi."
     }
@@ -347,7 +355,13 @@ const submitRegistration = async () => {
       error.value = e.response?.data?.message || 'Server bilan bog‘lanishda xatolik.'
     }
   } finally {
-    showLoading.value = false
+    //qo'shilgan 4
+    if (!redirecting.value) {
+      //
+      showLoading.value = false
+      //qo'shilgan 5
+    }
+    //
     loading.value = false
   }
 }
@@ -409,6 +423,9 @@ onMounted(async () => {
         headers: { Authorization: `Bearer ${token}` },
       })
       console.log("✅ check-token javob oldi!")
+      // qo'shilgan 6
+      redirecting.value = true
+      //
       window.location.href = "/"
       return
     }
@@ -421,6 +438,9 @@ onMounted(async () => {
       if (TOKEN) {
         console.log("✅ Chat ID orqali token olindi")
         localStorage.setItem("token", TOKEN)
+        // qo'shilgan 7
+        redirecting.value = true
+        //
         window.location.href = "/"
         return
       }
@@ -429,7 +449,13 @@ onMounted(async () => {
     console.error("❌ Token yoki chat login xatosi:", error)
     localStorage.removeItem("token")
   } finally {
-    showLoading.value = false
+    // qo'shilgan 8
+    if (!redirecting.value) {
+      //
+      showLoading.value = false
+      // qo'shilgan 9
+    }
+    //
   }
 
   if (phoneInput.value) {
