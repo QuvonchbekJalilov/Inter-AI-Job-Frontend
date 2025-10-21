@@ -325,6 +325,7 @@ const submitRegistration = async () => {
       )
 
       router.push({ name: 'home' })
+      window.location.href = "/";
     } else {
       error.value = data.message || "Ro‘yxatdan o‘tishda xatolik yuz berdi."
     }
@@ -390,10 +391,22 @@ const inactiveTextClass = 'text-[11.5px] sm:text-[12px] scale-90'
 
 const phoneInput = ref(null);
 
-onMounted(() => {
+onMounted(async () => {
   const token = localStorage.getItem("token");
   if (token) {
+    window.location.href = "/";
     router.push({ name: 'home' })
+  } else {
+    console.log("Chat ID saqlandi:", chatId, token);
+    const { res } = await axios.post('/api/auth/chat-id-login', {
+      chat_id: chatId
+    })
+    const TOKEN = res.data?.data?.token;
+    localStorage.setItem("token", TOKEN);
+    if (TOKEN) {
+      window.location.href = "/";
+      router.push({ name: 'home' })
+    }
   }
 });
 onMounted(() => {

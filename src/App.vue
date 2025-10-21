@@ -22,6 +22,7 @@ onMounted(() => {
       storage.removeItem("user");
       storage.removeItem("expires_at");
       router.push({ name: "register" });
+      window.location.href = "/register";
     }
   }
 });
@@ -50,13 +51,17 @@ onMounted(async () => {
     //console.log("Chat ID saqlandi:", locale);
   }
   if (token) {
-    router.push({ name: 'home' })
+    window.location.href = "/";
   } else {
     console.log("Chat ID saqlandi:", chatId, token);
-    const { data } = await axios.post('/api/chat-id-login', {
+    const { res } = await axios.post('/api/auth/chat-id-login', {
       chat_id: chatId
     })
-    console.log("login Data:", data);
+    const TOKEN = res.data?.data?.token;
+    localStorage.setItem("token", TOKEN);
+    if (TOKEN) {
+      window.location.href = "/";
+    }
   }
 });
 
