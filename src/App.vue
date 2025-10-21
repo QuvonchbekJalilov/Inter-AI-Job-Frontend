@@ -26,7 +26,6 @@ onMounted(() => {
     }
   }
 });
-const chatId = computed(() => {});
 
 onMounted(async () => {
   const queryString = window.location.search || window.location.hash.split('?')[1] || '';

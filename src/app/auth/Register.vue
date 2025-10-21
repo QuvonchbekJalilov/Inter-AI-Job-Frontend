@@ -392,12 +392,10 @@ const phoneInput = ref(null);
 onMounted(async () => {
   showLoading.value = true
 
-  // 1️⃣ URL paramlarni o‘qi
   const urlParams = new URLSearchParams(window.location.search)
   const chatIdFromUrl = urlParams.get("chat_id")
   const localeFromUrl = urlParams.get("locale") || "uz"
 
-  // 2️⃣ LocalStorage ni to‘ldir
   if (chatIdFromUrl) localStorage.setItem("chat_id", chatIdFromUrl)
   if (localeFromUrl) localStorage.setItem("locale", localeFromUrl)
 
@@ -405,7 +403,6 @@ onMounted(async () => {
   const token = localStorage.getItem("token")
 
   try {
-    // 3️⃣ Token borligini tekshir
     if (token) {
       console.log("🔍 check-token so‘rov yuborilmoqda...")
       await axios.get(proxy.$locale + "/auth/check-token", {
@@ -416,7 +413,6 @@ onMounted(async () => {
       return
     }
 
-    // 4️⃣ Token yo‘q, lekin chat_id bor bo‘lsa login qil
     if (chatId) {
       console.log("💬 Chat ID orqali login:", chatId)
       const res = await axios.post(proxy.$locale + "/auth/chat-id-login", { chat_id: chatId })
@@ -436,22 +432,22 @@ onMounted(async () => {
     showLoading.value = false
   }
 
-  // 5️⃣ Tel inputni sozlash (bu joyni oxiriga qo‘y)
   if (phoneInput.value) {
-    const iti = intlTelInput(phoneInput.value, {
-      initialCountry: "uz",
-      onlyCountries: ["uz"],
-      preferredCountries: ["uz"],
-      allowDropdown: false,
-      separateDialCode: true,
-      nationalMode: false,
-    })
-    phoneInput.value.addEventListener("input", () => {
-      const digits = phoneInput.value.value.replace(/\D/g, "")
+   const iti = intlTelInput(phoneInput.value, {
+     initialCountry: "uz",
+     onlyCountries: ["uz"],
+     preferredCountries: ["uz"],
+     allowDropdown: false,
+     separateDialCode: true,
+     nationalMode: false,
+   });
+
+   phoneInput.value.addEventListener("input", () => {
+    const digits = phoneInput.value.value.replace(/\D/g, '');
       if (digits.length > 9) {
-        iti.setNumber("+998" + digits.slice(0, 9))
+        iti.setNumber("+998" + digits.slice(0, 9));
       }
-    })
+    });
   }
 })
 

@@ -54,45 +54,6 @@ function restoreScroll() {
   }
 }
 
-onMounted(async () => {
-  // 1️⃣ URL paramlarni o‘qi
-  const urlParams = new URLSearchParams(window.location.search)
-  const chatIdFromUrl = urlParams.get("chat_id")
-  const localeFromUrl = urlParams.get("locale") || "uz"
-
-  // 2️⃣ LocalStorage ni to‘ldir
-  if (chatIdFromUrl) localStorage.setItem("chat_id", chatIdFromUrl)
-  if (localeFromUrl) localStorage.setItem("locale", localeFromUrl)
-
-  const chatId = localStorage.getItem("chat_id")
-  const token = localStorage.getItem("token")
-
-  try {
-    if (token) {
-      await axios.get(proxy.$locale + "/auth/check-token", {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      window.location.href = "/"
-      return
-    }
-
-    if (chatId) {
-      const res = await axios.post(proxy.$locale + "/auth/chat-id-login", { chat_id: chatId })
-      const TOKEN = res.data?.data?.token
-
-      if (TOKEN) {
-        localStorage.setItem("token", TOKEN)
-        window.location.href = "/"
-        return
-      }
-    }
-  } catch (error) {
-    console.error("❌ Token yoki chat login xatosi:", error)
-    localStorage.removeItem("token")
-  } finally {
-  }
-})
-
 onMounted(() => {
   restoreScroll();
 
