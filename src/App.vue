@@ -19,41 +19,33 @@ onMounted(async () => {
   if (locale) localStorage.setItem("locale", locale);
   if (chatId) localStorage.setItem("chat_id", chatId);
 
-  try {
-    if (TOKEN) {
-      await axios.get(proxy.$locale + "/auth/check-token", {
-        headers: { Authorization: `Bearer ${TOKEN}` },
-      });
+  if (TOKEN) {
+    await axios.get(proxy.$locale + "/auth/check-token", {
+      headers: { Authorization: `Bearer ${TOKEN}` },
+    });
+    window.location.href = "/";
+    return;
+  } else if (token) {
+    await axios.get(proxy.$locale + "/auth/check-token", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    window.location.href = "/";
+    return;
+  } else if (chatId) {
+    const res = await axios.post(proxy.$locale + "/auth/chat-id-login", { chat_id: chatId });
+    const RES_TOKEN = res.data?.data?.token;
+
+    if (RES_TOKEN) {
+      localStorage.setItem("token", RES_TOKEN);
       window.location.href = "/";
       return;
     }
-    if (token) {
-      await axios.get(proxy.$locale + "/auth/check-token", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      window.location.href = "/";
-      return;
-    }
-
-    if (chatId) {
-      const res = await axios.post(proxy.$locale + "/auth/chat-id-login", { chat_id: chatId });
-      const RES_TOKEN = res.data?.data?.token;
-
-      if (RES_TOKEN) {
-        localStorage.setItem("token", RES_TOKEN);
-        window.location.href = "/";
-        return;
-      }
-    }
-  } catch (error) {
-    console.error("❌ Login yoki token xatosi:", error);
+  } else {
     localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    localStorage.removeItem("expires_at");
+    router.push({ name: "register" });
   }
-
-  localStorage.removeItem("token");
-  localStorage.removeItem("user");
-  localStorage.removeItem("expires_at");
-  router.push({ name: "register" });
 });
 
 
