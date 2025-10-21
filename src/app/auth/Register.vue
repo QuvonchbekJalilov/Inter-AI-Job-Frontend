@@ -162,7 +162,7 @@ const router = useRouter()
 const showLoading = ref(false)
 const resumeInput = ref(null)
 //qo'shilgan 1
-const redirecting = ref(false)
+// const redirecting = ref(false)
 
 const formData = reactive({
   firstName: '',
@@ -325,12 +325,12 @@ const submitRegistration = async () => {
           }
       )
 // qo'shilgan 2
-      redirecting.value = true
+     // redirecting.value = true
 //
       router.push({ name: 'home' })
       window.location.href = "/";
       //qo'shilgan 3
-      return
+      //return
       //
     } else {
       error.value = data.message || "Ro‘yxatdan o‘tishda xatolik yuz berdi."
@@ -356,11 +356,11 @@ const submitRegistration = async () => {
     }
   } finally {
     //qo'shilgan 4
-    if (!redirecting.value) {
+    //if (!redirecting.value) {
       //
       showLoading.value = false
       //qo'shilgan 5
-    }
+   // }
     //
     loading.value = false
   }
@@ -424,7 +424,7 @@ onMounted(async () => {
       })
       console.log("✅ check-token javob oldi!")
       // qo'shilgan 6
-      redirecting.value = true
+     // redirecting.value = true
       //
       window.location.href = "/"
       return
@@ -439,7 +439,7 @@ onMounted(async () => {
         console.log("✅ Chat ID orqali token olindi")
         localStorage.setItem("token", TOKEN)
         // qo'shilgan 7
-        redirecting.value = true
+       // redirecting.value = true
         //
         window.location.href = "/"
         return
@@ -450,11 +450,11 @@ onMounted(async () => {
     localStorage.removeItem("token")
   } finally {
     // qo'shilgan 8
-    if (!redirecting.value) {
+  //  if (!redirecting.value) {
       //
       showLoading.value = false
       // qo'shilgan 9
-    }
+  //  }
     //
   }
 
