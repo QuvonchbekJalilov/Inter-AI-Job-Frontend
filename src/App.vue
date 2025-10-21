@@ -4,53 +4,10 @@ import {computed, onMounted, getCurrentInstance, ref} from "vue";
 import { useRouter } from "vue-router";
 import axios from "axios";
 import LoadingModal from "@/components/modal/LodaingModal.vue";
-
 provideI18n()
 const router = useRouter()
 
-
-const { proxy } = getCurrentInstance()
-const showLoading = ref(false)
-
-
-onMounted(async () => {
-
-  showLoading.value = true
-
-  const urlParams = new URLSearchParams(window.location.search)
-  const chatIdFromUrl = urlParams.get("chat_id")
-  const localeFromUrl = urlParams.get("locale") || "uz"
-
-  if (chatIdFromUrl) localStorage.setItem("chat_id", chatIdFromUrl)
-  if (localeFromUrl) localStorage.setItem("locale", localeFromUrl)
-
-  const chatId = localStorage.getItem("chat_id")
-  const token = localStorage.getItem("token")
-
-  try {
-    if (token) {
-      await axios.get(proxy.$locale + "/auth/check-token", {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      window.location.href = "/"
-      return
-    }
-
-    if (chatId) {
-      const res = await axios.post(proxy.$locale + "/auth/chat-id-login", { chat_id: chatId })
-      const TOKEN = res.data?.data?.token
-
-      if (TOKEN) {
-        localStorage.setItem("token", TOKEN)
-        window.location.href = "/"
-        return
-      }
-    }
-  } catch (error) {
-    localStorage.removeItem("token")
-  } finally {
-    showLoading.value = false
-  }
+onMounted(() => {
   const storage = localStorage.getItem("token")
       ? localStorage
       : sessionStorage;
@@ -69,6 +26,7 @@ onMounted(async () => {
     }
   }
 });
+const chatId = computed(() => {});
 
 onMounted(async () => {
   const queryString = window.location.search || window.location.hash.split('?')[1] || '';
@@ -76,6 +34,7 @@ onMounted(async () => {
   const chatId = params.get("chat_id");
   const token = params.get("token");
   const locale = params.get("locale") || "uz";
+  //console.log("chatId, Language:", chatId, locale, token);
 
   if (chatId) {
     localStorage.setItem("chat_id", chatId);
@@ -89,6 +48,7 @@ onMounted(async () => {
 
   if (locale) {
     localStorage.setItem("locale", locale);
+    //console.log("Chat ID saqlandi:", locale);
   }
 });
 
@@ -108,7 +68,6 @@ onMounted(() => {
 
 <template>
   <router-view />
-  <LoadingModal :show="showLoading" />
 </template>
 
 <style>
