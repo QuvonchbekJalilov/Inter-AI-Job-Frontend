@@ -1,12 +1,15 @@
 <script setup>
 import { provideI18n } from './i18n-lite'
-import {computed, onMounted, getCurrentInstance} from "vue";
+import {computed, onMounted, getCurrentInstance, ref} from "vue";
 import { useRouter } from "vue-router";
 import axios from "axios";
+import LoadingModal from "@/components/modal/LodaingModal.vue";
 
 provideI18n()
 
 const { proxy } = getCurrentInstance()
+const showLoading = ref(false)
+
 
 onMounted(() => {
   const storage = localStorage.getItem("token")
@@ -65,7 +68,6 @@ onMounted(() => {
   })
 })
 
-const token = localStorage.getItem("token") || sessionStorage.getItem("token")
 onMounted(async () => {
   showLoading.value = true
 
@@ -118,6 +120,7 @@ onMounted(async () => {
 
 <template>
   <router-view />
+  <LoadingModal :show="showLoading" />
 </template>
 
 <style>
