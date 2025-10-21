@@ -83,24 +83,27 @@ const router = createRouter({
     routes,
     scrollBehavior(to, from, savedPosition) {
         if (savedPosition) {
-            return savedPosition
+            return savedPosition;
         }
 
-        if (from.name === 'home' && to.name === 'vacancy-show') {
-            sessionStorage.setItem('vacancy_scroll', window.scrollY)
+        if (from.name === "home" && to.name === "vacancy-show") {
+            sessionStorage.setItem("vacancy_scroll", window.scrollY);
         }
 
-        if (from.name === 'vacancy-show' && to.name === 'home') {
-            const scroll = sessionStorage.getItem('vacancy_scroll')
+        if (from.name === "vacancy-show" && to.name === "home") {
+            const scroll = sessionStorage.getItem("vacancy_scroll");
             if (scroll) {
-                return { left: 0, top: parseInt(scroll) }
+                return new Promise(resolve => {
+                    setTimeout(() => {
+                        resolve({ left: 0, top: parseInt(scroll) });
+                    }, 300);
+                });
             }
         }
 
-        return { top: 0 }
+        return { top: 0 };
     },
-
-})
+});
 router.beforeEach((to, from, next) => {
     const token = localStorage.getItem("token") || sessionStorage.getItem("token");
 

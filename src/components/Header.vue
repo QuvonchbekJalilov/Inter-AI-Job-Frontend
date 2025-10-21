@@ -54,7 +54,7 @@ onMounted(async () => {
   try {
     const token = localStorage.getItem("token") || sessionStorage.getItem("token")
     if (!token) {
-      router.push({ name: "login" })
+      router.push({ name: "register" })
       return
     }
 

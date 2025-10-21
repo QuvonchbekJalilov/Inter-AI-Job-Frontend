@@ -73,7 +73,6 @@ const counts = reactive({
   interview: 7,
 })
 
-const label = (k) => isNarrow.value ? t(`tabs.${k}.short`) : t(`tabs.${k}.label`)
 const tabs = computed(() => [
   { name: t('vacancies', { count: counts.vacancies }), key: 'vacancies', active: activeTab.value === 'vacancies' },
   { name: t('responses', { count: counts.newsVacancy }), key: 'newsVacancy', active: activeTab.value === 'newsVacancy' },

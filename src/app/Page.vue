@@ -1,5 +1,7 @@
 <template>
-  <div ref="scrollContainer" class="min-h-screen bg-gray-50" style="height: 100vh; overflow-y: auto;">
+  <div
+      class="min-h-screen bg-gray-50"
+  >
     <Header />
     <keep-alive>
       <VacancyList />
@@ -28,52 +30,24 @@
 
 <script setup>
 import { ref, onMounted, onBeforeUnmount, getCurrentInstance } from "vue";
-import axios from "axios";
 import Header from "@/components/Header.vue";
 import VacancyList from "@/components/VacancyList.vue";
-import {useI18n} from "@/i18n-lite.js";
-import {useRouter} from "vue-router";
+import { useI18n } from "@/i18n-lite.js";
+import axios from "axios";
 
-const { translations } = useI18n()
+const { translations } = useI18n();
 const { proxy } = getCurrentInstance();
 
-const scrollContainer = ref(null);
-
-function saveScroll() {
-  if (!scrollContainer.value) return;
-  sessionStorage.setItem("vacancy_scroll", String(scrollContainer.value.scrollTop));
-}
-
-function restoreScroll() {
-  if (!scrollContainer.value) return;
-  const saved = sessionStorage.getItem("vacancy_scroll");
-  if (saved) {
-    setTimeout(() => {
-      scrollContainer.value.scrollTop = parseInt(saved);
-    }, 0);
-  }
-}
-
 onMounted(() => {
-  restoreScroll();
-
-  if (scrollContainer.value) {
-    scrollContainer.value.addEventListener("scroll", saveScroll, { passive: true });
-  }
-
   const token = localStorage.getItem("token") || sessionStorage.getItem("token");
-  axios.get(proxy.$locale + "/v1/visits/track", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-  }).catch(() => {});
-});
-
-onBeforeUnmount(() => {
-  if (scrollContainer.value) {
-    scrollContainer.value.removeEventListener("scroll", saveScroll);
-  }
+  axios
+      .get(proxy.$locale + "/v1/visits/track", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      })
+      .catch(() => {});
 });
 </script>

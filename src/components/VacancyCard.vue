@@ -242,6 +242,7 @@ const showLoading = ref(false);
 const loadingSkeleton = ref(true);
 const showHhModal = ref(false);
 let intervalId = null;
+const emit = defineEmits(["loaded"]);
 
 const { proxy } = getCurrentInstance()
 const jobs = ref([])
@@ -271,7 +272,6 @@ const openCoverLetterModal = async (job) => {
 
     coverLetter.value = data.cover_letter || "";
   } catch (error) {
-    console.error("❌ Cover letterni olishda xato:", error);
     toast.error("Cover letterni yuklab bo‘lmadi");
   } finally {
     coverLatterLoading.value = false;
@@ -301,7 +301,6 @@ const handleCoverLetterSubmit = async () => {
     showCoverModal.value = false;
     await applyToVacancy(selectedJob.value);
   } catch (error) {
-    console.error("❌ Cover letter update xato:", error);
     toast.error("Cover letterni saqlashda xatolik yuz berdi");
   } finally {
     coverLatterLoadingSubmit.value = false;
@@ -341,9 +340,6 @@ const applyToVacancy = async (job) => {
           },
         }
     )
-
-    // console.log("✅ Apply javobi:", data)
-
     if (data.success && data.data) {
       jobs.value = jobs.value.map((j) =>
           j.external_id === job.external_id ? { ...j, status: true } : j
@@ -351,7 +347,6 @@ const applyToVacancy = async (job) => {
       toast.success("Muvaffaqiyatli yuborildi ✅")
     }
   } catch (error) {
-    console.error("❌ Apply error:", error.response?.data || error.message)
     toast.error(
         "Xatolik: siz Vacansiyaga topshirish uchun Profile qismiga o'tib Head Hunter dan login qiling"
     )
@@ -376,13 +371,9 @@ const fetchJobs = async (forceUpdate = false) => {
     let response;
 
     if (forceUpdate) {
-      // 🔁 Har 1 soatda POST so‘rov
       response = await axios.post(`${proxy.$locale}/v1/vacancy-matches/run`, {}, { headers })
-      //console.log("🕐 POST /run orqali yangilandi:", response.data)
     } else {
-      // 🔹 Boshqa paytlarda GET orqali ma’lumot olish
       response = await axios.get(`${proxy.$locale}/v1/vacancy-matches`, { headers })
-      //console.log("📦 GET /vacancy-matches orqali olib kelindi:", response.data)
     }
 
     const result = response.data
@@ -422,7 +413,6 @@ const fetchJobs = async (forceUpdate = false) => {
     loadingSkeleton.value = false
   }
 }
-
 
 onMounted(async () => {
   try {
@@ -477,30 +467,26 @@ const formatDate = (date) => {
   return `${datePart} (${timePart})`
 }
 
-onMounted(() => {
-  // Dastlab GET bilan ma’lumot olish
-  fetchJobs()
+onMounted(async () => {
+  await fetchJobs();
+  emit("loaded");
 
-  // Har 1 soatda POST bilan yangilash
   intervalId = setInterval(() => {
-    fetchJobs(true) // forceUpdate = true → POST so‘rov
-  }, CACHE_TIME) // CACHE_TIME = 60 * 60 * 1000 (1 soat)
-})
-
+    fetchJobs(true);
+  }, CACHE_TIME);
+});
 
 onBeforeUnmount(() => {
-  clearInterval(intervalId);
+  if (intervalId) clearInterval(intervalId);
 });
 
 const closeHhModal = () => {
   showHhModal.value = false
 }
-
 const handleHeadHunterAuth = async () => {
   showHhModal.value = false
   await goToHeadHunter()
 }
-
 const goToHeadHunter = async () => {
   try {
     const token = localStorage.getItem("token") || sessionStorage.getItem("token")
