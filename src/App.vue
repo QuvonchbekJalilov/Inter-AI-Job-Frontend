@@ -15,6 +15,29 @@ onMounted(async () => {
   const locale = params.get("locale") || "uz";
   const TOKEN = localStorage.getItem("token")
 
+  try {
+    if (TOKEN) {
+      await axios.get(proxy.$locale + "/auth/check-token", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      window.location.href = "/"
+      return
+    }
+
+    if (chatId) {
+      const res = await axios.post(proxy.$locale + "/auth/chat-id-login", { chat_id: chatId })
+      const RES_TOKEN = res.data?.data?.token
+
+      if (RES_TOKEN) {
+        localStorage.setItem("token", RES_TOKEN)
+        window.location.href = "/"
+        return
+      }
+    }
+  } catch (error) {
+    localStorage.removeItem("token")
+  }
+
   if (TOKEN) {
     router.push({ path: "/" });
     window.location.href = "/"
