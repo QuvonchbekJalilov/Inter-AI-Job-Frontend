@@ -390,7 +390,7 @@ const inactiveTextClass = 'text-[11.5px] sm:text-[12px] scale-90'
 
 const phoneInput = ref(null);
 
-token = localStorage.getItem("token") || sessionStorage.getItem("token")
+const token = localStorage.getItem("token") || sessionStorage.getItem("token")
 onMounted(async () => {
   showLoading.value = true
 
