@@ -11,6 +11,7 @@ onMounted(async () => {
   const queryString = window.location.search || window.location.hash.split('?')[1] || '';
   const params = new URLSearchParams(queryString);
   const chatId = params.get("chat_id");
+  const token = params.get("token");
   const locale = params.get("locale") || "uz";
 
   const TOKEN = localStorage.getItem("token")
@@ -22,6 +23,13 @@ onMounted(async () => {
     if (TOKEN) {
       await axios.get(proxy.$locale + "/auth/check-token", {
         headers: { Authorization: `Bearer ${TOKEN}` },
+      });
+      window.location.href = "/";
+      return;
+    }
+    if (token) {
+      await axios.get(proxy.$locale + "/auth/check-token", {
+        headers: { Authorization: `Bearer ${token}` },
       });
       window.location.href = "/";
       return;
