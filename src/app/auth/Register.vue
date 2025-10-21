@@ -390,25 +390,38 @@ const inactiveTextClass = 'text-[11.5px] sm:text-[12px] scale-90'
 const phoneInput = ref(null);
 
 onMounted(async () => {
-  const token = localStorage.getItem("token");
+  showLoading.value = true
+  const token = localStorage.getItem("token")
   if (token) {
-    window.location.href = "/";
-    router.push({ name: 'home' })
+    window.location.href = "/"
+    window.location.reload()
+    return
   }
-  const chatId = localStorage.getItem("chat_id");
+
+  const chatId = localStorage.getItem("chat_id")
+
   if (chatId) {
-    console.log("Chat ID saqlandi:", chatId, token);
-    const { res } = await axios.post('/api/auth/chat-id-login', {
-      chat_id: chatId
-    })
-    const TOKEN = res.data?.data?.token;
-    localStorage.setItem("token", TOKEN);
-    if (TOKEN) {
-      window.location.href = "/";
-      router.push({ name: 'home' })
+    try {
+      console.log("Chat ID saqlandi:", chatId, token)
+      const res = await axios.post("/api/auth/chat-id-login", {
+        chat_id: chatId
+      })
+
+      const TOKEN = res.data?.data?.token
+
+      if (TOKEN) {
+        localStorage.setItem("token", TOKEN)
+        window.location.href = "/"
+        window.location.reload()
+        return
+      }
+    } catch (error) {
+      console.error("Chat ID orqali login xatosi:", error)
     }
   }
-});
+
+  showLoading.value = false
+})
 onMounted(() => {
   if (phoneInput.value) {
     const iti = intlTelInput(phoneInput.value, {
