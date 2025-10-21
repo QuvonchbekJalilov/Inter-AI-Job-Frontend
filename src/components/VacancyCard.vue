@@ -308,7 +308,6 @@ const handleCoverLetterSubmit = async () => {
   }
 };
 const clearAuthStorage = () => {
-  localStorage.removeItem("token")
   localStorage.removeItem("user")
   localStorage.removeItem("expires_at")
   localStorage.removeItem("token")
