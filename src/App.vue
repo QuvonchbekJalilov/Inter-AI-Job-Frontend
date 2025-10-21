@@ -1,11 +1,12 @@
 <script setup>
 import { provideI18n } from './i18n-lite'
-import {computed, onMounted} from "vue";
+import {computed, onMounted, getCurrentInstance} from "vue";
 import { useRouter } from "vue-router";
 import axios from "axios";
 
 provideI18n()
 
+const { proxy } = getCurrentInstance()
 
 onMounted(() => {
   const storage = localStorage.getItem("token")
