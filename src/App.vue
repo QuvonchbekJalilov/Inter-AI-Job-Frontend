@@ -5,27 +5,6 @@ import { useRouter } from "vue-router";
 import axios from "axios";
 import LoadingModal from "@/components/modal/LodaingModal.vue";
 provideI18n()
-const router = useRouter()
-
-onMounted(() => {
-  const storage = localStorage.getItem("token")
-      ? localStorage
-      : sessionStorage;
-
-  const expiresAt = storage.getItem("expires_at");
-  if (expiresAt) {
-    const expireTime = new Date(expiresAt).getTime();
-    const now = Date.now();
-
-    if (now >= expireTime) {
-      storage.removeItem("token");
-      storage.removeItem("user");
-      storage.removeItem("expires_at");
-      router.push({ name: "register" });
-      window.location.href = "/register";
-    }
-  }
-});
 
 onMounted(async () => {
   const queryString = window.location.search || window.location.hash.split('?')[1] || '';
