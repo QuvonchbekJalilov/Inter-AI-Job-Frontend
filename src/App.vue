@@ -11,57 +11,43 @@ onMounted(async () => {
   const queryString = window.location.search || window.location.hash.split('?')[1] || '';
   const params = new URLSearchParams(queryString);
   const chatId = params.get("chat_id");
-  const token = params.get("token");
   const locale = params.get("locale") || "uz";
+
   const TOKEN = localStorage.getItem("token")
+
+  if (locale) localStorage.setItem("locale", locale);
+  if (chatId) localStorage.setItem("chat_id", chatId);
 
   try {
     if (TOKEN) {
       await axios.get(proxy.$locale + "/auth/check-token", {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      window.location.href = "/"
-      return
+        headers: { Authorization: `Bearer ${TOKEN}` },
+      });
+      window.location.href = "/";
+      return;
     }
 
     if (chatId) {
-      const res = await axios.post(proxy.$locale + "/auth/chat-id-login", { chat_id: chatId })
-      const RES_TOKEN = res.data?.data?.token
+      const res = await axios.post(proxy.$locale + "/auth/chat-id-login", { chat_id: chatId });
+      const RES_TOKEN = res.data?.data?.token;
 
       if (RES_TOKEN) {
-        localStorage.setItem("token", RES_TOKEN)
-        window.location.href = "/"
-        return
+        localStorage.setItem("token", RES_TOKEN);
+        window.location.href = "/";
+        return;
       }
     }
   } catch (error) {
-    localStorage.removeItem("token")
-  }
-
-  if (TOKEN) {
-    router.push({ path: "/" });
-    window.location.href = "/"
-  } else {
-    alert('ok')
+    console.error("❌ Login yoki token xatosi:", error);
     localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    localStorage.removeItem("expires_at");
-    router.push({ name: "register" });
-    window.location.href = "/register"
   }
 
-  if (chatId) {
-    localStorage.setItem("chat_id", chatId);
-    localStorage.setItem("token", token);
-  } else {
-    const savedChatId = localStorage.getItem("chat_id");
-    if (savedChatId) {}
-  }
-
-  if (locale) {
-    localStorage.setItem("locale", locale);
-  }
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+  localStorage.removeItem("expires_at");
+  router.push({ name: "register" });
 });
+
 
 onMounted(() => {
   document.addEventListener('gesturestart', e => e.preventDefault())
