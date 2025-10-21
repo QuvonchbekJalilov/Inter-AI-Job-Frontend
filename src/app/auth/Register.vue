@@ -177,25 +177,25 @@ const error = ref("")
 const hasResumeFile = computed(() => Boolean(formData.resumeFileUrl))
 const acceptedOffer = ref(false)
 
-onMounted(() => {
-  const params = new URLSearchParams(window.location.search);
-  const chatId = params.get("chat_id");
-  const locale = params.get("locale") || "uz";
+// onMounted(() => {
+//   const params = new URLSearchParams(window.location.search);
+//   const chatId = params.get("chat_id");
+//   const locale = params.get("locale") || "uz";
 
-  if (chatId) {
-    localStorage.setItem("chat_id", chatId);
-    formData.chat_id = chatId;
-  } else {
-    const savedChatId = localStorage.getItem("chat_id");
-    if (savedChatId) {
-      formData.chat_id = savedChatId;
-    }
-  }
+//   if (chatId) {
+//     localStorage.setItem("chat_id", chatId);
+//     formData.chat_id = chatId;
+//   } else {
+//     const savedChatId = localStorage.getItem("chat_id");
+//     if (savedChatId) {
+//       formData.chat_id = savedChatId;
+//     }
+//   }
 
-  if (locale) {
-    localStorage.setItem("locale", locale);
-  }
-});
+//   if (locale) {
+//     localStorage.setItem("locale", locale);
+//   }
+// });
 
 const isSuccess = (resp) => {
   if (!resp) return false
@@ -392,45 +392,51 @@ const phoneInput = ref(null);
 onMounted(async () => {
   showLoading.value = true
 
+  // 1️⃣ URL paramlarni o‘qi
   const urlParams = new URLSearchParams(window.location.search)
   const chatIdFromUrl = urlParams.get("chat_id")
+  const localeFromUrl = urlParams.get("locale") || "uz"
 
-  if (chatIdFromUrl) {
-    localStorage.setItem("chat_id", chatIdFromUrl)
-  }
+  // 2️⃣ LocalStorage ni to‘ldir
+  if (chatIdFromUrl) localStorage.setItem("chat_id", chatIdFromUrl)
+  if (localeFromUrl) localStorage.setItem("locale", localeFromUrl)
 
   const chatId = localStorage.getItem("chat_id")
   const token = localStorage.getItem("token")
 
   try {
+    // 3️⃣ Token borligini tekshir
     if (token) {
+      console.log("🔍 check-token so‘rov yuborilmoqda...")
       await axios.get("/api/auth/check-token", {
         headers: { Authorization: `Bearer ${token}` },
       })
+      console.log("✅ check-token javob oldi!")
       window.location.href = "/"
       return
     }
 
+    // 4️⃣ Token yo‘q, lekin chat_id bor bo‘lsa login qil
     if (chatId) {
-      console.log("Chat ID saqlandi:", chatId, token)
+      console.log("💬 Chat ID orqali login:", chatId)
       const res = await axios.post("/api/auth/chat-id-login", { chat_id: chatId })
       const TOKEN = res.data?.data?.token
 
       if (TOKEN) {
+        console.log("✅ Chat ID orqali token olindi")
         localStorage.setItem("token", TOKEN)
         window.location.href = "/"
         return
       }
     }
   } catch (error) {
-    console.error("Chat ID orqali login xatosi:", error)
-    localStorage.removeItem("token") 
+    console.error("❌ Token yoki chat login xatosi:", error)
+    localStorage.removeItem("token")
   } finally {
     showLoading.value = false
   }
-})
 
-onMounted(() => {
+  // 5️⃣ Tel inputni sozlash (bu joyni oxiriga qo‘y)
   if (phoneInput.value) {
     const iti = intlTelInput(phoneInput.value, {
       initialCountry: "uz",
@@ -439,14 +445,74 @@ onMounted(() => {
       allowDropdown: false,
       separateDialCode: true,
       nationalMode: false,
-    });
-
+    })
     phoneInput.value.addEventListener("input", () => {
-      const digits = phoneInput.value.value.replace(/\D/g, '');
+      const digits = phoneInput.value.value.replace(/\D/g, "")
       if (digits.length > 9) {
-        iti.setNumber("+998" + digits.slice(0, 9));
+        iti.setNumber("+998" + digits.slice(0, 9))
       }
-    });
+    })
   }
-});
+})
+
+// onMounted(async () => {
+//   showLoading.value = true
+
+//   const urlParams = new URLSearchParams(window.location.search)
+//   const chatIdFromUrl = urlParams.get("chat_id")
+
+//   if (chatIdFromUrl) {
+//     localStorage.setItem("chat_id", chatIdFromUrl)
+//   }
+
+//   const chatId = localStorage.getItem("chat_id")
+//   const token = localStorage.getItem("token")
+
+//   try {
+//     if (token) {
+//       await axios.get("/api/auth/check-token", {
+//         headers: { Authorization: `Bearer ${token}` },
+//       })
+//       window.location.href = "/"
+//       return
+//     }
+
+//     if (chatId) {
+//       console.log("Chat ID saqlandi:", chatId, token)
+//       const res = await axios.post("/api/auth/chat-id-login", { chat_id: chatId })
+//       const TOKEN = res.data?.data?.token
+
+//       if (TOKEN) {
+//         localStorage.setItem("token", TOKEN)
+//         window.location.href = "/"
+//         return
+//       }
+//     }
+//   } catch (error) {
+//     console.error("Chat ID orqali login xatosi:", error)
+//     localStorage.removeItem("token") 
+//   } finally {
+//     showLoading.value = false
+//   }
+// })
+
+//onMounted(() => {
+//  if (phoneInput.value) {
+//    const iti = intlTelInput(phoneInput.value, {
+//      initialCountry: "uz",
+//      onlyCountries: ["uz"],
+//      preferredCountries: ["uz"],
+//      allowDropdown: false,
+//      separateDialCode: true,
+//      nationalMode: false,
+//    });
+
+//    phoneInput.value.addEventListener("input", () => {
+      // const digits = phoneInput.value.value.replace(/\D/g, '');
+//       if (digits.length > 9) {
+//         iti.setNumber("+998" + digits.slice(0, 9));
+//       }
+//     });
+//   }
+// });
 </script>
