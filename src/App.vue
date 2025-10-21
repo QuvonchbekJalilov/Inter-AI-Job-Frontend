@@ -50,20 +50,6 @@ onMounted(async () => {
     localStorage.setItem("locale", locale);
     //console.log("Chat ID saqlandi:", locale);
   }
-  if (token) {
-    window.location.href = "/";
-  }
-
-  if (chatId){
-    const { res } = await axios.post('/api/auth/chat-id-login', {
-      chat_id: chatId
-    })
-    const TOKEN = res.data?.data?.token;
-    localStorage.setItem("token", TOKEN);
-    if (TOKEN) {
-      window.location.href = "/";
-    }
-  }
 });
 
 onMounted(() => {
@@ -78,6 +64,54 @@ onMounted(() => {
   })
 })
 
+const token = localStorage.getItem("token") || sessionStorage.getItem("token")
+onMounted(async () => {
+  showLoading.value = true
+
+  // 1️⃣ URL paramlarni o‘qi
+  const urlParams = new URLSearchParams(window.location.search)
+  const chatIdFromUrl = urlParams.get("chat_id")
+  const localeFromUrl = urlParams.get("locale") || "uz"
+
+  // 2️⃣ LocalStorage ni to‘ldir
+  if (chatIdFromUrl) localStorage.setItem("chat_id", chatIdFromUrl)
+  if (localeFromUrl) localStorage.setItem("locale", localeFromUrl)
+
+  const chatId = localStorage.getItem("chat_id")
+  const token = localStorage.getItem("token")
+
+  try {
+    // 3️⃣ Token borligini tekshir
+    if (token) {
+      console.log("🔍 check-token so‘rov yuborilmoqda...")
+      await axios.get(proxy.$locale + "/auth/check-token", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      console.log("✅ check-token javob oldi!")
+      window.location.href = "/"
+      return
+    }
+
+    // 4️⃣ Token yo‘q, lekin chat_id bor bo‘lsa login qil
+    if (chatId) {
+      console.log("💬 Chat ID orqali login:", chatId)
+      const res = await axios.post(proxy.$locale + "/auth/chat-id-login", { chat_id: chatId })
+      const TOKEN = res.data?.data?.token
+
+      if (TOKEN) {
+        console.log("✅ Chat ID orqali token olindi")
+        localStorage.setItem("token", TOKEN)
+        window.location.href = "/"
+        return
+      }
+    }
+  } catch (error) {
+    console.error("❌ Token yoki chat login xatosi:", error)
+    localStorage.removeItem("token")
+  } finally {
+    showLoading.value = false
+  }
+})
 
 </script>
 

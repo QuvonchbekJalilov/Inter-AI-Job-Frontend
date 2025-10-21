@@ -4,7 +4,6 @@
 
       <div class="text-center mb-6">
         <img src="https://www.inter-ai.uz/Logo1.svg" alt="Inter-AI" class="h-8 mx-auto mb-4">
-        <h3>{{ token }}</h3>
         <h2 class="text-xl font-medium text-gray-800">{{ translations.tell_us_about_yourself }}</h2>
       </div>
 
@@ -390,7 +389,6 @@ const inactiveTextClass = 'text-[11.5px] sm:text-[12px] scale-90'
 
 const phoneInput = ref(null);
 
-const token = localStorage.getItem("token") || sessionStorage.getItem("token")
 onMounted(async () => {
   showLoading.value = true
 
