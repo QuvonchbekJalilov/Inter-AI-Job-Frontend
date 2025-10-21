@@ -253,52 +253,6 @@ const coverLatterLoadingSubmit = ref(false);
 const coverLetter = ref("");
 const selectedJob = ref(null);
 
-
-// onMounted(async () => {
-//   showLoading.value = true
-//
-//   const urlParams = new URLSearchParams(window.location.search)
-//   const chatIdFromUrl = urlParams.get("chat_id")
-//   const localeFromUrl = urlParams.get("locale") || "uz"
-//
-//   if (chatIdFromUrl) localStorage.setItem("chat_id", chatIdFromUrl)
-//   if (localeFromUrl) localStorage.setItem("locale", localeFromUrl)
-//
-//   const chatId = localStorage.getItem("chat_id")
-//   const token = localStorage.getItem("token")
-//
-//   try {
-//     if (token) {
-//       console.log("🔍 check-token so‘rov yuborilmoqda...")
-//       await axios.get(proxy.$locale + "/auth/check-token", {
-//         headers: { Authorization: `Bearer ${token}` },
-//       })
-//       console.log("✅ check-token javob oldi!")
-//       window.location.href = "/"
-//       return
-//     }
-//
-//     if (chatId) {
-//       console.log("💬 Chat ID orqali login:", chatId)
-//       const res = await axios.post(proxy.$locale + "/auth/chat-id-login", { chat_id: chatId })
-//       const TOKEN = res.data?.data?.token
-//
-//       if (TOKEN) {
-//         console.log("✅ Chat ID orqali token olindi")
-//         localStorage.setItem("token", TOKEN)
-//         window.location.href = "/"
-//         return
-//       }
-//     }
-//   } catch (error) {
-//     console.error("❌ Token yoki chat login xatosi:", error)
-//     window.location.href = "/register"
-//     localStorage.removeItem("token")
-//   } finally {
-//     showLoading.value = false
-//   }
-// })
-
 const openCoverLetterModal = async (job) => {
   selectedJob.value = job;
   showCoverModal.value = true;
@@ -388,7 +342,7 @@ const applyToVacancy = async (job) => {
         }
     )
 
-   // console.log("✅ Apply javobi:", data)
+    // console.log("✅ Apply javobi:", data)
 
     if (data.success && data.data) {
       jobs.value = jobs.value.map((j) =>
@@ -486,7 +440,7 @@ onMounted(async () => {
 
     const { data: meData } = await axios.get(proxy.$locale + "/auth/me", { headers });
     user.value = meData.data;
-   // console.log("meData", meData);
+    // console.log("meData", meData);
   } catch (e) {
     error.value = "Foydalanuvchi ma’lumotlarini olishda xatolik.";
     if (e.response?.status === 401) clearAuthStorage();

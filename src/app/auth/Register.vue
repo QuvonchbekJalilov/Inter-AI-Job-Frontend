@@ -71,13 +71,13 @@
                 <span class="font-medium text-sm sm:text-base text-green-700">{{ translations.resume_file_ready }}</span>
               </div>
               <div class="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
-<!--                <button-->
-<!--                    type="button"-->
-<!--                    class="px-4 py-2 rounded-md bg-blue-500 text-white hover:bg-blue-600 transition-colors text-sm font-medium"-->
-<!--                    @click="viewResume"-->
-<!--                >-->
-<!--                  {{ translations.resume_view }}-->
-<!--                </button>-->
+                <!--                <button-->
+                <!--                    type="button"-->
+                <!--                    class="px-4 py-2 rounded-md bg-blue-500 text-white hover:bg-blue-600 transition-colors text-sm font-medium"-->
+                <!--                    @click="viewResume"-->
+                <!--                >-->
+                <!--                  {{ translations.resume_view }}-->
+                <!--                </button>-->
                 <button
                     type="button"
                     class="px-6 sm:px-8 py-2 rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors text-sm font-medium"
@@ -112,7 +112,7 @@
                 ? 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-50'
                 : 'bg-blue-500 text-white hover:bg-blue-600'
             ]"
-                >
+        >
             <span
                 v-if="btnLoading"
                 class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"
@@ -145,7 +145,6 @@
 </template>
 
 <script setup>
-//9ta
 import { useI18n } from '@/i18n-lite.js'
 import {ref, reactive, computed, getCurrentInstance, onMounted} from 'vue'
 import { useRouter } from 'vue-router'
@@ -161,8 +160,6 @@ const { translations } = useI18n()
 const router = useRouter()
 const showLoading = ref(false)
 const resumeInput = ref(null)
-//qo'shilgan 1
-// const redirecting = ref(false)
 
 const formData = reactive({
   firstName: '',
@@ -285,7 +282,7 @@ const submitRegistration = async () => {
       language: locale,
     })
 
-   // console.log('✅ Registration success:', data)
+    // console.log('✅ Registration success:', data)
 
     if (!isSuccess(data)) {
       toast.error(
@@ -324,14 +321,9 @@ const submitRegistration = async () => {
             }
           }
       )
-// qo'shilgan 2
-     // redirecting.value = true
-//
+
       router.push({ name: 'home' })
       window.location.href = "/";
-      //qo'shilgan 3
-      //return
-      //
     } else {
       error.value = data.message || "Ro‘yxatdan o‘tishda xatolik yuz berdi."
     }
@@ -355,13 +347,7 @@ const submitRegistration = async () => {
       error.value = e.response?.data?.message || 'Server bilan bog‘lanishda xatolik.'
     }
   } finally {
-    //qo'shilgan 4
-    //if (!redirecting.value) {
-      //
-      showLoading.value = false
-      //qo'shilgan 5
-   // }
-    //
+    showLoading.value = false
     loading.value = false
   }
 }
@@ -423,9 +409,6 @@ onMounted(async () => {
         headers: { Authorization: `Bearer ${token}` },
       })
       console.log("✅ check-token javob oldi!")
-      // qo'shilgan 6
-     // redirecting.value = true
-      //
       window.location.href = "/"
       return
     }
@@ -438,9 +421,6 @@ onMounted(async () => {
       if (TOKEN) {
         console.log("✅ Chat ID orqali token olindi")
         localStorage.setItem("token", TOKEN)
-        // qo'shilgan 7
-       // redirecting.value = true
-        //
         window.location.href = "/"
         return
       }
@@ -449,27 +429,21 @@ onMounted(async () => {
     console.error("❌ Token yoki chat login xatosi:", error)
     localStorage.removeItem("token")
   } finally {
-    // qo'shilgan 8
-  //  if (!redirecting.value) {
-      //
-      showLoading.value = false
-      // qo'shilgan 9
-  //  }
-    //
+    showLoading.value = false
   }
 
   if (phoneInput.value) {
-   const iti = intlTelInput(phoneInput.value, {
-     initialCountry: "uz",
-     onlyCountries: ["uz"],
-     preferredCountries: ["uz"],
-     allowDropdown: false,
-     separateDialCode: true,
-     nationalMode: false,
-   });
+    const iti = intlTelInput(phoneInput.value, {
+      initialCountry: "uz",
+      onlyCountries: ["uz"],
+      preferredCountries: ["uz"],
+      allowDropdown: false,
+      separateDialCode: true,
+      nationalMode: false,
+    });
 
-   phoneInput.value.addEventListener("input", () => {
-    const digits = phoneInput.value.value.replace(/\D/g, '');
+    phoneInput.value.addEventListener("input", () => {
+      const digits = phoneInput.value.value.replace(/\D/g, '');
       if (digits.length > 9) {
         iti.setNumber("+998" + digits.slice(0, 9));
       }
@@ -512,7 +486,7 @@ onMounted(async () => {
 //     }
 //   } catch (error) {
 //     console.error("Chat ID orqali login xatosi:", error)
-//     localStorage.removeItem("token") 
+//     localStorage.removeItem("token")
 //   } finally {
 //     showLoading.value = false
 //   }
@@ -530,7 +504,7 @@ onMounted(async () => {
 //    });
 
 //    phoneInput.value.addEventListener("input", () => {
-      // const digits = phoneInput.value.value.replace(/\D/g, '');
+// const digits = phoneInput.value.value.replace(/\D/g, '');
 //       if (digits.length > 9) {
 //         iti.setNumber("+998" + digits.slice(0, 9));
 //       }

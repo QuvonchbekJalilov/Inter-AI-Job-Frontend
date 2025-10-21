@@ -8,27 +8,25 @@ provideI18n()
 const router = useRouter()
 
 onMounted(() => {
-  const token = localStorage.getItem("token");
-  const expiresAt = localStorage.getItem("expires_at");
+  const storage = localStorage.getItem("token")
+      ? localStorage
+      : sessionStorage;
 
-  if (token) {
-    router.push({ name: "home" });
-    window.location.href = "/";
-  } else {
+  const expiresAt = storage.getItem("expires_at");
+  if (expiresAt) {
     const expireTime = new Date(expiresAt).getTime();
     const now = Date.now();
 
     if (now >= expireTime) {
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-      localStorage.removeItem("expires_at");
-
+      storage.removeItem("token");
+      storage.removeItem("user");
+      storage.removeItem("expires_at");
       router.push({ name: "register" });
       window.location.href = "/register";
     }
   }
 });
-
+const chatId = computed(() => {});
 
 onMounted(async () => {
   const queryString = window.location.search || window.location.hash.split('?')[1] || '';
