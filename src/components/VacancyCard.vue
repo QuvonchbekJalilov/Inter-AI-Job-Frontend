@@ -379,11 +379,11 @@ const fetchJobs = async (forceUpdate = false) => {
     if (forceUpdate) {
       // 🔁 Har 1 soatda POST so‘rov
       response = await axios.post(`${proxy.$locale}/v1/vacancy-matches/run`, {}, { headers })
-      console.log("🕐 POST /run orqali yangilandi:", response.data)
+      //console.log("🕐 POST /run orqali yangilandi:", response.data)
     } else {
       // 🔹 Boshqa paytlarda GET orqali ma’lumot olish
       response = await axios.get(`${proxy.$locale}/v1/vacancy-matches`, { headers })
-       console.log("📦 GET /vacancy-matches orqali olib kelindi:", response.data)
+      //console.log("📦 GET /vacancy-matches orqali olib kelindi:", response.data)
     }
 
     const result = response.data
