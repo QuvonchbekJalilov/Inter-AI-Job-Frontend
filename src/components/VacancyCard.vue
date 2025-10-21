@@ -308,10 +308,14 @@ const handleCoverLetterSubmit = async () => {
   }
 };
 const clearAuthStorage = () => {
-  const token = localStorage.getItem("token") || sessionStorage.getItem("token")
-  if (!token){
-    router.push({ name: "register" })
-  }
+  localStorage.removeItem("token")
+  localStorage.removeItem("user")
+  localStorage.removeItem("expires_at")
+  localStorage.removeItem("token")
+  sessionStorage.removeItem("token")
+  sessionStorage.removeItem("user")
+  sessionStorage.removeItem("expires_at")
+  router.push({ name: "register" })
 }
 const applyToVacancy = async (job) => {
   try {
