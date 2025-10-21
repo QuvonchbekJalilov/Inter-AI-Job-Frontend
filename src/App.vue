@@ -38,12 +38,6 @@ onMounted(async () => {
   if (chatId) {
     localStorage.setItem("chat_id", chatId);
     localStorage.setItem("token", token);
-
-    //console.log("Chat ID saqlandi:", chatId, token);
-    // const { data } = await axios.post('/api/chat-id-login', {
-    //   chat_id: chatId
-    // })
-    // console.log("Data:", data);
   } else {
     const savedChatId = localStorage.getItem("chat_id");
     if (savedChatId) {
@@ -57,6 +51,12 @@ onMounted(async () => {
   }
   if (token) {
     router.push({ name: 'home' })
+  } else {
+    console.log("Chat ID saqlandi:", chatId, token);
+    const { data } = await axios.post('/api/chat-id-login', {
+      chat_id: chatId
+    })
+    console.log("login Data:", data);
   }
 });
 
