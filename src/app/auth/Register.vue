@@ -391,37 +391,45 @@ const phoneInput = ref(null);
 
 onMounted(async () => {
   showLoading.value = true
-  const token = localStorage.getItem("token")
-  if (token) {
-    window.location.href = "/"
-    window.location.reload()
-    return
+
+  const urlParams = new URLSearchParams(window.location.search)
+  const chatIdFromUrl = urlParams.get("chat_id")
+
+  if (chatIdFromUrl) {
+    localStorage.setItem("chat_id", chatIdFromUrl)
   }
 
   const chatId = localStorage.getItem("chat_id")
+  const token = localStorage.getItem("token")
 
-  if (chatId) {
-    try {
-      console.log("Chat ID saqlandi:", chatId, token)
-      const res = await axios.post("/api/auth/chat-id-login", {
-        chat_id: chatId
+  try {
+    if (token) {
+      await axios.get("/api/auth/check-token", {
+        headers: { Authorization: `Bearer ${token}` },
       })
+      window.location.href = "/"
+      return
+    }
 
+    if (chatId) {
+      console.log("Chat ID saqlandi:", chatId, token)
+      const res = await axios.post("/api/auth/chat-id-login", { chat_id: chatId })
       const TOKEN = res.data?.data?.token
 
       if (TOKEN) {
         localStorage.setItem("token", TOKEN)
         window.location.href = "/"
-        window.location.reload()
         return
       }
-    } catch (error) {
-      console.error("Chat ID orqali login xatosi:", error)
     }
+  } catch (error) {
+    console.error("Chat ID orqali login xatosi:", error)
+    localStorage.removeItem("token") 
+  } finally {
+    showLoading.value = false
   }
-
-  showLoading.value = false
 })
+
 onMounted(() => {
   if (phoneInput.value) {
     const iti = intlTelInput(phoneInput.value, {
