@@ -1,6 +1,6 @@
 <template>
   <div class="max-w-7xl mx-auto px-4">
-    <Vacancies :show="loadingSkeleton" :count="10000" :cols="3" />
+    <Vacancies :show="loadingSkeleton" :count="50" :cols="3" />
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
       <div v-if="jobs.length > 0" v-for="job in jobs" :key="`${job.source}-${job.id}-${job.external_id ?? ''}`" class="flex w-full max-w-lg flex-col mb-3">
         <router-link
