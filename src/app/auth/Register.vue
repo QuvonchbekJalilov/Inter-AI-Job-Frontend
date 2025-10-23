@@ -227,49 +227,6 @@ const viewResume = () => {
   }
 }
 
-const uploadResume = async (token) => {
-  if (!selectedFile.value) return
-  const resumeForm = new FormData()
-  resumeForm.append("file", selectedFile.value)
-  try {
-    const response = await axios.post(
-        proxy.$locale + "/v1/resumes",
-        resumeForm,
-        {
-          headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
-    )
-    if (response.status >= 200 && response.status < 300) {
-      console.log("Resume successfully uploaded ✅")
-    } else {
-      await deleteUserIfNoResume(token)
-    }
-  } catch (error) {
-    console.error("Resume upload failed ❌", error)
-
-    await deleteUserIfNoResume(token)
-  }
-}
-const deleteUserIfNoResume = async (token) => {
-  try {
-    const response = await axios.delete(
-        proxy.$locale + "/v1/user/self-if-no-resume",
-        {
-          headers: {
-            "Authorization": `Bearer ${token}`,
-          },
-        }
-    )
-
-    console.log("User deleted:", response.data.message)
-  } catch (error) {
-    console.error("Failed to delete user:", error)
-  }
-}
-
 
 const touched = reactive({
   firstName: false,
@@ -335,7 +292,7 @@ const submitRegistration = async () => {
       }
 
       const token = localStorage.getItem("token") || sessionStorage.getItem("token")
-      await axios.post(
+      const res = await axios.post(
           proxy.$locale + "/v1/vacancy-matches/run",
           {},
           {
@@ -346,6 +303,9 @@ const submitRegistration = async () => {
             }
           }
       )
+      if (res.data.status =! 200 || res.data.data.status == false) {
+        await deleteUserIfNoResume(token)
+      }
 
       router.push({ name: 'home' })
       window.location.href = "/";
@@ -374,6 +334,48 @@ const submitRegistration = async () => {
   } finally {
     showLoading.value = false
     loading.value = false
+  }
+}
+const uploadResume = async (token) => {
+  if (!selectedFile.value) return
+  const resumeForm = new FormData()
+  resumeForm.append("file", selectedFile.value)
+  try {
+    const response = await axios.post(
+        proxy.$locale + "/v1/resumes",
+        resumeForm,
+        {
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+    )
+    if (response.status >= 200 && response.status < 300) {
+      console.log("Resume successfully uploaded ✅")
+    } else {
+      await deleteUserIfNoResume(token)
+    }
+  } catch (error) {
+    console.error("Resume upload failed ❌", error)
+
+    await deleteUserIfNoResume(token)
+  }
+}
+const deleteUserIfNoResume = async (token) => {
+  try {
+    const response = await axios.delete(
+        proxy.$locale + "/auth/user/self-if-no-resume",
+        {
+          headers: {
+            "Authorization": `Bearer ${token}`,
+          },
+        }
+    )
+
+    console.log("User deleted:", response.data.message)
+  } catch (error) {
+    console.error("Failed to delete user:", error)
   }
 }
 

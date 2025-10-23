@@ -30,15 +30,9 @@
 
           <div class="space-y-2 text-sm text-gray-700">
             <div>
-            <!-- <h1>{{ testToken }}</h1> -->
               <span class="font-medium text-gray-500">{{ translations.profiles?.name }}:</span>
               {{ user?.first_name }} {{ user?.last_name }}
             </div>
-
-<!--            <div>-->
-<!--              <span class="font-medium text-gray-500">{{ translations.profiles?.email }}:</span>-->
-<!--              {{ user?.email }}-->
-<!--            </div>-->
 
             <div>
               <span class="font-medium text-gray-500">{{ translations.profiles?.phone }}:</span>
@@ -112,13 +106,13 @@
             </div>
             <span class="px-3 py-1 bg-green-100 text-green-600 rounded-full text-xs">{{ translations.resumes?.status_active }}</span>
           </div>
-          <a
-              :href="user?.resumes[0]?.file_url"
-              target="_blank"
-              class="mt-4 w-full px-4 py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-50 text-center block"
-          >
-            {{ translations.resumes?.view_btn || 'Rezyumeni ko‘rish' }}
-          </a>
+<!--          <a-->
+<!--              :href="user?.resumes[0]?.file_url"-->
+<!--              target="_blank"-->
+<!--              class="mt-4 w-full px-4 py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-50 text-center block"-->
+<!--          >-->
+<!--            {{ translations.resumes?.view_btn || 'Rezyumeni ko‘rish' }}-->
+<!--          </a>-->
         </div>
 
         <div class="bg-white border border-gray-200 rounded-2xl p-6">
@@ -221,37 +215,60 @@
         </div>
 
         <div class="space-y-4">
-          <div class="bg-white border border-gray-200 rounded-2xl px-6 py-6">
-            <h2 class="text-lg font-medium mb-4 flex items-center gap-2 text-black">
-              💳 {{ translations.plan?.title }}
-            </h2>
+          <div class="bg-white border border-gray-200 rounded-2xl p-4 sm:p-6">
+<!--            &lt;!&ndash; Balans bo‘limi &ndash;&gt;-->
+<!--            <h2 class="text-base sm:text-lg font-medium mb-4 flex items-center gap-2 text-black">-->
+<!--              💳 {{ translations.plan?.title }}-->
+<!--            </h2>-->
 
-            <div class="mb-3 text-sm text-gray-600 flex justify-between">
+            <div class="mb-3 text-xs sm:text-sm text-gray-600 flex justify-between">
               <span>{{ translations.plan?.free_responses }}</span>
               <span class="text-gray-900 font-medium">39/{{ balance?.balance }}</span>
             </div>
-            <div class="w-full bg-gray-200 rounded-full h-2.5 mb-4">
-              <div class="bg-orange-500 h-2.5 rounded-full" style="width: 78%"></div>
+
+            <div class="w-full bg-gray-200 rounded-full h-2 mb-4 sm:h-2.5">
+              <div class="bg-orange-500 h-2 sm:h-2.5 rounded-full" style="width: 78%"></div>
             </div>
 
-            <div class="mb-3 text-sm text-gray-600 flex justify-between">
-              <span>Авто отклики</span>
-              <span class="text-gray-900 font-medium">0/100</span>
-            </div>
-            <div class="w-full bg-gray-200 rounded-full h-2.5 mb-4">
-              <div class="bg-gray-400 h-2.5 rounded-full" style="width: 0%"></div>
-            </div>
+<!--            <p class="text-[11px] sm:text-xs text-gray-500 mb-3 leading-snug">-->
+<!--              Купите авто отклики чтобы найти более подходящую вакансию-->
+<!--            </p>-->
 
-            <p class="text-xs text-gray-500 mb-3">
-              Купите авто отклики чтобы найти более подходящую вакансию
-            </p>
+            <!-- Tarif rejalari -->
+            <h3 class="text-base sm:text-lg font-medium mb-4 text-gray-900">
+              💳 {{ translations.plan?.title }}
+            </h3>
 
-            <button
-                class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium"
-                @click="openPayment"
-            >
-              Купить 100 авто откликов
-            </button>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              <div
+                  v-for="plan in plans"
+                  :key="plan.id"
+                  class="border border-gray-200 rounded-xl p-4 sm:p-5 bg-gray-50 hover:shadow-md transition-all duration-300"
+              >
+                <h4 class="text-sm sm:text-base font-medium text-gray-800 mb-2">
+                  {{ plan.name }}
+                </h4>
+<!--                <p class="text-xs sm:text-sm text-gray-500 mb-4 line-clamp-3">-->
+<!--                  {{ plan.description }}-->
+<!--                </p>-->
+
+                <div class="flex items-center justify-between mb-3">
+                  <span class="text-gray-400 line-through text-xs sm:text-sm">
+                    {{ plan.fake_price }} so‘m
+                  </span>
+                          <span class="text-base sm:text-lg font-medium text-blue-600">
+                    {{ plan.price }} so‘m
+                  </span>
+                </div>
+
+<!--                <button-->
+<!--                    class="w-full py-2 sm:py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-xs sm:text-sm font-medium"-->
+<!--                    @click="openPayment(plan)"-->
+<!--                >-->
+<!--                  Tanlash-->
+<!--                </button>-->
+              </div>
+            </div>
           </div>
 
           <!-- Payment modal -->
@@ -261,38 +278,50 @@
                 class="fixed inset-0 bg-black bg-opacity-40 flex items-end justify-center z-50"
                 @click.self="closePayment"
             >
-              <div class="bg-white w-full rounded-t-2xl p-6">
+              <div
+                  class="bg-white w-full rounded-t-2xl p-4 sm:p-6 max-h-[85vh] overflow-y-auto"
+              >
                 <h3 class="text-base font-medium mb-4 text-center">
                   Выберите способ оплаты
                 </h3>
 
                 <div class="mb-4">
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Количество</label>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">
+                    Количество
+                  </label>
                   <input
                       type="number"
                       v-model="amount"
-                      class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                      class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm"
                   />
                 </div>
 
-                <div class="flex items-center justify-center gap-4">
+                <div class="flex items-center justify-center gap-3 sm:gap-4">
                   <button
                       class="flex-1 flex items-center justify-center bg-[#00D36D] rounded-xl hover:bg-[#00b85e] overflow-hidden"
                       @click="pay('payme')"
                   >
-                    <img src="../assets/payments/payme.png" alt="payme" class="w-full h-auto object-cover" />
+                    <img
+                        src="../assets/payments/payme.png"
+                        alt="payme"
+                        class="w-24 sm:w-full h-auto object-contain p-2"
+                    />
                   </button>
 
                   <button
                       class="flex-1 flex items-center justify-center bg-[#006EFF] rounded-xl hover:bg-[#0058cc] overflow-hidden"
                       @click="pay('click')"
                   >
-                    <img src="../assets/payments/click.png" alt="click" class="w-full h-auto object-cover" />
+                    <img
+                        src="../assets/payments/click.png"
+                        alt="click"
+                        class="w-24 sm:w-full h-auto object-contain p-2"
+                    />
                   </button>
                 </div>
 
                 <button
-                    class="mt-4 w-full px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm"
+                    class="mt-4 w-full px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-xs sm:text-sm"
                     @click="closePayment"
                 >
                   Отмена
@@ -569,6 +598,7 @@ const handleHeadHunterAuth = async () => {
   }
 }
 
+const plans = ref(null);
 
 onMounted(async () => {
   loading.value = true;
@@ -585,6 +615,8 @@ onMounted(async () => {
       "Content-Type": "application/json",
     };
     const plan = await axios.get(proxy.$locale + "/plans");
+
+    plans.value = plan.data.data;
     console.log(plan.data.data);
 
     const { data: meData } = await axios.get(proxy.$locale + "/auth/me", { headers });
