@@ -229,18 +229,47 @@ const viewResume = () => {
 
 const uploadResume = async (token) => {
   if (!selectedFile.value) return
-
   const resumeForm = new FormData()
-  // resumeForm.append("title", formData.resumeText)
   resumeForm.append("file", selectedFile.value)
+  try {
+    const response = await axios.post(
+        proxy.$locale + "/v1/resumes",
+        resumeForm,
+        {
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+    )
+    if (response.status >= 200 && response.status < 300) {
+      console.log("Resume successfully uploaded ✅")
+    } else {
+      await deleteUserIfNoResume(token)
+    }
+  } catch (error) {
+    console.error("Resume upload failed ❌", error)
 
-  await axios.post(proxy.$locale + "/v1/resumes", resumeForm, {
-    headers: {
-      "Authorization": `Bearer ${token}`,
-      "Content-Type": "multipart/form-data",
-    },
-  })
+    await deleteUserIfNoResume(token)
+  }
 }
+const deleteUserIfNoResume = async (token) => {
+  try {
+    const response = await axios.delete(
+        proxy.$locale + "/v1/user/self-if-no-resume",
+        {
+          headers: {
+            "Authorization": `Bearer ${token}`,
+          },
+        }
+    )
+
+    console.log("User deleted:", response.data.message)
+  } catch (error) {
+    console.error("Failed to delete user:", error)
+  }
+}
+
 
 const touched = reactive({
   firstName: false,
@@ -277,13 +306,9 @@ const submitRegistration = async () => {
     const { data } = await axios.post(proxy.$locale + '/auth/register', {
       first_name: formData.firstName,
       phone: formData.phone,
-      // resume_text: formData.resumeText,
       chat_id: chatId,
       language: locale,
     })
-
-    // console.log('✅ Registration success:', data)
-
     if (!isSuccess(data)) {
       toast.error(
           locale.value === 'uz'
@@ -450,65 +475,4 @@ onMounted(async () => {
     });
   }
 })
-
-// onMounted(async () => {
-//   showLoading.value = true
-
-//   const urlParams = new URLSearchParams(window.location.search)
-//   const chatIdFromUrl = urlParams.get("chat_id")
-
-//   if (chatIdFromUrl) {
-//     localStorage.setItem("chat_id", chatIdFromUrl)
-//   }
-
-//   const chatId = localStorage.getItem("chat_id")
-//   const token = localStorage.getItem("token")
-
-//   try {
-//     if (token) {
-//       await axios.get("/api/auth/check-token", {
-//         headers: { Authorization: `Bearer ${token}` },
-//       })
-//       window.location.href = "/"
-//       return
-//     }
-
-//     if (chatId) {
-//       console.log("Chat ID saqlandi:", chatId, token)
-//       const res = await axios.post("/api/auth/chat-id-login", { chat_id: chatId })
-//       const TOKEN = res.data?.data?.token
-
-//       if (TOKEN) {
-//         localStorage.setItem("token", TOKEN)
-//         window.location.href = "/"
-//         return
-//       }
-//     }
-//   } catch (error) {
-//     console.error("Chat ID orqali login xatosi:", error)
-//     localStorage.removeItem("token")
-//   } finally {
-//     showLoading.value = false
-//   }
-// })
-
-//onMounted(() => {
-//  if (phoneInput.value) {
-//    const iti = intlTelInput(phoneInput.value, {
-//      initialCountry: "uz",
-//      onlyCountries: ["uz"],
-//      preferredCountries: ["uz"],
-//      allowDropdown: false,
-//      separateDialCode: true,
-//      nationalMode: false,
-//    });
-
-//    phoneInput.value.addEventListener("input", () => {
-// const digits = phoneInput.value.value.replace(/\D/g, '');
-//       if (digits.length > 9) {
-//         iti.setNumber("+998" + digits.slice(0, 9));
-//       }
-//     });
-//   }
-// });
 </script>
