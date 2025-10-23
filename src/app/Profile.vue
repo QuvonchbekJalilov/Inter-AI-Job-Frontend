@@ -222,85 +222,85 @@
 
         <div class="space-y-4">
 <!--          &lt;!&ndash; Тарифный план &ndash;&gt;-->
-<!--          <div class="bg-white border border-gray-200 rounded-2xl px-6 py-6">-->
-<!--            <h2 class="text-lg font-medium mb-4 flex items-center gap-2 text-black">-->
-<!--              💳 {{ translations.plan?.title }}-->
-<!--            </h2>-->
+          <div class="bg-white border border-gray-200 rounded-2xl px-6 py-6">
+            <h2 class="text-lg font-medium mb-4 flex items-center gap-2 text-black">
+              💳 {{ translations.plan?.title }}
+            </h2>
 
-<!--            <div class="mb-3 text-sm text-gray-600 flex justify-between">-->
-<!--              <span>{{ translations.plan?.free_responses }}</span>-->
-<!--              <span class="text-gray-900 font-medium">39/{{ balance?.balance }}</span>-->
-<!--            </div>-->
-<!--            <div class="w-full bg-gray-200 rounded-full h-2.5 mb-4">-->
-<!--              <div class="bg-orange-500 h-2.5 rounded-full" style="width: 78%"></div>-->
-<!--            </div>-->
+            <div class="mb-3 text-sm text-gray-600 flex justify-between">
+              <span>{{ translations.plan?.free_responses }}</span>
+              <span class="text-gray-900 font-medium">39/{{ balance?.balance }}</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2.5 mb-4">
+              <div class="bg-orange-500 h-2.5 rounded-full" style="width: 78%"></div>
+            </div>
 
-<!--            <div class="mb-3 text-sm text-gray-600 flex justify-between">-->
-<!--              <span>Авто отклики</span>-->
-<!--              <span class="text-gray-900 font-medium">0/100</span>-->
-<!--            </div>-->
-<!--            <div class="w-full bg-gray-200 rounded-full h-2.5 mb-4">-->
-<!--              <div class="bg-gray-400 h-2.5 rounded-full" style="width: 0%"></div>-->
-<!--            </div>-->
+            <div class="mb-3 text-sm text-gray-600 flex justify-between">
+              <span>Авто отклики</span>
+              <span class="text-gray-900 font-medium">0/100</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2.5 mb-4">
+              <div class="bg-gray-400 h-2.5 rounded-full" style="width: 0%"></div>
+            </div>
 
-<!--            <p class="text-xs text-gray-500 mb-3">-->
-<!--              Купите авто отклики чтобы найти более подходящую вакансию-->
-<!--            </p>-->
+            <p class="text-xs text-gray-500 mb-3">
+              Купите авто отклики чтобы найти более подходящую вакансию
+            </p>
 
-<!--            <button-->
-<!--                class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium"-->
-<!--                @click="openPayment"-->
-<!--            >-->
-<!--              Купить 100 авто откликов-->
-<!--            </button>-->
-<!--          </div>-->
+            <button
+                class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium"
+                @click="openPayment"
+            >
+              Купить 100 авто откликов
+            </button>
+          </div>
 
-<!--          &lt;!&ndash; Payment modal &ndash;&gt;-->
-<!--          <transition name="slide-up">-->
-<!--            <div-->
-<!--                v-if="showPayment"-->
-<!--                class="fixed inset-0 bg-black bg-opacity-40 flex items-end justify-center z-50"-->
-<!--                @click.self="closePayment"-->
-<!--            >-->
-<!--              <div class="bg-white w-full rounded-t-2xl p-6">-->
-<!--                <h3 class="text-base font-medium mb-4 text-center">-->
-<!--                  Выберите способ оплаты-->
-<!--                </h3>-->
+<!--           Payment modal -->
+          <transition name="slide-up">
+            <div
+                v-if="showPayment"
+                class="fixed inset-0 bg-black bg-opacity-40 flex items-end justify-center z-50"
+                @click.self="closePayment"
+            >
+              <div class="bg-white w-full rounded-t-2xl p-6">
+                <h3 class="text-base font-medium mb-4 text-center">
+                  Выберите способ оплаты
+                </h3>
 
-<!--                <div class="mb-4">-->
-<!--                  <label class="block text-sm font-medium text-gray-700 mb-1">Количество</label>-->
-<!--                  <input-->
-<!--                      type="number"-->
-<!--                      v-model="amount"-->
-<!--                      class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"-->
-<!--                  />-->
-<!--                </div>-->
+                <div class="mb-4">
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Количество</label>
+                  <input
+                      type="number"
+                      v-model="amount"
+                      class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  />
+                </div>
 
-<!--                <div class="flex items-center justify-center gap-4">-->
-<!--                  <button-->
-<!--                      class="flex-1 flex items-center justify-center bg-[#00D36D] rounded-xl hover:bg-[#00b85e] overflow-hidden"-->
-<!--                      @click="pay('payme')"-->
-<!--                  >-->
-<!--                    <img src="../assets/payments/payme.png" alt="payme" class="w-full h-auto object-cover" />-->
-<!--                  </button>-->
+                <div class="flex items-center justify-center gap-4">
+                  <button
+                      class="flex-1 flex items-center justify-center bg-[#00D36D] rounded-xl hover:bg-[#00b85e] overflow-hidden"
+                      @click="pay('payme')"
+                  >
+                    <img src="../assets/payments/payme.png" alt="payme" class="w-full h-auto object-cover" />
+                  </button>
 
-<!--                  <button-->
-<!--                      class="flex-1 flex items-center justify-center bg-[#006EFF] rounded-xl hover:bg-[#0058cc] overflow-hidden"-->
-<!--                      @click="pay('click')"-->
-<!--                  >-->
-<!--                    <img src="../assets/payments/click.png" alt="click" class="w-full h-auto object-cover" />-->
-<!--                  </button>-->
-<!--                </div>-->
+                  <button
+                      class="flex-1 flex items-center justify-center bg-[#006EFF] rounded-xl hover:bg-[#0058cc] overflow-hidden"
+                      @click="pay('click')"
+                  >
+                    <img src="../assets/payments/click.png" alt="click" class="w-full h-auto object-cover" />
+                  </button>
+                </div>
 
-<!--                <button-->
-<!--                    class="mt-4 w-full px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm"-->
-<!--                    @click="closePayment"-->
-<!--                >-->
-<!--                  Отмена-->
-<!--                </button>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </transition>-->
+                <button
+                    class="mt-4 w-full px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm"
+                    @click="closePayment"
+                >
+                  Отмена
+                </button>
+              </div>
+            </div>
+          </transition>
 
           <!-- Logout -->
           <!-- <div class="bg-white border border-gray-200 rounded-2xl px-6">
