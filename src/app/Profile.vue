@@ -25,7 +25,6 @@
           </div>
           <h2 class="text-lg font-medium mb-4 flex items-center gap-2 text-black">
             <span>👤</span> {{ translations.profiles?.title }}
-<!--            {{ chatId }}-->
           </h2>
 
           <div class="space-y-2 text-sm text-gray-700">
@@ -37,6 +36,40 @@
             <div>
               <span class="font-medium text-gray-500">{{ translations.profiles?.phone }}:</span>
               +998 {{ user?.phone }}
+            </div>
+            <div>
+              <span class="font-medium text-gray-500">{{ translations.working_status }}</span>
+            </div>
+            <!-- STATUS CARD -->
+            <div class="flex items-center justify-between p-3 border rounded-xl bg-gray-50">
+              <div class="flex items-center gap-2">
+
+                <span
+                    v-if="userStatus === 'working'"
+                    class="inline-flex items-center gap-1 text-green-700 bg-green-100 px-2.5 py-1 rounded-full text-xs sm:text-sm font-medium"
+                >
+                  🟢 {{ translations.job_search }}
+                </span>
+
+                <span
+                    v-else
+                    class="inline-flex items-center gap-1 text-gray-600 bg-gray-200 px-2.5 py-1 rounded-full text-xs sm:text-sm font-medium"
+                >
+                  ⚪ {{ translations.job_found }}
+                </span>
+              </div>
+
+              <button
+                  @click="toggleStatus"
+                  :disabled="loading"
+                  class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm px-3 py-1.5 rounded-lg transition disabled:opacity-50"
+              >
+                <svg v-if="loading" class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                </svg>
+                <span v-else>{{ userStatus === 'working' ? translations.auto_apply?.update_button : translations.auto_apply?.update_button }}</span>
+              </button>
             </div>
 
 <!--            <div>-->
@@ -240,17 +273,14 @@
                 <h4 class="text-sm sm:text-base font-medium text-gray-800 mb-2">
                   {{ plan.name }}
                 </h4>
-<!--                <p class="text-xs sm:text-sm text-gray-500 mb-4 line-clamp-3">-->
-<!--                  {{ plan.description }}-->
-<!--                </p>-->
-
-                <div class="flex items-center justify-between mb-3">
+                <div class="text-end mb-3">
+                    <span class="text-base sm:text-lg font-medium text-blue-600">
+                      {{ plan.price }} UZS
+                    </span>
+                  <br>
                   <span class="text-gray-400 line-through text-xs sm:text-sm">
-                    {{ plan.fake_price }} so‘m
-                  </span>
-                        <span class="text-base sm:text-lg font-medium text-blue-600">
-                    {{ plan.price }} so‘m
-                  </span>
+                      {{ plan.fake_price }} UZS
+                    </span>
                 </div>
               </div>
             </div>
@@ -264,10 +294,6 @@
                 @click.self="closePayment"
             >
               <div class="bg-white w-full rounded-t-2xl p-4 sm:p-6 max-h-[85vh] overflow-y-auto">
-                <h3 class="text-base font-medium mb-4 text-center">
-                  Выберите способ оплаты
-                </h3>
-
                 <div v-if="selectedPlan" class="mb-4">
                   <h4 class="text-lg font-medium text-gray-800 mb-1 text-center">
                     {{ selectedPlan.name }}
@@ -275,16 +301,20 @@
                   <p class="text-sm text-gray-500 mb-2">
                     {{ selectedPlan.description }}
                   </p>
-                  <div class="flex items-center justify-between mb-3">
-                    <span class="text-gray-400 line-through text-xs sm:text-sm">
-                      {{ selectedPlan.fake_price }} so‘m
+                  <div class="text-end mb-3">
+                    <span class="text-base sm:text-lg font-medium text-blue-600">
+                      {{ selectedPlan.price }} UZS
                     </span>
-                      <span class="text-base sm:text-lg font-medium text-blue-600">
-                      {{ selectedPlan.price }} so‘m
+                    <br>
+                    <span class="text-gray-400 line-through text-xs sm:text-sm">
+                      {{ selectedPlan.fake_price }} UZS
                     </span>
                   </div>
                 </div>
 
+                <h3 class="text-base font-medium mb-4">
+                  {{  translations.select_payment_method }}
+                </h3>
                 <div class="flex items-center justify-center gap-3 sm:gap-4">
                   <button
                       @click="pay('payme')"
@@ -613,6 +643,7 @@ onMounted(async () => {
     const { data: meData } = await axios.get(proxy.$locale + "/auth/me", { headers });
     user.value = meData.data;
     //console.log("User data:", meData.data);
+    userStatus.value = meData.data.status
 
     const balanceRes = await axios.get(proxy.$locale + "/v1/balance", { headers });
     balance.value = balanceRes.data;
@@ -631,6 +662,48 @@ onMounted(async () => {
     loadingSkeleton.value = false;
   }
 });
+
+const userStatus = ref(null)
+
+const toggleStatus = async () => {
+  if (!user.value) return
+
+  // Eski status asosida yangisini aniqlaymiz
+  const newStatus = user.value.status === 'working' ? 'not_working' : 'working'
+  const token = localStorage.getItem('token')
+
+  if (!token) {
+    alert('Token topilmadi!')
+    return
+  }
+
+  loading.value = true
+  try {
+    const response = await axios.post(
+        proxy.$locale + '/auth/worked-status-update',
+        { status: newStatus },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          }
+        }
+    )
+
+    console.log('✅ API javobi:', response.data)
+
+    const updatedStatus = response.data?.status || newStatus
+
+    userStatus.value = updatedStatus
+    user.value.status = updatedStatus
+  } catch (err) {
+    console.error('❌ Xatolik:', err.response?.data || err.message)
+    alert(err.response?.data?.message || 'Status yangilashda xatolik yuz berdi')
+  } finally {
+    loading.value = false
+  }
+}
+
 
 const logout = async () => {
   try {
