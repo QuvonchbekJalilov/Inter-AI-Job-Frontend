@@ -268,38 +268,41 @@
                   Выберите способ оплаты
                 </h3>
 
-                <div v-if="selectedPlan" class="mb-4 text-center">
-                  <h4 class="text-lg font-semibold text-gray-800 mb-1">
+                <div v-if="selectedPlan" class="mb-4">
+                  <h4 class="text-lg font-medium text-gray-800 mb-1 text-center">
                     {{ selectedPlan.name }}
                   </h4>
                   <p class="text-sm text-gray-500 mb-2">
                     {{ selectedPlan.description }}
                   </p>
-                  <p class="text-base font-medium text-blue-600">
-                    {{ selectedPlan.price }} so‘m
-                  </p>
+                  <div class="flex items-center justify-between mb-3">
+                    <span class="text-gray-400 line-through text-xs sm:text-sm">
+                      {{ selectedPlan.fake_price }} so‘m
+                    </span>
+                      <span class="text-base sm:text-lg font-medium text-blue-600">
+                      {{ selectedPlan.price }} so‘m
+                    </span>
+                  </div>
                 </div>
 
                 <div class="flex items-center justify-center gap-3 sm:gap-4">
                   <button
-                      class="flex-1 flex items-center justify-center bg-[#00D36D] rounded-xl hover:bg-[#00b85e] overflow-hidden"
                       @click="pay('payme')"
                   >
                     <img
                         src="../assets/payments/payme.png"
                         alt="payme"
-                        class="w-24 sm:w-full h-auto object-contain p-2"
+                        class="sm:w-full h-auto object-contain"
                     />
                   </button>
 
                   <button
-                      class="flex-1 flex items-center justify-center bg-[#006EFF] rounded-xl hover:bg-[#0058cc] overflow-hidden"
                       @click="pay('click')"
                   >
                     <img
                         src="../assets/payments/click.png"
                         alt="click"
-                        class="w-24 sm:w-full h-auto object-contain p-2"
+                        class="sm:w-full h-auto object-contain"
                     />
                   </button>
                 </div>
