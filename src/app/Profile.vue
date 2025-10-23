@@ -301,16 +301,6 @@
 <!--              </div>-->
 <!--            </div>-->
 <!--          </transition>-->
-
-          <!-- Logout -->
-          <!-- <div class="bg-white border border-gray-200 rounded-2xl px-6">
-            <button
-                class="mt-2 w-full px-4 py-2 border border-red-300 text-red-600 rounded-lg text-sm hover:bg-red-50"
-                @click="showLogoutModal = true"
-            >
-              {{ translations.payment?.logout }}
-            </button>
-          </div> -->
         </div>
 
       </div>
