@@ -1,7 +1,7 @@
 <template>
   <div class="max-w-7xl mx-auto px-4">
 
-    <Vacancies v-if="loading"  :show="loading" :count="6" :cols="3" />
+    <Vacancies v-if="loading"  :show="loading" :count="10" :cols="3" />
 
     <div v-else-if="interviews.length > 0" class="grid grid-cols-1 md:grid-cols-3 gap-6">
       <!-- loop directly here -->
@@ -71,6 +71,13 @@
     </div>
 
   </div>
+  <div>
+    <ModalComponent
+        :show="showModal"
+        @refresh="startLoading"
+    />
+    <LoadingModal :show="showLoading" />
+  </div>
 </template>
 
 <script setup>
@@ -79,16 +86,21 @@ import axios from "axios";
 import { useRouter } from "vue-router";
 import { useI18n } from "@/i18n-lite";
 import Vacancies from "@/components/loading/Vacancies.vue";
+import ModalComponent from "@/components/modal/UpdateModal.vue";
+import LoadingModal from "@/components/modal/LodaingModal.vue";
 
 const { proxy } = getCurrentInstance();
 const router = useRouter();
 const { translations } = useI18n();
 
 const interviews = ref([]);
-const loading = ref(true);
+const loading = ref(false);
+const showLoading = ref(false);
 const error = ref(null);
 
 const fetchInterviews = async () => {
+  loading.value = true;
+  showLoading.value = true;
   try {
     const token = localStorage.getItem("token") || sessionStorage.getItem("token");
     const { data } = await axios.get(`${proxy.$locale}/v1/interviews`, {
@@ -108,6 +120,7 @@ const fetchInterviews = async () => {
     error.value = e.response?.data?.message || e.message;
     console.error("❌ API error:", e);
   } finally {
+    showLoading.value = false;
     loading.value = false;
   }
 };

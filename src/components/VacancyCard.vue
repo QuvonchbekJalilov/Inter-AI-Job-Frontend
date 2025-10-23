@@ -239,7 +239,7 @@ const { translations } = useI18n()
 
 const showModal = ref(false);
 const showLoading = ref(false);
-const loadingSkeleton = ref(true);
+const loadingSkeleton = ref(false);
 const showHhModal = ref(false);
 let intervalId = null;
 const emit = defineEmits(["loaded"]);
@@ -359,6 +359,7 @@ const hhAccountActive = computed(() => !!user.value?.hh_account_status)
 
 const fetchJobs = async (forceUpdate = false) => {
   showLoading.value = true
+  loadingSkeleton.value = true
 
   try {
     const token = localStorage.getItem("token") || sessionStorage.getItem("token")

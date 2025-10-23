@@ -1,6 +1,6 @@
 <template>
   <div class="max-w-7xl mx-auto px-4">
-    <Vacancies :show="loadingSkeleton" :count="6" :cols="3" />
+    <Vacancies :show="loadingSkeleton" :count="50" :cols="3" />
     <div v-if="jobs.length > 0" class="grid grid-cols-1 md:grid-cols-3 gap-6">
       <router-link
           v-for="(job, index) in jobs"
@@ -89,12 +89,14 @@ import Vacancies from "@/components/loading/Vacancies.vue";
 const { translations } = useI18n()
 const showModal = ref(false);
 const showLoading = ref(false);
-const loadingSkeleton = ref(true);
+const loadingSkeleton = ref(false);
 
 let intervalId = null;
 const { proxy } = getCurrentInstance()
 const jobs = ref([])
 const fetchJobs = async () => {
+  showLoading.value = true
+  loadingSkeleton.value = true
   try {
     const token = localStorage.getItem("token") || sessionStorage.getItem("token")
     const { data } = await axios.get(
