@@ -216,10 +216,6 @@
 
         <div class="space-y-4">
           <div class="bg-white border border-gray-200 rounded-2xl p-4 sm:p-6">
-<!--            &lt;!&ndash; Balans bo‘limi &ndash;&gt;-->
-<!--            <h2 class="text-base sm:text-lg font-medium mb-4 flex items-center gap-2 text-black">-->
-<!--              💳 {{ translations.plan?.title }}-->
-<!--            </h2>-->
 
             <div class="mb-3 text-xs sm:text-sm text-gray-600 flex justify-between">
               <span>{{ translations.plan?.free_responses }}</span>
@@ -230,11 +226,6 @@
               <div class="bg-orange-500 h-2 sm:h-2.5 rounded-full" style="width: 78%"></div>
             </div>
 
-<!--            <p class="text-[11px] sm:text-xs text-gray-500 mb-3 leading-snug">-->
-<!--              Купите авто отклики чтобы найти более подходящую вакансию-->
-<!--            </p>-->
-
-            <!-- Tarif rejalari -->
             <h3 class="text-base sm:text-lg font-medium mb-4 text-gray-900">
               💳 {{ translations.plan?.title }}
             </h3>
@@ -243,7 +234,8 @@
               <div
                   v-for="plan in plans"
                   :key="plan.id"
-                  class="border border-gray-200 rounded-xl p-4 sm:p-5 bg-gray-50 hover:shadow-md transition-all duration-300"
+                  class="border border-gray-200 rounded-xl p-4 sm:p-5 bg-gray-50 hover:shadow-md transition-all duration-300 cursor-pointer"
+                  @click="openPayment(plan)"
               >
                 <h4 class="text-sm sm:text-base font-medium text-gray-800 mb-2">
                   {{ plan.name }}
@@ -256,17 +248,10 @@
                   <span class="text-gray-400 line-through text-xs sm:text-sm">
                     {{ plan.fake_price }} so‘m
                   </span>
-                          <span class="text-base sm:text-lg font-medium text-blue-600">
+                        <span class="text-base sm:text-lg font-medium text-blue-600">
                     {{ plan.price }} so‘m
                   </span>
                 </div>
-
-<!--                <button-->
-<!--                    class="w-full py-2 sm:py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-xs sm:text-sm font-medium"-->
-<!--                    @click="openPayment(plan)"-->
-<!--                >-->
-<!--                  Tanlash-->
-<!--                </button>-->
               </div>
             </div>
           </div>
@@ -278,22 +263,21 @@
                 class="fixed inset-0 bg-black bg-opacity-40 flex items-end justify-center z-50"
                 @click.self="closePayment"
             >
-              <div
-                  class="bg-white w-full rounded-t-2xl p-4 sm:p-6 max-h-[85vh] overflow-y-auto"
-              >
+              <div class="bg-white w-full rounded-t-2xl p-4 sm:p-6 max-h-[85vh] overflow-y-auto">
                 <h3 class="text-base font-medium mb-4 text-center">
                   Выберите способ оплаты
                 </h3>
 
-                <div class="mb-4">
-                  <label class="block text-sm font-medium text-gray-700 mb-1">
-                    Количество
-                  </label>
-                  <input
-                      type="number"
-                      v-model="amount"
-                      class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm"
-                  />
+                <div v-if="selectedPlan" class="mb-4 text-center">
+                  <h4 class="text-lg font-semibold text-gray-800 mb-1">
+                    {{ selectedPlan.name }}
+                  </h4>
+                  <p class="text-sm text-gray-500 mb-2">
+                    {{ selectedPlan.description }}
+                  </p>
+                  <p class="text-base font-medium text-blue-600">
+                    {{ selectedPlan.price }} so‘m
+                  </p>
                 </div>
 
                 <div class="flex items-center justify-center gap-3 sm:gap-4">
@@ -403,22 +387,26 @@ const { proxy } = getCurrentInstance()
 const router = useRouter()
 const { locale } = useI18n()
 const showPayment = ref(false)
+const selectedPlan = ref(null)
 const amount = ref(100)
 const showLogoutModal = ref(false)
 const showLoading = ref(false);
 const showHhModal = ref(false);
 const loadingSkeleton = ref(true)
-const testToken = localStorage.getItem("token") || sessionStorage.getItem("token")
-const openPayment = () => {
+
+
+const openPayment = (plan) => {
+  selectedPlan.value = plan
   showPayment.value = true
 }
 
 const closePayment = () => {
   showPayment.value = false
+  selectedPlan.value = null
 }
 
 const pay = (method) => {
- // console.log(`To'lov: ${method}, summa: ${amount.value}`)
+  console.log(`To'lov: ${method}, tarif: ${selectedPlan.value?.name}, summa: ${selectedPlan.value?.price}`)
   closePayment()
 }
 
