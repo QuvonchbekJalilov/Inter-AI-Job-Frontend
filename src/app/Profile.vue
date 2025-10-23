@@ -584,6 +584,8 @@ onMounted(async () => {
       Accept: "application/json",
       "Content-Type": "application/json",
     };
+    const plan = await axios.get(proxy.$locale + "/plans");
+    console.log(plan.data.data);
 
     const { data: meData } = await axios.get(proxy.$locale + "/auth/me", { headers });
     user.value = meData.data;
