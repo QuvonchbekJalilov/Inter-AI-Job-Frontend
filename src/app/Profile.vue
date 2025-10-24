@@ -48,14 +48,14 @@
                     v-if="userStatus === 'working'"
                     class="inline-flex items-center gap-1 text-green-700 bg-green-100 px-2.5 py-1 rounded-full text-xs sm:text-sm font-medium"
                 >
-                  🟢 {{ translations.job_search }}
+                  🟢 {{ translations.job_found }}
                 </span>
 
                 <span
                     v-else
                     class="inline-flex items-center gap-1 text-gray-600 bg-gray-200 px-2.5 py-1 rounded-full text-xs sm:text-sm font-medium"
                 >
-                  ⚪ {{ translations.job_found }}
+                  ⚪ {{ translations.job_search }}
                 </span>
               </div>
 
@@ -248,8 +248,8 @@
         </div>
 
         <div class="space-y-4">
+          <!-- Sizning mavjud HTML kodingizni o‘zgartirmadik -->
           <div class="bg-white border border-gray-200 rounded-2xl p-4 sm:p-6">
-
             <div class="mb-3 text-xs sm:text-sm text-gray-600 flex justify-between">
               <span>{{ translations.plan?.free_responses }}</span>
               <span class="text-gray-900 font-medium">39/{{ balance?.balance }}</span>
@@ -274,13 +274,13 @@
                   {{ plan.name }}
                 </h4>
                 <div class="text-end mb-3">
-                    <span class="text-base sm:text-lg font-medium text-blue-600">
-                      {{ plan.price }} UZS
-                    </span>
-                  <br>
+            <span class="text-base sm:text-lg font-medium text-blue-600">
+              {{ plan.price }} UZS
+            </span>
+                  <br />
                   <span class="text-gray-400 line-through text-xs sm:text-sm">
-                      {{ plan.fake_price }} UZS
-                    </span>
+              {{ plan.fake_price }} UZS
+            </span>
                 </div>
               </div>
             </div>
@@ -302,23 +302,21 @@
                     {{ selectedPlan.description }}
                   </p>
                   <div class="text-end mb-3">
-                    <span class="text-base sm:text-lg font-medium text-blue-600">
-                      {{ selectedPlan.price }} UZS
-                    </span>
-                    <br>
+              <span class="text-base sm:text-lg font-medium text-blue-600">
+                {{ selectedPlan.price }} UZS
+              </span>
+                    <br />
                     <span class="text-gray-400 line-through text-xs sm:text-sm">
-                      {{ selectedPlan.fake_price }} UZS
-                    </span>
+                {{ selectedPlan.fake_price }} UZS
+              </span>
                   </div>
                 </div>
 
                 <h3 class="text-base font-medium mb-4">
-                  {{  translations.select_payment_method }}
+                  {{ translations.select_payment_method }}
                 </h3>
                 <div class="flex items-center justify-center gap-3 sm:gap-4">
-                  <button
-                      @click="pay('payme')"
-                  >
+                  <button @click="pay('payme')">
                     <img
                         src="../assets/payments/payme.png"
                         alt="payme"
@@ -326,9 +324,7 @@
                     />
                   </button>
 
-                  <button
-                      @click="pay('click')"
-                  >
+                  <button @click="pay('click')">
                     <img
                         src="../assets/payments/click.png"
                         alt="click"
@@ -343,6 +339,51 @@
                 >
                   Отмена
                 </button>
+              </div>
+            </div>
+          </transition>
+
+          <!-- 🔹 Tasdiqlash modali -->
+          <transition name="fade">
+            <div
+                v-if="showConfirmModal"
+                class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[60]"
+            >
+              <div class="bg-white rounded-2xl p-6 w-80 text-center shadow-lg">
+                <h3 class="text-lg font-semibold mb-3 text-gray-800">
+                  To‘lovni boshlamoqchimisiz?
+                </h3>
+                <p class="text-sm text-gray-500 mb-5">
+                  Siz tanlagan tarif uchun to‘lov tizimi:
+                  <b class="text-blue-600 uppercase">{{ selectedMethod }}</b>
+                </p>
+
+                <div class="flex justify-center gap-3">
+                  <button
+                      @click="confirmPayment"
+                      :disabled="loading"
+                      class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm flex items-center gap-2 disabled:opacity-50"
+                  >
+                    <svg
+                        v-if="loading"
+                        class="animate-spin h-4 w-4 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                    >
+                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                    </svg>
+                    <span v-else>Davom ettirish</span>
+                  </button>
+
+                  <button
+                      @click="closeConfirm"
+                      class="border border-gray-300 px-4 py-2 rounded-lg text-sm hover:bg-gray-50"
+                  >
+                    Bekor qilish
+                  </button>
+                </div>
               </div>
             </div>
           </transition>
@@ -419,29 +460,11 @@ const { proxy } = getCurrentInstance()
 
 const router = useRouter()
 const { locale } = useI18n()
-const showPayment = ref(false)
-const selectedPlan = ref(null)
 const amount = ref(100)
 const showLogoutModal = ref(false)
 const showLoading = ref(false);
 const showHhModal = ref(false);
 const loadingSkeleton = ref(true)
-
-
-const openPayment = (plan) => {
-  selectedPlan.value = plan
-  showPayment.value = true
-}
-
-const closePayment = () => {
-  showPayment.value = false
-  selectedPlan.value = null
-}
-
-const pay = (method) => {
-  console.log(`To'lov: ${method}, tarif: ${selectedPlan.value?.name}, summa: ${selectedPlan.value?.price}`)
-  closePayment()
-}
 
 const user = ref(null)
 const balance = ref({ balance: 0 })
@@ -704,6 +727,82 @@ const toggleStatus = async () => {
   }
 }
 
+
+// Payment method
+
+const showConfirmModal = ref(false)
+const selectedMethod = ref(null)
+
+const showPayment = ref(false)
+const selectedPlan = ref(null)
+
+const openPayment = (plan) => {
+  selectedPlan.value = plan
+  showPayment.value = true
+}
+
+const closePayment = () => {
+  showPayment.value = false
+  selectedPlan.value = null
+}
+
+const closeConfirm = () => {
+  showConfirmModal.value = false
+  selectedMethod.value = null
+}
+
+const pay = (method) => {
+  selectedMethod.value = method
+  showConfirmModal.value = true
+}
+
+const confirmPayment = async () => {
+  if (!selectedPlan.value || !selectedMethod.value) return
+
+  const token = localStorage.getItem('token')
+  if (!token) {
+    alert("Token topilmadi! Iltimos, qayta tizimga kiring.")
+    return
+  }
+
+  loading.value = true
+  try {
+    const apiUrl =
+        selectedMethod.value === 'click'
+            ? proxy.$locale + '/click/booking'
+            : proxy.$locale + '/payme/booking'
+
+    const response = await axios.post(
+        apiUrl,
+        { plan_id: selectedPlan.value.id },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+        }
+    )
+
+    console.log('✅ API javobi:', response.data)
+
+    const paymentUrl = response.data.payment_url || response.data.url
+    if (paymentUrl) {
+      window.open(paymentUrl, '_blank')
+    } else {
+      alert('To‘lov havolasi topilmadi!')
+    }
+  } catch (err) {
+    console.error('❌ Xatolik:', err.response?.data || err.message)
+    alert(err.response?.data?.message || 'To‘lovni boshlashda xatolik yuz berdi.')
+  } finally {
+    loading.value = false
+    showConfirmModal.value = false
+    closePayment()
+  }
+}
+
+
+// Logout method
 
 const logout = async () => {
   try {
