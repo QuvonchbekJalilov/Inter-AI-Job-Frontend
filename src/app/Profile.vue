@@ -359,10 +359,12 @@
                 </p>
 
                 <div class="flex justify-center gap-3">
-                  <button
+                  <!-- ⬇️ Button o‘rniga <a> -->
+                  <a
+                      :href="paymentUrl"
+                      target="_blank"
                       @click="confirmPayment"
-                      :disabled="loading"
-                      class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm flex items-center gap-2 disabled:opacity-50"
+                      class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm flex items-center justify-center gap-2 disabled:opacity-50"
                   >
                     <svg
                         v-if="loading"
@@ -371,11 +373,22 @@
                         fill="none"
                         viewBox="0 0 24 24"
                     >
-                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                      <circle
+                          class="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          stroke-width="4"
+                      ></circle>
+                      <path
+                          class="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8v8H4z"
+                      ></path>
                     </svg>
                     <span v-else>{{ translations.payment_confirm?.continue }}</span>
-                  </button>
+                  </a>
 
                   <button
                       @click="closeConfirm"
@@ -755,63 +768,48 @@ const pay = (method) => {
   selectedMethod.value = method
   showConfirmModal.value = true
 }
+const paymentUrl = ref('#')
 
-const confirmPayment = async () => {
+const confirmPayment = async (e) => {
   if (!selectedPlan.value || !selectedMethod.value) return
 
+  e.preventDefault() // <a> ichida ishlayapti
   const token = localStorage.getItem('token')
   loading.value = true
 
   try {
-    if (selectedMethod.value === 'click') {
-      const res = await axios.post(
-          proxy.$locale + '/click/booking',
-          { plan_id: selectedPlan.value.id },
-          {
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json',
-            },
-          }
-      )
+    const apiUrl =
+        selectedMethod.value === 'click'
+            ? proxy.$locale + '/click/booking'
+            : proxy.$locale + '/payme/booking'
 
-      const paymentClickUrl = res.data.payment_url
-      if (paymentClickUrl) {
-        window.open(paymentClickUrl, '_blank')
-      } else {
-        alert('To‘lov havolasi topilmadi!')
-      }
-
-    } else if (selectedMethod.value === 'payme') {
-      const response = await axios.post(
-          proxy.$locale + '/payme/booking',
-          {
-            plan_id: selectedPlan.value.id,
-            remaining_auto_responses: selectedPlan.value.remaining_auto_responses
+    const response = await axios.post(
+        apiUrl,
+        { plan_id: selectedPlan.value.id },
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
           },
-          {
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`,
-            },
-          }
-      )
+        }
+    )
 
-      const paymentUrl = response.data.payment_url || response.data.url
-      if (paymentUrl) {
-        window.open(paymentUrl, '_blank')
-      } else {
-        alert('To‘lov havolasi topilmadi!')
-      }
+    // To‘lov havolasini saqlaymiz
+    paymentUrl.value = response.data.payment_url || response.data.url
+
+    // iPhone uchun — URL tayyor bo‘lgach, <a> orqali ochiladi
+    if (paymentUrl.value) {
+      window.open(paymentUrl.value, '_blank')
+      closeConfirm()
+      closePayment()
+    } else {
+      alert('To‘lov havolasi topilmadi!')
     }
-
   } catch (err) {
     console.error('❌ Xatolik:', err.response?.data || err.message)
     alert(err.response?.data?.message || 'To‘lovni boshlashda xatolik yuz berdi.')
   } finally {
     loading.value = false
-    showConfirmModal.value = false
-    closePayment()
   }
 }
 
