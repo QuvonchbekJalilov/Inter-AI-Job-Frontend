@@ -36,7 +36,7 @@
                       clip-rule="evenodd"
                   />
                 </svg>
-                {{ item.vacancy?.company ?? '- null' }}
+                {{ item.vacancy?.company ?? translations.unknown_company }}
               </span>
             </div>
             <div class="mb-4 rounded-xl border border-blue-100 bg-blue-50 py-3 px-4 text-center">
@@ -122,7 +122,7 @@ const fetchInterviews = async () => {
         const vacancy = item.vacancy || {};
         const primary = vacancy.company;
 
-        console.log("🔍 Processing vacancy:", vacancy);
+       // console.log("🔍 Processing vacancy:", vacancy);
         const fallback =
             vacancy?.employer?.name ??
             vacancy?.employer_name ??

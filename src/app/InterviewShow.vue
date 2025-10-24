@@ -7,14 +7,14 @@
         <div class="flex items-start justify-between">
           <div>
             <h3 class="text-2xl font-medium mb-1">{{ interview.title }}</h3>
-            <p class="text-gray-700 font-semibold">{{ interview.company }}</p>
+            
             <div class="mt-2 flex items-center text-gray-600 space-x-2">
               <span>{{ interview.date }}</span>
             </div>
           </div>
-          <span class="px-3 py-1 text-sm rounded-full bg-blue-100 text-blue-700">
+          <!-- <span class="px-3 py-1 text-sm font-normal rounded-full bg-blue-100 text-blue-700">
             {{ translations.assigned }}
-          </span>
+          </span> -->
         </div>
 
         <div>
@@ -24,6 +24,20 @@
           <ul class="list-decimal list-inside space-y-2 text-gray-700">
             <li v-for="(q, i) in interview.questions" :key="i">{{ q }}</li>
           </ul>
+
+          <div class="mt-6 flex justify-center">
+            <a
+              href="https://tashkent.hh.uz/applicant/negotiations"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          >
+            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M12 2a10 10 0 1 0 8.39 4.39 1 1 0 0 0-1.56 1.22A8 8 0 1 1 12 4a7.93 7.93 0 0 1 5.16 1.88l-2.17.18a1 1 0 1 0 .16 2l4-.34a1 1 0 0 0 .91-.91l.34-4a1 1 0 1 0-2-.17L18.19 5A9.93 9.93 0 0 0 12 2Zm4.52 7.11a1 1 0 0 0-1.41 0L11 13.17l-2.11-2.11a1 1 0 1 0-1.41 1.41l2.82 2.83a1 1 0 0 0 1.41 0l4.81-4.81a1 1 0 0 0 0-1.41Z"/>
+            </svg>
+            {{ translations.go_to_hh_negotiations }}
+            </a>
+          </div>
         </div>
 
         <div class="pt-2">
