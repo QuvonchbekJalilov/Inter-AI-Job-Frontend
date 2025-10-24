@@ -1,5 +1,5 @@
 <template>
-  <div class="fixed top-[84px] left-0 w-full bg-white border-b border-gray-200 z-20 rounded-2xl">
+<div class="fixed top-[84px] left-0 w-full bg-white border-b border-gray-200 z-20 rounded-2xl">
     <div class="max-w-7xl mx-auto px-4 py-2 border-radius">
       <div class="max-w-3xl mx-auto">
         <div class="bg-white rounded-2xl py-4 flex justify-around shadow-top divide-x mt-3">
@@ -33,12 +33,12 @@
         <button
             v-for="tab in tabs"
             :key="tab.key"
-            class="tab-btn min-w-0 basis-0 px-3 sm:px-4 rounded-xl transform transition-colors whitespace-nowrap overflow-hidden text-ellipsis flex items-center justify-center gap-1"
+            class="tab-btn relative overflow-visible min-w-0 basis-0 px-3 sm:px-4 rounded-xl transform transition-colors whitespace-nowrap text-ellipsis flex items-center justify-center gap-1"
             :class="tab.active
             ? 'bg-blue-600 text-white scale-100 py-2.5'
             : 'bg-gray-100 text-gray-700 hover:bg-gray-200 scale-95 py-2'"
             :style="{ flexGrow: tab.active ? 2 : 1 }"
-            @click="$emit('change-tab', tab.key)"
+            @click="onTabClick(tab)"
         >
           <span
               class="tab-label inline-block leading-tight px-0.5 sm:px-1"
@@ -47,6 +47,12 @@
               : 'text-[11.5px] sm:text-[12px] scale-90'"
           >
             {{ tab.name }}
+          </span>
+          <span
+              v-if="getNotificationCount(tab.key) > 0"
+              class="notification-badge absolute -top-2 -right-2 min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[11px] font-semibold flex items-center justify-center"
+          >
+            {{ Math.min(getNotificationCount(tab.key), 99) }}
           </span>
         </button>
       </div>
@@ -57,16 +63,18 @@
 
 <script setup>
 import { useI18n } from '@/i18n-lite'
-import { getCurrentInstance, onMounted, ref } from "vue"
+import { getCurrentInstance, onMounted, ref, watch } from "vue"
 import axios from "axios"
 
 const { proxy } = getCurrentInstance()
 const { translations } = useI18n()
 
-defineProps({
+const props = defineProps({
   tabs: Array,
   activeTab: String
 })
+
+const emit = defineEmits(["change-tab"])
 
 const statistics = ref({
   total_result: 0,
@@ -75,6 +83,82 @@ const statistics = ref({
 })
 
 const loading = ref(true)
+
+const notificationCounts = ref({
+  responses: 0,
+  interviews: 0,
+})
+
+const TAB_NOTIFICATION_MAP = {
+  newsVacancy: { field: "responses", type: "application" },
+  interview: { field: "interviews", type: "responce" },
+}
+
+const getNotificationCount = (key) => {
+  const map = TAB_NOTIFICATION_MAP[key]
+  if (!map) return 0
+  return notificationCounts.value[map.field] || 0
+}
+
+const fetchNotifications = async () => {
+  try {
+    const token = localStorage.getItem("token") || sessionStorage.getItem("token")
+    if (!token) return
+
+    const { data } = await axios.get(`${proxy.$locale}/auth/notifications`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+      },
+    })
+
+    notificationCounts.value.responses = Number(data?.application_notification) || 0
+    notificationCounts.value.interviews = Number(data?.responce_notification) || 0
+  } catch (error) {
+    console.error("❌ Notifications fetch error:", error.response?.data || error.message)
+  }
+}
+
+const markNotificationsAsRead = async (key) => {
+  const map = TAB_NOTIFICATION_MAP[key]
+  if (!map) return
+
+  const currentCount = notificationCounts.value[map.field]
+  if (!currentCount || currentCount <= 0) return
+
+  notificationCounts.value[map.field] = 0
+
+  try {
+    const token = localStorage.getItem("token") || sessionStorage.getItem("token")
+    if (!token) return
+
+    await axios.post(
+        `${proxy.$locale}/auth/notifications/read`,
+        { type: map.type },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        }
+    )
+  } catch (error) {
+    console.error("❌ Notifications read error:", error.response?.data || error.message)
+    notificationCounts.value[map.field] = currentCount
+  }
+}
+
+const onTabClick = (tab) => {
+  emit("change-tab", tab.key)
+}
+
+watch(
+    () => props.activeTab,
+    (newTab) => {
+      markNotificationsAsRead(newTab)
+    }
+)
 
 onMounted(() => {
   //console.log("⏳ 5 soniya kutilyapti...")
@@ -99,6 +183,8 @@ onMounted(() => {
       loading.value = false
     }
   }, 2000)
+
+  fetchNotifications()
 })
 </script>
 
@@ -127,6 +213,7 @@ onMounted(() => {
   line-height 160ms ease;
 }
 
+
 /* 🔹 Skeleton animatsiyasi */
 .skeleton {
   background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 37%, #e5e7eb 63%);
@@ -143,4 +230,3 @@ onMounted(() => {
   }
 }
 </style>
-
