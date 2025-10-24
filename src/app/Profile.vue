@@ -761,41 +761,50 @@ const confirmPayment = async () => {
 
   const token = localStorage.getItem('token')
   loading.value = true
+
   try {
     if (selectedMethod.value === 'click') {
-      const merchantId = 48542
-      const amount = selectedPlan.value.price
-      const planId = selectedPlan.value.id
+      const res = await axios.post(
+          proxy.$locale + '/click/booking',
+          { plan_id: selectedPlan.value.id },
+          {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+          }
+      )
 
-      const clickUrl = `https://my.click.uz/services/pay?service_id=85151&merchant_id=${merchantId}&amount=${amount}&transaction_param=${planId}`
+      const paymentClickUrl = res.data.payment_url
+      if (paymentClickUrl) {
+        window.open(paymentClickUrl, '_blank')
+      } else {
+        alert('To‘lov havolasi topilmadi!')
+      }
 
-      window.open(clickUrl, '_blank')
-      loading.value = false
-      showConfirmModal.value = false
-      closePayment()
-      return
-    }
-
-    const response = await axios.post(
-        proxy.$locale + '/payme/booking',
-        {
-          plan_id: selectedPlan.value.id,
-          remaining_auto_responses: selectedPlan.value.remaining_auto_responses
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
+    } else if (selectedMethod.value === 'payme') {
+      const response = await axios.post(
+          proxy.$locale + '/payme/booking',
+          {
+            plan_id: selectedPlan.value.id,
+            remaining_auto_responses: selectedPlan.value.remaining_auto_responses
           },
-        }
-    )
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`,
+            },
+          }
+      )
 
-    const paymentUrl = response.data.payment_url || response.data.url
-    if (paymentUrl) {
-      window.open(paymentUrl, '_blank')
-    } else {
-      alert('To‘lov havolasi topilmadi!')
+      const paymentUrl = response.data.payment_url || response.data.url
+      if (paymentUrl) {
+        window.open(paymentUrl, '_blank')
+      } else {
+        alert('To‘lov havolasi topilmadi!')
+      }
     }
+
   } catch (err) {
     console.error('❌ Xatolik:', err.response?.data || err.message)
     alert(err.response?.data?.message || 'To‘lovni boshlashda xatolik yuz berdi.')
