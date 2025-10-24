@@ -147,7 +147,13 @@
   "no_vacancies_description": "You can select suitable vacancies and apply immediately.",
   "view_vacancies": "View vacancies",
   "no_matching_vacancies": "No suitable vacancies found. Please try logging in or registering again.",
-  "hh_auth_connected": "Your HeadHunter account is connected"
+  "hh_auth_connected": "Your HeadHunter account is connected",
+  "payment_confirm": {
+    "title": "Do you want to start the payment?",
+    "description": "The selected payment method for your plan:",
+    "continue": "Continue",
+    "cancel": "Cancel"
+  }
 
 
 }

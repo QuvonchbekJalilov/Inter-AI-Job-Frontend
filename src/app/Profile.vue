@@ -337,13 +337,12 @@
                     class="mt-4 w-full px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-xs sm:text-sm"
                     @click="closePayment"
                 >
-                  Отмена
+                  {{ translations.payment_confirm?.cancel }}
                 </button>
               </div>
             </div>
           </transition>
 
-          <!-- 🔹 Tasdiqlash modali -->
           <transition name="fade">
             <div
                 v-if="showConfirmModal"
@@ -351,10 +350,11 @@
             >
               <div class="bg-white rounded-2xl p-6 w-80 text-center shadow-lg">
                 <h3 class="text-lg font-semibold mb-3 text-gray-800">
-                  To‘lovni boshlamoqchimisiz?
+                  {{ translations.payment_confirm?.title }}
                 </h3>
+
                 <p class="text-sm text-gray-500 mb-5">
-                  Siz tanlagan tarif uchun to‘lov tizimi:
+                  {{ translations.payment_confirm?.description }}
                   <b class="text-blue-600 uppercase">{{ selectedMethod }}</b>
                 </p>
 
@@ -374,14 +374,14 @@
                       <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                       <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
                     </svg>
-                    <span v-else>Davom ettirish</span>
+                    <span v-else>{{ translations.payment_confirm?.continue }}</span>
                   </button>
 
                   <button
                       @click="closeConfirm"
                       class="border border-gray-300 px-4 py-2 rounded-lg text-sm hover:bg-gray-50"
                   >
-                    Bekor qilish
+                    {{ translations.payment_confirm?.cancel }}
                   </button>
                 </div>
               </div>
@@ -760,11 +760,6 @@ const confirmPayment = async () => {
   if (!selectedPlan.value || !selectedMethod.value) return
 
   const token = localStorage.getItem('token')
-  if (!token) {
-    alert("Token topilmadi! Iltimos, qayta tizimga kiring.")
-    return
-  }
-
   loading.value = true
   try {
     const apiUrl =

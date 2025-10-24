@@ -147,7 +147,13 @@
   "no_vacancies_description": "Mos keladigan vakansiyalarni tanlab, darhol ariza topshirishingiz mumkin.",
   "view_vacancies": "Vakansiyalarni ko‘rish",
   "no_matching_vacancies": "Sizga mos keladigan vakansiya topilmadi. Iltimos, qaytadan login yoki ro‘yxatdan o‘tib ko‘ring.",
-  "hh_auth_connected": "HeadHunter hisobingiz ulangan"
+  "hh_auth_connected": "HeadHunter hisobingiz ulangan",
+  "payment_confirm": {
+    "title": "To‘lovni boshlamoqchimisiz?",
+    "description": "Siz tanlagan tarif uchun to‘lov tizimi:",
+    "continue": "Davom ettirish",
+    "cancel": "Bekor qilish"
+  }
 
 
 }
