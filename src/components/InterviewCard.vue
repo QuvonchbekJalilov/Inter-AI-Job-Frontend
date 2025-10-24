@@ -4,49 +4,56 @@
     <Vacancies v-if="loading"  :show="loading" :count="10" :cols="3" />
 
     <div v-else-if="interviews.length > 0" class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <!-- loop directly here -->
       <div
-        v-for="item in interviews"
-        :key="item.id"
-        class="bg-white rounded-2xl shadow-md p-6 space-y-4 max-w-3xl mx-auto cursor-pointer"
-        @click="goToDetail(item.id)"
-        role="button"
+          v-for="item in interviews"
+          :key="item.id"
+          class="flex w-full max-w-lg flex-col mb-3"
       >
-        <div class="flex justify-between items-center">
-          <div>
-            <h3 class="text-xl font-medium text-gray-800">{{ item.vacancy?.title }}</h3>
-            <p class="text-blue-600 font-medium">{{ item.vacancy?.company ?? '—' }}</p>
-          </div>
-          <span
-            class="px-3 py-1 text-sm rounded-full bg-blue-100 text-blue-700"
-          >
-            {{ translations.assigned }}
-          </span>
-        </div>
-
-        <div class="flex items-center text-gray-600 space-x-2">
-          <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2v-7H3v7a2 2 0 002 2z"/>
-          </svg>
-          <span>{{ formatDate(item.created_at) }}</span>
-        </div>
-
-        <div>
-          <h4 class="text-gray-700 font-medium mb-2">
-            {{ translations.possible_ai_questions }}
-          </h4>
-          <ul class="list-decimal list-inside space-y-1 text-gray-600">
-            <li v-for="(q,i) in item.questions_preview" :key="i">{{ q }}</li>
-          </ul>
-        </div>
-
-        <button
-          class="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-xl"
-          @click="goToDetail(item.id)"
+        <router-link
+            :to="{ name: 'interviewDetail', params: { id: item.id } }"
+            class="flex w-full max-w-lg flex-col"
         >
-          {{ translations.prepare_for_the_interview }}
-        </button>
+          <div class="flex items-center">
+            <div class="relative rounded-tl-2xl rounded-tr-2xl bg-white pt-4 px-4 text-gray-500 text-sm outer">
+              {{ formatDate(item.created_at) }}
+            </div>
+          </div>
+          <div class="flex flex-col bg-white px-4 rounded-tr-2xl">
+            <div class="flex items-start justify-between mb-2">
+              <h3 class="mb-2 mt-5 text-xl leading-tight font-medium w-4/5 truncate">
+                {{ item.vacancy?.title }}
+              </h3>
+              <!-- <small class="bg-blue-100 px-3 text-blue-600 text-center text-xs font-medium py-1 rounded-full">
+                {{ translations.assigned }}
+              </small> -->
+            </div>
+            <div class="mb-2 flex items-center justify-between gap-2">
+              <span class="flex items-center text-gray-700 text-sm basis-2/5 truncate">
+                <svg class="h-4 w-4 text-blue-600 mr-2 shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                  <path
+                      fill-rule="evenodd"
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.707a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                      clip-rule="evenodd"
+                  />
+                </svg>
+                {{ item.vacancy?.company ?? '- null' }}
+              </span>
+            </div>
+            <div class="mb-4 rounded-xl border border-blue-100 bg-blue-50 py-3 px-4 text-center">
+              <p class="text-base font-semibold uppercase tracking-wide text-blue-600">
+                {{ translations.interview_invited }}
+              </p>
+            </div>
+          </div>
+        </router-link>
+        <div class="w-full overflow-hidden rounded-b-2xl">
+          <button
+              class="w-full py-3 font-medium text-white rounded-b-2xl bg-blue-600 hover:bg-blue-700 text-center flex items-center justify-center gap-2 transition-colors"
+              @click="goToDetail(item.id)"
+          >
+            {{ translations.details_button }}
+          </button>
+        </div>
       </div>
     </div>
     <div v-else class="flex flex-col items-center justify-center py-20 text-center text-gray-600">
@@ -109,10 +116,36 @@ const fetchInterviews = async () => {
         Accept: "application/json",
       },
     });
-
+    
     if (data.success) {
-      interviews.value = data.data;
-     // console.log("✅ Interviews:", data.data);
+      interviews.value = data.data.map(item => {
+        const vacancy = item.vacancy || {};
+        const primary = vacancy.company;
+
+        console.log("🔍 Processing vacancy:", vacancy);
+        const fallback =
+            vacancy?.employer?.name ??
+            vacancy?.employer_name ??
+            vacancy?.company_name ??
+            vacancy?.companyName ??
+            vacancy?.organization?.name ??
+            vacancy?.organisation?.name;
+
+        const companyName =
+            (primary && primary.trim() && primary.trim() !== "-" && primary.trim() !== "—")
+                ? primary.trim()
+                : (fallback && fallback.trim()) ? fallback.trim() : "—";
+        console.log("✅ Interviews:", interviews.value);
+
+        return {
+          ...item,
+          vacancy: {
+            ...vacancy,
+            company: companyName,
+          },
+        };
+      });
+     
     } else {
       error.value = "No interviews found";
     }
@@ -129,10 +162,6 @@ const goToDetail = (id) => {
   router.push({ name: "interviewDetail", params: { id } });
 };
 
-const onPrepareClick = (id) => {
-  alert(`Prepare for interview #${id} — coming soon 🚀`);
-};
-
 const formatDate = (dateStr) => {
   if (!dateStr) return "-";
   return new Date(dateStr).toLocaleDateString("ru-RU", {
@@ -144,3 +173,22 @@ const formatDate = (dateStr) => {
 
 onMounted(fetchInterviews);
 </script>
+
+<style scoped>
+.outer:after {
+  position: absolute;
+  content: "";
+  width: 8px;
+  height: 8px;
+  background-image: radial-gradient(
+      circle at 100% 100%,
+      transparent 8px,
+      white calc(4px + 1px)
+  );
+  bottom: 0;
+  right: -8px;
+  display: block;
+  z-index: 1;
+  transform: rotate(270deg);
+}
+</style>
