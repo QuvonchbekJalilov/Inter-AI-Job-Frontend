@@ -762,14 +762,26 @@ const confirmPayment = async () => {
   const token = localStorage.getItem('token')
   loading.value = true
   try {
-    const apiUrl =
-        selectedMethod.value === 'click'
-            ? proxy.$locale + '/click/booking'
-            : proxy.$locale + '/payme/booking'
+    if (selectedMethod.value === 'click') {
+      const merchantId = 48542
+      const amount = selectedPlan.value.price
+      const planId = selectedPlan.value.id
+
+      const clickUrl = `https://my.click.uz/services/pay?service_id=85151&merchant_id=${merchantId}&amount=${amount}&transaction_param=${planId}`
+
+      window.open(clickUrl, '_blank')
+      loading.value = false
+      showConfirmModal.value = false
+      closePayment()
+      return
+    }
 
     const response = await axios.post(
-        apiUrl,
-        { plan_id: selectedPlan.value.id },
+        proxy.$locale + '/payme/booking',
+        {
+          plan_id: selectedPlan.value.id,
+          remaining_auto_responses: selectedPlan.value.remaining_auto_responses
+        },
         {
           headers: {
             'Content-Type': 'application/json',
@@ -777,8 +789,6 @@ const confirmPayment = async () => {
           },
         }
     )
-
-    console.log('✅ API javobi:', response.data)
 
     const paymentUrl = response.data.payment_url || response.data.url
     if (paymentUrl) {
