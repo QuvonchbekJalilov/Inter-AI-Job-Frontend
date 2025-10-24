@@ -345,6 +345,7 @@ const applyToVacancy = async (job) => {
           j.external_id === job.external_id ? { ...j, status: true } : j
       )
       toast.success("Muvaffaqiyatli yuborildi ✅")
+      await fetchJobs()
     }
   } catch (error) {
     toast.error(
