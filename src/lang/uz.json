@@ -48,7 +48,11 @@
     "title": "Tariflar",
     "free_responses": "Bepul avtomatik javob",
     "left_responses": "{{count}} ta bepul javob qoldi",
-    "extra_responses": "Qo'shimcha javoblar: {{price}} ({{count}} ta javob)"
+    "extra_responses": "Qo'shimcha javoblar: {{price}} ({{count}} ta javob)",
+    "current": "Joriy tarif",
+    "limit": "Limit",
+    "expires": "Amal qilish muddati",
+    "current_badge": "Sizning tarifi"
   },
   "payment": {
     "title": "To'lov usullari",

@@ -247,16 +247,54 @@
           </div>
         </div>
 
+        <div
+            v-if="hasActivePlan"
+            class="bg-white border border-blue-200 rounded-2xl p-6"
+        >
+          <h2 class="text-lg font-medium mb-3 flex items-center gap-2 text-gray-900">
+             {{ translations.plan?.current || 'Joriy tarif' }}
+          </h2>
+          <div class="flex flex-wrap items-center gap-3">
+            <span class="  font-medium text-gray-900">
+              {{ subscriptionPlanName }}
+            </span>
+            <span
+                v-if="subscriptionPlanPrice"
+                class="px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-xs font-medium"
+            >
+              {{ subscriptionPlanPrice }} UZS
+            </span>
+            <span
+                v-if="planLimit"
+                class="px-3 py-1 rounded-full bg-gray-100 text-gray-600 text-xs font-medium"
+            >
+              {{ translations.plan?.limit }}: {{ planLimit }}
+            </span>
+          </div>
+          <p
+              v-if="subscriptionExpiry"
+              class="text-sm text-gray-500 mt-3"
+          >
+            {{ translations.plan?.expires || 'Amal qilish muddati' }}:
+            <span class="text-gray-900 font-medium">
+              {{ subscriptionExpiry }}
+            </span>
+          </p>
+        </div>
+
         <div class="space-y-4">
           <!-- Sizning mavjud HTML kodingizni o‘zgartirmadik -->
           <div ref="plansSection" class="bg-white border border-gray-200 rounded-2xl p-4 sm:p-6">
             <div class="mb-3 text-xs sm:text-sm text-gray-600 flex justify-between">
               <span>{{ translations.plan?.free_responses }}</span>
-              <span class="text-gray-900 font-medium">39/{{ balance?.balance }}</span>
+              <span class="text-gray-900 font-medium">{{ creditsUsed }} / {{ planLimit }}</span>
             </div>
 
             <div class="w-full bg-gray-200 rounded-full h-2 mb-4 sm:h-2.5">
-              <div class="bg-blue-500 h-2 sm:h-2.5 rounded-full" style="width: 78%"></div>
+              <div
+                  class="bg-blue-500 h-2 sm:h-2.5 rounded-full"
+                  :style="{ width: planUsagePercent + '%' }"
+              ></div>
             </div>
 
             <h3 class="text-2xl sm:text-lg font-medium mb-4 text-gray-900">
@@ -266,18 +304,29 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               <div
                   v-for="plan in plans"
-                  :key="plan.id"
-                  class="border border-gray-200 rounded-xl px-4 py-3 sm:px-5 sm:py-4 bg-gray-50 hover:shadow-md transition-all duration-300 cursor-pointer flex flex-col justify-center"
-                  @click="openPayment(plan)"
+                  :key="plan.id || plan.plan_id"
+                  :class="[
+                    'border rounded-xl px-4 py-3 sm:px-5 sm:py-4 transition-all duration-300 flex flex-col justify-center',
+                    isPlanActive(plan) ? 'border-blue-500 bg-blue-50 shadow-md cursor-default' : 'border-gray-200 bg-gray-50',
+                    hasActivePlan && !isPlanActive(plan) ? 'opacity-60 cursor-not-allowed' : '',
+                    !hasActivePlan ? 'cursor-pointer hover:shadow-md' : ''
+                  ]"
+                  @click="handlePlanClick(plan)"
               >
                 <div class="flex items-center justify-between gap-3 mb-1">
-                  <h4 class="text-xl sm:text-2xl font-normal text-gray-800 translate-y-4">
+                  <h4 class="text-xl sm:text-2xl font-normal text-gray-800 translate-y-2">
                     {{ plan.name }} 
                   </h4>
                   <span class="text-xl sm:text-2xl font-normal text-blue-600 translate-y-1.5">
                     {{ plan.price }} UZS
                   </span>
                 </div>
+                <span
+                    v-if="isPlanActive(plan)"
+                    class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-medium self-start translate-y-2"
+                >
+                  {{ translations.plan?.current_badge || 'Sizning tarifi' }}
+                </span>
                 <div class="text-right mb-2">
                   <span class="text-gray-400 line-through text-xs sm:text-sm">
                     {{ plan.fake_price }} UZS
@@ -483,6 +532,92 @@ const loadingSkeleton = ref(true)
 
 const user = ref(null)
 const balance = ref({ balance: 0 })
+const asNumber = (value) => {
+  if (value === null || value === undefined) return null
+  const num = Number(value)
+  return Number.isFinite(num) ? num : null
+}
+const plans = ref([])
+const activeSubscription = computed(() => {
+  const subscription = user.value?.subscription
+  if (subscription) return subscription
+  const subscriptions = user.value?.subscriptions
+  if (Array.isArray(subscriptions) && subscriptions.length) {
+    const active = subscriptions.find((item) => item?.status === 'active')
+    return active || subscriptions[0]
+  }
+  return null
+})
+const subscriptionPlan = computed(() => {
+  const subscription = activeSubscription.value
+  if (!subscription) return null
+  if (subscription.plan) return subscription.plan
+  const planId =
+      subscription.plan_id ??
+      subscription.planId ??
+      subscription.planID ??
+      subscription.plan?.id
+  if (!planId || !Array.isArray(plans.value)) return null
+  return plans.value.find((plan) => {
+    const candidateId = normalizePlanId(plan)
+    return candidateId !== undefined &&
+        candidateId !== null &&
+        String(candidateId) === String(planId)
+  }) || null
+})
+const normalizePlanId = (plan) => {
+  if (!plan) return null
+  return (
+      plan.id ??
+      plan.plan_id ??
+      plan.planId ??
+      plan.planID ??
+      plan.plan?.id ??
+      null
+  )
+}
+const activePlanId = computed(() => {
+  const plan = subscriptionPlan.value
+  return plan ? normalizePlanId(plan) : null
+})
+const hasActivePlan = computed(() => activePlanId.value !== null)
+const subscriptionPlanName = computed(() => {
+  const plan = subscriptionPlan.value
+  if (!plan) return ''
+  return (
+      plan.name ??
+      plan.title ??
+      plan.plan_name ??
+      plan?.translation?.name ??
+      ''
+  )
+})
+const subscriptionPlanPrice = computed(() => {
+  const plan = subscriptionPlan.value
+  if (!plan) return null
+  return plan.price ?? plan.amount ?? plan.cost ?? null
+})
+const subscriptionExpiry = computed(() => {
+  const subscription = activeSubscription.value
+  if (!subscription) return null
+  const raw =
+      subscription.expires_at ??
+      subscription.expired_at ??
+      subscription.ends_at ??
+      subscription.end_at ??
+      null
+  if (!raw) return null
+  const date = new Date(raw)
+  if (Number.isNaN(date.getTime())) return null
+  return date.toLocaleDateString()
+})
+const isPlanActive = (plan) => {
+  const selectedId = activePlanId.value
+  if (selectedId === null) return false
+  const planId = normalizePlanId(plan)
+  if (planId === null) return false
+  return String(planId) === String(selectedId)
+}
 const plansSection = ref(null)
 const loading = ref(true)
 const error = ref("")
@@ -571,6 +706,60 @@ const progressPercent = computed(() => {
   if (!limit.value) return 0;
   return Math.min((appliedCount.value / limit.value) * 100, 100);
 });
+const creditsUsed = computed(() => {
+  const subscriptionUsed =
+      asNumber(activeSubscription.value?.auto_response_used) ??
+      asNumber(activeSubscription.value?.auto_responses_used)
+  if (subscriptionUsed !== null) return subscriptionUsed
+  const directUsed =
+      asNumber(balance.value?.auto_response_used) ??
+      asNumber(balance.value?.auto_responses_used)
+  if (directUsed !== null) return directUsed
+  const credit = balance.value?.credit || {}
+  const creditUsed =
+      asNumber(credit.used) ??
+      asNumber(credit.used_count) ??
+      asNumber(credit.consumed)
+  if (creditUsed !== null) return creditUsed
+  const applied = asNumber(appliedCount.value)
+  return applied ?? 0
+})
+const planLimit = computed(() => {
+  const planLimitFromPlan =
+      asNumber(subscriptionPlan.value?.auto_response_limit) ??
+      asNumber(subscriptionPlan.value?.auto_responses_limit)
+  if (planLimitFromPlan !== null) return planLimitFromPlan
+  const subscriptionLimit =
+      asNumber(activeSubscription.value?.auto_response_limit) ??
+      asNumber(activeSubscription.value?.auto_responses_limit)
+  if (subscriptionLimit !== null) return subscriptionLimit
+  const directLimit =
+      asNumber(balance.value?.auto_response_limit) ??
+      asNumber(balance.value?.auto_responses_limit)
+  if (directLimit !== null) return directLimit
+  const credit = balance.value?.credit || {}
+  const creditLimit =
+      asNumber(credit.limit) ??
+      asNumber(credit.total) ??
+      asNumber(credit.initial) ??
+      asNumber(credit.purchased)
+  if (creditLimit !== null) return creditLimit
+  const available =
+      asNumber(credit.remaining) ??
+      asNumber(credit.available) ??
+      asNumber(credit.balance) ??
+      asNumber(balance.value?.balance)
+  if (available !== null) {
+    return available + creditsUsed.value
+  }
+  const savedLimit = asNumber(limit.value)
+  if (savedLimit !== null) return savedLimit
+  return creditsUsed.value
+})
+const planUsagePercent = computed(() => {
+  if (!planLimit.value) return 0
+  return Math.min((creditsUsed.value / planLimit.value) * 100, 100)
+})
 
 const fetchAutoApplyData = async () => {
   try {
@@ -690,8 +879,6 @@ const handleHeadHunterAuth = async () => {
   }
 }
 
-const plans = ref(null);
-
 onMounted(async () => {
   loading.value = true;
   try {
@@ -722,7 +909,7 @@ onMounted(async () => {
     limit.value = meData.data?.settings?.auto_apply_limit;
     appliedCount.value = meData.data?.settings?.auto_apply_count;
     enabled.value = meData.data?.settings?.auto_apply_enabled;
-    if (balance.value.credit.count >= 0) {
+    if (balance.value?.credit?.count >= 0) {
       await fetchAutoApplyData();
     }
   } catch (e) {
@@ -787,6 +974,10 @@ const selectedPlan = ref(null)
 const openPayment = (plan) => {
   selectedPlan.value = plan
   showPayment.value = true
+}
+const handlePlanClick = (plan) => {
+  if (hasActivePlan.value) return
+  openPayment(plan)
 }
 
 const closePayment = () => {

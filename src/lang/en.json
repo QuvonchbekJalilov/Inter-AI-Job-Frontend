@@ -48,7 +48,11 @@
     "title": "Tariffs",
     "free_responses": "Free Autoresponse",
     "left_responses": "{{count}} free responses left",
-    "extra_responses": "Additional responses: {{price}} ({{count}} responses)"
+    "extra_responses": "Additional responses: {{price}} ({{count}} responses)",
+    "current": "Current plan",
+    "limit": "Limit",
+    "expires": "Valid until",
+    "current_badge": "Your plan"
   },
   "payment": {
     "title": "Payment methods",

@@ -48,7 +48,11 @@
     "title": "Тарифы",
     "free_responses": "Бесплатное Автоотклик",
     "left_responses": "Осталось {{count}} бесплатных откликов",
-    "extra_responses": "Дополнительные отклики: {{price}} ({{count}} откликов)"
+    "extra_responses": "Дополнительные отклики: {{price}} ({{count}} откликов)",
+    "current": "Текущий тариф",
+    "limit": "Лимит",
+    "expires": "Действителен до",
+    "current_badge": "Ваш тариф"
   },
   "payment": {
     "title": "Способы оплаты",
