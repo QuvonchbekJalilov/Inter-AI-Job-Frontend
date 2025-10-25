@@ -40,7 +40,7 @@
               </span>
             </div>
             <div class="mb-4 rounded-xl border border-blue-100 bg-blue-50 py-3 px-4 text-center">
-              <p class="text-base font-semibold uppercase tracking-wide text-blue-600">
+              <p class="text-base  uppercase tracking-wide text-blue-600">
                 {{ translations.interview_invited }}
               </p>
             </div>

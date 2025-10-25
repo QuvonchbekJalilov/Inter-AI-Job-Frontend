@@ -249,7 +249,7 @@
 
         <div class="space-y-4">
           <!-- Sizning mavjud HTML kodingizni o‘zgartirmadik -->
-          <div class="bg-white border border-gray-200 rounded-2xl p-4 sm:p-6">
+          <div ref="plansSection" class="bg-white border border-gray-200 rounded-2xl p-4 sm:p-6">
             <div class="mb-3 text-xs sm:text-sm text-gray-600 flex justify-between">
               <span>{{ translations.plan?.free_responses }}</span>
               <span class="text-gray-900 font-medium">39/{{ balance?.balance }}</span>
@@ -462,10 +462,10 @@
 </template>
 
 <script setup>
-import {ref, onMounted, computed, getCurrentInstance} from 'vue'
+import {ref, onMounted, computed, getCurrentInstance, watch, nextTick} from 'vue'
 import axios from 'axios'
 import { useI18n } from '@/i18n-lite'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import Header from '@/components/Header.vue'
 import LoadingModal from "@/components/modal/LodaingModal.vue";
 import Profile from "@/components/loading/Profile.vue";
@@ -473,6 +473,7 @@ const { translations } = useI18n()
 const { proxy } = getCurrentInstance()
 
 const router = useRouter()
+const route = useRoute()
 const { locale } = useI18n()
 const amount = ref(100)
 const showLogoutModal = ref(false)
@@ -482,6 +483,7 @@ const loadingSkeleton = ref(true)
 
 const user = ref(null)
 const balance = ref({ balance: 0 })
+const plansSection = ref(null)
 const loading = ref(true)
 const error = ref("")
 const hhAccountActive = computed(() => !!user.value?.hh_account_status)
@@ -505,6 +507,38 @@ const goToHeadHunter = async () => {
   })
   hhUrl.value = data?.url
 }
+
+const scrollToPlans = () => {
+  nextTick(() => {
+    plansSection.value?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  })
+}
+
+const pendingPlansScroll = ref(route.query.highlight === 'plans')
+
+watch(
+    () => route.query.highlight,
+    (value) => {
+      if (value === 'plans') {
+        if (!loadingSkeleton.value) {
+          scrollToPlans()
+        } else {
+          pendingPlansScroll.value = true
+        }
+      }
+    },
+    { immediate: true }
+)
+
+watch(
+    () => loadingSkeleton.value,
+    (isLoading) => {
+      if (!isLoading && pendingPlansScroll.value) {
+        pendingPlansScroll.value = false
+        scrollToPlans()
+      }
+    }
+)
 
 const tabs = [
   { code: 'uz', name: 'Uzbek' },

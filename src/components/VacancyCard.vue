@@ -2,7 +2,8 @@
   <div class="max-w-7xl mx-auto px-4">
     <Vacancies :show="loadingSkeleton" :count="50" :cols="3" />
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div v-if="jobs.length > 0" v-for="job in jobs" :key="`${job.source}-${job.id}-${job.external_id ?? ''}`" class="flex w-full max-w-lg flex-col mb-3">
+      <template v-if="displayedJobs.length > 0">
+        <div v-for="job in displayedJobs" :key="`${job.source}-${job.id}-${job.external_id ?? ''}`" class="flex w-full max-w-lg flex-col mb-3">
         <router-link
             v-if="job.source === 'telegram'"
             :to="{ name: 'vacancyTelegramDetail', params: { id: job.id } }"
@@ -106,6 +107,7 @@
 
         </div>
       </div>
+      </template>
       <div v-else class="flex flex-col items-center justify-center py-20 text-center text-gray-600">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6 1a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -114,6 +116,17 @@
           {{ translations.no_matching_vacancies }}
         </h3>
       </div>
+    </div>
+    <div
+        v-if="!hasFullAccess && lockedVacancyCount > 0"
+        class="mt-6 flex justify-center"
+    >
+      <button
+          class="px-6 py-3 rounded-2xl bg-sky-200 hover:bg-sky-300 text-blue-600 font-medium transition-colors border border-blue-600"
+          @click="openSubscriptionModal"
+      >
+        <span class="flex items-center justify-center">{{ translations.view_all_vacancies }}</span>
+      </button>
     </div>
   </div>
   <div>
@@ -222,6 +235,31 @@
       </div>
     </Transition>
   </div>
+  <div
+      v-if="showSubscriptionModal"
+      class="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
+  >
+    <div class="bg-white rounded-2xl p-6 w-[90%] max-w-md shadow-lg space-y-4 text-center">
+      <h2 class="text-lg  text-gray-800">
+        {{ translations.subscription_required_title }}
+      </h2>
+      <p class="text-sm text-gray-600 leading-relaxed" v-html="subscriptionDescriptionHtml"></p>
+      <div class="flex flex-col sm:flex-row sm:justify-end gap-3">
+        <button
+            class="w-full sm:w-auto px-4 py-2 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300"
+            @click="closeSubscriptionModal"
+        >
+          {{ translations.subscription_required_cancel }}
+        </button>
+        <button
+            class="w-full sm:w-auto px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700"
+            @click="navigateToPlans"
+        >
+          {{ translations.subscription_required_go }}
+        </button>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup>
@@ -235,18 +273,20 @@ import { useRouter } from 'vue-router'
 import Vacancies from "@/components/loading/Vacancies.vue";
 const router = useRouter()
 
-const { translations } = useI18n()
+const { translations, t } = useI18n()
 
 const showModal = ref(false);
 const showLoading = ref(false);
 const loadingSkeleton = ref(false);
 const showHhModal = ref(false);
 let intervalId = null;
+const showSubscriptionModal = ref(false);
 const emit = defineEmits(["loaded"]);
 
 const { proxy } = getCurrentInstance()
 const jobs = ref([])
 const CACHE_TIME = 60 * 60 * 1000
+const FREE_VACANCY_LIMIT = 10
 
 const showCoverModal = ref(false);
 const coverLatterLoading = ref(false);
@@ -315,6 +355,24 @@ const clearAuthStorage = () => {
   sessionStorage.removeItem("expires_at")
   router.push({ name: "register" })
 }
+const hasActiveSubscription = computed(() => Boolean(user.value?.subscription))
+const isTrialActive = computed(() => {
+  const value = user.value?.is_trail_active ?? user.value?.is_trial_active
+  if (typeof value === "string") {
+    return value.toLowerCase() === "true"
+  }
+  return Boolean(value)
+})
+const hasFullAccess = computed(() => hasActiveSubscription.value || isTrialActive.value)
+const displayedJobs = computed(() =>
+    hasFullAccess.value ? jobs.value : jobs.value.slice(0, FREE_VACANCY_LIMIT)
+)
+const lockedVacancyCount = computed(() =>
+    Math.max(jobs.value.length - FREE_VACANCY_LIMIT, 0)
+)
+const subscriptionDescriptionHtml = computed(() =>
+    t('subscription_required_description', { count: lockedVacancyCount.value })
+)
 const applyToVacancy = async (job) => {
   try {
     if (job.source === 'telegram') {
@@ -517,6 +575,18 @@ const goToHeadHunter = async () => {
       clearAuthStorage()
     }
   }
+}
+const openSubscriptionModal = () => {
+  showSubscriptionModal.value = true
+}
+
+const closeSubscriptionModal = () => {
+  showSubscriptionModal.value = false
+}
+
+const navigateToPlans = () => {
+  showSubscriptionModal.value = false
+  router.push({ name: "profile", query: { highlight: "plans" } })
 }
 </script>
 

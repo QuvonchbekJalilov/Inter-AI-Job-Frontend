@@ -12,7 +12,7 @@
           href="https://t.me/inter_ai_support_bot"
           target="_blank"
           rel="noopener noreferrer"
-          class="backdrop-blur-md bg-black/40 border border-blue-500 text-white px-4 py-3 rounded-full shadow-lg hover:bg-black/60 transition-all flex items-center space-x-2"
+          class="backdrop-blur-md bg-black/40 text-white px-4 py-3 rounded-full hover:bg-black/60 transition-all flex items-center space-x-2"
       >
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
