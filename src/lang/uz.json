@@ -45,7 +45,7 @@
     "hh_connected": "Head Hunter akkauntingiz bog‘langan. Avto javob funksiyasidan foydalanishingiz mumkin."
   },
   "plan": {
-    "title": "Tarif rejasi",
+    "title": "Tariflar",
     "free_responses": "Bepul avtomatik javob",
     "left_responses": "{{count}} ta bepul javob qoldi",
     "extra_responses": "Qo'shimcha javoblar: {{price}} ({{count}} ta javob)"

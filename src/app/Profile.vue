@@ -171,7 +171,7 @@
                 @change="toggleAutoApply"
             />
             <div
-                class="relative w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-indigo-600
+                class="relative w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-blue-600
                 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white
                 after:h-5 after:w-5 after:rounded-full after:transition-all peer-checked:after:translate-x-full"
             ></div>
@@ -182,12 +182,12 @@
             <input
                 type="number"
                 v-model.number="limit"
-                class="w-48 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                class="w-48 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
                 placeholder="Son kiriting"
             />
             <button
                 @click="saveLimit"
-                class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition disabled:bg-gray-300 disabled:text-gray-500"
+                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:bg-gray-300 disabled:text-gray-500"
                 :disabled="!limit"
             >
               {{ translations.auto_apply?.save_button }}
@@ -202,7 +202,7 @@
             </div>
             <div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
               <div
-                  class="h-2 bg-indigo-600 transition-all duration-300"
+                  class="h-2 bg-blue-600 transition-all duration-300"
                   :style="{ width: progressPercent + '%' }"
               ></div>
             </div>
@@ -211,7 +211,7 @@
             <div v-if="!editMode" class="mt-4">
               <button
                   @click="editMode = true"
-                  class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-600 transition"
+                  class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
               >
                 ✏️ {{ translations.auto_apply?.edit_button || 'Edit limit' }}
               </button>
@@ -223,7 +223,7 @@
               <input
                   type="number"
                   v-model.number="tempLimit"
-                  class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                  class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
                   placeholder="Qo‘shiladigan son"
               />
 
@@ -231,7 +231,7 @@
               <div class="flex items-center gap-3">
                 <button
                     @click="updateLimit"
-                    class="w-48 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition disabled:bg-gray-300 disabled:text-gray-500"
+                    class="w-48 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:bg-gray-300 disabled:text-gray-500"
                     :disabled="!limit"
                 >
                   {{ translations.auto_apply?.update_button || 'Update' }}
@@ -256,31 +256,32 @@
             </div>
 
             <div class="w-full bg-gray-200 rounded-full h-2 mb-4 sm:h-2.5">
-              <div class="bg-orange-500 h-2 sm:h-2.5 rounded-full" style="width: 78%"></div>
+              <div class="bg-blue-500 h-2 sm:h-2.5 rounded-full" style="width: 78%"></div>
             </div>
 
-            <h3 class="text-base sm:text-lg font-medium mb-4 text-gray-900">
-              💳 {{ translations.plan?.title }}
+            <h3 class="text-2xl sm:text-lg font-medium mb-4 text-gray-900">
+              {{ translations.plan?.title }} 
             </h3>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               <div
                   v-for="plan in plans"
                   :key="plan.id"
-                  class="border border-gray-200 rounded-xl p-4 sm:p-5 bg-gray-50 hover:shadow-md transition-all duration-300 cursor-pointer"
+                  class="border border-gray-200 rounded-xl px-4 py-3 sm:px-5 sm:py-4 bg-gray-50 hover:shadow-md transition-all duration-300 cursor-pointer flex flex-col justify-center"
                   @click="openPayment(plan)"
               >
-                <h4 class="text-sm sm:text-base font-medium text-gray-800 mb-2">
-                  {{ plan.name }}
-                </h4>
-                <div class="text-end mb-3">
-            <span class="text-base sm:text-lg font-medium text-blue-600">
-              {{ plan.price }} UZS
-            </span>
-                  <br />
+                <div class="flex items-center justify-between gap-3 mb-1">
+                  <h4 class="text-xl sm:text-2xl font-normal text-gray-800 translate-y-4">
+                    {{ plan.name }} 
+                  </h4>
+                  <span class="text-xl sm:text-2xl font-normal text-blue-600 translate-y-1.5">
+                    {{ plan.price }} UZS
+                  </span>
+                </div>
+                <div class="text-right mb-2">
                   <span class="text-gray-400 line-through text-xs sm:text-sm">
-              {{ plan.fake_price }} UZS
-            </span>
+                    {{ plan.fake_price }} UZS
+                  </span>
                 </div>
               </div>
             </div>

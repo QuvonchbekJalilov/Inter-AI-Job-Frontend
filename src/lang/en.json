@@ -45,7 +45,7 @@
     "hh_connected": "Your Head Hunter account is linked. Auto apply is ready to use."
   },
   "plan": {
-    "title": "Tariff plan",
+    "title": "Tariffs",
     "free_responses": "Free Autoresponse",
     "left_responses": "{{count}} free responses left",
     "extra_responses": "Additional responses: {{price}} ({{count}} responses)"
