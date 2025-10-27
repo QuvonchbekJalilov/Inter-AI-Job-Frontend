@@ -30,9 +30,9 @@
                 </svg>
                 {{ job.company }}
               </span>
-            <small class="bg-green-100 px-2 text-green-700 text-center text-sm font-medium py-1 rounded-full">
-              {{ job.score ?? '95' }}% совпадение
-            </small>
+<!--            <small class="bg-green-100 px-2 text-green-700 text-center text-sm font-medium py-1 rounded-full">-->
+<!--              {{ job.score ?? '95' }}% совпадение-->
+<!--            </small>-->
           </div>
           <p class="text-sm mb-3 leading-snug text-gray-500">
             {{ formatDate(job.published_at) }}
