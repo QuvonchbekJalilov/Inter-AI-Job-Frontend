@@ -213,7 +213,7 @@
                   @click="startEdit"
                   class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
               >
-                ✏️ {{ translations.auto_apply?.edit_button || 'Edit limit' }}
+                {{ translations.auto_apply?.update_button || 'Edit limit' }}
               </button>
             </div>
 
@@ -259,7 +259,7 @@
                     class="w-48 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:bg-gray-300 disabled:text-gray-500"
                     :disabled="isUpdateDisabled"
                 >
-                  {{ translations.auto_apply?.update_button || 'Update' }}
+                  {{ translations.auto_apply?.save_button || 'Update' }} 
                 </button>
                 <button
                     @click="cancelEdit"
