@@ -35,9 +35,9 @@
                 </svg>
                 {{ job.company }}
               </span>
-              <small class="bg-green-100 px-2 text-green-700 text-center text-sm font-medium py-1 rounded-full">
-                {{ job.score ?? '95' }}% {{ translations.accordance }}
-              </small>
+<!--              <small class="bg-green-100 px-2 text-green-700 text-center text-sm font-medium py-1 rounded-full">-->
+<!--                {{ job.score ?? '95' }}% {{ translations.accordance }}-->
+<!--              </small>-->
             </div>
           </div>
         </router-link>
