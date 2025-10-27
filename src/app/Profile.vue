@@ -446,36 +446,36 @@
                 </p>
 
                 <div class="flex justify-center gap-3">
-                  <!-- ⬇️ Button o‘rniga <a> -->
+                  <!-- HH-auth-like continue link -->
                   <a
+                      v-if="paymentUrl"
                       :href="paymentUrl"
                       target="_blank"
-                      @click="confirmPayment"
-                      class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm flex items-center justify-center gap-2 disabled:opacity-50"
+                      rel="noopener noreferrer"
+                      @click="handleConfirmNavigation"
+                      class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm flex items-center justify-center gap-2"
+                  >
+                    <span>{{ translations.payment_confirm?.continue }}</span>
+                  </a>
+
+                  <!-- Loading/disabled state while waiting payment url -->
+                  <button
+                      v-else
+                      disabled
+                      class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm flex items-center justify-center gap-2 disabled:opacity-60"
                   >
                     <svg
-                        v-if="loading"
+                        v-if="paymentLoading"
                         class="animate-spin h-4 w-4 text-white"
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
                         viewBox="0 0 24 24"
                     >
-                      <circle
-                          class="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          stroke-width="4"
-                      ></circle>
-                      <path
-                          class="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8v8H4z"
-                      ></path>
+                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
                     </svg>
-                    <span v-else>{{ translations.payment_confirm?.continue }}</span>
-                  </a>
+                    <span>{{ translations.payment_confirm?.continue }}</span>
+                  </button>
 
                   <button
                       @click="closeConfirm"
@@ -1111,25 +1111,22 @@ const closeConfirm = () => {
   selectedMethod.value = null
 }
 
-const pay = (method) => {
+const paymentUrl = ref(null)
+const paymentLoading = ref(false)
+
+const pay = async (method) => {
+  if (!selectedPlan.value) return
   selectedMethod.value = method
   showConfirmModal.value = true
-}
-const paymentUrl = ref('#')
-
-const confirmPayment = async (e) => {
-  if (!selectedPlan.value || !selectedMethod.value) return
-
-  e.preventDefault() // <a> ichida ishlayapti
-  const token = localStorage.getItem('token')
-  loading.value = true
+  paymentUrl.value = null
+  paymentLoading.value = true
 
   try {
+    const token = localStorage.getItem('token')
     const apiUrl =
-        selectedMethod.value === 'click'
+        method === 'click'
             ? proxy.$locale + '/click/booking'
             : proxy.$locale + '/payme/booking'
-
     const response = await axios.post(
         apiUrl,
         { plan_id: selectedPlan.value.id },
@@ -1140,24 +1137,23 @@ const confirmPayment = async (e) => {
           },
         }
     )
-
-    // To‘lov havolasini saqlaymiz
-    paymentUrl.value = response.data.payment_url || response.data.url
-
-    // iPhone uchun — URL tayyor bo‘lgach, <a> orqali ochiladi
-    if (paymentUrl.value) {
-      window.open(paymentUrl.value, '_blank')
-      closeConfirm()
-      closePayment()
-    } else {
+    paymentUrl.value = response.data.payment_url || response.data.url || null
+    if (!paymentUrl.value) {
       alert('To‘lov havolasi topilmadi!')
+      closeConfirm()
     }
   } catch (err) {
     console.error('❌ Xatolik:', err.response?.data || err.message)
     alert(err.response?.data?.message || 'To‘lovni boshlashda xatolik yuz berdi.')
+    closeConfirm()
   } finally {
-    loading.value = false
+    paymentLoading.value = false
   }
+}
+
+const handleConfirmNavigation = () => {
+  closeConfirm()
+  closePayment()
 }
 
 
