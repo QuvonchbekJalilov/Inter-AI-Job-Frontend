@@ -210,7 +210,7 @@
             <!-- Edit tugmasi -->
             <div v-if="!editMode" class="mt-4">
               <button
-                  @click="editMode = true"
+                  @click="startEdit"
                   class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
               >
                 ✏️ {{ translations.auto_apply?.edit_button || 'Edit limit' }}
@@ -218,26 +218,51 @@
             </div>
 
             <!-- Edit form (PATCH) -->
-            <div v-if="editMode" class="mt-4 space-y-3">
+            <div v-if="editMode" class="mt-4 space-y-4">
               <!-- Input -->
               <input
                   type="number"
                   v-model.number="tempLimit"
+                  :min="sliderMin"
+                  :max="sliderMax"
                   class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
                   placeholder="Qo‘shiladigan son"
               />
+
+              <div
+                  :class="['glass-slider flex items-center gap-3 rounded-2xl px-4 py-3 border border-white/60 backdrop-blur-md bg-white', { 'is-active': sliderActive }]"
+              >
+                <input
+                    type="range"
+                    v-model.number="tempLimit"
+                    :min="sliderMin"
+                    :max="sliderMax"
+                    :style="sliderInputStyle"
+                    class="slider-input flex-1 appearance-none cursor-pointer focus:outline-none"
+                    @mousedown="handleSliderPress"
+                    @touchstart="handleSliderPress"
+                    @mouseup="handleSliderRelease"
+                    @touchend="handleSliderRelease"
+                    @touchcancel="handleSliderRelease"
+                    @mouseleave="handleSliderRelease"
+                    @blur="handleSliderRelease"
+                />
+                <span class="w-12 text-sm text-gray-600 text-right">
+                  {{ displaySliderValue }}
+                </span>
+              </div>
 
               <!-- Buttonlar yonma-yon -->
               <div class="flex items-center gap-3">
                 <button
                     @click="updateLimit"
                     class="w-48 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:bg-gray-300 disabled:text-gray-500"
-                    :disabled="!limit"
+                    :disabled="isUpdateDisabled"
                 >
                   {{ translations.auto_apply?.update_button || 'Update' }}
                 </button>
                 <button
-                    @click="editMode = false"
+                    @click="cancelEdit"
                     class="w-48 px-4 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500 transition"
                 >
                   {{ translations.auto_apply?.cancel_button || 'Cancel' }}
@@ -366,21 +391,33 @@
                   {{ translations.select_payment_method }}
                 </h3>
                 <div class="flex items-center justify-center gap-3 sm:gap-4">
-                  <button @click="pay('payme')">
+                  <a
+                      href="#"
+                      role="button"
+                      class="payment-option"
+                      @click.prevent="pay('payme')"
+                      @keydown.enter.prevent="pay('payme')"
+                  >
                     <img
                         src="../assets/payments/payme.png"
                         alt="payme"
                         class="sm:w-full h-auto object-contain"
                     />
-                  </button>
+                  </a>
 
-                  <button @click="pay('click')">
+                  <a
+                      href="#"
+                      role="button"
+                      class="payment-option"
+                      @click.prevent="pay('click')"
+                      @keydown.enter.prevent="pay('click')"
+                  >
                     <img
                         src="../assets/payments/click.png"
                         alt="click"
                         class="sm:w-full h-auto object-contain"
                     />
-                  </button>
+                  </a>
                 </div>
 
                 <button
@@ -511,7 +548,7 @@
 </template>
 
 <script setup>
-import {ref, onMounted, computed, getCurrentInstance, watch, nextTick} from 'vue'
+import {ref, onMounted, onUnmounted, computed, getCurrentInstance, watch, nextTick} from 'vue'
 import axios from 'axios'
 import { useI18n } from '@/i18n-lite'
 import { useRouter, useRoute } from 'vue-router'
@@ -701,6 +738,8 @@ const tempLimit = ref(null);
 const saved = ref(false);
 const appliedCount = ref(0);
 const editMode = ref(false); // yangi state edit qilish uchun
+const sliderMin = 0;
+const sliderActive = ref(false);
 
 const progressPercent = computed(() => {
   if (!limit.value) return 0;
@@ -760,6 +799,73 @@ const planUsagePercent = computed(() => {
   if (!planLimit.value) return 0
   return Math.min((creditsUsed.value / planLimit.value) * 100, 100)
 })
+const DEFAULT_SLIDER_MAX = 500
+const planRemaining = computed(() => {
+  const total = asNumber(planLimit.value)
+  if (total === null || total <= 0) return null
+  const used = asNumber(creditsUsed.value)
+  if (used === null) return total
+  return Math.max(total - used, 0)
+})
+const sliderMax = computed(() => {
+  const planBound = asNumber(planRemaining.value)
+  if (planBound !== null && planBound > 0) return planBound
+  const savedBound = asNumber(limit.value)
+  if (savedBound !== null && savedBound > 0) return savedBound
+  return DEFAULT_SLIDER_MAX
+})
+const isUpdateDisabled = computed(() => {
+  const numeric = asNumber(tempLimit.value)
+  if (numeric === null) return true
+  if (numeric < sliderMin) return true
+  return numeric > sliderMax.value
+})
+const sliderValue = computed(() => {
+  const numeric = asNumber(tempLimit.value)
+  if (numeric === null) return sliderMin
+  if (numeric < sliderMin) return sliderMin
+  if (numeric > sliderMax.value) return sliderMax.value
+  return numeric
+})
+const sliderPercent = computed(() => {
+  const max = sliderMax.value
+  if (max === sliderMin) return 0
+  return ((sliderValue.value - sliderMin) / (max - sliderMin)) * 100
+})
+const sliderInputStyle = computed(() => {
+  const percent = sliderPercent.value
+  const haloOpacity = sliderActive.value ? 0.28 : 0.12
+  const haloEdgeOpacity = sliderActive.value ? 0.12 : 0.04
+  const haloGradient = `radial-gradient(circle at ${percent}% 50%, rgba(59, 130, 246, ${haloOpacity}) 0%, rgba(59, 130, 246, ${haloOpacity}) 30%, rgba(59, 130, 246, ${haloEdgeOpacity}) 55%, rgba(59, 130, 246, 0) 75%)`
+  const trackGradient = `linear-gradient(90deg, #2563eb 0%, #2563eb ${percent}%, #d4d7de ${percent}%, #d4d7de 100%)`
+  return {
+    backgroundImage: `${haloGradient}, ${trackGradient}`,
+    backgroundSize: '100% 100%, 100% 12px',
+    backgroundRepeat: 'no-repeat, no-repeat',
+    backgroundPosition: 'center, center',
+    boxShadow: 'inset 0 1px 2px rgba(15, 23, 42, 0.16), inset 0 -1px 2px rgba(255, 255, 255, 0.6)'
+  }
+})
+const displaySliderValue = computed(() => sliderValue.value ?? sliderMin)
+
+const handleSliderPress = () => {
+  sliderActive.value = true
+}
+const handleSliderRelease = () => {
+  sliderActive.value = false
+}
+
+onMounted(() => {
+  window.addEventListener('mouseup', handleSliderRelease)
+  window.addEventListener('touchend', handleSliderRelease)
+  window.addEventListener('touchcancel', handleSliderRelease)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('mouseup', handleSliderRelease)
+  window.removeEventListener('touchend', handleSliderRelease)
+  window.removeEventListener('touchcancel', handleSliderRelease)
+})
 
 const fetchAutoApplyData = async () => {
   try {
@@ -810,10 +916,24 @@ const saveLimit = async () => {
   }
 };
 
+const startEdit = () => {
+  const currentLimit = asNumber(limit.value)
+  tempLimit.value =
+      currentLimit !== null && currentLimit >= sliderMin ? currentLimit : sliderMin
+  editMode.value = true
+}
+
+const cancelEdit = () => {
+  editMode.value = false
+  const currentLimit = asNumber(limit.value)
+  tempLimit.value = currentLimit !== null ? currentLimit : null
+}
+
 const updateLimit = async () => {
+  if (isUpdateDisabled.value) return
   try {
     const token = localStorage.getItem("token");
-    const auto_apply_limit = tempLimit.value || 0;
+    const auto_apply_limit = sliderValue.value ?? sliderMin;
     const response = await axios.patch(
         proxy.$locale + "/auth/settings/auto-apply",
         {
@@ -831,6 +951,7 @@ const updateLimit = async () => {
     limit.value = response.data.data.auto_apply_limit;
     saved.value = true;
     editMode.value = false;
+    tempLimit.value = limit.value;
   } catch (error) {
     console.error("updateLimit error", error);
     if (error.response?.status === 401) clearAuthStorage();
@@ -1097,5 +1218,107 @@ onMounted(async () => {
 .slide-up-leave-from {
   transform: translateY(0);
   opacity: 1;
+}
+.glass-slider {
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.78) 100%);
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 14px 28px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+.glass-slider.is-active {
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.16) 0%, rgba(191, 219, 254, 0.08) 100%);
+  border-color: rgba(37, 99, 235, 0.3);
+  box-shadow: 0 16px 32px rgba(37, 99, 235, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+.glass-slider .slider-input {
+  height: 32px;
+  margin: 0;
+  padding: 0;
+  border-radius: 9999px;
+  background-color: transparent;
+}
+.glass-slider .slider-input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 30px;
+  width: 40px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%);
+  border: 1px solid rgba(148, 163, 184, 0.38);
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.22);
+  margin-top: -9px;
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.glass-slider.is-active .slider-input::-webkit-slider-thumb {
+  background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.7) 0%, rgba(229, 231, 235, 0.45) 45%, rgba(209, 213, 219, 0.35) 100%);
+  border-color: rgba(148, 163, 184, 0.38);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.26);
+}
+.glass-slider .slider-input::-moz-range-thumb {
+  height: 30px;
+  width: 40px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%);
+  border: 1px solid rgba(148, 163, 184, 0.38);
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.22);
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.glass-slider.is-active .slider-input::-moz-range-thumb {
+  background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.7) 0%, rgba(229, 231, 235, 0.45) 45%, rgba(209, 213, 219, 0.35) 100%);
+  border-color: rgba(148, 163, 184, 0.38);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.26);
+}
+.glass-slider .slider-input::-ms-thumb {
+  height: 30px;
+  width: 40px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%);
+  border: 1px solid rgba(148, 163, 184, 0.38);
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.22);
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.glass-slider.is-active .slider-input::-ms-thumb {
+  background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.7) 0%, rgba(229, 231, 235, 0.45) 45%, rgba(209, 213, 219, 0.35) 100%);
+  border-color: rgba(148, 163, 184, 0.38);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.26);
+}
+.glass-slider .slider-input::-webkit-slider-runnable-track {
+  -webkit-appearance: none;
+  height: 12px;
+  border-radius: 9999px;
+}
+.glass-slider .slider-input::-moz-range-track {
+  height: 12px;
+  border-radius: 9999px;
+  background: transparent;
+}
+.glass-slider .slider-input::-ms-track {
+  height: 12px;
+  border-radius: 9999px;
+  background: transparent;
+  border-color: transparent;
+  color: transparent;
+}
+.payment-option {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.35rem;
+  border-radius: 16px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  outline: none;
+}
+.payment-option:focus-visible,
+.payment-option:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(15, 23, 42, 0.15);
+}
+.payment-option:active {
+  transform: translateY(1px);
+}
+.payment-option img {
+  pointer-events: none;
 }
 </style>
