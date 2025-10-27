@@ -458,24 +458,7 @@
                     <span>{{ translations.payment_confirm?.continue }}</span>
                   </a>
 
-                  <!-- Loading/disabled state while waiting payment url -->
-                  <button
-                      v-else
-                      disabled
-                      class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm flex items-center justify-center gap-2 disabled:opacity-60"
-                  >
-                    <svg
-                        v-if="paymentLoading"
-                        class="animate-spin h-4 w-4 text-white"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                    >
-                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
-                    </svg>
-                    <span>{{ translations.payment_confirm?.continue }}</span>
-                  </button>
+                  <!-- URL tayyor bo'lmaguncha tugma ko'rinmaydi -->
 
                   <button
                       @click="closeConfirm"
@@ -1112,14 +1095,12 @@ const closeConfirm = () => {
 }
 
 const paymentUrl = ref(null)
-const paymentLoading = ref(false)
 
 const pay = async (method) => {
   if (!selectedPlan.value) return
   selectedMethod.value = method
   showConfirmModal.value = true
   paymentUrl.value = null
-  paymentLoading.value = true
 
   try {
     const token = localStorage.getItem('token')
@@ -1147,7 +1128,7 @@ const pay = async (method) => {
     alert(err.response?.data?.message || 'To‘lovni boshlashda xatolik yuz berdi.')
     closeConfirm()
   } finally {
-    paymentLoading.value = false
+    // no-op
   }
 }
 
