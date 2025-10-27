@@ -446,19 +446,20 @@
                 </p>
 
                 <div class="flex justify-center gap-3">
-                  <!-- HH-auth-like continue link -->
+                  <!-- Continue: always visible; disabled until URL is ready -->
                   <a
-                      v-if="paymentUrl"
-                      :href="paymentUrl"
+                      href="#"
                       target="_blank"
                       rel="noopener noreferrer"
-                      @click="handleConfirmNavigation"
-                      class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm flex items-center justify-center gap-2"
+                      @click="onContinueClick"
+                      @keydown.enter.prevent="onContinueClick"
+                      :class="[
+                        'bg-blue-600 text-white px-4 py-2 rounded-lg text-sm flex items-center justify-center gap-2 transition-colors',
+                        paymentUrl ? 'hover:bg-blue-700' : 'opacity-60 cursor-wait'
+                      ]"
                   >
                     <span>{{ translations.payment_confirm?.continue }}</span>
                   </a>
-
-                  <!-- URL tayyor bo'lmaguncha tugma ko'rinmaydi -->
 
                   <button
                       @click="closeConfirm"
@@ -1135,6 +1136,53 @@ const pay = async (method) => {
 const handleConfirmNavigation = () => {
   closeConfirm()
   closePayment()
+}
+
+const requestPaymentUrl = async (method) => {
+  const token = localStorage.getItem('token')
+  const apiUrl = method === 'click' ? proxy.$locale + '/click/booking' : proxy.$locale + '/payme/booking'
+  const response = await axios.post(
+      apiUrl,
+      { plan_id: selectedPlan.value.id },
+      { headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' } }
+  )
+  return response.data.payment_url || response.data.url || null
+}
+
+const onContinueClick = async (e) => {
+  e.preventDefault()
+  // Always open a tab synchronously to satisfy iOS popup policies
+  const win = window.open('about:blank', '_blank')
+  if (!win) {
+    // Popup blocked. Fallback: navigate current tab if URL ready
+    if (paymentUrl.value) {
+      window.location.href = paymentUrl.value
+      handleConfirmNavigation()
+    }
+    return
+  }
+
+  try {
+    let url = paymentUrl.value
+    if (!url) {
+      if (!selectedPlan.value || !selectedMethod.value) {
+        win.close()
+        return
+      }
+      url = await requestPaymentUrl(selectedMethod.value)
+    }
+    if (url) {
+      win.location.href = url
+      handleConfirmNavigation()
+    } else {
+      win.close()
+      alert('To‘lov havolasi topilmadi!')
+    }
+  } catch (err) {
+    win.close()
+    console.error('❌ Xatolik:', err.response?.data || err.message)
+    alert(err.response?.data?.message || 'To‘lovni boshlashda xatolik yuz berdi.')
+  }
 }
 
 
