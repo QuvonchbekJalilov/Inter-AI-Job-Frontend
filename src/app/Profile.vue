@@ -177,102 +177,49 @@
             ></div>
           </label>
 
-          <!-- Input va tugma (faqat 1-marta limit o‘rnatish uchun POST) -->
-          <div v-if="enabled && !saved" class="mt-4 flex items-center gap-3">
-            <input
-                type="number"
-                v-model.number="limit"
-                class="w-48 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                placeholder="Son kiriting"
-            />
-            <button
-                @click="saveLimit"
-                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:bg-gray-300 disabled:text-gray-500"
-                :disabled="!limit"
+          <!-- Slider + saqlash (asosiy qism) -->
+          <div v-if="enabled" class="mt-4 space-y-4">
+            <div
+                :class="['glass-slider flex items-center gap-3 rounded-2xl px-4 py-3 border border-white/60 backdrop-blur-md bg-white', { 'is-active': sliderActive }]"
             >
-              {{ translations.auto_apply?.save_button }}
-            </button>
-          </div>
-
-          <!-- Progress bar + edit qilish -->
-          <div v-if="saved" class="mt-6">
-            <div class="flex justify-between text-sm text-gray-600 mb-1">
-              <span>{{ translations.auto_apply?.progress }}</span>
-              <span>{{ appliedCount }} / {{ limit }}</span>
-            </div>
-            <div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
-              <div
-                  class="h-2 bg-blue-600 transition-all duration-300"
-                  :style="{ width: progressPercent + '%' }"
-              ></div>
-            </div>
-
-            <!-- Edit tugmasi -->
-            <div v-if="!editMode" class="mt-4">
-              <button
-                  @click="startEdit"
-                  class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-              >
-                {{ translations.auto_apply?.update_button || 'Edit limit' }}
-              </button>
-            </div>
-
-            <!-- Edit form (PATCH) -->
-            <div v-if="editMode" class="mt-4 space-y-4">
-              <!-- Input -->
               <input
-                  type="number"
+                  type="range"
                   v-model.number="tempLimit"
                   :min="sliderMin"
                   :max="sliderMax"
-                  class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                  placeholder="Qo‘shiladigan son"
+                  :style="sliderInputStyle"
+                  class="slider-input flex-1 appearance-none cursor-pointer focus:outline-none"
+                  :disabled="isTrialExhausted || isOutOfCredits"
+                  @mousedown="handleSliderPress"
+                  @touchstart="handleSliderPress"
+                  @mouseup="handleSliderRelease"
+                  @touchend="handleSliderRelease"
+                  @touchcancel="handleSliderRelease"
+                  @mouseleave="handleSliderRelease"
+                  @blur="handleSliderRelease"
               />
-
-              <div
-                  :class="['glass-slider flex items-center gap-3 rounded-2xl px-4 py-3 border border-white/60 backdrop-blur-md bg-white', { 'is-active': sliderActive }]"
-              >
-                <input
-                    type="range"
-                    v-model.number="tempLimit"
-                    :min="sliderMin"
-                    :max="sliderMax"
-                    :style="sliderInputStyle"
-                    class="slider-input flex-1 appearance-none cursor-pointer focus:outline-none"
-                    @mousedown="handleSliderPress"
-                    @touchstart="handleSliderPress"
-                    @mouseup="handleSliderRelease"
-                    @touchend="handleSliderRelease"
-                    @touchcancel="handleSliderRelease"
-                    @mouseleave="handleSliderRelease"
-                    @blur="handleSliderRelease"
-                />
-                <span class="w-12 text-sm text-gray-600 text-right">
-                  {{ displaySliderValue }}
-                </span>
-              </div>
-
-              <!-- Buttonlar yonma-yon -->
-              <div class="flex items-center gap-3">
-                <button
-                    @click="updateLimit"
-                    class="w-48 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:bg-gray-300 disabled:text-gray-500"
-                    :disabled="isUpdateDisabled"
-                >
-                  {{ translations.auto_apply?.save_button || 'Update' }} 
-                </button>
-                <button
-                    @click="cancelEdit"
-                    class="w-48 px-4 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500 transition"
-                >
-                  {{ translations.auto_apply?.cancel_button || 'Cancel' }}
-                </button>
-              </div>
+              <span class="w-12 text-sm text-gray-600 text-right">
+                {{ displaySliderValue }}
+              </span>
             </div>
+
+            <div class="flex items-center gap-3">
+              <button
+                  @click="updateLimit"
+                  class="w-full sm:w-48 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:bg-gray-300 disabled:text-gray-500"
+                  :disabled="saveDisabled"
+              >
+                {{ saveButtonText }}
+              </button>
+            </div>
+
+            <p v-if="isTrialExhausted || isOutOfCredits" class="text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-4 py-3">
+              {{ translations.auto_apply?.subscribe_to_use || 'Auto applydan foydalanish uchun obunani harid qiling' }}
+            </p>
           </div>
         </div>
 
-        <div
+        <!-- <div
             v-if="hasActivePlan"
             class="bg-white border border-blue-200 rounded-2xl p-6"
         >
@@ -305,7 +252,7 @@
               {{ subscriptionExpiry }}
             </span>
           </p>
-        </div>
+        </div> -->
 
         <div class="space-y-4">
           <!-- Sizning mavjud HTML kodingizni o‘zgartirmadik -->
@@ -721,7 +668,6 @@ const limit = ref(null);
 const tempLimit = ref(null);
 const saved = ref(false);
 const appliedCount = ref(0);
-const editMode = ref(false); // yangi state edit qilish uchun
 const sliderMin = 0;
 const sliderActive = ref(false);
 
@@ -747,6 +693,7 @@ const creditsUsed = computed(() => {
   const applied = asNumber(appliedCount.value)
   return applied ?? 0
 })
+const FREE_TRIAL_LIMIT = 10
 const planLimit = computed(() => {
   const planLimitFromPlan =
       asNumber(subscriptionPlan.value?.auto_response_limit) ??
@@ -756,6 +703,7 @@ const planLimit = computed(() => {
       asNumber(activeSubscription.value?.auto_response_limit) ??
       asNumber(activeSubscription.value?.auto_responses_limit)
   if (subscriptionLimit !== null) return subscriptionLimit
+  if (!hasActivePlan.value) return FREE_TRIAL_LIMIT
   const directLimit =
       asNumber(balance.value?.auto_response_limit) ??
       asNumber(balance.value?.auto_responses_limit)
@@ -791,17 +739,32 @@ const planRemaining = computed(() => {
   if (used === null) return total
   return Math.max(total - used, 0)
 })
+// prefer derived remaining; fall back to raw balance fields
+const remainingCredits = computed(() => {
+  const fromPlan = asNumber(planRemaining.value)
+  if (fromPlan !== null) return fromPlan
+  const credit = balance.value?.credit || {}
+  const candidates = [
+    credit.remaining, credit.available, credit.balance, credit.count, balance.value?.balance
+  ].map(asNumber).filter(v => v !== null)
+  return candidates.length ? Math.max(...candidates) : 0
+})
 const sliderMax = computed(() => {
+  const remaining = asNumber(remainingCredits.value)
+  if (remaining !== null && remaining > 0) return remaining
   const planBound = asNumber(planRemaining.value)
   if (planBound !== null && planBound > 0) return planBound
   const savedBound = asNumber(limit.value)
   if (savedBound !== null && savedBound > 0) return savedBound
   return DEFAULT_SLIDER_MAX
 })
+const isTrial = computed(() => !hasActivePlan.value)
+const isTrialExhausted = computed(() => isTrial.value && (asNumber(planRemaining.value) ?? 0) <= 0)
+const MIN_SEND_LIMIT = 1
 const isUpdateDisabled = computed(() => {
   const numeric = asNumber(tempLimit.value)
   if (numeric === null) return true
-  if (numeric < sliderMin) return true
+  if (numeric < MIN_SEND_LIMIT) return true
   return numeric > sliderMax.value
 })
 const sliderValue = computed(() => {
@@ -839,16 +802,107 @@ const handleSliderRelease = () => {
   sliderActive.value = false
 }
 
+// Save cooldown persistence + countdown
+let saveCooldownTimerId = null
+let saveCooldownTickId = null
+const saveCooldownActive = ref(false)
+const saveCooldownUntil = ref(null)
+const nowTick = ref(Date.now())
+const SAVE_COOLDOWN_MS = 60 * 1000
+const SAVE_COOLDOWN_KEY = 'aaSaveCooldownUntil'
+const stopCooldownTick = () => {
+  if (saveCooldownTickId) {
+    clearInterval(saveCooldownTickId)
+    saveCooldownTickId = null
+  }
+}
+const startCooldownTick = () => {
+  if (saveCooldownTickId) return
+  saveCooldownTickId = setInterval(() => {
+    nowTick.value = Date.now()
+  }, 1000)
+}
+const scheduleCooldownTimer = (remainingMs) => {
+  if (saveCooldownTimerId) clearTimeout(saveCooldownTimerId)
+  saveCooldownTimerId = setTimeout(() => {
+    saveCooldownActive.value = false
+    saveCooldownTimerId = null
+    localStorage.removeItem(SAVE_COOLDOWN_KEY)
+    saveCooldownUntil.value = null
+    stopCooldownTick()
+  }, Math.max(0, remainingMs))
+}
+const startSaveCooldown = (durationMs = SAVE_COOLDOWN_MS) => {
+  const until = Date.now() + durationMs
+  saveCooldownActive.value = true
+  localStorage.setItem(SAVE_COOLDOWN_KEY, String(until))
+  saveCooldownUntil.value = until
+  scheduleCooldownTimer(durationMs)
+  startCooldownTick()
+}
+const countdownSeconds = computed(() => {
+  const until = Number(saveCooldownUntil.value)
+  if (!saveCooldownActive.value || !Number.isFinite(until)) return 0
+  const remaining = Math.max(0, until - nowTick.value)
+  return Math.ceil(remaining / 1000)
+})
+const saveButtonText = computed(() => {
+  const base = translations.value?.auto_apply?.save_button || 'Save'
+  if (saveCooldownActive.value) return `${base} (${countdownSeconds.value}s)`
+  return base
+})
+const savingLimit = ref(false)
+const isOutOfCredits = computed(() => {
+  const derived = asNumber(planRemaining.value)
+  if (derived !== null) return derived <= 0
+  const direct = asNumber(remainingCredits.value)
+  if (direct !== null) return direct <= 0
+  return false
+})
+const saveDisabled = computed(() => {
+  return (
+      isUpdateDisabled.value ||
+      isTrialExhausted.value ||
+      isOutOfCredits.value ||
+      savingLimit.value ||
+      saveCooldownActive.value
+  )
+})
+
 onMounted(() => {
   window.addEventListener('mouseup', handleSliderRelease)
   window.addEventListener('touchend', handleSliderRelease)
   window.addEventListener('touchcancel', handleSliderRelease)
+  // Restore cooldown
+  const untilStr = localStorage.getItem(SAVE_COOLDOWN_KEY)
+  if (untilStr) {
+    const until = Number(untilStr)
+    if (Number.isFinite(until)) {
+      const remaining = until - Date.now()
+      if (remaining > 0) {
+        saveCooldownActive.value = true
+        saveCooldownUntil.value = until
+        scheduleCooldownTimer(remaining)
+        startCooldownTick()
+      } else {
+        localStorage.removeItem(SAVE_COOLDOWN_KEY)
+      }
+    }
+  }
 })
 
 onUnmounted(() => {
   window.removeEventListener('mouseup', handleSliderRelease)
   window.removeEventListener('touchend', handleSliderRelease)
   window.removeEventListener('touchcancel', handleSliderRelease)
+  if (saveCooldownTimerId) {
+    clearTimeout(saveCooldownTimerId)
+    saveCooldownTimerId = null
+  }
+  if (saveCooldownTickId) {
+    clearInterval(saveCooldownTickId)
+    saveCooldownTickId = null
+  }
 })
 
 const fetchAutoApplyData = async () => {
@@ -867,6 +921,8 @@ const fetchAutoApplyData = async () => {
     limit.value = settings.auto_apply_limit;
     appliedCount.value = settings.auto_apply_count;
     saved.value = !!limit.value;
+    // Slider always starts from 0
+    tempLimit.value = sliderMin
     if (!hhAccountActive.value) {
       enabled.value = false;
     }
@@ -900,24 +956,16 @@ const saveLimit = async () => {
   }
 };
 
-const startEdit = () => {
-  const currentLimit = asNumber(limit.value)
-  tempLimit.value =
-      currentLimit !== null && currentLimit >= sliderMin ? currentLimit : sliderMin
-  editMode.value = true
-}
-
-const cancelEdit = () => {
-  editMode.value = false
-  const currentLimit = asNumber(limit.value)
-  tempLimit.value = currentLimit !== null ? currentLimit : null
-}
-
 const updateLimit = async () => {
-  if (isUpdateDisabled.value) return
+  if (isUpdateDisabled.value || saveCooldownActive.value || savingLimit.value) return
+  // Start cooldown immediately and persist across reloads
+  startSaveCooldown()
+  savingLimit.value = true
   try {
     const token = localStorage.getItem("token");
-    const auto_apply_limit = sliderValue.value ?? sliderMin;
+    const candidate = asNumber(sliderValue.value) ?? 0
+    const remaining = asNumber(remainingCredits.value) ?? MIN_SEND_LIMIT
+    const auto_apply_limit = Math.max(MIN_SEND_LIMIT, Math.min(candidate, remaining));
     const response = await axios.patch(
         proxy.$locale + "/auth/settings/auto-apply",
         {
@@ -934,11 +982,13 @@ const updateLimit = async () => {
 
     limit.value = response.data.data.auto_apply_limit;
     saved.value = true;
-    editMode.value = false;
-    tempLimit.value = limit.value;
+    // reset slider to 0 after saving
+    tempLimit.value = sliderMin;
   } catch (error) {
     console.error("updateLimit error", error);
     if (error.response?.status === 401) clearAuthStorage();
+  } finally {
+    savingLimit.value = false
   }
 };
 
@@ -1014,6 +1064,8 @@ onMounted(async () => {
     limit.value = meData.data?.settings?.auto_apply_limit;
     appliedCount.value = meData.data?.settings?.auto_apply_count;
     enabled.value = meData.data?.settings?.auto_apply_enabled;
+    // Always start slider from 0 on initial page load
+    tempLimit.value = sliderMin
     if (balance.value?.credit?.count >= 0) {
       await fetchAutoApplyData();
     }
