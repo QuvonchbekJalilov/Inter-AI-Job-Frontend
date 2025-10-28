@@ -779,13 +779,10 @@ const sliderPercent = computed(() => {
 })
 const sliderInputStyle = computed(() => {
   const percent = sliderPercent.value
-  // Keep only simple progress track without halo/motion effects
-  const trackGradient = `linear-gradient(90deg, #2563eb 0%, #2563eb ${percent}%, #d4d7de ${percent}%, #d4d7de 100%)`
+  // Expose fill percent via CSS var; render gradient on the track pseudo-element
   return {
-    backgroundImage: trackGradient,
-    backgroundSize: '100% 12px',
-    backgroundRepeat: 'no-repeat',
-    backgroundPosition: 'center',
+    '--aa-percent': `${percent}%`,
+    background: 'none',
     boxShadow: 'none'
   }
 })
@@ -1362,16 +1359,32 @@ onMounted(async () => {
   -webkit-appearance: none;
   height: 12px;
   border-radius: 9999px;
+  background: linear-gradient(90deg,
+    #2563eb 0%,
+    #2563eb var(--aa-percent, 0%),
+    #d4d7de var(--aa-percent, 0%),
+    #d4d7de 100%
+  );
 }
 .glass-slider .slider-input::-moz-range-track {
   height: 12px;
   border-radius: 9999px;
-  background: transparent;
+  background: linear-gradient(90deg,
+    #2563eb 0%,
+    #2563eb var(--aa-percent, 0%),
+    #d4d7de var(--aa-percent, 0%),
+    #d4d7de 100%
+  );
 }
 .glass-slider .slider-input::-ms-track {
   height: 12px;
   border-radius: 9999px;
-  background: transparent;
+  background: linear-gradient(90deg,
+    #2563eb 0%,
+    #2563eb var(--aa-percent, 0%),
+    #d4d7de var(--aa-percent, 0%),
+    #d4d7de 100%
+  );
   border-color: transparent;
   color: transparent;
 }
