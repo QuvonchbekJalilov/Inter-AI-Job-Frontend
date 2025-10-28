@@ -179,9 +179,7 @@
 
           <!-- Slider + saqlash (asosiy qism) -->
           <div v-if="enabled" class="mt-4 space-y-4">
-            <div
-                :class="['glass-slider flex items-center gap-3 rounded-2xl px-4 py-3 border border-white/60 backdrop-blur-md bg-white', { 'is-active': sliderActive }]"
-            >
+            <div class="glass-slider flex items-center gap-3">
               <input
                   type="range"
                   v-model.number="tempLimit"
@@ -781,16 +779,14 @@ const sliderPercent = computed(() => {
 })
 const sliderInputStyle = computed(() => {
   const percent = sliderPercent.value
-  const haloOpacity = sliderActive.value ? 0.28 : 0.12
-  const haloEdgeOpacity = sliderActive.value ? 0.12 : 0.04
-  const haloGradient = `radial-gradient(circle at ${percent}% 50%, rgba(59, 130, 246, ${haloOpacity}) 0%, rgba(59, 130, 246, ${haloOpacity}) 30%, rgba(59, 130, 246, ${haloEdgeOpacity}) 55%, rgba(59, 130, 246, 0) 75%)`
+  // Keep only simple progress track without halo/motion effects
   const trackGradient = `linear-gradient(90deg, #2563eb 0%, #2563eb ${percent}%, #d4d7de ${percent}%, #d4d7de 100%)`
   return {
-    backgroundImage: `${haloGradient}, ${trackGradient}`,
-    backgroundSize: '100% 100%, 100% 12px',
-    backgroundRepeat: 'no-repeat, no-repeat',
-    backgroundPosition: 'center, center',
-    boxShadow: 'inset 0 1px 2px rgba(15, 23, 42, 0.16), inset 0 -1px 2px rgba(255, 255, 255, 0.6)'
+    backgroundImage: trackGradient,
+    backgroundSize: '100% 12px',
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: 'center',
+    boxShadow: 'none'
   }
 })
 const displaySliderValue = computed(() => sliderValue.value ?? sliderMin)
@@ -1297,17 +1293,18 @@ onMounted(async () => {
   opacity: 1;
 }
 .glass-slider {
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.78) 100%);
-  border: 1px solid rgba(148, 163, 184, 0.28);
-  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: 0 14px 28px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  /* Flatten: remove borders/background/blur */
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  transition: none;
 }
 .glass-slider.is-active {
-  background: linear-gradient(135deg, rgba(37, 99, 235, 0.16) 0%, rgba(191, 219, 254, 0.08) 100%);
-  border-color: rgba(37, 99, 235, 0.3);
-  box-shadow: 0 16px 32px rgba(37, 99, 235, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
 }
 .glass-slider .slider-input {
   height: 32px;
