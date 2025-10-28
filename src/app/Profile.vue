@@ -840,9 +840,11 @@ const countdownSeconds = computed(() => {
   return Math.ceil(remaining / 1000)
 })
 const saveButtonText = computed(() => {
-  const base = translations.value?.auto_apply?.save_button || 'Save'
-  if (saveCooldownActive.value) return `${base} (${countdownSeconds.value}s)`
-  return base
+  if (saveCooldownActive.value) {
+    const base = translations.value?.auto_apply?.in_progress || 'Jarayonda'
+    return `${base} (${countdownSeconds.value}s)`
+  }
+  return translations.value?.auto_apply?.use_button || 'Ishlatish'
 })
 const savingLimit = ref(false)
 const isOutOfCredits = computed(() => {

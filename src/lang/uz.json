@@ -34,6 +34,8 @@
     "title": "AI avtomatik topshirish",
     "description": "Avtomatik topshirish — AI faqat HeadHunter vakansiyalariga avtomatik tarzda ariza topshiradi",
     "save_button": "Saqlash",
+    "use_button": "Ishlatish",
+    "in_progress": "Jarayonda",
     "update_button": "Tahrirlash",
     "cancel_button": "Bekor qilish",
     "enable_hint": "Avto javob rejimidan foydalanish uchun tugmani yoqing.",

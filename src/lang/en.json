@@ -34,6 +34,8 @@
     "title": "AI Auto Apply",
     "description": "Automatic applies — AI automatically applies only to HeadHunter vacancies",
     "save_button": "Save",
+    "use_button": "Use",
+    "in_progress": "In progress",
     "update_button": "Update",
     "cancel_button": "Cancel",
     "enable_hint": "Turn the switch on to enable auto apply.",
