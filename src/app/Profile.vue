@@ -325,7 +325,7 @@
                   <h4 class="text-lg font-medium text-gray-800 mb-1 text-center">
                     {{ selectedPlan.name }}
                   </h4>
-                  <p class="text-sm text-gray-500 mb-2">
+                  <p class="text-sm text-gray-500 mb-2 whitespace-pre-line">
                     {{ selectedPlan.description }}
                   </p>
                   <div class="text-end mb-3">
