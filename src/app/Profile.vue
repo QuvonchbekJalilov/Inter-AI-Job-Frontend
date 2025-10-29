@@ -741,7 +741,7 @@ const limit = ref(null);
 const tempLimit = ref(null);
 const saved = ref(false);
 const appliedCount = ref(0);
-const sliderMin = 1;
+const sliderMin = 0;
 const sliderActive = ref(false);
 
 const progressPercent = computed(() => {
@@ -1026,54 +1026,10 @@ const saveLimit = async () => {
   }
 };
 
-// Run auto-apply against latest vacancy matches
-const runAutoApplyNow = async (maxToApply) => {
-  try {
-    if (!hhAccountActive.value) {
-      showHhModal.value = true
-      return 0
-    }
-    const token = localStorage.getItem('token')
-    if (!token) {
-      toast?.error?.('Token topilmadi!')
-      return 0
-    }
-    const headers = {
-      Authorization: `Bearer ${token}`,
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    }
-    // Refresh matches so we apply to the most recent ones
-    const matchesResp = await axios.post(`${proxy.$locale}/v1/vacancy-matches/run`, {}, { headers })
-    const rows = matchesResp?.data?.data || []
-    let applied = 0
-    for (const item of rows) {
-      if (applied >= maxToApply) break
-      const v = item?.vacancy
-      if (!v || v.source === 'telegram') continue
-      const extId = v.external_id
-      if (!extId) continue
-      try {
-        const res = await axios.post(`${proxy.$locale}/v1/hh/vacancies/${extId}/apply`, {}, { headers })
-        if (res?.data?.success) {
-          applied += 1
-        }
-      } catch (e) {
-        // Skip failed ones and continue
-        continue
-      }
-    }
-    if (applied > 0) toast?.success?.(`Avto-topshirish: ${applied} ta yuborildi ✅`)
-    return applied
-  } catch (err) {
-    console.error('runAutoApplyNow error', err)
-    toast?.error?.('Avto-topshirishda xatolik yuz berdi')
-    return 0
-  }
-}
-
 const updateLimit = async () => {
   if (isUpdateDisabled.value || saveCooldownActive.value || savingLimit.value) return
+  // Start cooldown immediately and persist across reloads
+  startSaveCooldown()
   savingLimit.value = true
   try {
     const token = localStorage.getItem("token");
@@ -1096,18 +1052,13 @@ const updateLimit = async () => {
 
     limit.value = response.data.data.auto_apply_limit;
     saved.value = true;
-    // Immediately trigger auto-apply run using the saved limit
-    const toApply = asNumber(response?.data?.data?.auto_apply_limit) ?? auto_apply_limit
-    await runAutoApplyNow(toApply)
-    // reset slider to minimum after saving
+    // reset slider to 0 after saving
     tempLimit.value = sliderMin;
   } catch (error) {
     console.error("updateLimit error", error);
     if (error.response?.status === 401) clearAuthStorage();
   } finally {
     savingLimit.value = false
-    // Start cooldown only after successful save
-    startSaveCooldown()
   }
 };
 
