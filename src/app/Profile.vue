@@ -1137,7 +1137,7 @@ const toggleStatus = async () => {
   const token = localStorage.getItem('token')
 
   if (!token) {
-    alert('Token topilmadi!')
+    toast.error('Token topilmadi!')
     return
   }
 
@@ -1162,7 +1162,7 @@ const toggleStatus = async () => {
     user.value.status = updatedStatus
   } catch (err) {
     console.error('❌ Xatolik:', err.response?.data || err.message)
-    alert(err.response?.data?.message || 'Status yangilashda xatolik yuz berdi')
+    toast.error(translations.status_update_24);
   } finally {
     loading.value = false
   }

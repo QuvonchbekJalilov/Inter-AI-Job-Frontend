@@ -172,7 +172,8 @@
     "description": "Siz tanlagan tarif uchun to‘lov tizimi:",
     "continue": "Davom ettirish",
     "cancel": "Bekor qilish"
-  }
+  },
+  "status_update_24": "Statusni faqat bir kunda bir marta o‘zgartirish mumkin. Ertaga qayta urinib ko‘ring."
 
 
 }
