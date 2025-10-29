@@ -580,12 +580,12 @@ const formatUZS = (value) => {
 }
 const plans = ref([])
 const activeSubscription = computed(() => {
-  const subscription = user.value?.subscription
-  if (subscription) return subscription
-  const subscriptions = user.value?.subscriptions
-  if (Array.isArray(subscriptions) && subscriptions.length) {
-    const active = subscriptions.find((item) => item?.status === 'active')
-    return active || subscriptions[0]
+  // Only consider ACTIVE subscription as current
+  const sub = user.value?.subscription
+  if (sub && sub.status === 'active') return sub
+  const list = user.value?.subscriptions
+  if (Array.isArray(list) && list.length) {
+    return list.find((item) => item?.status === 'active') || null
   }
   return null
 })
@@ -749,6 +749,13 @@ const progressPercent = computed(() => {
   return Math.min((appliedCount.value / limit.value) * 100, 100);
 });
 const creditsUsed = computed(() => {
+  const credit = balance.value?.credit || {}
+  // 1) Trial: backend increments credit.limit as used count
+  if (!hasActivePlan.value) {
+    const trialUsed = asNumber(credit.limit)
+    if (trialUsed !== null) return trialUsed
+  }
+  // 2) Subscription or generic counters
   const subscriptionUsed =
       asNumber(activeSubscription.value?.auto_response_used) ??
       asNumber(activeSubscription.value?.auto_responses_used)
@@ -757,12 +764,14 @@ const creditsUsed = computed(() => {
       asNumber(balance.value?.auto_response_used) ??
       asNumber(balance.value?.auto_responses_used)
   if (directUsed !== null) return directUsed
-  const credit = balance.value?.credit || {}
   const creditUsed =
       asNumber(credit.used) ??
       asNumber(credit.used_count) ??
       asNumber(credit.consumed)
   if (creditUsed !== null) return creditUsed
+  // 3) Fallback: some backends use credit.limit as a monotonically increasing used counter too
+  const limitAsUsed = asNumber(credit.limit)
+  if (limitAsUsed !== null) return limitAsUsed
   const applied = asNumber(appliedCount.value)
   return applied ?? 0
 })
@@ -876,6 +885,24 @@ const handleSliderRelease = () => {
   sliderActive.value = false
 }
 
+// Clamp slider temp value to current dynamic max/min
+const clampTempToBounds = () => {
+  const n = asNumber(tempLimit.value)
+  const max = asNumber(sliderMax.value)
+  if (!Number.isFinite(max)) return
+  if (n === null) {
+    tempLimit.value = sliderMin
+    return
+  }
+  if (n > max) {
+    tempLimit.value = max
+    return
+  }
+  if (n < sliderMin) {
+    tempLimit.value = sliderMin
+  }
+}
+
 // Save cooldown persistence + countdown
 let saveCooldownTimerId = null
 let saveCooldownTickId = null
@@ -965,6 +992,8 @@ onMounted(() => {
       }
     }
   }
+  // Ensure initial slider value is within bounds
+  clampTempToBounds()
 })
 
 onUnmounted(() => {
@@ -979,6 +1008,11 @@ onUnmounted(() => {
     clearInterval(saveCooldownTickId)
     saveCooldownTickId = null
   }
+})
+
+// Re-clamp when max changes (e.g., after balance refresh or plan state change)
+watch(() => sliderMax.value, () => {
+  clampTempToBounds()
 })
 
 const fetchAutoApplyData = async () => {
@@ -1006,6 +1040,19 @@ const fetchAutoApplyData = async () => {
     if (error.response?.status === 401) clearAuthStorage();
   }
 };
+
+// Refresh balance info to reflect latest credit usage/limit
+const fetchBalance = async () => {
+  const token = localStorage.getItem("token") || sessionStorage.getItem("token")
+  if (!token) return
+  const headers = {
+    Authorization: `Bearer ${token}`,
+    Accept: "application/json",
+    "Content-Type": "application/json",
+  }
+  const balanceRes = await axios.get(proxy.$locale + "/v1/balance", { headers })
+  balance.value = balanceRes.data
+}
 
 const saveLimit = async () => {
   try {
@@ -1060,6 +1107,10 @@ const updateLimit = async () => {
     saved.value = true;
     // reset slider to 0 after saving
     tempLimit.value = sliderMin;
+    // Refresh balance so trial usage (credit.limit) and remaining update immediately
+    try {
+      await fetchBalance();
+    } catch (_) { /* ignore */ }
   } catch (error) {
     console.error("updateLimit error", error);
     if (error.response?.status === 401) clearAuthStorage();
