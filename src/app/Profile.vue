@@ -1277,10 +1277,8 @@ const reloadPage = () => {
 
 const onContinueClick = async (e) => {
   e.preventDefault()
-  // Always open a tab synchronously to satisfy iOS popup policies
   const win = window.open('about:blank', '_blank')
   if (!win) {
-    // Popup blocked. Fallback: navigate current tab if URL ready
     if (paymentUrl.value) {
       window.location.href = paymentUrl.value
       handleConfirmNavigation()
@@ -1297,18 +1295,15 @@ const onContinueClick = async (e) => {
       }
       url = await requestPaymentUrl(selectedMethod.value)
     }
+
     if (url) {
       win.location.href = url
       handleConfirmNavigation()
 
-      // 🔥 To‘lov oynasini kuzatamiz
-      const interval = setInterval(() => {
-        if (win.closed) {
-          clearInterval(interval)
-          // 🔔 Modal chiqaramiz
-          showReloadModal.value = true
-        }
-      }, 1000)
+      // ⏳ 2 soniyadan keyin modalni ko‘rsatamiz
+      setTimeout(() => {
+        showReloadModal.value = true
+      }, 2000)
     } else {
       win.close()
       alert('To‘lov havolasi topilmadi!')
