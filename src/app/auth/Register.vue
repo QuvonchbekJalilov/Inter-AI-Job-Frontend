@@ -331,6 +331,7 @@ const submitRegistration = async () => {
                   ? "❌ Произошла ошибка при подключении к серверу."
                   : "❌ An error occurred while connecting to the server."
       )
+      await deleteUserIfNoResume(token)
       error.value = e.response?.data?.message || 'Server bilan bog‘lanishda xatolik.'
     }
   } finally {
