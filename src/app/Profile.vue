@@ -484,30 +484,30 @@
       </div>
     </div>
   </div>
-  <div
-      v-if="showLogoutModal"
-      class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50"
-  >
-    <div class="bg-white rounded-2xl p-6 w-[90%] max-w-md shadow-lg">
-      <h2 class="text-lg font-medium text-gray-800 mb-4">
-        {{ translations.logout_text }}
-      </h2>
-      <div class="flex justify-end gap-3">
-        <button
-            class="px-4 py-2 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300"
-            @click="showLogoutModal = false"
-        >
-          {{ translations.cancel }}
-        </button>
-        <button
-            class="px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600"
-            @click="logout"
-        >
-          {{ translations.payment?.logout }}
-        </button>
-      </div>
-    </div>
-  </div>
+<!--  <div-->
+<!--      v-if="showLogoutModal"-->
+<!--      class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50"-->
+<!--  >-->
+<!--    <div class="bg-white rounded-2xl p-6 w-[90%] max-w-md shadow-lg">-->
+<!--      <h2 class="text-lg font-medium text-gray-800 mb-4">-->
+<!--        {{ translations.logout_text }}-->
+<!--      </h2>-->
+<!--      <div class="flex justify-end gap-3">-->
+<!--        <button-->
+<!--            class="px-4 py-2 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300"-->
+<!--            @click="showLogoutModal = false"-->
+<!--        >-->
+<!--          {{ translations.cancel }}-->
+<!--        </button>-->
+<!--        <button-->
+<!--            class="px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600"-->
+<!--            @click="logout"-->
+<!--        >-->
+<!--          {{ translations.payment?.logout }}-->
+<!--        </button>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
   <LoadingModal :show="showLoading" />
   <div
       v-if="showReloadModal"
@@ -1300,10 +1300,10 @@ const onContinueClick = async (e) => {
       win.location.href = url
       handleConfirmNavigation()
 
-      // ⏳ 2 soniyadan keyin modalni ko‘rsatamiz
+      // ⏳ 5 soniyadan keyin modalni ko‘rsatamiz
       setTimeout(() => {
         showReloadModal.value = true
-      }, 2000)
+      }, 5000)
     } else {
       win.close()
       alert('To‘lov havolasi topilmadi!')
@@ -1318,25 +1318,25 @@ const onContinueClick = async (e) => {
 
 // Logout method
 
-const logout = async () => {
-  try {
-    const token = localStorage.getItem("token") || sessionStorage.getItem("token")
-    if (token) {
-      await axios.post("/auth/logout", {}, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      })
-    }
-  } catch (error) {
-    if (error.response?.status === 401) {
-      clearAuthStorage()
-    }
-  } finally {
-    clearAuthStorage()
-    window.location.href = "/register"
-  }
-}
+// const logout = async () => {
+//   try {
+//     const token = localStorage.getItem("token") || sessionStorage.getItem("token")
+//     if (token) {
+//       await axios.post("/auth/logout", {}, {
+//         headers: {
+//           Authorization: `Bearer ${token}`
+//         }
+//       })
+//     }
+//   } catch (error) {
+//     if (error.response?.status === 401) {
+//       clearAuthStorage()
+//     }
+//   } finally {
+//     clearAuthStorage()
+//     window.location.href = "/register"
+//   }
+// }
 
 const hhUrl = ref(null)
 const chatId = ref(null)
