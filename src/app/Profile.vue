@@ -520,6 +520,7 @@ import Header from '@/components/Header.vue'
 import LoadingModal from "@/components/modal/LodaingModal.vue";
 import Profile from "@/components/loading/Profile.vue";
 const { translations } = useI18n()
+import { toast } from "vue3-toastify"
 const { proxy } = getCurrentInstance()
 
 const router = useRouter()
