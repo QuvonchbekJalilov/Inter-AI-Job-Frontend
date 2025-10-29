@@ -288,7 +288,7 @@
                     {{ plan.name }} 
                   </h4>
                   <span class="text-xl sm:text-2xl font-normal text-blue-600 translate-y-1.5">
-                    {{ plan.price }} UZS
+                    {{ formatUZS(plan.price) }} UZS
                   </span>
                 </div>
                 <span
@@ -299,7 +299,7 @@
                 </span>
                 <div class="text-right mb-2">
                   <span class="text-gray-400 line-through text-xs sm:text-sm">
-                    {{ plan.fake_price }} UZS
+                    {{ formatUZS(plan.fake_price) }} UZS
                   </span>
                 </div>
               </div>
@@ -323,11 +323,11 @@
                   </p>
                   <div class="text-end mb-3">
               <span class="text-base sm:text-lg font-medium text-blue-600">
-                {{ selectedPlan.price }} UZS
+                {{ formatUZS(selectedPlan.price) }} UZS
               </span>
                     <br />
                     <span class="text-gray-400 line-through text-xs sm:text-sm">
-                {{ selectedPlan.fake_price }} UZS
+                {{ formatUZS(selectedPlan.fake_price) }} UZS
               </span>
                   </div>
                 </div>
@@ -502,6 +502,18 @@ const asNumber = (value) => {
   if (value === null || value === undefined) return null
   const num = Number(value)
   return Number.isFinite(num) ? num : null
+}
+// Format UZS amounts with dot as thousands separator without losing precision
+const formatUZS = (value) => {
+  if (value === null || value === undefined) return '0'
+  let str = String(value).trim()
+  if (!str) return '0'
+  const isNegative = str.startsWith('-')
+  // Keep only digits; ignore any existing separators or currency symbols
+  str = str.replace(/[^0-9]/g, '')
+  if (!str) return '0'
+  const withDots = str.replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+  return isNegative ? `-${withDots}` : withDots
 }
 const plans = ref([])
 const activeSubscription = computed(() => {
