@@ -509,11 +509,25 @@
     </div>
   </div>
   <LoadingModal :show="showLoading" />
-  <Modal v-if="showReloadModal" @close="showReloadModal = false">
-    <template #title>To‘lov yakunlandi</template>
-    <p>Iltimos, o‘zgarishlarni ko‘rish uchun sahifani yangilang.</p>
-    <button @click="location.reload()">Sahifani yangilash</button>
-  </Modal>
+  <div
+      v-if="showReloadModal"
+      @close="showReloadModal = false"
+      class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50"
+  >
+    <div class="bg-white rounded-2xl p-6 w-[90%] max-w-md shadow-lg">
+      <h2 class="text-lg font-medium text-gray-800 mb-4">
+        Iltimos, o‘zgarishlarni ko‘rish uchun sahifani yangilang.
+      </h2>
+      <div class="flex justify-end gap-3">
+        <button
+            class="px-4 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600"
+            @click="location.reload()"
+        >
+          Sahifani yangilash
+        </button>
+      </div>
+    </div>
+  </div>
 
 </template>
 
