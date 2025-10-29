@@ -509,6 +509,12 @@
     </div>
   </div>
   <LoadingModal :show="showLoading" />
+  <Modal v-if="showReloadModal" @close="showReloadModal = false">
+    <template #title>To‘lov yakunlandi</template>
+    <p>Iltimos, o‘zgarishlarni ko‘rish uchun sahifani yangilang.</p>
+    <button @click="location.reload()">Sahifani yangilash</button>
+  </Modal>
+
 </template>
 
 <script setup>
@@ -1250,6 +1256,7 @@ const requestPaymentUrl = async (method) => {
   )
   return response.data.payment_url || response.data.url || null
 }
+const showReloadModal = ref(false)
 
 const onContinueClick = async (e) => {
   e.preventDefault()
@@ -1276,6 +1283,15 @@ const onContinueClick = async (e) => {
     if (url) {
       win.location.href = url
       handleConfirmNavigation()
+
+      // 🔥 To‘lov oynasini kuzatamiz
+      const interval = setInterval(() => {
+        if (win.closed) {
+          clearInterval(interval)
+          // 🔔 Modal chiqaramiz
+          showReloadModal.value = true
+        }
+      }, 1000)
     } else {
       win.close()
       alert('To‘lov havolasi topilmadi!')
