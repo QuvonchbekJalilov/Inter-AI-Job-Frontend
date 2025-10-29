@@ -1163,7 +1163,7 @@ const toggleStatus = async () => {
     user.value.status = updatedStatus
   } catch (err) {
     console.error('❌ Xatolik:', err.response?.data || err.message)
-    toast.error(translations.status_update_24);
+    toast.error(translations.value.status_update_24);
   } finally {
     loading.value = false
   }
