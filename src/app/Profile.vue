@@ -521,7 +521,7 @@
       <div class="flex justify-end gap-3">
         <button
             class="px-4 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600"
-            @click="location.reload()"
+            @click="reloadPage"
         >
           Sahifani yangilash
         </button>
@@ -1271,6 +1271,9 @@ const requestPaymentUrl = async (method) => {
   return response.data.payment_url || response.data.url || null
 }
 const showReloadModal = ref(false)
+const reloadPage = () => {
+  window.location.reload()
+}
 
 const onContinueClick = async (e) => {
   e.preventDefault()
