@@ -264,7 +264,7 @@
           <div ref="plansSection" class="bg-white border border-gray-200 rounded-2xl p-4 sm:p-6">
             <div class="mb-3 text-xs sm:text-sm text-gray-600 flex justify-between">
               <span>{{ translations.plan?.free_responses }}</span>
-              <span class="text-gray-900 font-medium">{{ creditsUsed }} / {{ planLimit }}</span>
+              <span class="text-gray-900 font-medium">{{ balanceCreditLimit }} / {{ planLimit }}</span>
             </div>
 
             <div class="w-full bg-gray-200 rounded-full h-2 mb-4 sm:h-2.5">
@@ -765,6 +765,12 @@ const creditsUsed = computed(() => {
   if (creditUsed !== null) return creditUsed
   const applied = asNumber(appliedCount.value)
   return applied ?? 0
+})
+// For the label: take limit from /balance -> credit.limit
+const balanceCreditLimit = computed(() => {
+  const credit = balance.value?.credit || {}
+  const limitNum = asNumber(credit.limit)
+  return limitNum !== null ? limitNum : 0
 })
 const FREE_TRIAL_LIMIT = 10
 const planLimit = computed(() => {
