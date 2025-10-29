@@ -56,12 +56,13 @@
 <!--            </div>-->
 
             <!-- Action -->
-            <div>
+            <!-- <div>
                 <button @click="openTelegramLink"
                     class="block w-full py-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium text-center">
                     {{ translations.all_information }}
                 </button>
-            </div>
+            </div> -->
+            <div class="text-left text-gray-400 text-xs">{{ translations.all_information }} @inter_ai_uz</div>
         </div>
     </div>
     <LoadingModal :show="showLoading" />
