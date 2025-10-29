@@ -132,13 +132,20 @@
           </h2>
           <div class="flex items-center justify-between">
             <div class="text-sm text-gray-500">
-             
+            
               <span class="text-gray-700">
                 {{ user?.resumes?.[0]?.title  }}
               </span>
             </div>
             <span class="px-3 py-1 bg-green-100 text-green-600 rounded-full text-xs">{{ translations.resumes?.status_active }}</span>
           </div>
+          <button
+              type="button"
+              class="mt-4 w-full px-4 py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-50 text-center block"
+              @click="showResumeModal = true"
+          >
+            {{ translations.auto_apply?.edit_resume }}
+          </button>
 <!--          <a-->
 <!--              :href="user?.resumes[0]?.file_url"-->
 <!--              target="_blank"-->
@@ -421,6 +428,34 @@
       </div>
     </div>
   </div>
+  <!-- Resume edit modal -->
+  <div
+      v-if="showResumeModal"
+      class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50"
+  >
+    <div class="bg-white rounded-2xl p-6 w-[90%] max-w-md shadow-lg">
+      <h2 class="text-lg font-medium text-gray-800 mb-2">
+         {{ translations.auto_apply?.edit_resume }}
+      </h2>
+      <p class="text-sm text-gray-600 mb-4">
+        {{ translations.auto_apply?.resume_description }}
+      </p>
+      <div class="flex justify-end gap-3">
+        <button
+            class="px-4 py-2 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300"
+            @click="showResumeModal = false"
+        >
+          {{ translations.auto_apply?.cancel_button }}
+        </button>
+        <button
+            class="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700"
+            @click="openSupportChat"
+        >
+          {{ translations.auto_apply?.appeal }}
+        </button>
+      </div>
+    </div>
+  </div>
   <!-- Modal -->
   <div
       v-if="showHhModal"
@@ -492,6 +527,7 @@ const route = useRoute()
 const { locale } = useI18n()
 const amount = ref(100)
 const showLogoutModal = ref(false)
+const showResumeModal = ref(false)
 const showLoading = ref(false);
 const showHhModal = ref(false);
 const loadingSkeleton = ref(true)
@@ -502,6 +538,12 @@ const asNumber = (value) => {
   if (value === null || value === undefined) return null
   const num = Number(value)
   return Number.isFinite(num) ? num : null
+}
+// Support chat URL (same as in Page.vue button)
+const supportUrl = 'https://t.me/inter_ai_support_bot'
+const openSupportChat = () => {
+  window.open(supportUrl, '_blank', 'noopener,noreferrer')
+  showResumeModal.value = false
 }
 // Format UZS amounts with dot as thousands separator without losing precision
 const formatUZS = (value) => {
