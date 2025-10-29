@@ -90,6 +90,8 @@
             <template v-else>
               <div class="text-sm text-gray-500">
                 {{ translations.resume_upload_hint }}
+                <br/>
+                <div class="text-center text-gray-400 text-xs">(.pdf, .doc, .docx)</div>
               </div>
               <button
                   type="button"
