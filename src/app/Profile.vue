@@ -1203,7 +1203,26 @@ onMounted(async () => {
     loading.value = false;
     loadingSkeleton.value = false;
   }
+
+ // qo'shilgan 1 
+  // Register listeners to detect return from payment on iOS (tab restored/visible)
+  window.addEventListener('pageshow', handlePageShow)
+  document.addEventListener('visibilitychange', handleVisibilityChange)
+  window.addEventListener('focus', handleWindowFocus)
+  // Also check immediately in case we returned via a full redirect
+  checkPaymentReturn()
+ // qo'shilgan 1 tugadi 
+
+
 });
+
+//qo'shilgan 2
+onUnmounted(() => {
+  window.removeEventListener('pageshow', handlePageShow)
+  document.removeEventListener('visibilitychange', handleVisibilityChange)
+  window.removeEventListener('focus', handleWindowFocus)
+})
+//qo'shilgan 2 tugadi
 
 const userStatus = ref(null)
 
@@ -1328,6 +1347,44 @@ const requestPaymentUrl = async (method) => {
   return response.data.payment_url || response.data.url || null
 }
 const showReloadModal = ref(false)
+
+
+
+// qo'shilgan 3
+const PAYMENT_FLAG_KEY = 'iapp_payment_in_progress'
+const setPaymentInProgress = () => {
+  try {
+    localStorage.setItem(PAYMENT_FLAG_KEY, String(Date.now()))
+  } catch (_) { /* ignore */ }
+}
+const clearPaymentInProgress = () => {
+  try {
+    localStorage.removeItem(PAYMENT_FLAG_KEY)
+  } catch (_) { /* ignore */ }
+}
+const checkPaymentReturn = () => {
+  try {
+    const ts = localStorage.getItem(PAYMENT_FLAG_KEY)
+    if (ts) {
+      showReloadModal.value = true
+      clearPaymentInProgress()
+    }
+  } catch (_) { /* ignore */ }
+}
+// Detect when user returns to the app/tab (iOS Safari/WebView specifics)
+const handlePageShow = () => {
+  checkPaymentReturn()
+}
+const handleVisibilityChange = () => {
+  if (document.visibilityState === 'visible') checkPaymentReturn()
+}
+const handleWindowFocus = () => {
+  checkPaymentReturn()
+}
+// qo'shilgan 3 tugadi
+
+
+
 const reloadPage = () => {
   window.location.reload()
 }
@@ -1337,6 +1394,15 @@ const onContinueClick = async (e) => {
   const win = window.open('about:blank', '_blank')
   if (!win) {
     if (paymentUrl.value) {
+
+
+//qo'shilgan 4
+
+      // iOS often blocks window.open; navigate in same tab
+      // Mark payment in progress so we can detect return and show modal
+      setPaymentInProgress()
+//qo'shilgan 4 tugadi
+
       window.location.href = paymentUrl.value
       handleConfirmNavigation()
     }
@@ -1354,6 +1420,15 @@ const onContinueClick = async (e) => {
     }
 
     if (url) {
+
+
+//qo'shilgan 5      
+      // New tab flow: mark payment in progress, navigate popup to provider
+      setPaymentInProgress()
+//qo'shilgan 5 tugadi
+
+
+
       win.location.href = url
       handleConfirmNavigation()
 
