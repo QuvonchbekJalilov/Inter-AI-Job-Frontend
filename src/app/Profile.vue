@@ -289,26 +289,84 @@
                     !hasActivePlan ? 'cursor-pointer hover:shadow-md' : ''
                   ]"
                   @click="handlePlanClick(plan)"
+
+                  
               >
+              
                 <div class="flex items-center justify-between gap-3 mb-1">
                   <h4 class="text-xl sm:text-2xl font-normal text-gray-800 translate-y-2">
                     {{ plan.name }} 
                   </h4>
+
+                    <!-- <span
+                      v-if="isPlanActive(plan)"
+                      class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-medium self-start translate-y-2"
+                  >
+                    {{ translations.plan?.current_badge || 'Sizning tarifi' }}
+                  </span> -->
                   <span class="text-xl sm:text-2xl font-normal text-blue-600 translate-y-1.5">
                     {{ formatUZS(plan.price) }} UZS
+                    
                   </span>
                 </div>
-                <span
-                    v-if="isPlanActive(plan)"
-                    class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-medium self-start translate-y-2"
-                >
-                  {{ translations.plan?.current_badge || 'Sizning tarifi' }}
-                </span>
-                <div class="text-right mb-2">
+                <div class="text-right mb-2" v-if="plan.fake_price">
                   <span class="text-gray-400 line-through text-xs sm:text-sm">
                     {{ formatUZS(plan.fake_price) }} UZS
                   </span>
                 </div>
+
+
+
+
+
+
+
+
+
+
+
+                <div v-if="isPlanActive(plan)" class="flex items-center justify-between gap-2">
+                  <span
+                      class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-medium"
+                  >
+                    <!-- {{ translations.plan?.current_badge || 'Sizning tarifi' }} -->
+                      Amal qilish muddati:
+                  </span>
+                  <span
+                      class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-medium"
+                  >
+                    12.12.2024-11.01.2025
+                  </span>
+                </div>
+
+
+
+                <!-- <span
+                    v-if="isPlanActive(plan)"
+                    class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-medium self-start translate-y-1 "
+                >
+                  12.12.2025-11.01.2025
+                </span> -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+               
               </div>
             </div>
           </div>
