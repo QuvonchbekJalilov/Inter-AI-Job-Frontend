@@ -37,11 +37,11 @@
               <span class="font-medium text-gray-500">{{ translations.profiles?.phone }}:</span>
               +998 {{ user?.phone }}
             </div>
-            <div>
+            <div v-if="hasActivePlan">
               <span class="font-medium text-gray-500">{{ translations.working_status }}</span>
             </div>
             <!-- STATUS CARD -->
-            <div class="flex items-center justify-between p-3 border rounded-xl bg-gray-50">
+            <div v-if="hasActivePlan" class="flex items-center justify-between p-3 border rounded-xl bg-gray-50">
               <div class="flex items-center gap-2">
 
                 <span
@@ -329,13 +329,12 @@
                   <span
                       class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-medium"
                   >
-                    <!-- {{ translations.plan?.current_badge || 'Sizning tarifi' }} -->
-                      Amal qilish muddati:
+                    {{ translations.plan?.current_badge }}
                   </span>
                   <span
                       class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-medium"
                   >
-                    12.12.2024-11.01.2025
+                    {{ subscriptionPeriod }}
                   </span>
                 </div>
 
@@ -696,6 +695,16 @@ const subscriptionPlanPrice = computed(() => {
   if (!plan) return null
   return plan.price ?? plan.amount ?? plan.cost ?? null
 })
+// Format date to dd.mm.yyyy for badges
+const formatDateDMY = (raw) => {
+  if (!raw) return null
+  const d = new Date(raw)
+  if (Number.isNaN(d.getTime())) return null
+  const dd = String(d.getDate()).padStart(2, '0')
+  const mm = String(d.getMonth() + 1).padStart(2, '0')
+  const yyyy = d.getFullYear()
+  return `${dd}.${mm}.${yyyy}`
+}
 const subscriptionExpiry = computed(() => {
   const subscription = activeSubscription.value
   if (!subscription) return null
@@ -705,10 +714,25 @@ const subscriptionExpiry = computed(() => {
       subscription.ends_at ??
       subscription.end_at ??
       null
-  if (!raw) return null
-  const date = new Date(raw)
-  if (Number.isNaN(date.getTime())) return null
-  return date.toLocaleDateString()
+  return formatDateDMY(raw)
+})
+const subscriptionStart = computed(() => {
+  const subscription = activeSubscription.value
+  if (!subscription) return null
+  const raw =
+      subscription.starts_at ??
+      subscription.start_at ??
+      subscription.started_at ??
+      subscription.begin_at ??
+      subscription.begins_at ??
+      null
+  return formatDateDMY(raw)
+})
+const subscriptionPeriod = computed(() => {
+  const start = subscriptionStart.value
+  const end = subscriptionExpiry.value
+  if (start && end) return `${start}-${end}`
+  return start || end || ''
 })
 const isPlanActive = (plan) => {
   const selectedId = activePlanId.value

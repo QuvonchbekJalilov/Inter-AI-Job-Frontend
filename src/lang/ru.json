@@ -57,7 +57,7 @@
     "current": "Текущий тариф",
     "limit": "Лимит",
     "expires": "Действителен до",
-    "current_badge": "Ваш тариф"
+    "current_badge": "Срок действия:"
   },
   "payment": {
     "title": "Способы оплаты",

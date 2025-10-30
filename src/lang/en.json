@@ -57,7 +57,7 @@
     "current": "Current plan",
     "limit": "Limit",
     "expires": "Valid until",
-    "current_badge": "Your plan"
+    "current_badge": "Valid until:"
   },
   "payment": {
     "title": "Payment methods",
