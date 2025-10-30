@@ -312,6 +312,7 @@ const submitRegistration = async () => {
       router.push({ name: 'home' })
       window.location.href = "/";
     } else {
+      await deleteUserIfNoResume(token)
       error.value = data.message || "Ro‘yxatdan o‘tishda xatolik yuz berdi."
     }
   } catch (e) {
@@ -323,6 +324,8 @@ const submitRegistration = async () => {
                   ? "❗ Этот номер телефона уже зарегистрирован."
                   : "❗ This phone number is already registered."
       )
+      router.push({ name: 'home' })
+      window.location.href = "/";
     } else {
       toast.error(
           locale.value === 'uz'
