@@ -161,7 +161,7 @@
   "view_vacancies": "View vacancies",
   "view_all_vacancies": "View all",
   "subscription_required_title": "Subscription required for full access",
-  "subscription_required_description": "There are <span class=\"text-black font-semibold\">{count}</span> more vacancies waiting for you. Subscribe to unlock the full list.",
+  "subscription_required_description": "There are <span class=\"text-black font-medium\">{count}</span> more vacancies waiting for you. Subscribe to unlock the full list.",
   "subscription_required_cancel": "Cancel",
   "subscription_required_go": "Go to plans",
   "no_matching_vacancies": "No suitable vacancies found. Please try logging in or registering again.",

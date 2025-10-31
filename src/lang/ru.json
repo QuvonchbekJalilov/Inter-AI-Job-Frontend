@@ -161,7 +161,7 @@
   "view_vacancies": "Посмотреть вакансии",
   "view_all_vacancies": "Посмотреть всё",
   "subscription_required_title": "Для полного списка нужна подписка",
-  "subscription_required_description": "Для вас подобрано ещё <span class=\"text-black font-semibold\">{count}</span> вакансий. Чтобы увидеть весь список, оформите подписку.",
+  "subscription_required_description": "Для вас подобрано ещё <span class=\"text-black font-medium\">{count}</span> вакансий. Чтобы увидеть весь список, оформите подписку.",
   "subscription_required_cancel": "Отмена",
   "subscription_required_go": "К тарифам",
   "no_matching_vacancies": "Подходящих вакансий не найдено. Пожалуйста, попробуйте снова войти или зарегистрироваться.",

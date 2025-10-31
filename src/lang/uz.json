@@ -161,7 +161,7 @@
   "view_vacancies": "Vakansiyalarni ko‘rish",
   "view_all_vacancies": "Barchasini ko‘rish",
   "subscription_required_title": "To‘liq ro‘yxat uchun obuna kerak",
-  "subscription_required_description": "Siz uchun saralab olingan <span class=\"text-black font-semibold\">{count}</span> ta vakansiya bor, hammasini to‘liq ko‘rish uchun obuna bo‘ling.",
+  "subscription_required_description": "Siz uchun saralab olingan <span class=\"text-black font-medium\">{count}</span> ta vakansiya bor, hammasini to‘liq ko‘rish uchun obuna bo‘ling.",
   "subscription_required_cancel": "Bekor qilish",
   "subscription_required_go": "Tariflarga o'tish",
   "no_matching_vacancies": "Sizga mos keladigan vakansiya topilmadi. Iltimos, qaytadan login yoki ro‘yxatdan o‘tib ko‘ring.",
