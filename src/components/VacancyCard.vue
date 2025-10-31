@@ -294,6 +294,34 @@ const coverLatterLoadingSubmit = ref(false);
 const coverLetter = ref("");
 const selectedJob = ref(null);
 
+// Daily auto-popup control for non-trial, non-subscribed users
+const getLocalDateString = () => {
+  const d = new Date()
+  const y = d.getFullYear()
+  const m = String(d.getMonth() + 1).padStart(2, "0")
+  const day = String(d.getDate()).padStart(2, "0")
+  return `${y}-${m}-${day}`
+}
+const getSubscriptionModalKey = (userId) => `vacancycard_subscription_modal_shown_${userId}_${getLocalDateString()}`
+const maybeShowSubscriptionModalOnceDaily = () => {
+  try {
+    // Show only for users without full access (no subscription and no active trial)
+    if (hasFullAccess.value) return
+
+    const userId = user.value?.id ?? user.value?.uuid ?? user.value?.email
+    if (!userId) return
+
+    const key = getSubscriptionModalKey(userId)
+    const shown = localStorage.getItem(key)
+    if (!shown) {
+      showSubscriptionModal.value = true
+      localStorage.setItem(key, "1")
+    }
+  } catch (e) {
+    // fail-safe: do nothing
+  }
+}
+
 const openCoverLetterModal = async (job) => {
   selectedJob.value = job;
   showCoverModal.value = true;
@@ -490,6 +518,8 @@ onMounted(async () => {
 
     const { data: meData } = await axios.get(proxy.$locale + "/auth/me", { headers });
     user.value = meData.data;
+    // Auto-open subscription modal once per day for users without full access
+    maybeShowSubscriptionModalOnceDaily()
     // console.log("meData", meData);
   } catch (e) {
     error.value = "Foydalanuvchi ma’lumotlarini olishda xatolik.";
