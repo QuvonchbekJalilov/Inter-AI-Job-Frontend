@@ -32,7 +32,7 @@
               type="tel"
               v-model="formData.phone"
               class="w-full px-3 py-2 bg-gray-100 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:bg-white"
-              placeholder="901234567"
+              placeholder="33 505 20 05"
           />
         </div>
 
@@ -476,10 +476,14 @@ onMounted(async () => {
     });
 
     phoneInput.value.addEventListener("input", () => {
-      const digits = phoneInput.value.value.replace(/\D/g, '');
-      if (digits.length > 9) {
-        iti.setNumber("+998" + digits.slice(0, 9));
-      }
+      const digits = phoneInput.value.value.replace(/\D/g, '').slice(0, 9)
+      let grouped = ''
+      if (digits.length <= 2) grouped = digits
+      else if (digits.length <= 5) grouped = `${digits.slice(0,2)} ${digits.slice(2)}`
+      else if (digits.length <= 7) grouped = `${digits.slice(0,2)} ${digits.slice(2,5)} ${digits.slice(5)}`
+      else grouped = `${digits.slice(0,2)} ${digits.slice(2,5)} ${digits.slice(5,7)} ${digits.slice(7)}`
+      formData.phone = grouped
+      phoneInput.value.value = grouped
     });
   }
 })
