@@ -191,6 +191,10 @@ const fetchJobs = async (forceUpdate = false) => {
             target_message_id: v.target_message_id,
             message_id: v.message_id,
           } : null,
+          hh: !isTelegram ? {
+            detail_api: v.detail_api ?? null,
+            apply_url: v.apply_url ?? null,
+          } : null,
 
           title: v.title,
           company: v.company,
