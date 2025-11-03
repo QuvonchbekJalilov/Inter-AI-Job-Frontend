@@ -98,9 +98,8 @@
                 {{ translations.select_file }}
               </button>
 
-              <!-- ❌ Xato fayl turi haqida ogohlantirish -->
               <p v-if="fileError" class="text-red-500 text-sm mt-3">
-                Iltimos, yaroqli fayl turini tanlang (.pdf, .doc, .docx)
+                {{ translations.resume_valid }}
               </p>
             </template>
           </div>

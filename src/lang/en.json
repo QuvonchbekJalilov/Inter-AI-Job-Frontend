@@ -173,7 +173,8 @@
     "continue": "Continue",
     "cancel": "Cancel"
   },
-  "status_update_24": "You can only change your status once per day. Please try again in 24 hours."
+  "status_update_24": "You can only change your status once per day. Please try again in 24 hours.",
+  "resume_valid": "Please select a valid file type (.pdf, .doc, .docx)"
 
 
 }
