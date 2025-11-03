@@ -191,6 +191,7 @@ const handleFileUpload = (event) => {
   const file = event.target.files[0]
   if (!file) return
 
+  // ✅ Faqat ruxsat etilgan fayl turlari
   if (!allowedTypes.includes(file.type)) {
     fileError.value = true
     formData.resumeFile = null
@@ -199,6 +200,8 @@ const handleFileUpload = (event) => {
     event.target.value = ''
     return
   }
+
+  // Fayl to‘g‘ri bo‘lsa
   fileError.value = false
 
   if (formData.resumeFileUrl) {
@@ -231,7 +234,9 @@ const isValid = computed(() => valid.names)
 const isStepValid = () => {
   return (
       formData.firstName &&
-      formData.phone
+      formData.phone &&
+      formData.resumeFile &&
+      !fileError.value
   )
 }
 
