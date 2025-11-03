@@ -50,6 +50,7 @@
         <label class="block text-sm font-medium text-gray-700 mb-2">
           {{ translations.Upload_your_resume_file }}
         </label>
+
         <input
             ref="resumeInput"
             id="resumeUpload"
@@ -57,27 +58,21 @@
             class="hidden"
             @change="handleFileUpload"
         />
+
         <div
             class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-400 transition-colors"
         >
           <div class="flex flex-col items-center gap-4">
             <template v-if="hasResumeFile">
               <div class="flex items-center gap-2 text-green-600">
-                <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-green-100 text-green-600 shadow-sm">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                  </svg>
-                </span>
+        <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-green-100 text-green-600 shadow-sm">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+          </svg>
+        </span>
                 <span class="font-medium text-sm sm:text-base text-green-700">{{ translations.resume_file_ready }}</span>
               </div>
               <div class="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
-                <!--                <button-->
-                <!--                    type="button"-->
-                <!--                    class="px-4 py-2 rounded-md bg-blue-500 text-white hover:bg-blue-600 transition-colors text-sm font-medium"-->
-                <!--                    @click="viewResume"-->
-                <!--                >-->
-                <!--                  {{ translations.resume_view }}-->
-                <!--                </button>-->
                 <button
                     type="button"
                     class="px-6 sm:px-8 py-2 rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors text-sm font-medium"
@@ -87,6 +82,8 @@
                 </button>
               </div>
             </template>
+
+            <!-- Fayl tanlanmagan holat -->
             <template v-else>
               <div class="text-sm text-gray-500">
                 {{ translations.resume_upload_hint }}
@@ -100,6 +97,11 @@
               >
                 {{ translations.select_file }}
               </button>
+
+              <!-- ❌ Xato fayl turi haqida ogohlantirish -->
+              <p v-if="fileError" class="text-red-500 text-sm mt-3">
+                Iltimos, yaroqli fayl turini tanlang (.pdf, .doc, .docx)
+              </p>
             </template>
           </div>
         </div>
@@ -107,18 +109,18 @@
 
         <button
             @click="completeRegistration"
-            :disabled="!isStepValid() || btnLoading || !acceptedOffer"
+            :disabled="!isStepValid() || btnLoading || !acceptedOffer || fileError"
             :class="[
-              'w-full py-3 rounded-md font-medium transition-colors flex items-center justify-center gap-2',
-              (!isStepValid() || btnLoading || !acceptedOffer)
-                ? 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-50'
-                : 'bg-blue-500 text-white hover:bg-blue-600'
-            ]"
+      'w-full py-3 rounded-md font-medium transition-colors flex items-center justify-center gap-2',
+      (!isStepValid() || btnLoading || !acceptedOffer || fileError)
+        ? 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-50'
+        : 'bg-blue-500 text-white hover:bg-blue-600'
+    ]"
         >
-            <span
-                v-if="btnLoading"
-                class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"
-            ></span>
+  <span
+      v-if="btnLoading"
+      class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"
+  ></span>
           <span>{{ btnLoading ? translations.finish : translations.finish }}</span>
         </button>
 
@@ -166,48 +168,39 @@ const resumeInput = ref(null)
 const formData = reactive({
   firstName: '',
   phone: '',
-  // resumeText: '',
   resumeFile: null,
   resumeFileUrl: null,
 })
 
 
-const selectedFile = ref(null)
 const loading = ref(false)
 const btnLoading = ref(false)
 const error = ref("")
+const selectedFile = ref(null)
 const hasResumeFile = computed(() => Boolean(formData.resumeFileUrl))
+const fileError = ref(false)
 const acceptedOffer = ref(false)
-
-// onMounted(() => {
-//   const params = new URLSearchParams(window.location.search);
-//   const chatId = params.get("chat_id");
-//   const locale = params.get("locale") || "uz";
-
-//   if (chatId) {
-//     localStorage.setItem("chat_id", chatId);
-//     formData.chat_id = chatId;
-//   } else {
-//     const savedChatId = localStorage.getItem("chat_id");
-//     if (savedChatId) {
-//       formData.chat_id = savedChatId;
-//     }
-//   }
-
-//   if (locale) {
-//     localStorage.setItem("locale", locale);
-//   }
-// });
 
 const isSuccess = (resp) => {
   if (!resp) return false
   const s = resp.status
   return s === true || s === 'success' || s === 'ok'
 }
+const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']
 
 const handleFileUpload = (event) => {
   const file = event.target.files[0]
   if (!file) return
+
+  if (!allowedTypes.includes(file.type)) {
+    fileError.value = true
+    formData.resumeFile = null
+    formData.resumeFileUrl = null
+    selectedFile.value = null
+    event.target.value = ''
+    return
+  }
+  fileError.value = false
 
   if (formData.resumeFileUrl) {
     URL.revokeObjectURL(formData.resumeFileUrl)
@@ -215,18 +208,12 @@ const handleFileUpload = (event) => {
 
   selectedFile.value = file
   formData.resumeFile = file
-  formData.resumeFileUrl = URL.createObjectURL(file) // preview uchun
+  formData.resumeFileUrl = URL.createObjectURL(file)
   event.target.value = ''
 }
 
 const openFileDialog = () => {
   resumeInput.value?.click()
-}
-
-const viewResume = () => {
-  if (formData.resumeFileUrl) {
-    window.open(formData.resumeFileUrl, "_blank", "noopener")
-  }
 }
 
 
