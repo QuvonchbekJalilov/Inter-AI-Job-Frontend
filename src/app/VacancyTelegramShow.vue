@@ -50,9 +50,9 @@
                           <a
                               :href="vacancy.apply_url"
                               target="_blank"
-                              class="text-green-600 hover:underline font-medium"
+                              class="text-blue-600 hover:underline"
                           >
-                            Ishga topshirish → {{ vacancy.apply_url }}
+                            {{ vacancy.apply_url }}
                           </a>
                         </div>
                       </div>
