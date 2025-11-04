@@ -52,7 +52,7 @@
                               target="_blank"
                               class="text-blue-600 hover:underline"
                           >
-                            {{ vacancy.apply_url }}
+                            @{{ translations.Contact }}
                           </a>
                         </div>
                       </div>
