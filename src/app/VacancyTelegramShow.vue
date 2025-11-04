@@ -26,9 +26,6 @@
                     {{ vacancy.description }}
                 </p>
             </div>
-          <pre>
-            {{ vacancy }}
-          </pre>
 
             <!-- Contact Info -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -36,12 +33,29 @@
                     <p class="text-sm text-gray-500">{{ translations.Contact }}</p>
                     <div class="font-medium space-y-1">
                         <p v-for="phone in vacancy.contact?.phones" :key="phone">{{ phone }}</p>
-                        <p v-for="user in vacancy.contact?.telegram_usernames" :key="user">
-                            <a :href="`https://t.me/${user.replace('@', '')}`" target="_blank"
-                                class="text-blue-600 hover:underline">
-                                {{ user }}
+                      <div v-if="vacancy.category === 'Logistics and Supply Chain'">
+                        <div v-if="vacancy.contact?.telegram_usernames?.length">
+                          <p v-for="user in vacancy.contact.telegram_usernames" :key="user">
+                            <a
+                                :href="`https://t.me/${user.replace('@', '')}`"
+                                target="_blank"
+                                class="text-blue-600 hover:underline"
+                            >
+                              {{ user }}
                             </a>
-                        </p>
+                          </p>
+                        </div>
+
+                        <div v-if="vacancy.apply_url" class="mt-2">
+                          <a
+                              :href="vacancy.apply_url"
+                              target="_blank"
+                              class="text-green-600 hover:underline font-medium"
+                          >
+                            Ishga topshirish → {{ vacancy.apply_url }}
+                          </a>
+                        </div>
+                      </div>
                     </div>
                 </div>
 
