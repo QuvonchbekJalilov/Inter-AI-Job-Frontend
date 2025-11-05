@@ -41,7 +41,7 @@
                               target="_blank"
                               class="text-blue-600 hover:underline"
                           >
-                            @{{ translations.Contact }}
+                            @{{ translations.connection }}
                           </a>
                         </div>
 
