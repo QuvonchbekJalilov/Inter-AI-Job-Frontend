@@ -27,13 +27,24 @@
             v-else
             to="/profile"
             class="flex items-center space-x-2 hover:text-gray-500"
+            style="cursor: pointer;"
         >
-          <span v-if="user">{{ user?.first_name }}</span>
-          <svg class="w-9 h-9" viewBox="0 0 1000 1000" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <span
+              v-if="user"
+              class="inline-flex items-center pl-3.5 pr-0 h-9 rounded-full border border-gray-300 bg-white text-blue-600 shadow-sm hover:shadow-md hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-300 transition-all duration-150 cursor-pointer select-none text-sm font-medium"
+          >
+            {{ translations.profile }}
+            <svg class="w-9 h-9 ml-1.5 shrink-0" viewBox="0 0 1000 1000" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <circle cx="500" cy="500" r="396.364" fill="white" stroke="#C6C6C6" stroke-width="7.27273"/>
+              <path d="M612.317 162.336C125.918 493.239 560.25 774.264 744.155 527.855C394.377 1306.54 -83.9093 341.001 612.317 162.336Z" fill="#5078FF"/>
+              <path d="M630.583 459.366C630.583 514.87 586.313 559.865 531.704 559.865C477.094 559.865 432.825 514.87 432.825 459.366C432.825 403.861 477.094 358.866 531.704 358.866C586.313 358.866 630.583 403.861 630.583 459.366Z" fill="#5078FF"/>
+            </svg>
+          </span>
+          <!-- <svg v-if="!user" class="w-9 h-9" viewBox="0 0 1000 1000" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="500" cy="500" r="396.364" fill="white" stroke="#C6C6C6" stroke-width="7.27273"/>
             <path d="M612.317 162.336C125.918 493.239 560.25 774.264 744.155 527.855C394.377 1306.54 -83.9093 341.001 612.317 162.336Z" fill="#5078FF"/>
             <path d="M630.583 459.366C630.583 514.87 586.313 559.865 531.704 559.865C477.094 559.865 432.825 514.87 432.825 459.366C432.825 403.861 477.094 358.866 531.704 358.866C586.313 358.866 630.583 403.861 630.583 459.366Z" fill="#5078FF"/>
-          </svg>
+          </svg> -->
         </RouterLink>
       </div>
     </div>
