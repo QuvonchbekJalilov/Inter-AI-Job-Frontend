@@ -117,6 +117,7 @@
         </h3>
       </div>
     </div>
+    <!-- TEMP: Subscription CTA disabled (10-limit gating off)
     <div
         v-if="!hasFullAccess && lockedVacancyCount > 0"
         class="mt-6 flex justify-center"
@@ -128,6 +129,7 @@
         <span class="flex items-center justify-center">{{ translations.view_all_vacancies }}</span>
       </button>
     </div>
+    -->
   </div>
   <div>
     <ModalComponent
@@ -235,6 +237,7 @@
       </div>
     </Transition>
   </div>
+  <!-- TEMP: Subscription modal disabled (10-limit gating off)
   <div
       v-if="showSubscriptionModal"
       class="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
@@ -260,6 +263,7 @@
       </div>
     </div>
   </div>
+  -->
 </template>
 
 <script setup>
@@ -392,9 +396,12 @@ const isTrialActive = computed(() => {
   return Boolean(value)
 })
 const hasFullAccess = computed(() => hasActiveSubscription.value || isTrialActive.value)
-const displayedJobs = computed(() =>
-    hasFullAccess.value ? jobs.value : jobs.value.slice(0, FREE_VACANCY_LIMIT)
-)
+// TEMP: Show all vacancies (disable 10-limit gating)
+// Original:
+// const displayedJobs = computed(() =>
+//   hasFullAccess.value ? jobs.value : jobs.value.slice(0, FREE_VACANCY_LIMIT)
+// )
+const displayedJobs = computed(() => jobs.value)
 const lockedVacancyCount = computed(() =>
     Math.max(jobs.value.length - FREE_VACANCY_LIMIT, 0)
 )
@@ -522,8 +529,8 @@ onMounted(async () => {
 
     const { data: meData } = await axios.get(proxy.$locale + "/auth/me", { headers });
     user.value = meData.data;
-    // Auto-open subscription modal once per day for users without full access
-    maybeShowSubscriptionModalOnceDaily()
+    // TEMP: Disable subscription prompt (10-limit gating off)
+    // maybeShowSubscriptionModalOnceDaily()
     // console.log("meData", meData);
   } catch (e) {
     error.value = "Foydalanuvchi ma’lumotlarini olishda xatolik.";
