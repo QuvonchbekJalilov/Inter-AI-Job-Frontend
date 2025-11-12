@@ -210,7 +210,7 @@
 
             <div class="flex items-center gap-3">
               <button
-                  @click="updateLimit"
+                  @click="handleSaveClick"
                   class="w-full sm:w-48 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:bg-gray-300 disabled:text-gray-500"
                   :disabled="saveDisabled"
               >
@@ -541,6 +541,62 @@
       </div>
     </div>
   </div>
+
+  <!-- Resume picker (Auto-apply) -->
+  <div
+      v-if="showResumePicker"
+      class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50"
+  >
+    <div class="bg-white rounded-2xl p-6 w-[90%] max-w-md shadow-lg">
+      <h2 class="text-lg font-medium text-gray-800 mb-4">Resumeni tanlang</h2>
+
+      <div v-if="resumesLoading" class="space-y-3">
+        <div class="h-5 bg-gray-200 rounded w-1/3 animate-pulse"></div>
+        <div class="h-10 bg-gray-200 rounded animate-pulse"></div>
+        <div class="h-10 bg-gray-200 rounded animate-pulse"></div>
+        <div class="h-10 bg-gray-200 rounded animate-pulse"></div>
+        <div class="text-sm text-gray-500">Yuklanmoqda...</div>
+      </div>
+
+      <div v-else-if="resumes.length === 0" class="text-gray-600 text-sm bg-gray-50 p-4 rounded-lg">
+        HH dagi ‘published’ rezumelaringiz topilmadi.
+      </div>
+
+      <div v-else class="space-y-3 max-h-64 overflow-auto">
+        <label
+            v-for="r in resumes"
+            :key="r.id"
+            class="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50"
+        >
+          <input type="radio" class="h-4 w-4" :value="r.id" v-model="selectedResumeId" />
+          <div class="flex-1">
+            <p class="font-medium text-gray-800">{{ r.title || ('Rezume #' + r.id) }}</p>
+            <!-- <p class="text-xs text-gray-500">Status: {{ r.status?.id }}</p> -->
+          </div>
+        </label>
+      </div>
+
+      <div class="flex justify-end gap-3 mt-6">
+        <button
+            class="px-4 py-2 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300"
+            @click="closeResumePicker"
+        >
+          Bekor qilish
+        </button>
+        <button
+            class="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            :disabled="!selectedResumeId || savingResumeSelection"
+            @click="confirmResumeAndSave"
+        >
+          <svg v-if="savingResumeSelection" class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+          </svg>
+          <span>Tasdiqlash</span>
+        </button>
+      </div>
+    </div>
+  </div>
 <!--  <div-->
 <!--      v-if="showLogoutModal"-->
 <!--      class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50"-->
@@ -606,6 +662,11 @@ const { locale } = useI18n()
 const amount = ref(100)
 const showLogoutModal = ref(false)
 const showResumeModal = ref(false)
+const showResumePicker = ref(false)
+const resumesLoading = ref(false)
+const resumes = ref([])
+const selectedResumeId = ref(null)
+const savingResumeSelection = ref(false)
 const showLoading = ref(false);
 const showHhModal = ref(false);
 const loadingSkeleton = ref(true)
@@ -1112,6 +1173,7 @@ const fetchAutoApplyData = async () => {
     enabled.value = settings.auto_apply_enabled;
     limit.value = settings.auto_apply_limit;
     appliedCount.value = settings.auto_apply_count;
+    autoApplyResumeId.value = settings.resume_id ?? null;
     saved.value = !!limit.value;
     // Slider always starts from 0
     tempLimit.value = sliderMin
@@ -1161,7 +1223,7 @@ const saveLimit = async () => {
   }
 };
 
-const updateLimit = async () => {
+const updateLimit = async (resumeId = null) => {
   if (isUpdateDisabled.value || saveCooldownActive.value || savingLimit.value) return
   // Start cooldown immediately and persist across reloads
   startSaveCooldown()
@@ -1173,10 +1235,14 @@ const updateLimit = async () => {
     const auto_apply_limit = Math.max(MIN_SEND_LIMIT, Math.min(candidate, remaining));
     const response = await axios.patch(
         proxy.$locale + "/auth/settings/auto-apply",
-        {
-          auto_apply_enabled: true,
-          auto_apply_limit: auto_apply_limit,
-        },
+        (() => {
+          const body = {
+            auto_apply_enabled: true,
+            auto_apply_limit: auto_apply_limit,
+          }
+          if (resumeId) body.resume_id = resumeId
+          return body
+        })(),
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -1200,6 +1266,64 @@ const updateLimit = async () => {
     savingLimit.value = false
   }
 };
+
+// Open resume picker when clicking Save in slider
+const autoApplyResumeId = ref(null)
+const handleSaveClick = async () => {
+  if (saveDisabled.value) return
+  if (!hhAccountActive.value) {
+    showHhModal.value = true
+    return
+  }
+  await openResumePicker()
+}
+
+const openResumePicker = async () => {
+  try {
+    showResumePicker.value = true
+    resumesLoading.value = true
+    selectedResumeId.value = null
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token')
+    const { data } = await axios.get(proxy.$locale + '/v1/hh-resumes/published', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
+    resumes.value = Array.isArray(data?.items) ? data.items : []
+    // Preselect if previously saved in settings
+    if (autoApplyResumeId.value && resumes.value.some(r => String(r.id) === String(autoApplyResumeId.value))) {
+      selectedResumeId.value = autoApplyResumeId.value
+    }
+  } catch (e) {
+    toast.error('HH dagi rezumelarni olishda xatolik yuz berdi')
+  } finally {
+    resumesLoading.value = false
+  }
+}
+
+const closeResumePicker = () => {
+  showResumePicker.value = false
+}
+
+const confirmResumeAndSave = async () => {
+  if (!selectedResumeId.value) return
+  try {
+    savingResumeSelection.value = true
+    await updateLimit(selectedResumeId.value)
+    autoApplyResumeId.value = selectedResumeId.value
+    showResumePicker.value = false
+    toast.success('Auto-apply sozlamalari saqlandi')
+  } catch (e) {
+    // updateLimit already handles most errors; show generic if thrown
+    if (e?.response?.status === 422) {
+      toast.error('Rezyume tanlash talab qilinadi')
+    }
+  } finally {
+    savingResumeSelection.value = false
+  }
+}
 
 const toggleAutoApply = async () => {
   try {
