@@ -10,6 +10,7 @@ import InterviewShow from '../app/InterviewShow.vue'
 import DemoVacancy from '../app/demo/DemoVacancy.vue'
 import DemoRegister from "@/app/demo/DemoRegister.vue"
 import VacancyTelegramShow from '../app/VacancyTelegramShow.vue'
+import CareerTracking from "@/app/CareerTracking.vue";
 
 
 const routes = [
@@ -17,6 +18,12 @@ const routes = [
         path: '/',
         name: 'home',
         component: Page,
+        meta: { requiresAuth: true }
+    },
+    {
+        path: '/career',
+        name: 'career',
+        component: CareerTracking,
         meta: { requiresAuth: true }
     },
     {
