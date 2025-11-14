@@ -28,16 +28,16 @@
 
           <!-- Name -->
           <h1 class="text-3xl sm:text-5xl lg:text-6xl font-medium leading-tight mb-4">
-            Пулатов Шахбоз<br />Фарход угли
+            {{ props.data.general?.name || 'N/A'}}
           </h1>
 
           <!-- Badges -->
           <div class="flex flex-wrap items-center gap-3 mb-6">
             <span class="bg-blue-400/30 text-white border-blue-300 text-sm px-4 py-1.5 rounded-full">
-              Vue.js Frontend Developer
+              {{ props.data.general?.position || 'Vue.js Frontend Developer' }}
             </span>
             <span class="bg-purple-400/30 text-white border-purple-300 text-sm px-4 py-1.5 rounded-full">
-              Middle+ уровень
+              {{ props.data.diagnostics?.level.level || 'Middle + уровень' }}
             </span>
           </div>
 
@@ -59,7 +59,7 @@
               </div>
               <div>
                 <p class="text-blue-100 text-xs sm:text-sm">Локация</p>
-                <p class="text-white text-sm sm:text-base">Ташкент, 25 лет</p>
+                <p class="text-white text-sm sm:text-base">{{ props.data.general?.city || 'Ташкент' }}, {{ props.data.general?.age || '25 лет' }}</p>
               </div>
             </div>
           </div>
@@ -67,10 +67,10 @@
           <!-- Email + Languages -->
           <div class="flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-3 text-sm">
             <div class="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 w-full sm:w-auto">
-              ✉️ <span>sh.pulatov@email.com</span>
+              ✉️ <span>{{ props.data.general?.email || 'sh.pulatov@email.com' }}</span>
             </div>
             <div class="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 w-full sm:w-auto">
-              🌐 <span>🇺🇿 Узбекский • 🇬🇧 English B2 • 🇷🇺 Русский A2</span>
+              🌐 <span v-for="lang in props.data.general?.languages">{{ lang || 'Узбекский •  English B2 •  Русский A2' }}</span>
             </div>
           </div>
         </div>
@@ -79,14 +79,14 @@
         <div class="grid grid-cols-2 gap-4 sm:gap-6">
 
           <div class="metric-card">
-            <div class="metric-value">8.4</div>
+            <div class="metric-value">{{ props.data.potential?.hard_skill_average }}</div>
             <p class="metric-title">Hard Skills</p>
             <p class="metric-sub">из 10 баллов</p>
           </div>
 
           <div class="metric-card">
-            <div class="metric-value">75%</div>
-            <p class="metric-title">Senior Ready</p>
+            <div class="metric-value">{{ props.data.potential?.middle_readiness_percent }}</div>
+            <p class="metric-title">{{ props.data.potential?.target_role }}</p>
             <p class="metric-sub">готовность</p>
           </div>
 
@@ -107,7 +107,21 @@
 
     </div>
   </section>
+  <section>
+    <pre>{{ props.data }}</pre>
+  </section>
 </template>
+<script setup>
+// ... existing code ...
+const props = defineProps({
+  data: {
+    type: Object,
+    default: null
+  }
+})
+
+
+</script>
 
 <style scoped>
 .metric-card {
