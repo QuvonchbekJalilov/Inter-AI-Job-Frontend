@@ -50,7 +50,7 @@
               </div>
               <div>
                 <p class="text-blue-100 text-xs sm:text-sm">Опыт работы</p>
-                <p class="text-white text-sm sm:text-base">{{ props.data.general.experience_years }}</p>
+                <p class="text-white text-sm sm:text-base">{{ props.data?.general?.experience_years || "test" }}</p>
               </div>
             </div>
 
