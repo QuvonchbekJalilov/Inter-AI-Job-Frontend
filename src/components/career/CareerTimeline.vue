@@ -3,7 +3,7 @@
     <!-- Header -->
     <div class="mb-6 sm:mb-8">
       <h2 class="text-gray-900 text-xl sm:text-2xl flex items-center gap-2">
-        🚀 Karyera yo'li
+        Karyera yo'li
       </h2>
       <p class="text-gray-600 text-xs sm:text-sm">
         Sizning kasbiy rivojlanish tarixingiz

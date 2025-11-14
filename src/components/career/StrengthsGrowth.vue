@@ -10,7 +10,7 @@
           <Star class="w-6 h-6 text-white" />
         </div>
         <div>
-          <h2 class="text-lg sm:text-2xl text-gray-900">💪 Kuchli tomonlar</h2>
+          <h2 class="text-lg sm:text-2xl text-gray-900"> Kuchli tomonlar</h2>
           <p class="text-sm text-gray-600">Sizning asosiy ustunliklaringiz</p>
         </div>
       </div>
@@ -45,7 +45,7 @@
           <AlertCircle class="w-6 h-6 text-white" />
         </div>
         <div>
-          <h2 class="text-lg sm:text-2xl text-gray-900">🎯 O‘sish zonalari</h2>
+          <h2 class="text-lg sm:text-2xl text-gray-900"> O‘sish zonalari</h2>
           <p class="text-sm text-gray-600">Senior bosqichiga chiqish uchun fokus</p>
         </div>
       </div>

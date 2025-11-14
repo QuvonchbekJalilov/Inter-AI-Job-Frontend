@@ -3,7 +3,7 @@
     <!-- Радар навыков -->
     <div class="bg-white rounded-3xl shadow-lg px-6 py-6 space-y-4 border border-slate-100">
       <h3 class="text-xl font-semibold flex items-center gap-2">
-        🎯 Radar ko‘nikmalar
+        Radar ko‘nikmalar
       </h3>
       <p class="text-sm text-slate-500">
         Asosiy kompetensiyalarning vizual tahlili
@@ -87,7 +87,7 @@
     <!-- Детальная оценка -->
     <div class="bg-white rounded-3xl shadow-md px-6 py-6 space-y-4 border border-slate-100">
       <h3 class="text-lg font-medium flex items-center gap-2">
-        💻 Batafsil ko‘nikmalar bahosi
+        Batafsil ko‘nikmalar bahosi
       </h3>
       <p class="text-sm text-slate-500">
         10 ballik tizim bo‘yicha baholash

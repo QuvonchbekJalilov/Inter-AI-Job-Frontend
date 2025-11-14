@@ -4,7 +4,7 @@
       <!-- Header -->
       <div>
         <h2 class="text-gray-900 text-xl sm:text-2xl mb-1 flex items-center gap-2">
-          📊 Profilning umumiy statistikasi
+          Profilning umumiy statistikasi
         </h2>
         <p class="text-gray-600 text-sm sm:text-base">
           Sizning karyera rivojlanishingizning asosiy ko‘rsatkichlari

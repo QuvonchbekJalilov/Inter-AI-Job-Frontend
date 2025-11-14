@@ -96,7 +96,7 @@
       <div class="flex justify-center items-center mt-8 mb-4 sm:mb-8">
         <a href="https://forms.gle/BMnz8BiZzned4TyQA" target="_blank"
           class="w-[50%] relative px-6 py-3 rounded-xl font-medium text-center text-white bg-gradient-to-r from-blue-600 to-blue-500 shadow-lg hover:shadow-blue-400/40 transition-all duration-300 overflow-hidden">
-          <span class="relative z-10 text-2xl tracking-wide">Yozilish</span>
+          <span class="relative z-10 text-2xl tracking-wide">Qatnashish</span>
         </a>
       </div>
     </div>

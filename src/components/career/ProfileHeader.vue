@@ -45,9 +45,9 @@
           <!-- Experience + Location -->
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
             <div class="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-xl p-4">
-              <div class="bg-white/20 p-2 rounded-lg">
+              <!-- <div class="bg-white/20 p-2 rounded-lg">
                 🎓
-              </div>
+              </div> -->
               <div>
                 <p class="text-blue-100 text-xs sm:text-sm">Ish tajribasi</p>
                 <p class="text-white text-sm sm:text-base">{{ props.data?.general?.experience_years || "test" }}</p>
@@ -55,9 +55,9 @@
             </div>
 
             <div class="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-xl p-4">
-              <div class="bg-white/20 p-2 rounded-lg">
+              <!-- <div class="bg-white/20 p-2 rounded-lg">
                 📍
-              </div>
+              </div> -->
               <div>
                 <p class="text-blue-100 text-xs sm:text-sm">Joylashuv</p>
                 <p class="text-white text-sm sm:text-base">{{ props.data.general?.city || 'Ташкент' }}</p>

@@ -8,7 +8,7 @@
           <Target class="w-7 h-7 sm:w-8 sm:h-8 text-white" />
         </div>
         <div>
-          <h2 class="text-lg sm:text-2xl font-medium">🎯 Maqsadli pozitsiya</h2>
+          <h2 class="text-lg sm:text-2xl font-medium">Maqsadli pozitsiya</h2>
           <p class="text-blue-100 text-xs sm:text-sm">9–12 oy ichida erishiladigan maqsad</p>
         </div>
       </div>
@@ -66,7 +66,7 @@
     <div class="bg-white rounded-3xl p-5 sm:p-8 border border-slate-200 shadow-sm">
 
       <div class="mb-6">
-        <h3 class="text-gray-900 text-lg sm:text-xl font-medium mb-1">📊 Tayyorlik darajasi</h3>
+        <h3 class="text-gray-900 text-lg sm:text-xl font-medium mb-1">Tayyorlik darajasi</h3>
         <p class="text-gray-600 text-xs sm:text-sm">Ko‘nikmalar farqi tahlili</p>
       </div>
 

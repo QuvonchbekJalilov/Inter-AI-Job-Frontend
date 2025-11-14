@@ -2,7 +2,7 @@
   <section class="p-5 sm:p-8 bg-white rounded-3xl shadow-md border border-slate-200">
     <div class="mb-6 sm:mb-8">
       <h2 class="text-gray-900 mb-1 sm:mb-2 text-lg sm:text-2xl">
-        🗺️ 12 oylik yo‘l xaritasi
+        12 oylik yo‘l xaritasi
       </h2>
       <p class="text-gray-600 text-xs sm:text-sm">
         Senior/Lead pog‘onasiga erishish uchun bosqichma-bosqich reja
