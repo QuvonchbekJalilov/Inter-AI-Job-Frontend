@@ -120,10 +120,6 @@ const loading = ref(false)
 const error = ref(null)
 const apiData = ref(null)
 
-// Token tashqaridan (masalan, route yoki store) kelishi mumkin.
-// Agar tokenni prop sifatida berishni xohlasangiz, shu yerda o'zgartiring.
-const token = ref(localStorage.getItem('token') || '')
-
 // Backenddan keladigan shakl: { success, career_tracking_info: { json: "..." } }
 const parsedJson = computed(() => {
   try {
@@ -165,6 +161,7 @@ onMounted(async () => {
 
 
 onMounted(async () => {
+  const token = ref(localStorage.getItem('token') || '')
   if (!token.value) return
   loading.value = true
   error.value = null
