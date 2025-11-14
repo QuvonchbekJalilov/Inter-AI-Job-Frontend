@@ -101,6 +101,7 @@
       </div>
     </div>
   </div>
+  <LoadingModal :show="showLoading" />
 </template>
 
 <script setup>
@@ -114,9 +115,10 @@ import StrengthsGrowth from '@/components/career/StrengthsGrowth.vue'
 import CareerTimeline from '@/components/career/CareerTimeline.vue'
 import Roadmap from '@/components/career/Roadmap.vue'
 import TargetPosition from '@/components/career/TargetPosition.vue'
+import LoadingModal from "@/components/modal/LodaingModal.vue";
+const showLoading = ref(false);
 
 // API holati
-const loading = ref(false)
 const error = ref(null)
 const apiData = ref(null)
 
@@ -163,7 +165,7 @@ onMounted(async () => {
 onMounted(async () => {
   const token = ref(localStorage.getItem('token') || '')
   if (!token.value) return
-  loading.value = true
+  showLoading.value = true
   error.value = null
   try {
     const res = await axios.get('https://api.inter-ai.uz/api/v1/track-career/resume', {
@@ -177,7 +179,7 @@ onMounted(async () => {
   } catch (e) {
     error.value = 'Maʼlumotlarni yuklab boʻlmadi'
   } finally {
-    loading.value = false
+    showLoading.value = false
   }
 })
 </script>
