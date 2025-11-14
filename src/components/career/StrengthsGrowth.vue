@@ -77,10 +77,7 @@
       </div>
 
     </div>
-<!-- 
-    <section>
-      <pre>{{ props.data.StrenghtsAndGrowth }}</pre>
-    </section> -->
+
   </section>
 </template>
 
@@ -89,24 +86,32 @@
 import { Star, AlertCircle, TrendingUp, Target } from "lucide-vue-next";
 import StrengthItem from "./StrengthCard.vue";
 import GrowthItem from "./GrowthCard.vue";
+import { computed } from "vue";
 
 const props = defineProps({
   data: Object
 });
 
-// Backenddan keladigan to‘liq model
-const root = props.data?.StrenghtsAndGrowth || {};
+// root obyekt — computed bo‘lishi shart
+const root = computed(() => props.data?.StrenghtsAndGrowth || {});
 
 // Kuchli tomonlar
-const strengths = root.strengths || [];
+const strengths = computed(() => root.value.strengths || []);
 
 // O‘sish zonalari
-const growth_zones = root.growth_zones || [];
+const growth_zones = computed(() => root.value.growth_zones || []);
 
 // Umumiy baho
-const overall = root.overall_evaluation || { title: "", comment: "" };
+const overall = computed(() => root.value.overall_evaluation || {
+  title: "",
+  comment: ""
+});
 
-// Action plan
-const action = root.action_plan || { duration: "", focus: "" };
+// Harakat rejasi
+const action = computed(() => root.value.action_plan || {
+  duration: "",
+  focus: ""
+});
 </script>
+
 
