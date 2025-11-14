@@ -22,7 +22,7 @@
           <div class="flex items-center gap-2 mb-4">
             <span class="text-yellow-300">⚡</span>
             <span class="bg-white/20 text-white border-0 rounded-full text-xs sm:text-sm px-3 py-1.5">
-              Карьерная диагностика 2025
+              2025 yilgi kasbiy diagnostika
             </span>
           </div>
 
@@ -49,7 +49,7 @@
                 🎓
               </div>
               <div>
-                <p class="text-blue-100 text-xs sm:text-sm">Опыт работы</p>
+                <p class="text-blue-100 text-xs sm:text-sm">Ish tajribasi</p>
                 <p class="text-white text-sm sm:text-base">{{ props.data?.general?.experience_years || "test" }}</p>
               </div>
             </div>
@@ -59,8 +59,8 @@
                 📍
               </div>
               <div>
-                <p class="text-blue-100 text-xs sm:text-sm">Локация</p>
-                <p class="text-white text-sm sm:text-base">{{ props.data.general?.city || 'Ташкент' }}, {{ props.data.general?.age || '25 лет' }}</p>
+                <p class="text-blue-100 text-xs sm:text-sm">Joylashuv</p>
+                <p class="text-white text-sm sm:text-base">{{ props.data.general?.city || 'Ташкент' }}</p>
               </div>
             </div>
           </div>
@@ -80,40 +80,39 @@
         <div class="grid grid-cols-2 gap-4 sm:gap-6">
 
           <div class="metric-card">
-            <div class="metric-value">{{ props.data.potential?.hard_skill_average }}</div>
+            <div class="metric-value">{{ props.data.topMetrics?.hard_skills_score || " " }}%</div>
             <p class="metric-title">Hard Skills</p>
-            <p class="metric-sub">из 10 баллов</p>
+            <p class="metric-sub">100 foizdan</p>
           </div>
 
           <div class="metric-card">
-            <div class="metric-value">{{ props.data.potential?.middle_readiness_percent }}</div>
-            <p class="metric-title">{{ props.data.potential?.target_role }}</p>
-            <p class="metric-sub">готовность</p>
+            <div class="metric-value">{{ props.data.topMetrics?.senior_ready_percent || " " }}%</div>
+            <p class="metric-title">Senior</p>
+            <p class="metric-sub">tayyorgarlik</p>
           </div>
 
           <div class="metric-card">
-            <div class="metric-value">9.5</div>
-            <p class="metric-title">Потенциал</p>
-            <p class="metric-sub">из 10 баллов</p>
+            <div class="metric-value">{{ props.data.topMetrics?.potential_score || " " }}%</div>
+            <p class="metric-title">Potensial</p>
+            <p class="metric-sub">100 foizdan</p>
           </div>
 
           <div class="metric-card">
-            <div class="metric-value">30+</div>
-            <p class="metric-title">Проектов</p>
-            <p class="metric-sub">в продакшн</p>
+            <div class="metric-value">{{ props.data.topMetrics?.projects_in_production || 0 }}+</div>
+            <p class="metric-title">Loyihalar</p>
+            <p class="metric-sub">produksiyaga chiqarilgan</p>
           </div>
-
         </div>
       </div>
 
     </div>
   </section>
-  <section>
-    <pre>{{ props.data }}</pre>
-  </section>
+  <!-- <section>
+    <pre>{{ props.data.profileStatistics }}</pre>
+  </section> -->
 </template>
 <script setup>
-// ... existing code ...
+
 const props = defineProps({
   data: {
     type: Object,

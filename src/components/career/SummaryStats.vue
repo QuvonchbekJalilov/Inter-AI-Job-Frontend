@@ -4,10 +4,10 @@
       <!-- Header -->
       <div>
         <h2 class="text-gray-900 text-xl sm:text-2xl mb-1 flex items-center gap-2">
-          📊 Общая статистика профиля
+          📊 Profilning umumiy statistikasi
         </h2>
         <p class="text-gray-600 text-sm sm:text-base">
-          Ключевые показатели вашего карьерного развития
+          Sizning karyera rivojlanishingizning asosiy ko‘rsatkichlari
         </p>
       </div>
 
@@ -37,80 +37,91 @@
         </div>
 
       </div>
-
     </div>
 </template>
 
 <script setup>
 /* ICONS — lucide-vue-next */
 import { TrendingUp, Target, Award, Briefcase, Code, Users, Zap, Trophy } from "lucide-vue-next";
+import { computed } from "vue";
 
-const stats = [
-  {
-    icon: TrendingUp,
-    label: "Текущий уровень",
-    value: "Middle+",
-    subtext: "Pre-Senior позиция",
-    color: "from-blue-500 to-blue-600",
-    bgColor: "bg-blue-50",
-  },
-  {
-    icon: Target,
-    label: "Целевая зарплата",
-    value: "$2,500-3,000",
-    subtext: "Через 9-12 месяцев",
-    color: "from-green-500 to-green-600",
-    bgColor: "bg-green-50",
-  },
-  {
-    icon: Award,
-    label: "Soft Skills",
-    value: "8.0 / 10",
-    subtext: "Лидерство + коммуникация",
-    color: "from-purple-500 to-purple-600",
-    bgColor: "bg-purple-50",
-  },
-  {
-    icon: Briefcase,
-    label: "Компаний",
-    value: "5+",
-    subtext: "Asialuxe, Zakiy IT и др.",
-    color: "from-orange-500 to-orange-600",
-    bgColor: "bg-orange-50",
-  },
-  {
-    icon: Code,
-    label: "Основной стек",
-    value: "Vue.js",
-    subtext: "Nuxt.js, TypeScript, Pinia",
-    color: "from-emerald-500 to-emerald-600",
-    bgColor: "bg-emerald-50",
-  },
-  {
-    icon: Users,
-    label: "Team Lead опыт",
-    value: "Есть",
-    subtext: "Управление фронтенд-командой",
-    color: "from-pink-500 to-pink-600",
-    bgColor: "bg-pink-50",
-  },
-  {
-    icon: Zap,
-    label: "Образование",
-    value: "TUIT",
-    subtext: "Software Engineering",
-    color: "from-indigo-500 to-indigo-600",
-    bgColor: "bg-indigo-50",
-  },
-  {
-    icon: Trophy,
-    label: "Цель",
-    value: "Senior/Lead",
-    subtext: "Frontend Architect",
-    color: "from-yellow-500 to-yellow-600",
-    bgColor: "bg-yellow-50",
-  },
-];
+
+const props = defineProps({
+  data: Object
+})
+
+const stats = computed(() => {
+  const ps = props.data?.profileStatistics;
+
+  if (!ps) return []; // if data isn't loaded yet
+
+  return [
+    {
+      icon: TrendingUp,
+      label: "Joriy daraja",
+      value: ps.current_level?.level || "—",
+      subtext: ps.current_level?.comment || "",
+      color: "from-blue-500 to-blue-600",
+      bgColor: "bg-blue-50",
+    },
+    {
+      icon: Target,
+      label: "Maqsad qilingan maosh",
+      value: ps.target_salary?.amount || "—",
+      subtext: ps.target_salary?.period || "",
+      color: "from-green-500 to-green-600",
+      bgColor: "bg-green-50",
+    },
+    {
+      icon: Award,
+      label: "Soft Skills",
+      value: ps.soft_skills?.score + " / 100" || "—",
+      subtext: ps.soft_skills?.comment || "",
+      color: "from-purple-500 to-purple-600",
+      bgColor: "bg-purple-50",
+    },
+    {
+      icon: Briefcase,
+      label: "Kompaniyalar",
+      value: ps.companies_count?.count || "0",
+      subtext: ps.companies_count?.companies?.join(", "),
+      color: "from-orange-500 to-orange-600",
+      bgColor: "bg-orange-50",
+    },
+    {
+      icon: Code,
+      label: "Asosiy texnologiyalar",
+      value: ps.main_stack?.stack || "—",
+      subtext: ps.main_stack?.details?.join(", "),
+      color: "from-emerald-500 to-emerald-600",
+      bgColor: "bg-emerald-50",
+    },
+    {
+      icon: Users,
+      label: "Team Lead tajribasi",
+      value: ps.teamlead_experience?.status || "—",
+      subtext: ps.teamlead_experience?.comment || "",
+      color: "from-pink-500 to-pink-600",
+      bgColor: "bg-pink-50",
+    },
+    {
+      icon: Zap,
+      label: "Ta'lim",
+      value: ps.education?.university || "—",
+      subtext: ps.education?.program || "",
+      color: "from-indigo-500 to-indigo-600",
+      bgColor: "bg-indigo-50",
+    },
+    {
+      icon: Trophy,
+      label: "Maqsad",
+      value: ps.goal?.position || "—",
+      subtext: ps.goal?.direction || "",
+      color: "from-yellow-500 to-yellow-600",
+      bgColor: "bg-yellow-50",
+    },
+  ];
+});
 </script>
 
 <style scoped>
