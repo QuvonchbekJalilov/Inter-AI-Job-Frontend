@@ -10,32 +10,19 @@
       <div v-else-if="error" class="text-center text-sm text-red-600">{{ error }}</div>
 
       <!-- Summary stats block -->
-      <SummaryStats :data="{
-        level: careerData.potential?.current_level,
-        salaryLocal: careerData.potential?.salary_local,
-        salaryRemote: careerData.potential?.salary_remote,
-        softSkills: careerData.hardSkills?.soft_skills?.score,
-        stack: parsedJson?.international_tech_focus
-      }" />
+      <SummaryStats :data="careerData" />
 
       <!-- Skills: radar + detailed scores + strengths/growth -->
-      <SkillsSection
-          :hard-skills="careerData.hardSkills"
-          :strengths="careerData.strengths"
-          :growth="careerData.growth"
-      />
+      <SkillsSection :data="careerData" />
 
       <!-- Career timeline -->
-      <CareerTimeline :companies="careerData.companies" />
+      <CareerTimeline :data="careerData" />
 
       <!-- 12 month roadmap -->
-      <Roadmap :roadmap="careerData.roadmap" />
+      <Roadmap :data="careerData" />
 
       <!-- Target position & gap analysis -->
-      <TargetPosition
-          :potential="careerData.potential"
-          :diagnostics="careerData.diagnostics"
-      />
+      <TargetPosition :data="careerData" />
 
       <div class="w-full flex justify-start mt-8">
         <div class="w-full bg-blue-50 border border-blue-200 rounded-2xl p-6 shadow-sm">
@@ -98,11 +85,8 @@
 
           <!-- Tags -->
           <div class="flex flex-wrap gap-2">
-            <span
-                v-for="tag in tags"
-                :key="tag"
-                class="px-3 py-1 text-xs rounded-full bg-white border border-blue-200 text-blue-700"
-            >
+            <span v-for="tag in tags" :key="tag"
+              class="px-3 py-1 text-xs rounded-full bg-white border border-blue-200 text-blue-700">
               {{ tag }}
             </span>
           </div>
@@ -111,8 +95,7 @@
 
       <div class="flex justify-center items-center mt-8 mb-4 sm:mb-8">
         <a href="https://forms.gle/BMnz8BiZzned4TyQA" target="_blank"
-           class="w-[50%] relative px-6 py-3 rounded-xl font-medium text-center text-white bg-gradient-to-r from-blue-600 to-blue-500 shadow-lg hover:shadow-blue-400/40 transition-all duration-300 overflow-hidden"
-        >
+          class="w-[50%] relative px-6 py-3 rounded-xl font-medium text-center text-white bg-gradient-to-r from-blue-600 to-blue-500 shadow-lg hover:shadow-blue-400/40 transition-all duration-300 overflow-hidden">
           <span class="relative z-10 text-2xl tracking-wide">Yozilish</span>
         </a>
       </div>
@@ -122,7 +105,7 @@
 
 <script setup>
 // ... existing code ...
-import {onMounted, ref, computed} from 'vue'
+import { onMounted, ref, computed } from 'vue'
 import axios from 'axios'
 import ProfileHeader from '@/components/career/ProfileHeader.vue'
 import SummaryStats from '@/components/career/SummaryStats.vue'
@@ -156,15 +139,22 @@ const parsedJson = computed(() => {
 // Child komponentlarga uzatish uchun tayyor model (bor joyini to'ldiramiz, qolgan joyi statik qoladi)
 const careerData = computed(() => ({
   general: parsedJson.value?.general_profile || null,
+  topMetrics: parsedJson.value?.top_metrics || null,
   diagnostics: parsedJson.value?.career_diagnostics || null,
-  hardSkills: parsedJson.value?.hard_skills_rating || null,
+  profileStatistics: parsedJson.value?.profile_statistics || null,
+  skillsRadar: parsedJson.value?.skills_radar || null,
+  detailedSkills: parsedJson.value?.detailed_skills || null,
+  StrenghtsAndGrowth: parsedJson.value?.strengths_and_growth || null,
+  careerPath: parsedJson.value?.career_path || null,
+  careerPathSummary: parsedJson.value?.career_path_summary || null,
   roadmap: parsedJson.value?.growth_roadmap_12_months || null,
-  strengths: parsedJson.value?.career_diagnostics?.strengths || null,
-  growth: parsedJson.value?.career_diagnostics?.growth_zones || null,
-  summary: parsedJson.value?.final_summary || null,
-  contact: parsedJson.value?.contact || null,
-  potential: parsedJson.value?.career_potential || null,
-  companies: parsedJson.value?.general_profile?.companies || null,
+  targetPosition: parsedJson.value?.target_position || null,
+  gapAnalysis: parsedJson.value?.gap_analysis || null,
+  // growth: parsedJson.value?.career_diagnostics?.growth_zones || null,
+  // summary: parsedJson.value?.final_summary || null,
+  // contact: parsedJson.value?.contact || null,
+  // potential: parsedJson.value?.career_potential || null,
+  // companies: parsedJson.value?.general_profile?.companies || null,
 }))
 
 onMounted(async () => {
@@ -194,10 +184,12 @@ onMounted(async () => {
     border-color: rgba(59, 130, 246, 0.2);
     box-shadow: 0 0 8px rgba(59, 130, 246, 0.3);
   }
+
   50% {
     border-color: rgba(96, 165, 250, 0.9);
     box-shadow: 0 0 14px rgba(96, 165, 250, 0.7);
   }
+
   100% {
     border-color: rgba(59, 130, 246, 0.2);
     box-shadow: 0 0 8px rgba(59, 130, 246, 0.3);

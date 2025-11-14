@@ -40,6 +40,7 @@
               {{ props.data.diagnostics?.level.level || 'Middle + уровень' }}
             </span>
           </div>
+          
 
           <!-- Experience + Location -->
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
@@ -49,7 +50,7 @@
               </div>
               <div>
                 <p class="text-blue-100 text-xs sm:text-sm">Опыт работы</p>
-                <p class="text-white text-sm sm:text-base">4 года 8 месяцев</p>
+                <p class="text-white text-sm sm:text-base">{{ props.data.general.experience_years }}</p>
               </div>
             </div>
 
