@@ -86,7 +86,7 @@
         <div>
           <p class="text-indigo-100 text-xs mb-1">Ehtimollik</p>
           <p class="text-white text-base sm:text-xs font-medium">
-            {{ props.data?.roadmap?.forecast?.probability }}
+            {{ props.data?.roadmap?.forecast?.probability }} %
           </p>
         </div>
       </div>

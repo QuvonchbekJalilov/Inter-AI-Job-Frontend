@@ -146,7 +146,7 @@
             <div class="text-start">
               <p class="text-xs text-gray-600">O'sish</p>
               <p class="font-medium text-sm sm:text-base text-green-700">
-                {{ props.data?.roadmap?.forecast?.probability }}
+                {{ props.data?.roadmap?.forecast?.probability }} %
               </p>
             </div>
           </div>

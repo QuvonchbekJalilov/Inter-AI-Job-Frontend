@@ -16,6 +16,7 @@ onMounted(async () => {
 
   const TOKEN = localStorage.getItem("token")
 
+  if (token) localStorage.setItem("token", token);
   if (locale) localStorage.setItem("locale", locale);
   if (chatId) localStorage.setItem("chat_id", chatId);
 

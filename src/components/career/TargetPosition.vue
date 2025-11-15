@@ -32,10 +32,9 @@
         <div class="info-box">
           <MapPin class="icon" />
           <p class="label">Ish formati</p>
-          <p class="value">{{ props.data?.targetPosition?.role_note }}</p>
+          <p class="value">{{ props.data?.targetPosition?.format }}</p>
           <p class="subvalue">Xalqaro</p>
         </div>
-
         <div class="info-box">
           <Users class="icon" />
           <p class="label">Jamoa</p>

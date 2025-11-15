@@ -78,7 +78,7 @@
       </div>
 
       <div class="bg-blue-50 rounded-2xl px-4 py-3 text-sm text-slate-700">
-        💡 <span class="font-medium">Tavsiya:</span>
+        <span class="font-medium">Tavsiya:</span>
         {{ props.data.skillsRadar?.advice }}
       </div>
     </div>
@@ -127,7 +127,7 @@
 
       <!-- Description -->
       <div class="bg-blue-50 rounded-2xl px-4 py-3 text-sm text-slate-700">
-        💡 <span class="font-medium">Tavsiyalar:</span>
+        <span class="font-medium">Tavsiyalar:</span>
         {{ detailedSkills.senior_progress }}
       </div>
     </div>

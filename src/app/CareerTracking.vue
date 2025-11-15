@@ -154,12 +154,6 @@ const careerData = computed(() => ({
   // potential: parsedJson.value?.career_potential || null,
   // companies: parsedJson.value?.general_profile?.companies || null,
 }))
-onMounted(async () => {
-  const queryString = window.location.search || window.location.hash.split('?')[1] || '';
-  const params = new URLSearchParams(queryString);
-  const token = params.get("token");
-  localStorage.setItem("token", token);
-})
 
 
 onMounted(async () => {
