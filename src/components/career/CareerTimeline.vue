@@ -56,7 +56,7 @@
                       v-if="item.current"
                       class="px-2 py-1 text-xs rounded-md bg-blue-600 text-white"
                   >
-                Текущая
+                Hozirgi
               </span>
                 </div>
 

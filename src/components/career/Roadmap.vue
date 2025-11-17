@@ -106,10 +106,10 @@ const props = defineProps({
 })
 
 const monthPeriods = {
-  months_1_3: "Месяцы 1-3",
-  months_4_6: "Месяцы 4-6",
-  months_7_9: "Месяцы 7-9",
-  months_10_12: "Месяцы 10-12"
+  months_1_3: "Oy 1-3",
+  months_4_6: "Oy 4-6",
+  months_7_9: "Oy 7-9",
+  months_10_12: "Oy 10-12"
 }
 
 const colors = [
