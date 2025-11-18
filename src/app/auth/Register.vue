@@ -277,6 +277,7 @@ const submitRegistration = async () => {
       storage.setItem('token', data.data.token)
       storage.setItem('user', JSON.stringify(data.data.user))
       storage.setItem('expires_at', data.data.expires_at)
+      storage.setItem('chat_id', chatId)
 
       try {
         await uploadResume(data.data.token)
