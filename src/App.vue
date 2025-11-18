@@ -33,30 +33,20 @@ onMounted(async () => {
     window.location.href = "/";
     return;
   } else if (chatId) {
-      const res = await axios.post(proxy.$locale + "/auth/chat-id-login", { chat_id: chatId });
-      const RES_TOKEN = res.data?.data?.token;
+    const res = await axios.post(proxy.$locale + "/auth/chat-id-login", { chat_id: chatId });
+    const RES_TOKEN = res.data?.data?.token;
 
-      if (RES_TOKEN) {
-        localStorage.setItem("token", RES_TOKEN);
-
-        // Hozirgi URL-ni olish
-        const currentUrl = window.location.href;
-
-        // Agar URL kariyera sahifasi bo'lsa shu yerga qaytarish
-        if (currentUrl.includes("/career")) {
-          window.location.href = currentUrl; // aynan o‘sha sahifaga qaytaradi
-        } else {
-          window.location.href = "/"; // aks holda home page
-        }
-
-        return;
-      }
-    } else {
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-      localStorage.removeItem("expires_at");
-      router.push({ name: "register" });
+    if (RES_TOKEN) {
+      localStorage.setItem("token", RES_TOKEN);
+      window.location.href = "/";
+      return;
     }
+  } else {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    localStorage.removeItem("expires_at");
+    router.push({ name: "register" });
+  }
 });
 
 
