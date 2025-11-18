@@ -158,7 +158,17 @@ const careerData = computed(() => ({
 
 onMounted(async () => {
   const token = ref(localStorage.getItem('token') || '')
-  if (!token.value) return
+  const chatId = ref(localStorage.getItem('chat_id') || '')
+  if (chatId) {
+      const res = await axios.post("https://api.inter-ai.uz/api/auth/chat-id-login", { chat_id: chatId });
+      const RES_TOKEN = res.data?.data?.token;
+
+      if (RES_TOKEN) {
+        localStorage.setItem("token", RES_TOKEN);
+        window.location.href = "/career";
+        return;
+      }
+    }
   showLoading.value = true
   error.value = null
   try {
