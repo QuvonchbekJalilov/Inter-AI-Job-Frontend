@@ -156,68 +156,76 @@ const careerData = computed(() => ({
 }))
 
 onMounted(async () => {
-  showLoading.value = true
+  showLoading.value = true;
 
-  const urlParams = new URLSearchParams(window.location.search)
-  const chatIdFromUrl = urlParams.get("chat_id")
-  const localeFromUrl = urlParams.get("locale") || "uz"
+  // 1️⃣ URL parametrlarni olish
+  const urlParams = new URLSearchParams(window.location.search);
+  const chatIdFromUrl = urlParams.get("chat_id");
+  const localeFromUrl = urlParams.get("locale") || "uz";
 
-  if (chatIdFromUrl) localStorage.setItem("chat_id", chatIdFromUrl)
-  if (localeFromUrl) localStorage.setItem("locale", localeFromUrl)
+  if (chatIdFromUrl) localStorage.setItem("chat_id", chatIdFromUrl);
+  if (localeFromUrl) localStorage.setItem("locale", localeFromUrl);
 
-  const chatId = localStorage.getItem("chat_id")
-  const token = localStorage.getItem("token")
+  const chatId = localStorage.getItem("chat_id");
+  let token = localStorage.getItem("token"); // ref emas — oddiy string bo'lishi kerak!
 
   try {
+    // 2️⃣ Token topilgan bo'lsa — tekshiramiz
     if (token) {
-      console.log("🔍 check-token so‘rov yuborilmoqda...")
-      await axios.get(proxy.$locale + "/auth/check-token", {
+      console.log("🔍 Token mavjud, check-token yuborilyapti...");
+
+      const tokenCheck = await axios.get(proxy.$locale + "/auth/check-token", {
         headers: { Authorization: `Bearer ${token}` },
-      })
-      console.log("✅ check-token javob oldi!")
-      window.location.href = "https://vacancies.inter-ai.uz/#/career"
-      return
-    }
+      });
 
-    if (chatId) {
-      console.log("💬 Chat ID orqali login:", chatId)
-      const res = await axios.post(proxy.$locale + "/auth/chat-id-login", { chat_id: chatId })
-      const TOKEN = res.data?.data?.token
-
-      if (TOKEN) {
-        console.log("✅ Chat ID orqali token olindi")
-        localStorage.setItem("token", TOKEN)
-        window.location.href = "https://vacancies.inter-ai.uz/#/career";
-        return
+      // Token yaroqsiz bo‘lsa → Chat ID orqali login qilinadi
+      if (tokenCheck.data.valid === false) {
+        token = null;
+        localStorage.removeItem("token");
       }
     }
-  } catch (error) {
-    console.error("❌ Token yoki chat login xatosi:", error)
-    localStorage.removeItem("token")
-  } finally {
-    showLoading.value = false
-  }
-})
 
-onMounted(async () => {
-  const token = ref(localStorage.getItem('token') || '')
-  showLoading.value = true
-  error.value = null
-  try {
-    const res = await axios.get('https://api.inter-ai.uz/api/v1/track-career/resume', {
-      headers: {
-        Authorization: `Bearer ${token.value}`,
-        Accept: 'application/json',
-      },
-    })
-    apiData.value = res.data?.success ? res.data : null
-    console.log(res.data.career_tracking_info)
-  } catch (e) {
-    error.value = 'Maʼlumotlarni yuklab boʻlmadi'
-  } finally {
-    showLoading.value = false
+    // 3️⃣ Agar token yo‘q → Chat ID orqali login
+    if (!token && chatId) {
+      console.log("💬 Chat ID orqali login:", chatId);
+
+      const res = await axios.post(proxy.$locale + "/auth/chat-id-login", { chat_id: chatId });
+      const NEW_TOKEN = res.data?.data?.token;
+
+      if (NEW_TOKEN) {
+        console.log("✅ Chat ID orqali token olindi");
+        localStorage.setItem("token", NEW_TOKEN);
+        token = NEW_TOKEN;
+      } else {
+        throw new Error("Token olinmadi");
+      }
+    }
+
+    // 🔥 4️⃣ Token aniq mavjud — endi resume APIga so‘rov yuboramiz
+    console.log("📄 Resume APIga so‘rov yuborilmoqda...");
+
+    const resumeRes = await axios.get(
+        "https://api.inter-ai.uz/api/v1/track-career/resume",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        }
+    );
+
+    apiData.value = resumeRes.data?.success ? resumeRes.data : null;
+    console.log("🎯 Resume API Data:", resumeRes.data.career_tracking_info);
   }
-})
+  catch (error) {
+    console.error("❌ Xatolik:", error);
+    error.value = "Maʼlumotlarni yuklab boʻlmadi";
+  }
+  finally {
+    showLoading.value = false;
+  }
+});
+
 </script>
 
 <style scoped>
