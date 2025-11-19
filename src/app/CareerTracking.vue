@@ -106,16 +106,16 @@
 
 <script setup>
 // ... existing code ...
-import { onMounted, ref, computed } from 'vue'
+import {onMounted, ref, computed, getCurrentInstance} from 'vue'
 import axios from 'axios'
 import ProfileHeader from '@/components/career/ProfileHeader.vue'
 import SummaryStats from '@/components/career/SummaryStats.vue'
 import SkillsSection from '@/components/career/SkillsSection.vue'
-import StrengthsGrowth from '@/components/career/StrengthsGrowth.vue'
 import CareerTimeline from '@/components/career/CareerTimeline.vue'
 import Roadmap from '@/components/career/Roadmap.vue'
 import TargetPosition from '@/components/career/TargetPosition.vue'
 import LoadingModal from "@/components/modal/LodaingModal.vue";
+const { proxy } = getCurrentInstance()
 const showLoading = ref(false);
 
 // API holati
@@ -155,6 +155,49 @@ const careerData = computed(() => ({
   // companies: parsedJson.value?.general_profile?.companies || null,
 }))
 
+onMounted(async () => {
+  showLoading.value = true
+
+  const urlParams = new URLSearchParams(window.location.search)
+  const chatIdFromUrl = urlParams.get("chat_id")
+  const localeFromUrl = urlParams.get("locale") || "uz"
+
+  if (chatIdFromUrl) localStorage.setItem("chat_id", chatIdFromUrl)
+  if (localeFromUrl) localStorage.setItem("locale", localeFromUrl)
+
+  const chatId = localStorage.getItem("chat_id")
+  const token = localStorage.getItem("token")
+
+  try {
+    if (token) {
+      console.log("🔍 check-token so‘rov yuborilmoqda...")
+      await axios.get(proxy.$locale + "/auth/check-token", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      console.log("✅ check-token javob oldi!")
+      window.location.href = "/career"
+      return
+    }
+
+    if (chatId) {
+      console.log("💬 Chat ID orqali login:", chatId)
+      const res = await axios.post(proxy.$locale + "/auth/chat-id-login", { chat_id: chatId })
+      const TOKEN = res.data?.data?.token
+
+      if (TOKEN) {
+        console.log("✅ Chat ID orqali token olindi")
+        localStorage.setItem("token", TOKEN)
+        window.location.href = "/career"
+        return
+      }
+    }
+  } catch (error) {
+    console.error("❌ Token yoki chat login xatosi:", error)
+    localStorage.removeItem("token")
+  } finally {
+    showLoading.value = false
+  }
+})
 
 onMounted(async () => {
   const token = ref(localStorage.getItem('token') || '')
