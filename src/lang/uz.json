@@ -175,7 +175,9 @@
   },
   "status_update_24": "Statusni faqat bir kunda bir marta o‘zgartirish mumkin. 24 soatdan keyn qayta urinib ko‘ring.",
   "resume_valid": "Iltimos, yaroqli fayl turini tanlang (.pdf, .doc, .docx)",
-  "connection": "Bog`lanish"
+  "connection": "Bog`lanish",
+  "manba": "Manba: hh.uz",
+  "manba2": "Manba: Telegram"
 
 
 }

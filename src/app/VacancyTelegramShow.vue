@@ -9,11 +9,11 @@
                 <div class="flex items-start justify-between mb-2">
                   <h3 class="mb-2 mt-5 text-xl leading-tight font-medium">{{ vacancy.title }}</h3>
                   <!-- Telegram icon -->
-                  <img
+                  <!-- <img
                       src="/icons/telegram.svg"
                       alt="Telegram"
                       class="w-6 h-6 mt-5 object-contain ml-2 shrink-0"
-                  />
+                  /> -->
                 </div>
                 <p class="text-gray-700 font-medium">{{ vacancy.company }}</p>
                 <!-- <p class="text-gray-500">Source: {{ vacancy.source_id }}</p> -->
@@ -58,6 +58,7 @@
                           </p>
                         </div>
                       </div>
+                      <p class="text-sm text-gray-500">{{ translations.manba2 }}</p>
                     </div>
                 </div>
 

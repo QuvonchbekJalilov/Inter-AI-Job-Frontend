@@ -18,11 +18,11 @@
             <div class="flex items-start justify-between mb-2">
               <h2 class="mb-2 mt-5 text-xl leading-tight font-medium">{{ job.title }}</h2>
               <!-- Telegram icon -->
-              <img
+              <!-- <img
                   src="/icons/telegram.svg"
                   alt="Telegram"
                   class="w-6 h-6 mt-5 object-contain ml-2 shrink-0"
-              />
+              /> -->
             </div>
             <div class="mb-2 flex items-center justify-between gap-2">
               <span class="flex items-center text-gray-700 text-sm basis-2/5 truncate">
@@ -57,11 +57,11 @@
                 {{ job.title }}
               </h2>
 
-              <img
+              <!-- <img
                   src="/HeadHunter_logo.png"
                   alt="HeadHunter"
                   class="w-6 h-6 object-contain ml-2 shrink-0"
-              />
+              /> -->
             </div>
             <div class="mb-2 flex items-center justify-between gap-2">
               <span class="flex items-center text-gray-700 text-sm basis-2/5 truncate">
@@ -94,7 +94,7 @@
               @click="openCoverLetterModal(job)"
               :data-vacancy-id="job.external_id || ''"
           >
-            <span>{{ job.status ? translations.applied : 'HH orqali ariza berish' }}</span>
+            <span>{{ translations.reply }}</span>
           </button>
 
           <!-- Telegram tugmasi -->

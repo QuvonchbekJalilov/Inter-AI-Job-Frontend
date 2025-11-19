@@ -10,11 +10,11 @@
         <div class="flex items-start justify-between mb-2">
           <h3 class="mb-2 mt-5 text-xl leading-tight font-medium">{{ vacancy.name }}</h3>
           <!-- Telegram icon -->
-          <img
+          <!-- <img
               src="/HeadHunter_logo.png"
               alt="Telegram"
               class="w-6 h-6 mt-5 object-contain ml-2 shrink-0"
-          />
+          /> -->
         </div>
         <p class="text-gray-700 font-medium">{{ vacancy.employer?.name }}</p>
         <p class="text-gray-500">{{ vacancy.area?.name }}</p>
@@ -42,10 +42,27 @@
         <div class="text-gray-600 prose max-w-none" v-html="vacancy.description"></div>
       </div>
 
-      <div class="bg-gray-50 rounded-lg text-center">
-        <p class="text-sm text-gray-500">{{ translations.Published }}</p>
-        <p class="font-medium">{{ formatDate(vacancy.published_at) }}</p>
-      </div>
+<div class="bg-gray-50 rounded-lg p-3 grid grid-cols-3 items-start">
+  
+  <!-- Chap: manba hh -->
+  <div class="text-sm text-gray-500">
+    <span>{{ translations.manba }}</span>
+  </div>
+
+  <!-- Markaz -->
+  <div class="flex flex-col text-center">
+    <span class="text-gray-500">{{ translations.Published }}</span>
+
+    <!-- Sana bitta qator bo‘lishi uchun -->
+    <span class="text-black whitespace-nowrap">
+      {{ formatDate(vacancy.published_at) }}
+    </span>
+  </div>
+
+  <!-- O‘ng ustun bo‘sh -->
+  <div></div>
+
+</div>
 
       <div>
         <button
