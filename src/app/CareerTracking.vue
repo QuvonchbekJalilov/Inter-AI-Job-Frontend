@@ -175,7 +175,7 @@ onMounted(async () => {
         headers: { Authorization: `Bearer ${token}` },
       })
       console.log("✅ check-token javob oldi!")
-      window.location.href = "/career"
+      window.location.href = "https://vacancies.inter-ai.uz/#/career"
       return
     }
 

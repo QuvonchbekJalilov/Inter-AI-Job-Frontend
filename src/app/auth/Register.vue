@@ -428,25 +428,14 @@ onMounted(async () => {
   const token = localStorage.getItem("token")
 
   try {
-    const currentUrl = window.location.href;
-
-    const isCareerPage = currentUrl.includes("/career");
-
     if (token) {
       console.log("🔍 check-token so‘rov yuborilmoqda...");
       await axios.get(proxy.$locale + "/auth/check-token", {
         headers: { Authorization: `Bearer ${token}` },
       });
       console.log("✅ check-token javob oldi!");
-
-      if (isCareerPage) {
-        console.log("📌 Career sahifasi — redirect qilinmaydi");
-        window.location.href = "https://vacancies.inter-ai.uz/#/career";
-        return;
-      } else {
-        window.location.href = "/";
-        return;
-      }
+      window.location.href = "/";
+      return;
     }
 
     if (chatId) {
@@ -457,15 +446,8 @@ onMounted(async () => {
       if (TOKEN) {
         console.log("✅ Chat ID orqali token olindi");
         localStorage.setItem("token", TOKEN);
-
-        if (isCareerPage) {
-          console.log("📌 Career sahifasiga qaytarildi");
-          window.location.href = "https://vacancies.inter-ai.uz/#/career";
-          return;
-        } else {
-          window.location.href = "/";
-          return;
-        }
+        window.location.href = "/";
+        return;
       }
     }
   } catch (error) {
