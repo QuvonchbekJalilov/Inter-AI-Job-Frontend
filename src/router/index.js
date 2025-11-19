@@ -110,13 +110,19 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
     const token = localStorage.getItem("token") || sessionStorage.getItem("token");
 
-    if (to.meta.requiresAuth && !token) {
-        next({ name: "register" });
-    } else if (to.meta.guest && token) {
-        next({ name: "home" });
-    } else {
-        next();
+    if (to.name === "career" && token) {
+        return next();
     }
+
+    if (to.meta.requiresAuth && !token) {
+        return next({ name: "register" });
+    }
+
+    if (to.meta.guest && token) {
+        return next({ name: "home" });
+    }
+
+    next();
 });
 
 export default router

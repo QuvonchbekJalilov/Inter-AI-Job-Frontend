@@ -20,16 +20,28 @@ onMounted(async () => {
   if (locale) localStorage.setItem("locale", locale);
   if (chatId) localStorage.setItem("chat_id", chatId);
 
+  const currentUrl = window.location.href;
+
+  const isCareerPage = currentUrl.includes("/career");
+
   if (TOKEN) {
     await axios.get(proxy.$locale + "/auth/check-token", {
       headers: { Authorization: `Bearer ${TOKEN}` },
     });
+    if (isCareerPage) {
+      console.log("📌 Career sahifasi — redirect qilinmaydi");
+      return;
+    }
     window.location.href = "/";
     return;
   } else if (token) {
     await axios.get(proxy.$locale + "/auth/check-token", {
       headers: { Authorization: `Bearer ${token}` },
     });
+    if (isCareerPage) {
+      console.log("📌 Career sahifasi — redirect qilinmaydi");
+      return;
+    }
     window.location.href = "/";
     return;
   } else if (chatId) {
@@ -38,6 +50,10 @@ onMounted(async () => {
 
     if (RES_TOKEN) {
       localStorage.setItem("token", RES_TOKEN);
+      if (isCareerPage) {
+        console.log("📌 Career sahifasi — redirect qilinmaydi");
+        return;
+      }
       window.location.href = "/";
       return;
     }

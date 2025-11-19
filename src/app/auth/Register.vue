@@ -428,26 +428,43 @@ onMounted(async () => {
   const token = localStorage.getItem("token")
 
   try {
+    const currentUrl = window.location.href;
+
+    const isCareerPage = currentUrl.includes("/career");
+
     if (token) {
-      console.log("🔍 check-token so‘rov yuborilmoqda...")
+      console.log("🔍 check-token so‘rov yuborilmoqda...");
       await axios.get(proxy.$locale + "/auth/check-token", {
         headers: { Authorization: `Bearer ${token}` },
-      })
-      console.log("✅ check-token javob oldi!")
-      window.location.href = "/"
-      return
+      });
+      console.log("✅ check-token javob oldi!");
+
+      if (isCareerPage) {
+        console.log("📌 Career sahifasi — redirect qilinmaydi");
+        return;
+      }
+
+      window.location.href = "/";
+      return;
     }
 
     if (chatId) {
-      console.log("💬 Chat ID orqali login:", chatId)
-      const res = await axios.post(proxy.$locale + "/auth/chat-id-login", { chat_id: chatId })
-      const TOKEN = res.data?.data?.token
+      console.log("💬 Chat ID orqali login:", chatId);
+      const res = await axios.post(proxy.$locale + "/auth/chat-id-login", { chat_id: chatId });
+      const TOKEN = res.data?.data?.token;
 
       if (TOKEN) {
-        console.log("✅ Chat ID orqali token olindi")
-        localStorage.setItem("token", TOKEN)
-        window.location.href = "/"
-        return
+        console.log("✅ Chat ID orqali token olindi");
+        localStorage.setItem("token", TOKEN);
+
+        if (isCareerPage) {
+          console.log("📌 Career sahifasiga qaytarildi");
+          window.location.href = "/career";
+          return;
+        }
+
+        window.location.href = "/";
+        return;
       }
     }
   } catch (error) {
