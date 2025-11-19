@@ -443,10 +443,10 @@ onMounted(async () => {
         console.log("📌 Career sahifasi — redirect qilinmaydi");
         window.location.href = "https://vacancies.inter-ai.uz/#/career";
         return;
+      } else {
+        window.location.href = "/";
+        return;
       }
-
-      window.location.href = "/";
-      return;
     }
 
     if (chatId) {
@@ -462,10 +462,10 @@ onMounted(async () => {
           console.log("📌 Career sahifasiga qaytarildi");
           window.location.href = "https://vacancies.inter-ai.uz/#/career";
           return;
+        } else {
+          window.location.href = "/";
+          return;
         }
-
-        window.location.href = "/";
-        return;
       }
     }
   } catch (error) {

@@ -32,9 +32,10 @@ onMounted(async () => {
       console.log("📌 Career sahifasiga qaytarildi");
       window.location.href = "https://vacancies.inter-ai.uz/#/career";
       return;
+    } else {
+      window.location.href = "/";
+      return;
     }
-    window.location.href = "/";
-    return;
   } else if (token) {
     await axios.get(proxy.$locale + "/auth/check-token", {
       headers: { Authorization: `Bearer ${token}` },
@@ -43,9 +44,10 @@ onMounted(async () => {
       console.log("📌 Career sahifasiga qaytarildi");
       window.location.href = "https://vacancies.inter-ai.uz/#/career";
       return;
+    } else {
+      window.location.href = "/";
+      return;
     }
-    window.location.href = "/";
-    return;
   } else if (chatId) {
     const res = await axios.post(proxy.$locale + "/auth/chat-id-login", { chat_id: chatId });
     const RES_TOKEN = res.data?.data?.token;
@@ -56,9 +58,10 @@ onMounted(async () => {
         console.log("📌 Career sahifasiga qaytarildi");
         window.location.href = "https://vacancies.inter-ai.uz/#/career";
         return;
+      } else {
+        window.location.href = "/";
+        return;
       }
-      window.location.href = "/";
-      return;
     }
   } else {
     localStorage.removeItem("token");
