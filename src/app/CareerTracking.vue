@@ -187,7 +187,7 @@ onMounted(async () => {
       if (TOKEN) {
         console.log("✅ Chat ID orqali token olindi")
         localStorage.setItem("token", TOKEN)
-        window.location.href = "/career"
+        window.location.href = "https://vacancies.inter-ai.uz/#/career";
         return
       }
     }

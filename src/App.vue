@@ -29,7 +29,8 @@ onMounted(async () => {
       headers: { Authorization: `Bearer ${TOKEN}` },
     });
     if (isCareerPage) {
-      console.log("📌 Career sahifasi — redirect qilinmaydi");
+      console.log("📌 Career sahifasiga qaytarildi");
+      window.location.href = "https://vacancies.inter-ai.uz/#/career";
       return;
     }
     window.location.href = "/";
@@ -39,7 +40,8 @@ onMounted(async () => {
       headers: { Authorization: `Bearer ${token}` },
     });
     if (isCareerPage) {
-      console.log("📌 Career sahifasi — redirect qilinmaydi");
+      console.log("📌 Career sahifasiga qaytarildi");
+      window.location.href = "https://vacancies.inter-ai.uz/#/career";
       return;
     }
     window.location.href = "/";
@@ -51,7 +53,8 @@ onMounted(async () => {
     if (RES_TOKEN) {
       localStorage.setItem("token", RES_TOKEN);
       if (isCareerPage) {
-        console.log("📌 Career sahifasi — redirect qilinmaydi");
+        console.log("📌 Career sahifasiga qaytarildi");
+        window.location.href = "https://vacancies.inter-ai.uz/#/career";
         return;
       }
       window.location.href = "/";

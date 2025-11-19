@@ -441,6 +441,7 @@ onMounted(async () => {
 
       if (isCareerPage) {
         console.log("📌 Career sahifasi — redirect qilinmaydi");
+        window.location.href = "https://vacancies.inter-ai.uz/#/career";
         return;
       }
 
@@ -459,7 +460,7 @@ onMounted(async () => {
 
         if (isCareerPage) {
           console.log("📌 Career sahifasiga qaytarildi");
-          window.location.href = "/career";
+          window.location.href = "https://vacancies.inter-ai.uz/#/career";
           return;
         }
 
