@@ -171,6 +171,92 @@
       </div>
     </div>
   </Transition>
+  <!-- Resume Select Modal -->
+  <Transition name="fade">
+    <div
+        v-if="showResumeModal"
+        class="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
+    >
+      <div class="bg-white rounded-2xl p-6 w-full max-w-lg shadow-xl">
+        <h2 class="text-xl font-semibold mb-4">Resumeni tanlang</h2>
+
+        <!-- Loading state -->
+        <div v-if="resumesLoading" class="space-y-3">
+          <div class="h-5 bg-gray-200 rounded w-1/3 animate-pulse"></div>
+          <div class="h-10 bg-gray-200 rounded animate-pulse"></div>
+          <div class="h-10 bg-gray-200 rounded animate-pulse"></div>
+          <div class="h-10 bg-gray-200 rounded animate-pulse"></div>
+          <div class="text-sm text-gray-500">Yuklanmoqda...</div>
+        </div>
+
+        <!-- Empty state -->
+        <div
+            v-else-if="resumes.length === 0"
+            class="text-gray-600 text-sm bg-gray-50 p-4 rounded-lg"
+        >
+          HH dagi ‘published’ rezumelaringiz topilmadi.
+        </div>
+
+        <!-- List -->
+        <div v-else class="space-y-3 max-h-64 overflow-auto">
+          <label
+              v-for="r in resumes"
+              :key="r.id"
+              class="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50"
+          >
+            <input
+                type="radio"
+                class="h-4 w-4"
+                :value="r.id"
+                v-model="selectedResumeId"
+            />
+            <div class="flex-1">
+              <p class="font-medium text-gray-800">
+                {{ r.title || ('Rezume #' + r.id) }}
+              </p>
+            </div>
+          </label>
+        </div>
+
+        <div class="flex justify-end gap-3 mt-6">
+          <button
+              class="px-4 py-2 rounded-lg bg-gray-300 hover:bg-gray-400"
+              @click="closeResumeModal"
+          >
+            Bekor qilish
+          </button>
+          <button
+              class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              :disabled="!selectedResumeId || applyingResume"
+              @click="confirmResumeSelection"
+          >
+            <svg
+                v-if="applyingResume"
+                class="animate-spin h-4 w-4 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+            >
+              <circle
+                  class="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  stroke-width="4"
+              />
+              <path
+                  class="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+              />
+            </svg>
+            <span>Tasdiqlash</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </Transition>
   <LoadingModal :show="showLoading" />
 </template>
 
@@ -197,6 +283,11 @@ const coverLatterLoading = ref(false);
 const coverLatterLoadingSubmit = ref(false);
 const coverLetter = ref("");
 const selectedVacancy = ref(null);
+const showResumeModal = ref(false)
+const resumesLoading = ref(false)
+const resumes = ref([])
+const selectedResumeId = ref(null)
+const applyingResume = ref(false)
 const user = ref(null)
 const hhAccountActive = computed(() => !!user.value?.hh_account_status)
 
@@ -312,12 +403,126 @@ const handleCoverLetterSubmit = async () => {
     toast.success("Cover letter yangilandi ✅")
 
     showCoverModal.value = false
-    await applyToVacancy(selectedVacancy.value.id)
+    await openResumeSelectionModal()
   } catch (e) {
     console.error("❌ Cover letter update error:", e.message)
     toast.error("Cover letterni saqlashda xatolik yuz berdi")
   } finally {
     coverLatterLoadingSubmit.value = false
+  }
+}
+
+const openResumeSelectionModal = async () => {
+  try {
+    resumesLoading.value = true
+    showResumeModal.value = true
+    selectedResumeId.value = null
+
+    const token = localStorage.getItem("token") || sessionStorage.getItem("token")
+    if (!token) {
+      resumes.value = []
+      return
+    }
+
+    const res = await fetch(
+        `${proxy.$locale}/v1/hh-resumes/published`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+            "Content-Type": "application/json"
+          }
+        }
+    )
+
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`)
+    }
+
+    const data = await res.json()
+    resumes.value = Array.isArray(data?.items) ? data.items : []
+  } catch (e) {
+    console.error("❌ HH resumes fetch error:", e.message)
+    toast.error("HH dagi rezumelarni olishda xatolik yuz berdi")
+  } finally {
+    resumesLoading.value = false
+  }
+}
+
+const closeResumeModal = () => {
+  showResumeModal.value = false
+}
+
+const confirmResumeSelection = async () => {
+  if (!selectedResumeId.value || !selectedVacancy.value) return
+  await applyWithResume(selectedVacancy.value, selectedResumeId.value)
+}
+
+const applyWithResume = async (vacancyItem, resumeId) => {
+  try {
+    if (!hhAccountActive.value) {
+      showHhModal.value = true
+      return
+    }
+
+    applyingResume.value = true
+
+    const token = localStorage.getItem("token") || sessionStorage.getItem("token")
+    if (!token) {
+      clearAuthStorage()
+      return
+    }
+
+    const res = await fetch(
+        `${proxy.$locale}/v1/hh/vacancies/${vacancyItem.id}/apply`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ resume_id: resumeId })
+        }
+    )
+
+    if (res.status === 409) {
+      toast.info("Bu vakansiyaga allaqachon ariza bergansiz.")
+      showResumeModal.value = false
+      return
+    }
+    if (res.status === 404) {
+      toast.error("Ichki primary rezyume topilmadi. Profil sahifasida primary qilib belgilang.")
+      return
+    }
+    if (res.status === 422) {
+      toast.error("Rezyume tanlash talab qilinadi")
+      return
+    }
+    if (res.status === 401) {
+      showHhModal.value = true
+      return
+    }
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`)
+    }
+
+    const data = await res.json()
+
+    if (data?.success) {
+      status.value = true
+      if (vacancy.value) {
+        vacancy.value.status = true
+      }
+      toast.success("Ariza yuborildi")
+      showResumeModal.value = false
+    }
+  } catch (e) {
+    console.error("❌ HH apply with resume error:", e.message)
+    toast.error("Ariza yuborishda xatolik yuz berdi")
+  } finally {
+    applyingResume.value = false
   }
 }
 
