@@ -74,7 +74,7 @@ jobs:
           cp dist/index.html dist/404.html
 
       # 5️⃣ Upload build to server
-      - name: Deploy to Server
+      - name: Deploy to Server test
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.SERVER_IP }}
