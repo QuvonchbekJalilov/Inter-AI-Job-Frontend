@@ -1,11 +1,14 @@
 <script setup>
 import { provideI18n } from './i18n-lite'
-import { onMounted, getCurrentInstance } from "vue";
-import { useRouter } from "vue-router";
+import { onMounted, getCurrentInstance, computed } from "vue";
+import { useRouter, useRoute } from "vue-router";
 import axios from "axios";
 import BottomNav from "@/components/BottomNav.vue";
 provideI18n()
 const router = useRouter()
+const route = useRoute()
+
+const showBottomNav = computed(() => !route.meta?.guest)
 
 onMounted(async () => {
   const queryString = window.location.search || window.location.hash.split('?')[1] || '';
@@ -68,7 +71,7 @@ onMounted(() => {
   <div class="pb-8 bg-gray-50">
     <router-view />
   </div>
-  <BottomNav />
+  <BottomNav v-if="showBottomNav" />
 </template>
 
 <style>
