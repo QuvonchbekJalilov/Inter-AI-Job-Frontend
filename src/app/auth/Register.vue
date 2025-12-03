@@ -38,58 +38,65 @@
 
 
         <!--  Replaced file upload with category dropdown and multiple select -->
-        <!-- Category Selection -->
-        <div>
-          <label for="category" class="block text-sm font-medium text-gray-700 mb-2">
-            Kategoriyani tanlang
-          </label>
-          <select
-              id="category"
-              v-model="formData.selectedCategory"
-              class="w-full px-3 py-2 bg-gray-100 border-0 rounded-md focus:ring-2 focus:ring-blue-500 focus:bg-white cursor-pointer appearance-none"
-          >
-            <option value="">-- Kategoriyani tanlang --</option>
-            <option v-for="category in categories" :key="category.id" :value="category.id">
-              {{ category.name }}
-            </option>
-          </select>
-        </div>
-
-        <!-- Subcategory Multi-Select with Checkboxes -->
-        <div v-if="formData.selectedCategory && getSubcategories().length > 0">
-          <label class="block text-sm font-medium text-gray-700 mb-3">
-            {{ getSelectedCategoryName() }} uchun bo'limlarni tanlang
-          </label>
-
-          <div class="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg border border-gray-200">
-            <div
-                v-for="subcategory in getSubcategories()"
-                :key="subcategory.id"
-                class="flex items-center"
+        <div class="category-selection-wrapper">
+          <!-- Category Select -->
+          <div class="form-group">
+            <label class="form-label">
+              Kategoriyani tanlang
+            </label>
+            <el-select
+                v-model="formData.selectedCategory"
+                placeholder="-- Kategoriyani tanlang --"
+                size="large"
+                class="w-full category-select"
+                clearable
+                @change="handleCategoryChange"
             >
-              <input
-                  :id="`subcategory-${subcategory.id}`"
-                  type="checkbox"
-                  :value="subcategory.id"
-                  v-model="formData.selectedSubcategories"
-                  class="w-4 h-4 rounded border-gray-300 text-blue-500 focus:ring-2 focus:ring-blue-500 cursor-pointer"
-              />
-              <label
-                  :for="`subcategory-${subcategory.id}`"
-                  class="ml-3 text-sm text-gray-700 cursor-pointer"
+              <el-option
+                  v-for="category in categories"
+                  :key="category.id"
+                  :label="category.name"
+                  :value="category.id"
               >
-                {{ subcategory.name }}
-              </label>
-            </div>
+                <span class="option-text">{{ category.name }}</span>
+              </el-option>
+            </el-select>
           </div>
 
-          <p v-if="formData.selectedSubcategories.length > 0" class="text-xs text-blue-600 mt-2">
-            Tanlangan: {{ formData.selectedSubcategories.length }}
-          </p>
-        </div>
+          <!-- Subcategory Multi-Select -->
+          <div v-if="formData.selectedCategory && getSubcategories().length > 0" class="form-group">
+            <label class="form-label">
+              {{ getSelectedCategoryName() }} uchun bo'limlarni tanlang
+            </label>
+            <el-select
+                v-model="formData.selectedSubcategories"
+                multiple
+                collapse-tags
+                collapse-tags-tooltip
+                :max-collapse-tags="3"
+                placeholder="Bo'limlarni tanlang"
+                size="large"
+                class="w-full subcategory-select"
+                clearable
+            >
+              <el-option
+                  v-for="subcategory in getSubcategories()"
+                  :key="subcategory.id"
+                  :label="subcategory.name"
+                  :value="subcategory.id"
+              >
+                <span class="option-text">{{ subcategory.name }}</span>
+              </el-option>
+            </el-select>
 
-        <div v-else-if="formData.selectedCategory" class="p-4 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-700">
-          Bu kategoriya bo'limlar mavjud emas
+            <!-- Selected Count Badge -->
+            <div v-if="formData.selectedSubcategories.length > 0" class="selected-count">
+              <el-tag type="success" effect="plain" round>
+                <el-icon class="mr-1"><Check /></el-icon>
+                Tanlangan: {{ formData.selectedSubcategories.length }}
+              </el-tag>
+            </div>
+          </div>
         </div>
 
         <!-- Offer Section (Placeholder) -->
@@ -141,7 +148,7 @@ import { useI18n } from '@/i18n-lite.js'
 import {ref, reactive, computed, getCurrentInstance, onMounted} from 'vue'
 import { useRouter } from 'vue-router'
 import axios from "axios"
-import LoadingModal from "@/components/modal/LodaingModal.vue";
+import { Check } from '@element-plus/icons-vue'
 import { toast } from "vue3-toastify"
 import intlTelInput from "intl-tel-input";
 import "intl-tel-input/build/css/intlTelInput.css";
@@ -151,7 +158,6 @@ const { proxy } = getCurrentInstance()
 const { translations } = useI18n()
 const router = useRouter()
 const showLoading = ref(false)
-const resumeInput = ref(null)
 
 const formData = reactive({
   firstName: '',
@@ -253,7 +259,7 @@ const categories = ref([
       { id: 509, name: 'ELD Specialist' },
       { id: 510, name: 'Freight Broker' },
       { id: 511, name: 'Route Planner' },
-      { id: 512, name: 'Химик R&D' }
+      { id: 512, name: 'Safety Specialist' }
     ]
   },
 
@@ -318,14 +324,19 @@ const getSubcategories = () => {
   const category = categories.value.find(cat => cat.id === parseInt(formData.selectedCategory))
   return category?.subcategories || []
 }
+
 const getSelectedCategoryName = () => {
   const category = categories.value.find(cat => cat.id === parseInt(formData.selectedCategory))
   return category?.name || ''
 }
 
+const handleCategoryChange = () => {
+  // Kategoriya o'zgarganda subcategorylarni tozalash
+  formData.selectedSubcategories = []
+}
+
 const loading = ref(false)
 const error = ref("")
-const selectedFile = ref(null)
 const fileError = ref(false)
 
 const isSuccess = (resp) => {
@@ -617,14 +628,127 @@ onMounted(async () => {
 
 
 <style scoped>
-select {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 8px center;
-  padding-right: 28px;
+.category-selection-wrapper {
+  max-width: 100%;
+  margin: 0 auto;
 }
 
-input[type="checkbox"] {
-  cursor: pointer;
+.form-group {
+  margin-bottom: 24px;
+}
+
+.form-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 8px;
+}
+
+.w-full {
+  width: 100%;
+}
+
+/* Category Select Custom Styles */
+:deep(.category-select) {
+  --el-select-border-color-hover: #3b82f6;
+  --el-select-input-focus-border-color: #3b82f6;
+}
+
+:deep(.category-select .el-input__wrapper) {
+  background-color: #f9fafb;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  transition: all 0.3s ease;
+}
+
+:deep(.category-select .el-input__wrapper:hover) {
+  background-color: #ffffff;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+:deep(.category-select .el-input__wrapper.is-focus) {
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgb(59 130 246 / 0.1);
+}
+
+/* Subcategory Select Custom Styles */
+:deep(.subcategory-select) {
+  --el-select-border-color-hover: #10b981;
+  --el-select-input-focus-border-color: #10b981;
+}
+
+:deep(.subcategory-select .el-input__wrapper) {
+  background: linear-gradient(to right, #f0fdf4, #fefce8);
+  border-radius: 8px;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  transition: all 0.3s ease;
+}
+
+:deep(.subcategory-select .el-input__wrapper:hover) {
+  background: linear-gradient(to right, #dcfce7, #fef9c3);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+:deep(.subcategory-select .el-input__wrapper.is-focus) {
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgb(16 185 129 / 0.1);
+}
+
+/* Option Text Styles */
+.option-text {
+  font-size: 14px;
+  color: #1f2937;
+}
+
+/* Selected Tags Styling */
+:deep(.el-tag) {
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+/* Selected Count Badge */
+.selected-count {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+}
+
+.selected-count .mr-1 {
+  margin-right: 4px;
+}
+
+/* Dropdown Panel Custom Styles */
+:deep(.el-select-dropdown__item) {
+  padding: 12px 20px;
+  transition: all 0.2s ease;
+}
+
+:deep(.el-select-dropdown__item:hover) {
+  background-color: #f3f4f6;
+}
+
+:deep(.el-select-dropdown__item.is-selected) {
+  background-color: #dbeafe;
+  color: #1e40af;
+  font-weight: 500;
+}
+
+/* Scrollbar Styling */
+:deep(.el-select-dropdown__wrap) {
+  max-height: 300px;
+}
+
+:deep(.el-select-dropdown__wrap::-webkit-scrollbar) {
+  width: 6px;
+}
+
+:deep(.el-select-dropdown__wrap::-webkit-scrollbar-thumb) {
+  background-color: #d1d5db;
+  border-radius: 3px;
+}
+
+:deep(.el-select-dropdown__wrap::-webkit-scrollbar-thumb:hover) {
+  background-color: #9ca3af;
 }
 </style>
