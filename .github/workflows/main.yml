@@ -82,7 +82,7 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           source: "dist/*"
           target: "/var/www/front/"
-          strip_components: 1
+          strip_components: 0
 
       # 6️⃣ Restart nginx
       - name: Restart Nginx
