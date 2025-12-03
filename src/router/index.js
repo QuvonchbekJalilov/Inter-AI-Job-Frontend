@@ -11,6 +11,7 @@ import DemoVacancy from '../app/demo/DemoVacancy.vue'
 import DemoRegister from "@/app/demo/DemoRegister.vue"
 import VacancyTelegramShow from '../app/VacancyTelegramShow.vue'
 import CareerTracking from "@/app/CareerTracking.vue";
+import Resume from "@/app/Resume.vue";
 
 
 const routes = [
@@ -64,6 +65,12 @@ const routes = [
         component: VacancyTelegramShow,
         props: true,
         meta: { requiresAuth: true, headerBack: true }
+    },
+    {
+        path: '/resume',
+        name: 'resume',
+        component: Resume,
+        meta: { requiresAuth: true }
     },
     {
         path: '/users/:id',

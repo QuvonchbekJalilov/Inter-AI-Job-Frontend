@@ -5,12 +5,14 @@
           :tabs="tabs"
           :active-tab="activeTab"
           @change-tab="setActiveTab"
+          @change-filter="setActiveFilter"
       />
 
       <main class="space-y-6 mt-6">
 
         <template v-if="activeTab === 'vacancies'">
           <VacancyCard
+              :source-filter="activeFilter"
               title="Junior/Middle Frontend Разработчик (VueJS) - удаленки НЕТ"
               company="ООО MICROS24"
               location="Ташкент, Яшнабадский район, улица Махтумкули, 178/1"
@@ -41,9 +43,13 @@
                 'Расскажите о своем опыте работы с React',
                 'Как вы оптимизируете производительность веб-приложений?',
                 'Опыт работы с TypeScript?',
-                'Как вы тестируете свой код?'
+              'Как вы тестируете свой код?'
               ]"
           />
+        </template>
+
+        <template v-else-if="activeTab === 'rejected'">
+          <RejectedVacancyCard />
         </template>
 
       </main>
@@ -58,28 +64,45 @@ import VacancyCard from './VacancyCard.vue'
 import InterviewCard from './InterviewCard.vue'
 import StaticsSection from './StaticsSection.vue'
 import ResponsesVacancyCard from "@/components/ResponsesVacancyCard.vue";
+import RejectedVacancyCard from "@/components/RejectedVacancyCard.vue";
 
 const activeTab = ref('vacancies')
 
 const { t } = useI18n()
 const isNarrow = ref(false)
 const updateNarrow = () => { isNarrow.value = window.innerWidth < 400 }
-onMounted(() => { updateNarrow(); window.addEventListener('resize', updateNarrow) })
-onBeforeUnmount(() => window.removeEventListener('resize', updateNarrow))
-
-const counts = reactive({
-  vacancies: 5,
-  newsVacancy: 6,
-  interview: 7,
+const resetTabs = () => {
+  activeTab.value = 'vacancies'
+  activeFilter.value = 'all'
+}
+onMounted(() => {
+  updateNarrow()
+  window.addEventListener('resize', updateNarrow)
+  window.addEventListener('interai-home-click', resetTabs)
+})
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', updateNarrow)
+  window.removeEventListener('interai-home-click', resetTabs)
 })
 
-const tabs = computed(() => [
-  { name: t('vacancies', { count: counts.vacancies }), key: 'vacancies', active: activeTab.value === 'vacancies' },
-  { name: t('responses', { count: counts.newsVacancy }), key: 'newsVacancy', active: activeTab.value === 'newsVacancy' },
-  { name: t('interview', { count: counts.interview }), key: 'interview', active: activeTab.value === 'interview' },
-])
+const activeFilter = ref('all')
+
+const tabs = computed(() => {
+  const isVacancies = activeTab.value === 'vacancies'
+  return [
+    { name: 'ALL', key: 'all', active: isVacancies && activeFilter.value === 'all' },
+    { name: 'HeadHunter', key: 'headhunter', active: isVacancies && activeFilter.value === 'headhunter' },
+    { name: 'Telegram', key: 'telegram', active: isVacancies && activeFilter.value === 'telegram' },
+  ]
+})
 
 const setActiveTab = (tabKey) => {
   activeTab.value = tabKey
+}
+
+const setActiveFilter = (filterKey) => {
+  activeFilter.value = filterKey
+  // Filtrlar faqat vakansiyalar ko‘rinishi uchun ishlaydi
+  activeTab.value = 'vacancies'
 }
 </script>

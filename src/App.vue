@@ -1,9 +1,9 @@
 <script setup>
 import { provideI18n } from './i18n-lite'
-import {computed, onMounted, getCurrentInstance, ref} from "vue";
+import { onMounted, getCurrentInstance } from "vue";
 import { useRouter } from "vue-router";
 import axios from "axios";
-import LoadingModal from "@/components/modal/LodaingModal.vue";
+import BottomNav from "@/components/BottomNav.vue";
 provideI18n()
 const router = useRouter()
 
@@ -65,7 +65,10 @@ onMounted(() => {
 </script>
 
 <template>
-  <router-view />
+  <div class="pb-8 bg-gray-50">
+    <router-view />
+  </div>
+  <BottomNav />
 </template>
 
 <style>

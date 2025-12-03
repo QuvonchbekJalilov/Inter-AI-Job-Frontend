@@ -1,58 +1,94 @@
 <template>
-<div class="fixed top-[84px] left-0 w-full bg-white border-b border-gray-200 z-20 rounded-2xl">
+  <div class="fixed top-[84px] left-0 w-full bg-white border-b border-gray-200 z-20 rounded-2xl">
     <div class="max-w-7xl mx-auto px-4 py-2 border-radius">
       <div class="max-w-3xl mx-auto">
+        <!-- Top: Topshirilgan / Interview / Otkaz statistikasi -->
         <div class="bg-white rounded-2xl py-4 flex justify-around shadow-top divide-x mt-3">
-          <div class="flex-1 text-center px-2">
-            <div class="text-blue-600 text-2xl font-medium min-h-[28px] flex justify-center">
-              <div v-if="loading" class="skeleton w-12 h-6 rounded-md"></div>
-              <span v-else>{{ statistics.total_result }}</span>
+          <!-- Topshirilgan -->
+          <button
+            type="button"
+            class="flex-1 text-center px-2 focus:outline-none"
+            @click="onStatusClick('newsVacancy')"
+          >
+            <div class="flex items-center justify-center gap-1 text-sm text-gray-500 mb-1">
+              <span>{{ translations.responses }}</span>
+              <span
+                v-if="getNotificationCount('newsVacancy') > 0"
+                class="notification-badge inline-flex min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[11px] font-semibold items-center justify-center -mt-4"
+              >
+                {{ Math.min(getNotificationCount('newsVacancy'), 99) }}
+              </span>
             </div>
-            <div class="text-sm text-gray-500">{{ translations.vacancies }}</div>
-          </div>
-
-          <div class="flex-1 text-center px-2">
             <div class="text-blue-600 text-2xl font-medium min-h-[28px] flex justify-center">
               <div v-if="loading" class="skeleton w-12 h-6 rounded-md"></div>
               <span v-else>{{ statistics.applied }}</span>
             </div>
-            <div class="text-sm text-gray-500">{{ translations.responses }}</div>
-          </div>
+          </button>
 
-          <div class="flex-1 text-center px-2">
-            <div class="text-indigo-600 text-2xl font-medium min-h-[28px] flex justify-center">
+          <!-- Interview -->
+          <button
+            type="button"
+            class="flex-1 text-center px-2 focus:outline-none"
+            @click="onStatusClick('interview')"
+          >
+            <div class="flex items-center justify-center gap-1 text-sm text-gray-500 mb-1">
+              <span>{{ translations.interview }}</span>
+              <span
+                v-if="getNotificationCount('interview') > 0"
+                class="notification-badge inline-flex min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[11px] font-semibold items-center justify-center -mt-4"
+              >
+                {{ Math.min(getNotificationCount('interview'), 99) }}
+              </span>
+            </div>
+            <div class="text-blue-600 text-2xl font-medium min-h-[28px] flex justify-center">
               <div v-if="loading" class="skeleton w-12 h-6 rounded-md"></div>
               <span v-else>{{ statistics.interview }}</span>
             </div>
-            <div class="text-sm text-gray-500">{{ translations.interview }}</div>
-          </div>
+          </button>
+
+          <!-- Otkaz -->
+          <button
+            type="button"
+            class="flex-1 text-center px-2 focus:outline-none"
+            @click="onStatusClick('rejected')"
+          >
+            <div class="flex items-center justify-center gap-1 text-sm text-gray-500 mb-1">
+              <span>Otkaz</span>
+              <span
+                v-if="getNotificationCount('rejected') > 0"
+                class="notification-badge inline-flex min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[11px] font-semibold items-center justify-center -mt-4"
+              >
+                {{ Math.min(getNotificationCount('rejected'), 99) }}
+              </span>
+            </div>
+            <div class="text-red-500 text-2xl font-medium min-h-[28px] flex justify-center">
+              <div v-if="loading" class="skeleton w-12 h-6 rounded-md"></div>
+              <!-- Hozircha backenddan alohida otkaz soni kelmagani uchun 0 yoki applied bilan bir xil bo'lishi mumkin -->
+              <span v-else>{{ statistics.rejected ?? 0 }}</span>
+            </div>
+          </button>
         </div>
       </div>
 
+      <!-- Pastki filter: ALL / HeadHunter / Telegram -->
       <div class="flex items-stretch mt-3 w-full max-w-md mx-auto gap-2">
         <button
-            v-for="tab in tabs"
-            :key="tab.key"
-            class="tab-btn relative overflow-visible min-w-0 basis-0 px-3 sm:px-4 rounded-xl transform transition-colors whitespace-nowrap text-ellipsis flex items-center justify-center gap-1"
-            :class="tab.active
+          v-for="tab in tabs"
+          :key="tab.key"
+          class="tab-btn relative overflow-visible min-w-0 basis-0 px-3 sm:px-4 rounded-xl transform transition-colors whitespace-nowrap text-ellipsis flex items-center justify-center gap-1"
+          :class="tab.active
             ? 'bg-blue-600 text-white scale-100 py-2.5'
             : 'bg-gray-100 text-gray-700 hover:bg-gray-200 scale-95 py-2'"
-            :style="{ flexGrow: tab.active ? 2 : 1 }"
-            @click="onTabClick(tab)"
+          :style="{ flexGrow: tab.active ? 2 : 1 }"
+          @click="onFilterClick(tab)"
         >
           <span
-              class="tab-label inline-block leading-tight px-0.5 sm:px-1"
-              :class="tab.active
+            class="tab-label inline-block leading-tight px-0.5 sm:px-1"
+            :class="tab.active
               ? 'text-[13.5px] sm:text-[14px] scale-100'
               : 'text-[11.5px] sm:text-[12px] scale-90'"
           >
             {{ tab.name }}
-          </span>
-          <span
-              v-if="getNotificationCount(tab.key) > 0"
-              class="notification-badge absolute -top-2 -right-2 min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[11px] font-semibold flex items-center justify-center"
-          >
-            {{ Math.min(getNotificationCount(tab.key), 99) }}
           </span>
         </button>
       </div>
@@ -74,7 +110,7 @@ const props = defineProps({
   activeTab: String
 })
 
-const emit = defineEmits(["change-tab"])
+const emit = defineEmits(["change-tab", "change-filter"])
 
 const statistics = ref({
   total_result: 0,
@@ -89,9 +125,12 @@ const notificationCounts = ref({
   interviews: 0,
 })
 
+// Hozircha otkaz uchun alohida field va type yo'q,
+// shuning uchun mavjud countlardan foydalanamiz (responses bilan bir xil).
 const TAB_NOTIFICATION_MAP = {
   newsVacancy: { field: "responses", type: "application" },
   interview: { field: "interviews", type: "responce" },
+  rejected: { field: "responses", type: null },
 }
 
 const getNotificationCount = (key) => {
@@ -114,6 +153,14 @@ const fetchNotifications = async () => {
 
     notificationCounts.value.responses = Number(data?.application_notification) || 0
     notificationCounts.value.interviews = Number(data?.responce_notification) || 0
+
+    // Dizaynni ko‘rish uchun vaqtinchalik statik notificationlar
+    if (notificationCounts.value.responses === 0) {
+      notificationCounts.value.responses = 2
+    }
+    if (notificationCounts.value.interviews === 0) {
+      notificationCounts.value.interviews = 2
+    }
   } catch (error) {
     console.error("❌ Notifications fetch error:", error.response?.data || error.message)
   }
@@ -122,6 +169,9 @@ const fetchNotifications = async () => {
 const markNotificationsAsRead = async (key) => {
   const map = TAB_NOTIFICATION_MAP[key]
   if (!map) return
+
+  // Backendda type yo'q bo'lgan holatlarda (masalan, rejected) hech narsa qilmaymiz
+  if (!map.type) return
 
   const currentCount = notificationCounts.value[map.field]
   if (!currentCount || currentCount <= 0) return
@@ -149,8 +199,12 @@ const markNotificationsAsRead = async (key) => {
   }
 }
 
-const onTabClick = (tab) => {
-  emit("change-tab", tab.key)
+const onStatusClick = (statusKey) => {
+  emit("change-tab", statusKey)
+}
+
+const onFilterClick = (tab) => {
+  emit("change-filter", tab.key)
 }
 
 watch(
@@ -176,7 +230,18 @@ onMounted(() => {
         }
       })
 
-      statistics.value = res.data
+      statistics.value = res.data || {}
+
+      // Dizaynni tekshirish uchun vaqtinchalik statik qiymatlar
+      if (!statistics.value.applied || statistics.value.applied === 0) {
+        statistics.value.applied = 2
+      }
+      if (!statistics.value.interview || statistics.value.interview === 0) {
+        statistics.value.interview = 2
+      }
+      if (statistics.value.rejected == null || statistics.value.rejected === 0) {
+        statistics.value.rejected = 2
+      }
     } catch (e) {
       console.error("❌ Statistika yuklanmadi:", e)
     } finally {

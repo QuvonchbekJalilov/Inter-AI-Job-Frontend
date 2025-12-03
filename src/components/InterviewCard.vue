@@ -105,6 +105,26 @@ const loading = ref(false);
 const showLoading = ref(false);
 const error = ref(null);
 
+// Dizaynni ko‘rish uchun vaqtinchalik statik kartalar
+const staticInterviews = [
+  {
+    id: 1,
+    created_at: "2025-12-15T14:00:00Z",
+    vacancy: {
+      title: "Frontend разработчик",
+      company: "TechStart",
+    },
+  },
+  {
+    id: 2,
+    created_at: "2025-12-20T11:30:00Z",
+    vacancy: {
+      title: "Senior Backend Developer",
+      company: "Example Corp",
+    },
+  },
+]
+
 const fetchInterviews = async () => {
   loading.value = true;
   showLoading.value = true;
@@ -145,7 +165,10 @@ const fetchInterviews = async () => {
           },
         };
       });
-     
+      // Agar backend hozircha bo‘sh bo‘lsa, dizayn uchun 2 ta statik karta ko‘rsatamiz
+      if (interviews.value.length === 0) {
+        interviews.value = staticInterviews
+      }
     } else {
       error.value = "No interviews found";
     }

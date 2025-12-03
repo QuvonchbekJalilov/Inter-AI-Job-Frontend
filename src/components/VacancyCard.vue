@@ -1,6 +1,12 @@
 <template>
   <div class="max-w-7xl mx-auto px-4">
     <Vacancies :show="loadingSkeleton" :count="50" :cols="3" />
+    <div
+      v-if="!loadingSkeleton"
+      class="mt-2 mb-3 text-sm text-gray-500"
+    >
+      {{ displayedJobs.length }} ta vakansiya
+    </div>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
       <template v-if="displayedJobs.length > 0">
         <div v-for="job in displayedJobs" :key="`${job.source}-${job.id}-${job.external_id ?? ''}`" class="flex w-full max-w-lg flex-col mb-3">
@@ -334,6 +340,13 @@ import axios from "axios";
 import { toast } from "vue3-toastify"
 import { useRouter } from 'vue-router'
 import Vacancies from "@/components/loading/Vacancies.vue";
+
+const props = defineProps({
+  sourceFilter: {
+    type: String,
+    default: 'all',
+  },
+})
 const router = useRouter()
 
 const { translations, t } = useI18n()
@@ -550,7 +563,15 @@ const hasFullAccess = computed(() => hasActiveSubscription.value || isTrialActiv
 // const displayedJobs = computed(() =>
 //   hasFullAccess.value ? jobs.value : jobs.value.slice(0, FREE_VACANCY_LIMIT)
 // )
-const displayedJobs = computed(() => jobs.value)
+const displayedJobs = computed(() => {
+  if (props.sourceFilter === 'headhunter') {
+    return jobs.value.filter((job) => job.hh)
+  }
+  if (props.sourceFilter === 'telegram') {
+    return jobs.value.filter((job) => job.telegram)
+  }
+  return jobs.value
+})
 const lockedVacancyCount = computed(() =>
     Math.max(jobs.value.length - FREE_VACANCY_LIMIT, 0)
 )

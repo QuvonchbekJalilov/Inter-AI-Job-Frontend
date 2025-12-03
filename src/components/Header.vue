@@ -33,7 +33,7 @@
               v-if="user"
               class="inline-flex items-center pl-3.5 pr-0 h-9 rounded-full border border-gray-300 bg-white text-blue-600 shadow-sm hover:shadow-md hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-300 transition-all duration-150 cursor-pointer select-none text-sm font-medium"
           >
-            {{ translations.profile }}
+            {{ user?.first_name }} {{ user?.last_name }}
             <svg class="w-9 h-9 ml-1.5 shrink-0" viewBox="0 0 1000 1000" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
               <circle cx="500" cy="500" r="396.364" fill="white" stroke="#C6C6C6" stroke-width="7.27273"/>
               <path d="M612.317 162.336C125.918 493.239 560.25 774.264 744.155 527.855C394.377 1306.54 -83.9093 341.001 612.317 162.336Z" fill="#5078FF"/>
