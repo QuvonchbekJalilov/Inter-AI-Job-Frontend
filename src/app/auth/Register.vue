@@ -36,93 +36,83 @@
           />
         </div>
 
-<!--        <div>-->
-<!--          <label class="block text-sm font-medium text-gray-700 mb-2">-->
-<!--            {{ translations.Enter_your_resume_text }}-->
-<!--          </label>-->
-<!--          <input-->
-<!--              v-model="formData.resumeText"-->
-<!--              class="w-full px-3 py-2 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"-->
-<!--              :placeholder="translations.resume_placeholder"-->
-<!--          >-->
-<!--        </div>-->
 
-        <label class="block text-sm font-medium text-gray-700 mb-2">
-          {{ translations.Upload_your_resume_file }}
-        </label>
-
-        <input
-            ref="resumeInput"
-            id="resumeUpload"
-            type="file"
-            class="hidden"
-            @change="handleFileUpload"
-        />
-
-        <div
-            class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-400 transition-colors"
-        >
-          <div class="flex flex-col items-center gap-4">
-            <template v-if="hasResumeFile">
-              <div class="flex items-center gap-2 text-green-600">
-        <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-green-100 text-green-600 shadow-sm">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-          </svg>
-        </span>
-                <span class="font-medium text-sm sm:text-base text-green-700">{{ translations.resume_file_ready }}</span>
-              </div>
-              <div class="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
-                <button
-                    type="button"
-                    class="px-6 sm:px-8 py-2 rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors text-sm font-medium"
-                    @click="openFileDialog"
-                >
-                  {{ translations.resume_change }}
-                </button>
-              </div>
-            </template>
-
-            <!-- Fayl tanlanmagan holat -->
-            <template v-else>
-              <div class="text-sm text-gray-500">
-                {{ translations.resume_upload_hint }}
-                <br/>
-                <div class="text-center text-gray-400 text-xs">(.pdf, .doc, .docx)</div>
-              </div>
-              <button
-                  type="button"
-                  class="px-4 py-2 rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors text-sm font-medium"
-                  @click="openFileDialog"
-              >
-                {{ translations.select_file }}
-              </button>
-
-              <p v-if="fileError" class="text-red-500 text-sm mt-3">
-                {{ translations.resume_valid }}
-              </p>
-            </template>
-          </div>
+        <!--  Replaced file upload with category dropdown and multiple select -->
+        <!-- Category Selection -->
+        <div>
+          <label for="category" class="block text-sm font-medium text-gray-700 mb-2">
+            Kategoriyani tanlang
+          </label>
+          <select
+              id="category"
+              v-model="formData.selectedCategory"
+              class="w-full px-3 py-2 bg-gray-100 border-0 rounded-md focus:ring-2 focus:ring-blue-500 focus:bg-white cursor-pointer appearance-none"
+          >
+            <option value="">-- Kategoriyani tanlang --</option>
+            <option v-for="category in categories" :key="category.id" :value="category.id">
+              {{ category.name }}
+            </option>
+          </select>
         </div>
+
+        <!-- Subcategory Multi-Select with Checkboxes -->
+        <div v-if="formData.selectedCategory && getSubcategories().length > 0">
+          <label class="block text-sm font-medium text-gray-700 mb-3">
+            {{ getSelectedCategoryName() }} uchun bo'limlarni tanlang
+          </label>
+
+          <div class="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg border border-gray-200">
+            <div
+                v-for="subcategory in getSubcategories()"
+                :key="subcategory.id"
+                class="flex items-center"
+            >
+              <input
+                  :id="`subcategory-${subcategory.id}`"
+                  type="checkbox"
+                  :value="subcategory.id"
+                  v-model="formData.selectedSubcategories"
+                  class="w-4 h-4 rounded border-gray-300 text-blue-500 focus:ring-2 focus:ring-blue-500 cursor-pointer"
+              />
+              <label
+                  :for="`subcategory-${subcategory.id}`"
+                  class="ml-3 text-sm text-gray-700 cursor-pointer"
+              >
+                {{ subcategory.name }}
+              </label>
+            </div>
+          </div>
+
+          <p v-if="formData.selectedSubcategories.length > 0" class="text-xs text-blue-600 mt-2">
+            Tanlangan: {{ formData.selectedSubcategories.length }}
+          </p>
+        </div>
+
+        <div v-else-if="formData.selectedCategory" class="p-4 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-700">
+          Bu kategoriya bo'limlar mavjud emas
+        </div>
+
+        <!-- Offer Section (Placeholder) -->
         <Offer v-model="acceptedOffer" :locale="locale" />
 
+
+        <!-- Submit Button -->
         <button
             @click="completeRegistration"
-            :disabled="!isStepValid() || btnLoading || !acceptedOffer || fileError"
+            :disabled="!isStepValid() || btnLoading || !acceptedOffer"
             :class="[
-      'w-full py-3 rounded-md font-medium transition-colors flex items-center justify-center gap-2',
-      (!isStepValid() || btnLoading || !acceptedOffer || fileError)
-        ? 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-50'
-        : 'bg-blue-500 text-white hover:bg-blue-600'
-    ]"
+              'w-full py-3 rounded-md font-medium transition-colors flex items-center justify-center gap-2',
+              (!isStepValid() || btnLoading || !acceptedOffer)
+                ? 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-50'
+                : 'bg-blue-500 text-white hover:bg-blue-600'
+            ]"
         >
-  <span
-      v-if="btnLoading"
-      class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"
-  ></span>
+          <span
+              v-if="btnLoading"
+              class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"
+          ></span>
           <span>{{ btnLoading ? translations.finish : translations.finish }}</span>
         </button>
-
       </div>
       <div class="flex items-stretch w-full max-w-md mx-auto gap-2 pt-6">
         <button
@@ -141,10 +131,9 @@
         </span>
         </button>
       </div>
-    </div>
 
+    </div>
   </div>
-  <LoadingModal :show="showLoading" />
 </template>
 
 <script setup>
@@ -167,57 +156,183 @@ const resumeInput = ref(null)
 const formData = reactive({
   firstName: '',
   phone: '',
-  resumeFile: null,
-  resumeFileUrl: null,
+  selectedCategory: '',
+  selectedSubcategories: [],
 })
 
+const acceptedOffer = ref(false)
+const btnLoading = ref(false)
+
+//  9 ta kategoriya va ularning bolalari
+const categories = ref([
+  {
+    id: 1,
+    name: 'IT and Software Development',
+    subcategories: [
+      { id: 101, name: 'Php, Laravel, Yii2' },
+      { id: 102, name: 'Python, Django, Flask' },
+      { id: 103, name: '.NET, C#, ASP.NET' },
+      { id: 104, name: 'Java, Spring Boot' },
+      { id: 105, name: 'GoLang' },
+      { id: 106, name: 'React, Vue, Angular, JavaScript, TypeScript' },
+      { id: 107, name: 'Mobile Development (Flutter, React Native, Kotlin, Swift)' },
+      { id: 108, name: 'QA & Testing (Manual, Automation)' },
+      { id: 109, name: 'Cyber Security (SOC, Pentesting)' },
+      { id: 110, name: 'DevOps (Docker, Kubernetes, Linux, CI/CD)' },
+      { id: 111, name: 'Data Science' },
+      { id: 112, name: 'Machine Learning / AI Engineer' },
+      { id: 113, name: 'Game Development (Unity, Unreal)' },
+      { id: 114, name: 'Blockchain Developer' },
+      { id: 115, name: 'UI/UX Dizayn' },
+      { id: 116, name: 'Graphic Design' },
+      { id: 117, name: 'Cloud Specialist (AWS, Azure, GCP)' },
+      { id: 118, name: 'Database Administrator (DBA)' },
+      { id: 119, name: 'System Architect' },
+      { id: 120, name: 'Embedded / IoT Developer' }
+    ]
+  },
+
+  {
+    id: 2,
+    name: 'Marketing and Advertising',
+    subcategories: [
+      { id: 201, name: 'Raqamli Marketing' },
+      { id: 202, name: 'SMM' },
+      { id: 203, name: 'Targetolog' },
+      { id: 204, name: 'SEO Specialist' },
+      { id: 205, name: 'Content Creator' },
+      { id: 206, name: 'Copywriter' },
+      { id: 207, name: 'Brand Manager' },
+      { id: 208, name: 'Performance Marketing' },
+      { id: 209, name: 'PR Manager' },
+      { id: 210, name: 'Influencer Marketing Manager' }
+    ]
+  },
+
+  {
+    id: 3,
+    name: 'Administration and Office Support',
+    subcategories: [
+      { id: 301, name: 'Administrator' },
+      { id: 302, name: 'Office Manager' },
+      { id: 303, name: 'Receptionist' },
+      { id: 304, name: 'System Administrator / IT Admin' },
+      { id: 305, name: 'Executive Assistant' },
+      { id: 306, name: 'Documentation Specialist' },
+      { id: 307, name: 'Technical Support Assistant' }
+    ]
+  },
+
+  {
+    id: 4,
+    name: 'Sales and Customer Relations',
+    subcategories: [
+      { id: 401, name: 'Sotuv Menejeri' },
+      { id: 402, name: 'Sales Manager' },
+      { id: 403, name: 'Key Account Manager' },
+      { id: 404, name: 'Client Manager' },
+      { id: 405, name: 'Commercial Manager' },
+      { id: 406, name: 'Constructor' },
+      { id: 407, name: 'Customer Success Manager' },
+      { id: 408, name: 'TeleSales Manager' }
+    ]
+  },
+
+  {
+    id: 5,
+    name: 'Logistics and Supply Chain',
+    subcategories: [
+      { id: 501, name: 'Dispatch Specialist' },
+      { id: 502, name: 'Driver Recruiter' },
+      { id: 503, name: 'Fleet Specialist' },
+      { id: 504, name: 'Logistics Coordinator' },
+      { id: 505, name: 'Supply Chain Manager' },
+      { id: 506, name: 'Warehouse Manager' },
+      { id: 507, name: 'Customs Specialist' },
+      { id: 508, name: 'Update Specialist' },
+      { id: 509, name: 'ELD Specialist' },
+      { id: 510, name: 'Freight Broker' },
+      { id: 511, name: 'Route Planner' },
+      { id: 512, name: 'Химик R&D' }
+    ]
+  },
+
+  {
+    id: 6,
+    name: 'Customer Support and Call Center',
+    subcategories: [
+      { id: 601, name: 'Call operator' },
+      { id: 602, name: 'Кассир-сотувчи' },
+      { id: 603, name: 'Менеджер по работе с клиентами' },
+      { id: 604, name: 'Support Specialist' },
+      { id: 605, name: 'Helpdesk Agent' },
+      { id: 606, name: 'Call Center Supervisor' }
+    ]
+  },
+
+  {
+    id: 7,
+    name: 'Human Resources and Recruitment (HR)',
+    subcategories: [
+      { id: 701, name: 'HR рекрутер' },
+      { id: 702, name: 'HR Menejeri' },
+      { id: 703, name: 'Директор по персоналу (HRD)' },
+      { id: 704, name: 'Talent Acquisition Specialist' },
+      { id: 705, name: 'Training & Development Specialist' },
+      { id: 706, name: 'HR Generalist' },
+      { id: 707, name: 'Compensation & Benefits Specialist' }
+    ]
+  },
+
+  {
+    id: 8,
+    name: 'Product and Project Management',
+    subcategories: [
+      { id: 801, name: 'Project Manager' },
+      { id: 802, name: 'Product Manager' },
+      { id: 803, name: 'Product Owner' },
+      { id: 804, name: 'Scrum Master' },
+      { id: 805, name: 'Business Analyst' },
+      { id: 806, name: 'Business Development Manager' },
+      { id: 807, name: 'Commercial Director' }
+    ]
+  },
+
+  {
+    id: 9,
+    name: 'Finance and Accounting',
+    subcategories: [
+      { id: 901, name: 'Financespecialist' },
+      { id: 902, name: 'Buxgalter' },
+      { id: 903, name: 'Финансовый директор (CFO)' },
+      { id: 904, name: 'Auditor' },
+      { id: 905, name: 'Financial Analyst' },
+      { id: 906, name: 'Tax Consultant' },
+      { id: 907, name: 'Payroll Specialist' },
+      { id: 908, name: 'Bookkeeper' }
+    ]
+  }
+])
+
+const getSubcategories = () => {
+  const category = categories.value.find(cat => cat.id === parseInt(formData.selectedCategory))
+  return category?.subcategories || []
+}
+const getSelectedCategoryName = () => {
+  const category = categories.value.find(cat => cat.id === parseInt(formData.selectedCategory))
+  return category?.name || ''
+}
 
 const loading = ref(false)
-const btnLoading = ref(false)
 const error = ref("")
 const selectedFile = ref(null)
-const hasResumeFile = computed(() => Boolean(formData.resumeFileUrl))
 const fileError = ref(false)
-const acceptedOffer = ref(false)
 
 const isSuccess = (resp) => {
   if (!resp) return false
   const s = resp.status
   return s === true || s === 'success' || s === 'ok'
 }
-const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']
-
-const handleFileUpload = (event) => {
-  const file = event.target.files[0]
-  if (!file) return
-
-  // ✅ Faqat ruxsat etilgan fayl turlari
-  if (!allowedTypes.includes(file.type)) {
-    fileError.value = true
-    formData.resumeFile = null
-    formData.resumeFileUrl = null
-    selectedFile.value = null
-    event.target.value = ''
-    return
-  }
-
-  // Fayl to‘g‘ri bo‘lsa
-  fileError.value = false
-
-  if (formData.resumeFileUrl) {
-    URL.revokeObjectURL(formData.resumeFileUrl)
-  }
-
-  selectedFile.value = file
-  formData.resumeFile = file
-  formData.resumeFileUrl = URL.createObjectURL(file)
-  event.target.value = ''
-}
-
-const openFileDialog = () => {
-  resumeInput.value?.click()
-}
-
 
 const touched = reactive({
   firstName: false,
@@ -235,7 +350,8 @@ const isStepValid = () => {
   return (
       formData.firstName &&
       formData.phone &&
-      formData.resumeFile &&
+      formData.selectedCategory !== '' &&
+      formData.selectedSubcategories.length > 0,
       !fileError.value
   )
 }
@@ -335,28 +451,46 @@ const submitRegistration = async () => {
   }
 }
 const uploadResume = async (token) => {
-  if (!selectedFile.value) return
-  const resumeForm = new FormData()
-  resumeForm.append("file", selectedFile.value)
+  const categoryId = formData.selectedCategory
+  const selectedSubs = formData.selectedSubcategories
+
+  if (!categoryId || selectedSubs.length === 0) {
+    console.error("Category yoki subcategory tanlanmadi ❌")
+    return
+  }
+
+  const category = categories.value.find(cat => cat.id === parseInt(categoryId))
+  const categoryName = category?.name
+
+  const title = category.subcategories
+      .filter(sub => selectedSubs.includes(sub.id))
+      .map(sub => sub.name)
+      .join(", ")
+
+  const payload = {
+    category: categoryName,
+    title: title
+  }
+
   try {
     const response = await axios.post(
         proxy.$locale + "/v1/resumes",
-        resumeForm,
+        payload,
         {
           headers: {
             "Authorization": `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
+            "Content-Type": "application/json",
           },
         }
     )
+
     if (response.status >= 200 && response.status < 300) {
-      console.log("Resume successfully uploaded ✅")
+      console.log("Resume successfully uploaded (category name + title string) ✅")
     } else {
       await deleteUserIfNoResume(token)
     }
   } catch (error) {
     console.error("Resume upload failed ❌", error)
-
     await deleteUserIfNoResume(token)
   }
 }
@@ -480,3 +614,17 @@ onMounted(async () => {
   }
 })
 </script>
+
+
+<style scoped>
+select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  padding-right: 28px;
+}
+
+input[type="checkbox"] {
+  cursor: pointer;
+}
+</style>
