@@ -71,6 +71,7 @@
   "responses": "Topshirilganlar",
   "vacancies": "Umumiy",
   "interview": "Suhbat",
+  "rejected": "Otkaz",
   "tabs.all": "Hammasi",
   "tabs.new": "Yangi",
   "tabs.assigned": "Biriktirilgan",
@@ -178,6 +179,7 @@
   "connection": "Bog`lanish",
   "manba": "Manba: hh.uz",
   "manba2": "Manba: Telegram"
-
-
+  ,
+  "rejected_message": "Siz ishga taklif etilmadingiz",
+  "vacancies_count": "{count} ta vakansiya"
 }

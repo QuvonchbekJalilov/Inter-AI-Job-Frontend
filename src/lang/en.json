@@ -71,6 +71,7 @@
   "responses": "Responses",
   "vacancies": "General",
   "interview":"Interview",
+  "rejected": "Rejected",
   "tabs.all": "All",
   "tabs.new": "New",
   "tabs.assigned": "Assigned",
@@ -177,7 +178,7 @@
   "resume_valid": "Please select a valid file type (.pdf, .doc, .docx)",
   "connection": "Connection",
   "manba": "Source: hh.uz",
-  "manba2": "Source: Telegram"
-
-
+  "manba2": "Source: Telegram",
+  "rejected_message": "You were not hired",
+  "vacancies_count": "{count} vacancies"
 }

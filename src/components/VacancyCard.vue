@@ -5,7 +5,7 @@
       v-if="!loadingSkeleton"
       class="mt-2 mb-3 text-sm text-gray-500"
     >
-      {{ displayedJobs.length }} ta vakansiya
+      {{ t('vacancies_count', { count: displayedJobs.length }) }}
     </div>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
       <template v-if="displayedJobs.length > 0">

@@ -36,7 +36,7 @@
           </div>
           <div class="mb-4 rounded-xl border border-red-100 bg-red-50 py-3 px-4 text-center">
             <p class="text-base uppercase tracking-wide text-red-600">
-              {{ translations.rejected_message }}
+              Siz ishga taklif etilmadingiz
             </p>
           </div>
         </div>
@@ -46,10 +46,6 @@
 </template>
 
 <script setup>
-import { useI18n } from "@/i18n-lite";
-
-const { translations } = useI18n()
-
 const items = [
   {
     id: 1,
@@ -93,3 +89,4 @@ const formatDate = (dateStr) => {
   transform: rotate(270deg);
 }
 </style>
+

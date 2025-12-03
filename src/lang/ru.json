@@ -71,6 +71,7 @@
   "responses": "Отклики",
   "vacancies": "Общие",
   "interview": "Собеседование",
+  "rejected": "Отказ",
   "tabs.all": "Все",
   "tabs.new": "Новые",
   "tabs.assigned": "Назначенные",
@@ -177,7 +178,7 @@
   "resume_valid": "Пожалуйста, выберите допустимый тип файла (.pdf, .doc, .docx)",
   "connection": "Контакты",
   "manba": "Источник: hh.uz",
-  "manba2": "Источник: Телеграм"
-
-
+  "manba2": "Источник: Телеграм",
+  "rejected_message": "Вас не пригласили на работу",
+  "vacancies_count": "{count} вакансий"
 }

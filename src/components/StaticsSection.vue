@@ -53,7 +53,7 @@
             @click="onStatusClick('rejected')"
           >
             <div class="flex items-center justify-center gap-1 text-sm text-gray-500 mb-1">
-              <span>Otkaz</span>
+              <span>{{ translations.rejected }}</span>
               <span
                 v-if="getNotificationCount('rejected') > 0"
                 class="notification-badge inline-flex min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[11px] font-semibold items-center justify-center -mt-4"
