@@ -1,20 +1,21 @@
 <template>
+<template>
   <nav class="fixed bottom-0 left-0 w-full z-40">
     <div
-      class="bg-gradient-to-r from-blue-600 to-blue-500 shadow-[0_-4px_16px_rgba(15,23,42,0.3)] px-6 py-3 flex items-end justify-between"
+      class="bg-gradient-to-r from-blue-600 to-blue-500 shadow-[0_-4px_16px_rgba(15,23,42,0.3)] px-8 py-2 flex items-center justify-between"
     >
       <!-- Home -->
       <button
         type="button"
         @click="goHome"
-        class="flex-1 flex flex-col items-center justify-center"
+        class="flex-1 flex items-center justify-center"
       >
         <div
           :class="[
-            'flex items-center justify-center rounded-2xl transition-all duration-200',
+            'flex items-center justify-center rounded-full transition-all duration-200',
             isHomeActive
-              ? 'bg-white text-blue-600 w-12 h-12 -translate-y-2 shadow-md'
-              : 'bg-white/15 text-white/80 w-10 h-10'
+              ? 'bg-white/25 text-white px-6 py-2'
+              : 'text-white/80 px-0 py-0'
           ]"
         >
           <svg
@@ -32,25 +33,19 @@
             />
           </svg>
         </div>
-        <span
-          class="mt-1 text-xs"
-          :class="isHomeActive ? 'text-white font-medium' : 'text-blue-100'"
-        >
-         
-        </span>
       </button>
 
       <!-- Resume -->
       <RouterLink
         :to="{ name: 'resume' }"
-        class="flex-1 flex flex-col items-center justify-center"
+        class="flex-1 flex items-center justify-center"
       >
         <div
           :class="[
-            'flex items-center justify-center rounded-2xl transition-all duration-200',
+            'flex items-center justify-center rounded-full transition-all duration-200',
             isResumeActive
-              ? 'bg-white text-blue-600 w-12 h-12 -translate-y-2 shadow-md'
-              : 'bg-white/15 text-white/80 w-10 h-10'
+              ? 'bg-white/25 text-white px-6 py-2'
+              : 'text-white/80 px-0 py-0'
           ]"
         >
           <svg
@@ -68,25 +63,19 @@
             />
           </svg>
         </div>
-        <span
-          class="mt-1 text-xs"
-          :class="isResumeActive ? 'text-white font-medium' : 'text-blue-100'"
-        >
-          
-        </span>
       </RouterLink>
 
       <!-- Profile -->
       <RouterLink
         :to="{ name: 'profile' }"
-        class="flex-1 flex flex-col items-center justify-center"
+        class="flex-1 flex items-center justify-center"
       >
         <div
           :class="[
-            'flex items-center justify-center rounded-2xl transition-all duration-200',
+            'flex items-center justify-center rounded-full transition-all duration-200',
             isProfileActive
-              ? 'bg-white text-blue-600 w-12 h-12 -translate-y-2 shadow-md'
-              : 'bg-white/15 text-white/80 w-10 h-10'
+              ? 'bg-white/25 text-white px-6 py-2'
+              : 'text-white/80 px-0 py-0'
           ]"
         >
           <svg
@@ -109,12 +98,6 @@
             />
           </svg>
         </div>
-        <span
-          class="mt-1 text-xs"
-          :class="isProfileActive ? 'text-white font-medium' : 'text-blue-100'"
-        >
-          
-        </span>
       </RouterLink>
     </div>
   </nav>
