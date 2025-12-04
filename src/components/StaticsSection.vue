@@ -123,13 +123,13 @@ const loading = ref(true)
 const notificationCounts = ref({
   responses: 0,
   interviews: 0,
+  rejections: 0,
 })
 
-// Hozircha otkaz uchun alohida field va type yo'q,
-// shuning uchun mavjud countlardan foydalanamiz (responses bilan bir xil).
 const TAB_NOTIFICATION_MAP = {
   newsVacancy: { field: "responses", type: "application" },
   interview: { field: "interviews", type: "responce" },
+  rejected: { field: "rejections", type: "rejection" },
 }
 
 const getNotificationCount = (key) => {
@@ -143,7 +143,7 @@ const fetchNotifications = async () => {
     const token = localStorage.getItem("token") || sessionStorage.getItem("token")
     if (!token) return
 
-    const { data } = await axios.get(`${proxy.$locale}/auth/notifications`, {
+    const { data } = await axios.get(`${proxy.$locale}/v1/notifications`, {
       headers: {
         Authorization: `Bearer ${token}`,
         Accept: "application/json",
@@ -151,7 +151,9 @@ const fetchNotifications = async () => {
     })
 
     notificationCounts.value.responses = Number(data?.application_notification) || 0
-    notificationCounts.value.interviews = Number(data?.responce_notification) || 0
+    notificationCounts.value.interviews =
+        Number(data?.responce_notification ?? data?.response_notification) || 0
+    notificationCounts.value.rejections = Number(data?.rejection_notification) || 0
   } catch (error) {
     console.error("❌ Notifications fetch error:", error.response?.data || error.message)
   }
@@ -174,7 +176,7 @@ const markNotificationsAsRead = async (key) => {
     if (!token) return
 
     await axios.post(
-        `${proxy.$locale}/auth/notifications/read`,
+        `${proxy.$locale}/v1/notifications/read`,
         { type: map.type },
         {
           headers: {
