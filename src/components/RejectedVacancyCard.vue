@@ -1,10 +1,13 @@
 <template>
   <div class="max-w-7xl mx-auto px-4">
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <Vacancies :show="loadingSkeleton" :count="10" :cols="3" />
+
+    <div v-if="rejections.length > 0" class="grid grid-cols-1 md:grid-cols-3 gap-6">
       <div
-        v-for="item in items"
+        v-for="item in rejections"
         :key="item.id"
         class="flex w-full max-w-lg flex-col mb-3"
+        @click="goToDetail(item.id)"
       >
         <div class="flex items-center">
           <div
@@ -13,9 +16,9 @@
             {{ formatDate(item.created_at) }}
           </div>
         </div>
-        <div class="flex flex-col bg-white px-4 rounded-tr-2xl">
+        <div class="flex flex-col bg-white px-4 rounded-tr-2xl cursor-pointer">
           <h3 class="mb-2 mt-5 text-xl leading-tight font-medium w-4/5 truncate">
-            {{ item.title }}
+            {{ item.vacancy?.title || item.vacancy?.name }}
           </h3>
           <div class="mb-2 flex items-center justify-between gap-2">
             <span class="flex items-center text-gray-700 text-sm basis-2/5 truncate">
@@ -31,7 +34,7 @@
                   clip-rule="evenodd"
                 />
               </svg>
-              {{ item.company }}
+              {{ item.vacancy?.company || item.vacancy?.employer?.name || '—' }}
             </span>
           </div>
           <div class="mb-4 rounded-xl border border-red-100 bg-red-50 py-3 px-4 text-center">
@@ -42,28 +45,80 @@
         </div>
       </div>
     </div>
+
+    <div
+      v-else-if="!loading && !loadingSkeleton"
+      class="flex flex-col items-center justify-center py-20 text-center text-gray-600"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-16 w-16 text-gray-400 mb-4"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6 1a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+
+      <h3 class="text-lg font-medium mb-2">
+        {{ translations.no_vacancies_title }}
+      </h3>
+
+      <p class="text-sm text-gray-500 mb-4">
+        {{ translations.no_vacancies_description }}
+      </p>
+    </div>
   </div>
+  <LoadingModal :show="showLoading" />
 </template>
 
 <script setup>
+import { ref, onMounted, getCurrentInstance } from "vue";
+import axios from "axios";
+import { useRouter } from "vue-router";
 import { useI18n } from "@/i18n-lite";
+import Vacancies from "@/components/loading/Vacancies.vue";
+import LoadingModal from "@/components/modal/LodaingModal.vue";
 
 const { translations } = useI18n()
+const { proxy } = getCurrentInstance();
+const router = useRouter();
 
-const items = [
-  {
-    id: 1,
-    title: "Senior Backend Developer",
-    company: "Example Corp",
-    created_at: "2025-01-15T10:30:00Z",
-  },
-  {
-    id: 2,
-    title: "Product Manager",
-    company: "Acme Inc.",
-    created_at: "2025-01-12T14:15:00Z",
-  },
-]
+const rejections = ref([]);
+const loading = ref(false);
+const loadingSkeleton = ref(false);
+const showLoading = ref(false);
+
+const fetchRejections = async () => {
+  loading.value = true;
+  loadingSkeleton.value = true;
+  showLoading.value = true;
+
+  try {
+    const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+    const { data } = await axios.get(`${proxy.$locale}/v1/rejections`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+      },
+    });
+
+    if (data.success && Array.isArray(data.data)) {
+      rejections.value = data.data;
+    }
+  } catch (e) {
+    console.error("❌ Rejections API error:", e.response?.data || e.message);
+  } finally {
+    loading.value = false;
+    loadingSkeleton.value = false;
+    showLoading.value = false;
+  }
+};
+
+const goToDetail = (id) => {
+  if (!id) return;
+  router.push({ name: "rejectionDetail", params: { id } });
+};
 
 const formatDate = (dateStr) => {
   if (!dateStr) return "-"
@@ -73,6 +128,8 @@ const formatDate = (dateStr) => {
     day: "numeric",
   })
 }
+
+onMounted(fetchRejections);
 </script>
 
 <style scoped>

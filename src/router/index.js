@@ -12,6 +12,7 @@ import DemoRegister from "@/app/demo/DemoRegister.vue"
 import VacancyTelegramShow from '../app/VacancyTelegramShow.vue'
 import CareerTracking from "@/app/CareerTracking.vue";
 import Resume from "@/app/Resume.vue";
+import RejectionShow from "@/app/RejectionShow.vue";
 
 
 const routes = [
@@ -20,6 +21,13 @@ const routes = [
         name: 'home',
         component: Page,
         meta: { requiresAuth: true }
+    },
+    {
+        path: '/rejections/:id',
+        name: 'rejectionDetail',
+        component: RejectionShow,
+        props: true,
+        meta: { requiresAuth: true, headerBack: true }
     },
     {
         path: '/career',

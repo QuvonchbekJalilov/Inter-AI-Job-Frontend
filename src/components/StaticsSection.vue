@@ -130,7 +130,6 @@ const notificationCounts = ref({
 const TAB_NOTIFICATION_MAP = {
   newsVacancy: { field: "responses", type: "application" },
   interview: { field: "interviews", type: "responce" },
-  rejected: { field: "responses", type: null },
 }
 
 const getNotificationCount = (key) => {
