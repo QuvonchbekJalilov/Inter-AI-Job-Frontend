@@ -95,30 +95,6 @@ let intervalId = null;
 const { proxy } = getCurrentInstance()
 const jobs = ref([])
 
-// Dizaynni ko‘rish uchun vaqtinchalik statik kartalar
-const staticJobs = [
-  {
-    id: 1,
-    external_id: 1,
-    title: "1. Engineering Manager",
-    company: "TBC",
-    published_at: "2025-11-19T23:01:00Z",
-    experience: "Нет опыта",
-    score: 95,
-    status: true,
-  },
-  {
-    id: 2,
-    external_id: 2,
-    title: "2. Senior Go Developer",
-    company: "CONSORT TAS",
-    published_at: "2025-11-13T13:52:00Z",
-    experience: "Более 6 лет",
-    score: 92,
-    status: true,
-  },
-]
-
 const fetchJobs = async () => {
   showLoading.value = true
   loadingSkeleton.value = true
@@ -147,10 +123,6 @@ const fetchJobs = async () => {
         status: item.status
       }))
       jobs.value = jobs.value.filter(job => job.status === true)
-      // Agar backend hozircha bo‘sh bo‘lsa, dizayn uchun 2 ta statik karta ko‘rsatamiz
-      if (jobs.value.length === 0) {
-        jobs.value = staticJobs
-      }
     }
   } catch (error) {
     console.error("❌ Xatolik:", error.response?.data || error.message)

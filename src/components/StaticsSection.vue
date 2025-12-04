@@ -232,13 +232,8 @@ onMounted(() => {
 
       statistics.value = res.data || {}
 
-      // Dizaynni tekshirish uchun vaqtinchalik statik qiymatlar
-      if (!statistics.value.applied || statistics.value.applied === 0) {
-        statistics.value.applied = 2
-      }
-      if (!statistics.value.interview || statistics.value.interview === 0) {
-        statistics.value.interview = 2
-      }
+      // Otkaz uchun hozircha backend maydoni yo‘q,
+      // shuning uchun faqat rejected bo‘sh bo‘lsa 2 sifatida ko‘rsatamiz
       if (statistics.value.rejected == null || statistics.value.rejected === 0) {
         statistics.value.rejected = 2
       }
