@@ -575,7 +575,7 @@ const isStepValid = () => {
       formData.firstName &&
       formData.phone &&
       formData.selectedCategory !== '' &&
-      formData.selectedSubcategories.length > 0,
+      formData.selectedSubcategories.length > 0 &&  // && bilan o'zgartiring
       !fileError.value
   )
 }
