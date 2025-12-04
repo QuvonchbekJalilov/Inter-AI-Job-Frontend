@@ -1,7 +1,7 @@
 <template>
   <nav class="fixed bottom-0 left-0 w-full z-40">
     <div
-      class="bg-gradient-to-r from-blue-700 to-blue-700 shadow-[0_-4px_16px_rgba(15,23,42,0.3)] px-8 py-2 flex items-center justify-between"
+      class="bg-gradient-to-r from-blue-600 to-blue-600 shadow-[0_-4px_16px_rgba(15,23,42,0.3)] px-8 py-2 flex items-center justify-between"
     >
       <!-- Home -->
       <button
