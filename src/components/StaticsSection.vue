@@ -153,14 +153,6 @@ const fetchNotifications = async () => {
 
     notificationCounts.value.responses = Number(data?.application_notification) || 0
     notificationCounts.value.interviews = Number(data?.responce_notification) || 0
-
-    // Dizaynni ko‘rish uchun vaqtinchalik statik notificationlar
-    if (notificationCounts.value.responses === 0) {
-      notificationCounts.value.responses = 2
-    }
-    if (notificationCounts.value.interviews === 0) {
-      notificationCounts.value.interviews = 2
-    }
   } catch (error) {
     console.error("❌ Notifications fetch error:", error.response?.data || error.message)
   }
