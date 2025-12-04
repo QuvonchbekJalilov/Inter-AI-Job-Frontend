@@ -234,7 +234,7 @@ const categories = ref([
       { id: 136, name: 'Docker' },
       { id: 137, name: 'Kubernetes' },
       { id: 138, name: 'Linux Administration' },
-      { id: 139, name: 'CI/CD' },
+      { id: 139, name: 'Nginx, Apache2' },
       { id: 140, name: 'Terraform' },
 
       // Data
