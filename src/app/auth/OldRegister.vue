@@ -4,381 +4,123 @@
 
       <div class="text-center mb-6">
         <img src="https://www.inter-ai.uz/Logo1.svg" alt="Inter-AI" class="h-8 mx-auto mb-4">
+        <h2 class="text-xl font-medium text-gray-800">{{ translations.tell_us_about_yourself }}</h2>
       </div>
 
-      <div class="mb-4">
-        <div class="flex justify-between items-center mb-2">
-          <div class="w-full bg-gray-200 rounded-full h-2">
-            <div
-                class="bg-blue-500 h-2 rounded-full transition-all duration-300"
-                :style="{ width: `${(currentStep / 4) * 100}%` }"
-            ></div>
-          </div>
-        </div>
-        <p class="text-center text-sm text-gray-500">{{ translations.Step }} {{ currentStep }} {{translations.from}} 4</p>
-      </div>
-
-      <div v-if="currentStep === 1" class="space-y-6">
-        <h2 class="text-xl font-medium text-center text-gray-800 mb-6">{{ translations.tell_us_about_yourself }}</h2>
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">{{translations.name}}</label>
-            <input
-                v-model="formData.firstName"
-                type="text"
-                class="w-full px-3 py-2 bg-gray-100 border-0 rounded-md focus:ring-2 focus:ring-blue-500 focus:bg-white"
-                placeholder="Ismoil"
-            >
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">{{translations.surname}}</label>
-            <input
-                v-model="formData.lastName"
-                type="text"
-                class="w-full px-3 py-2 bg-gray-100 border-0 rounded-md focus:ring-2 focus:ring-blue-500 focus:bg-white"
-                placeholder="Usmonov"
-            >
-          </div>
-        </div>
-
+      <div class="space-y-6">
+        <!-- Name and Surname -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">{{ translations.email }}</label>
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            {{ translations.name }} {{ translations.surname }}
+          </label>
           <input
-              v-model="formData.email"
-              type="email"
+              v-model="formData.firstName"
+              type="text"
               class="w-full px-3 py-2 bg-gray-100 border-0 rounded-md focus:ring-2 focus:ring-blue-500 focus:bg-white"
-              placeholder="ismoil_007u@gmail.com"
+              placeholder="Ismoil Usmonov"
           >
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">{{ translations.password }}</label>
-            <div class="relative">
-              <input
-                  id="password"
-                  :type="showPassword ? 'text' : 'password'"
-                  v-model.trim="formData.password"
-                  autocomplete="new-password"
-                  required
-                  minlength="6"
-                  class="w-full px-3 py-2 pr-10 bg-gray-100 border-0 rounded-lg focus:ring-2 focus:ring-blue-500 focus:bg-white"
-                  placeholder="••••••••"
-                  @blur="touched.password = true"
-              />
-              <button
-                  type="button"
-                  class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500"
-                  @click="showPassword = !showPassword"
-                  aria-label="Parolni ko'rsatish"
+
+        <!-- Phone -->
+        <div>
+          <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">
+            {{ translations.phone }}
+          </label>
+          <input
+              ref="phoneInput"
+              id="phone"
+              type="tel"
+              v-model="formData.phone"
+              class="w-full px-3 py-2 bg-gray-100 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:bg-white"
+              placeholder="33 505 20 05"
+          />
+        </div>
+
+
+        <!--  Replaced file upload with category dropdown and multiple select -->
+        <div class="category-selection-wrapper">
+          <!-- Category Select -->
+          <div class="form-group">
+            <label class="form-label">
+              Kategoriyani tanlang
+            </label>
+            <el-select
+                v-model="formData.selectedCategory"
+                placeholder="-- Kategoriyani tanlang --"
+                size="large"
+                class="w-full category-select"
+                clearable
+                @change="handleCategoryChange"
+            >
+              <el-option
+                  v-for="category in categories"
+                  :key="category.id"
+                  :label="category.name"
+                  :value="category.id"
               >
-                <svg v-if="!showPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
-                        d="M2.036 12.322a1.012 1.012 0 010-.644C3.423 7.51 7.36 5 12 5s8.577 2.51 9.964 6.678c.07.214.07.45 0 .644C20.577 16.49 16.64 19 12 19S3.423 16.49 2.036 12.322z"/>
-                  <circle cx="12" cy="12" r="3" stroke-width="1.8"/>
-                </svg>
-                <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
-                        d="M3 3l18 18M10.584 10.59A3 3 0 0113.41 13.41M9.88 5.1A8.966 8.966 0 0112 5c4.64 0 8.577 2.51 9.964 6.678.07.214.07.45 0 .644-.46 1.404-1.24 2.642-2.26 3.66M6.62 6.62C4.88 7.54 3.45 9.03 2.036 12.322a1.012 1.012 0 000 .644C3.423 16.49 7.36 19 12 19c1.33 0 2.6-.2 3.78-.58"/>
-                </svg>
-              </button>
+                <span class="option-text">{{ category.name }}</span>
+              </el-option>
+            </el-select>
+          </div>
+
+          <!-- Subcategory Multi-Select -->
+          <div v-if="formData.selectedCategory && getSubcategories().length > 0" class="form-group">
+            <label class="form-label">
+              {{ getSelectedCategoryName() }} uchun bo'limlarni tanlang
+            </label>
+            <el-select
+                v-model="formData.selectedSubcategories"
+                multiple
+                collapse-tags
+                collapse-tags-tooltip
+                :max-collapse-tags="3"
+                placeholder="Bo'limlarni tanlang"
+                size="large"
+                class="w-full subcategory-select"
+                clearable
+            >
+              <el-option
+                  v-for="subcategory in getSubcategories()"
+                  :key="subcategory.id"
+                  :label="subcategory.name"
+                  :value="subcategory.id"
+              >
+                <span class="option-text">{{ subcategory.name }}</span>
+              </el-option>
+            </el-select>
+
+            <!-- Selected Count Badge -->
+            <div v-if="formData.selectedSubcategories.length > 0" class="selected-count">
+              <el-tag type="success" effect="plain" round>
+                <el-icon class="mr-1"><Check /></el-icon>
+                Tanlangan: {{ formData.selectedSubcategories.length }}
+              </el-tag>
             </div>
-            <p v-if="touched.password && !valid.password" class="mt-1 text-xs text-red-600">
-              Parol kamida 6 ta belgidan iborat bo‘lsin
-            </p>
-          </div>
-
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">{{translations.confirm_password}}</label>
-            <input
-                id="confirm_password"
-                :type="showPassword ? 'text' : 'password'"
-                v-model.trim="formData.confirm_password"
-                autocomplete="new-password"
-                required
-                minlength="6"
-                class="w-full px-3 py-2 pr-10 bg-gray-100 border-0 rounded-lg focus:ring-2 focus:ring-blue-500 focus:bg-white"
-                placeholder="••••••••"
-                @blur="touched.confirm_password = true"
-            />
-            <p v-if="touched.confirm_password && !valid.confirm" class="mt-1 text-xs text-red-600">
-              Parollar mos kelmadi
-            </p>
           </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">{{ translations.phone }}</label>
-            <input
-                v-model="formData.phone"
-                type="tel"
-                class="w-full px-3 py-2 bg-gray-100 border-0 rounded-md focus:ring-2 focus:ring-blue-500 focus:bg-white"
-                placeholder="+998919579717"
-            >
-          </div>
+        <!-- Offer Section (Placeholder) -->
+        <Offer v-model="acceptedOffer" :locale="locale" />
 
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">{{translations.age}}</label>
-            <input
-                v-model="formData.birth_date"
-                type="date"
-                class="w-full px-3 py-2 bg-gray-100 border-0 rounded-md focus:ring-2 focus:ring-blue-500 focus:bg-white"
-                placeholder="2004"
-            >
-          </div>
-        </div>
 
+        <!-- Submit Button -->
         <button
-            @click="nextStep"
-            :disabled="!isStepValid()"
+            @click="completeRegistration"
+            :disabled="!isStepValid() || btnLoading || !acceptedOffer"
             :class="[
-        'w-full py-3 rounded-md font-medium transition-colors',
-        isStepValid()
-          ? 'bg-blue-500 text-white hover:bg-blue-600'
-          : 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-50'
-      ]"
+              'w-full py-3 rounded-md font-medium transition-colors flex items-center justify-center gap-2',
+              (!isStepValid() || btnLoading || !acceptedOffer)
+                ? 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-50'
+                : 'bg-blue-500 text-white hover:bg-blue-600'
+            ]"
         >
-          {{ translations.next }}
+          <span
+              v-if="btnLoading"
+              class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"
+          ></span>
+          <span>{{ btnLoading ? translations.finish : translations.finish }}</span>
         </button>
       </div>
-
-      <div v-if="currentStep === 2" class="space-y-6">
-        <h2 class="text-xl font-medium text-center text-gray-800 mb-6">{{translations.Upload_your_resume}}</h2>
-
-        <div class="flex items-center text-blue-600 mb-4">
-          <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"/>
-          </svg>
-          <span class="font-medium">{{ translations.resume }}</span>
-        </div>
-
-        <div>
-
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">{{translations.Enter_your_resume_text}}</label>
-            <input
-                v-model="formData.resumeText"
-                class="w-full px-3 py-2 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Php Laravel Vue.js Full stack developer"
-            >
-          </div>
-
-          <div class="text-center text-gray-500">{{translations.or}}</div>
-
-
-          <label class="block text-sm font-medium text-gray-700 mb-2">{{translations.Upload_your_resume_file}}</label>
-          <div
-              class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-400 transition-colors cursor-pointer"
-          >
-            <input
-                id="resumeUpload"
-                type="file"
-                class="hidden"
-                @change="handleFileUpload"
-            />
-            <label for="resumeUpload" class="block cursor-pointer">
-              <svg
-                  class="w-12 h-12 text-gray-400 mx-auto mb-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-              >
-                <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-                />
-              </svg>
-              <p class="text-gray-500 mb-4">
-                {{translations.dadafhocts}}
-              </p>
-              <span
-                  class="inline-block px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors"
-              >
-      {{translations.select_file}}
-    </span>
-            </label>
-          </div>
-        </div>
-
-        <div class="flex gap-3">
-          <button
-              @click="prevStep"
-              class="flex-1 bg-gray-100 text-gray-700 py-3 rounded-md font-medium hover:bg-gray-200 transition-colors"
-          >
-            {{translations.back}}
-          </button>
-          <button
-              @click="nextStep"
-              :disabled="!isStepValid()"
-              :class="[
-    'w-full py-3 rounded-md font-medium transition-colors',
-    isStepValid()
-      ? 'bg-blue-500 text-white hover:bg-blue-600'
-      : 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-50'
-  ]"
-          >
-            {{translations.next}}
-          </button>
-
-        </div>
-      </div>
-
-      <div v-if="currentStep === 3" class="space-y-6">
-        <h2 class="text-xl font-medium text-center text-gray-800 mb-6">{{translations.Select_a_field}}</h2>
-
-        <div class="flex items-center text-blue-600 mb-4">
-          <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clip-rule="evenodd"/>
-          </svg>
-          <span class="font-medium">{{translations.Field_of_activity}}</span>
-        </div>
-
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">{{translations.Desired_field_of_work}}</label>
-          <select
-              v-model="formData.workField"
-              class="w-full px-3 py-2 bg-gray-100 border-0 rounded-md focus:ring-2 focus:ring-blue-500 focus:bg-white"
-          >
-            <option value="">{{translations.Select_a_field}}</option>
-            <option value="it">{{translations.IT_and_development}}</option>
-            <option value="design">{{translations.Design}}</option>
-            <option value="marketing">{{translations.Marketing}}</option>
-            <option value="sales">{{translations.Sales}}</option>
-          </select>
-        </div>
-
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Опыт работы</label>
-          <select
-              v-model="formData.experience"
-              class="w-full px-3 py-2 bg-gray-100 border-0 rounded-md focus:ring-2 focus:ring-blue-500 focus:bg-white"
-          >
-            <option value="">{{translations.Choose_an_experience}}</option>
-            <option value="0-1">{{translations.No_experience}}</option>
-            <option value="1-3">{{translations.years1}}</option>
-            <option value="3-5">{{translations.years2}}</option>
-            <option value="5+">{{translations.years3}}</option>
-          </select>
-        </div>
-
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">{{translations.Location}}</label>
-          <div class="relative">
-            <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
-            </svg>
-            <input
-                v-model="formData.location"
-                type="text"
-                class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Toshkent"
-            >
-          </div>
-        </div>
-
-        <div class="flex gap-3">
-          <button
-              @click="prevStep"
-              class="flex-1 bg-gray-100 text-gray-700 py-3 rounded-md font-medium hover:bg-gray-200 transition-colors"
-          >
-            {{translations.back}}
-          </button>
-          <button
-              @click="nextStep"
-              :disabled="!isStepValid()"
-              :class="[
-    'w-full py-3 rounded-md font-medium transition-colors',
-    isStepValid()
-      ? 'bg-blue-500 text-white hover:bg-blue-600'
-      : 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-50'
-  ]"
-          >
-            {{ translations.next }}
-          </button>
-
-        </div>
-      </div>
-
-      <div v-if="currentStep === 4" class="space-y-6">
-        <h2 class="text-xl font-medium text-center text-gray-800 mb-6">{{translations.Set_your_preferences}}</h2>
-
-        <div class="flex items-center text-blue-600 mb-4">
-          <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/>
-          </svg>
-          <span class="font-medium">{{translations.Work_preferences}}</span>
-        </div>
-
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">{{translations.Type_of_employment}}</label>
-          <select
-              v-model="formData.employmentType"
-              class="w-full px-3 py-2 bg-gray-100 border-0 rounded-md focus:ring-2 focus:ring-blue-500 focus:bg-white"
-          >
-            <option value="">{{translations.Select_type}}</option>
-            <option value="full-time">{{translations.Full_employment}}</option>
-            <option value="part-time">{{translations.Part_employment}}</option>
-            <option value="remote">{{translations.Remote_work}}</option>
-            <option value="freelance">{{translations.Freelance}}</option>
-          </select>
-        </div>
-
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">{{translations.salary}}</label>
-            <input
-                v-model="formData.salaryFrom"
-                type="number"
-                class="w-full px-3 py-2 bg-gray-100 border-0 rounded-md focus:ring-2 focus:ring-blue-500 focus:bg-white"
-                placeholder="1000"
-            >
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">{{translations.salary2}}</label>
-            <div class="relative">
-              <input
-                  v-model="formData.salaryTo"
-                  type="number"
-                  class="w-full px-3 py-2 bg-gray-100 border-0 rounded-md focus:ring-2 focus:ring-blue-500 focus:bg-white pr-8"
-                  placeholder="2000"
-              >
-              <button class="absolute right-2 top-1/2 transform -translate-y-1/2 w-5 h-5 bg-gray-400 text-white rounded-full text-xs hover:bg-gray-500">
-                ×
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div class="flex gap-3">
-          <button
-              @click="prevStep"
-              class="flex-1 bg-gray-100 text-gray-700 py-3 rounded-md font-medium hover:bg-gray-200 transition-colors"
-          >
-            {{translations.back}}
-          </button>
-          <button
-              @click="completeRegistration"
-              :disabled="!isStepValid() || btnLoading"
-              :class="[
-    'flex-1 py-3 rounded-md font-medium transition-colors flex items-center justify-center gap-2',
-    (!isStepValid() || btnLoading)
-      ? 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-50'
-      : 'bg-blue-500 text-white hover:bg-blue-600'
-  ]"
-          >
-            <span v-if="btnLoading" class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-            <span>{{ btnLoading ? translations.loading : translations.finish }}</span>
-          </button>
-        </div>
-      </div>
-
-      <p class="mt-6 text-center text-sm text-gray-500">
-        {{translations.Do_you_have_an_account}}
-        <RouterLink to="/login" class="text-blue-600 hover:underline">{{ translations.login }}</RouterLink>
-      </p>
-
       <div class="flex items-stretch w-full max-w-md mx-auto gap-2 pt-6">
         <button
             v-for="tab in tabs"
@@ -388,235 +130,326 @@
             :class="isActive(tab.code) ? activeClass : inactiveClass"
             :style="{ flexGrow: isActive(tab.code) ? 2 : 1 }"
         >
-            <span
-                class="tab-label inline-block leading-tight px-0.5 sm:px-1"
-                :class="isActive(tab.code) ? activeTextClass : inactiveTextClass"
-            >
-              {{ tab.name }}
-            </span>
+        <span
+            class="tab-label inline-block leading-tight px-0.5 sm:px-1"
+            :class="isActive(tab.code) ? activeTextClass : inactiveTextClass"
+        >
+          {{ tab.name }}
+        </span>
         </button>
       </div>
 
     </div>
   </div>
-  <div v-if="showVerifyModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-    <div class="bg-white p-6 rounded-xl w-96 shadow">
-      <h2 class="text-lg font-semibold mb-3">Email tasdiqlash</h2>
-      <p class="text-sm text-gray-600 mb-2">Emailingizga yuborilgan kodni kiriting:</p>
-      <input
-          v-model="formData.verificationCode"
-          type="text"
-          placeholder="123456"
-          class="border rounded w-full px-3 py-2 mb-3"
-      />
-      <p v-if="error" class="text-red-600 text-sm mb-2">{{ error }}</p>
-      <div class="flex justify-end gap-2">
-        <button @click="showVerifyModal = false" class="px-4 py-2 bg-gray-300 rounded">Bekor qilish</button>
-        <button @click="verifyEmailCode" class="px-4 py-2 bg-blue-600 text-white rounded">Tasdiqlash</button>
-      </div>
-    </div>
-  </div>
-  <LoadingModal :show="showLoading" />
 </template>
 
 <script setup>
 import { useI18n } from '@/i18n-lite.js'
-import {ref, reactive, computed, getCurrentInstance} from 'vue'
+import {ref, reactive, computed, getCurrentInstance, onMounted} from 'vue'
 import { useRouter } from 'vue-router'
 import axios from "axios"
-import LoadingModal from "@/components/modal/LodaingModal.vue";
+import { Check } from '@element-plus/icons-vue'
 import { toast } from "vue3-toastify"
+import intlTelInput from "intl-tel-input";
+import "intl-tel-input/build/css/intlTelInput.css";
+import Offer from "@/components/Offer.vue";
+
 const { proxy } = getCurrentInstance()
 const { translations } = useI18n()
-
 const router = useRouter()
-const showLoading = ref(false);
-
-const currentStep = ref(1)
+const showLoading = ref(false)
 
 const formData = reactive({
   firstName: '',
-  lastName: '',
-  email: '',
-  password: '',
-  confirm_password: '',
   phone: '',
-  birth_date: '',
-  resumeText: '',
-  workField: '',
-  experience: '',
-  location: '',
-  employmentType: '',
-  salaryFrom: '',
-  salaryTo: '',
-  verificationCode: ''
+  selectedCategory: '',
+  selectedSubcategories: [],
 })
-const showVerifyModal = ref(false)
-const verificationCode = ref("")
-const selectedFile = ref(null)
-const emailVerified = ref(false)
-const registering = ref(false)
+
+const acceptedOffer = ref(false)
+const btnLoading = ref(false)
+
+//  9 ta kategoriya va ularning bolalari
+const categories = ref([
+  {
+    id: 1,
+    name: 'IT and Software Development',
+    subcategories: [
+      // Backend — PHP
+      { id: 101, name: 'PHP' },
+      { id: 102, name: 'Laravel' },
+      { id: 103, name: 'Symfony' },
+      { id: 104, name: 'Yii2' },
+
+      // Backend — Python
+      { id: 105, name: 'Python' },
+      { id: 106, name: 'Django' },
+      { id: 107, name: 'Flask' },
+      { id: 108, name: 'FastAPI' },
+
+      // Backend — Java
+      { id: 109, name: 'Java' },
+      { id: 110, name: 'Spring Boot' },
+
+      // Backend — .NET
+      { id: 111, name: '.NET' },
+      { id: 112, name: 'C#' },
+      { id: 113, name: 'ASP.NET' },
+
+      // Backend — JavaScript
+      { id: 114, name: 'Node.js' },
+      { id: 115, name: 'Express.js' },
+      { id: 116, name: 'NestJS' },
+
+      // Backend — Go
+      { id: 117, name: 'GoLang' },
+
+      // Frontend
+      { id: 118, name: 'JavaScript' },
+      { id: 119, name: 'TypeScript' },
+      { id: 120, name: 'React' },
+      { id: 121, name: 'Vue.js' },
+      { id: 122, name: 'Angular' },
+      { id: 123, name: 'Next.js' },
+      { id: 124, name: 'Nuxt.js' },
+
+      // Mobile
+      { id: 125, name: 'Flutter' },
+      { id: 126, name: 'React Native' },
+      { id: 127, name: 'Kotlin' },
+      { id: 128, name: 'Swift' },
+
+      // QA & Testing
+      { id: 129, name: 'QA Manual' },
+      { id: 130, name: 'QA Automation' },
+      { id: 131, name: 'Selenium' },
+      { id: 132, name: 'Cypress' },
+
+      // Cyber Security
+      { id: 133, name: 'SOC Analyst' },
+      { id: 134, name: 'Pentesting' },
+      { id: 135, name: 'Ethical Hacking' },
+
+      // DevOps
+      { id: 136, name: 'Docker' },
+      { id: 137, name: 'Kubernetes' },
+      { id: 138, name: 'Linux Administration' },
+      { id: 139, name: 'CI/CD' },
+      { id: 140, name: 'Terraform' },
+
+      // Data
+      { id: 141, name: 'Data Science' },
+      { id: 142, name: 'Machine Learning' },
+      { id: 143, name: 'AI Engineering' },
+
+      // Game Dev
+      { id: 144, name: 'Unity' },
+      { id: 145, name: 'Unreal Engine' },
+
+      // Blockchain
+      { id: 146, name: 'Blockchain Developer' },
+      { id: 147, name: 'Solidity' },
+
+      // Design
+      { id: 148, name: 'UI/UX Design' },
+      { id: 149, name: 'Branding' },
+      { id: 150, name: 'Web Design' },
+      { id: 151, name: 'Graphic Design' },
+      { id: 152, name: 'Logo Design' },
+      { id: 153, name: 'Illustration' },
+
+      // Cloud
+      { id: 154, name: 'AWS' },
+      { id: 155, name: 'Azure' },
+      { id: 156, name: 'GCP' },
+
+      // Database
+      { id: 157, name: 'Database Administrator (DBA)' },
+      { id: 158, name: 'MySQL' },
+      { id: 159, name: 'PostgreSQL' },
+      { id: 160, name: 'MongoDB' },
+      { id: 161, name: 'Redis' },
+
+      // System Engineering
+      { id: 162, name: 'System Architect' },
+      { id: 163, name: 'System Engineer' },
+
+      // IoT / Embedded
+      { id: 164, name: 'Embedded Systems' },
+      { id: 165, name: 'IoT Developer' }
+    ]
+  },
+  {
+    id: 2,
+    name: 'Marketing and Advertising',
+    subcategories: [
+      { id: 201, name: 'Raqamli Marketing' },
+      { id: 202, name: 'SMM' },
+      { id: 203, name: 'Targetolog' },
+      { id: 204, name: 'SEO Specialist' },
+      { id: 205, name: 'Content Creator' },
+      { id: 206, name: 'Copywriter' },
+      { id: 207, name: 'Brand Manager' },
+      { id: 208, name: 'Performance Marketing' },
+      { id: 209, name: 'PR Manager' },
+      { id: 210, name: 'Influencer Marketing Manager' }
+    ]
+  },
+
+  {
+    id: 3,
+    name: 'Administration and Office Support',
+    subcategories: [
+      { id: 301, name: 'Administrator' },
+      { id: 302, name: 'Office Manager' },
+      { id: 303, name: 'Receptionist' },
+      { id: 304, name: 'System Administrator / IT Admin' },
+      { id: 305, name: 'Executive Assistant' },
+      { id: 306, name: 'Documentation Specialist' },
+      { id: 307, name: 'Technical Support Assistant' }
+    ]
+  },
+
+  {
+    id: 4,
+    name: 'Sales and Customer Relations',
+    subcategories: [
+      { id: 401, name: 'Sotuv Menejeri' },
+      { id: 402, name: 'Sales Manager' },
+      { id: 403, name: 'Key Account Manager' },
+      { id: 404, name: 'Client Manager' },
+      { id: 405, name: 'Commercial Manager' },
+      { id: 406, name: 'Constructor' },
+      { id: 407, name: 'Customer Success Manager' },
+      { id: 408, name: 'TeleSales Manager' }
+    ]
+  },
+
+  {
+    id: 5,
+    name: 'Logistics and Supply Chain',
+    subcategories: [
+      { id: 501, name: 'Dispatch Specialist' },
+      { id: 502, name: 'Driver Recruiter' },
+      { id: 503, name: 'Fleet Specialist' },
+      { id: 504, name: 'Logistics Coordinator' },
+      { id: 505, name: 'Supply Chain Manager' },
+      { id: 506, name: 'Warehouse Manager' },
+      { id: 507, name: 'Customs Specialist' },
+      { id: 508, name: 'Update Specialist' },
+      { id: 509, name: 'ELD Specialist' },
+      { id: 510, name: 'Freight Broker' },
+      { id: 511, name: 'Route Planner' },
+      { id: 512, name: 'Safety Specialist' }
+    ]
+  },
+
+  {
+    id: 6,
+    name: 'Customer Support and Call Center',
+    subcategories: [
+      { id: 601, name: 'Call operator' },
+      { id: 602, name: 'Кассир-сотувчи' },
+      { id: 603, name: 'Менеджер по работе с клиентами' },
+      { id: 604, name: 'Support Specialist' },
+      { id: 605, name: 'Helpdesk Agent' },
+      { id: 606, name: 'Call Center Supervisor' }
+    ]
+  },
+
+  {
+    id: 7,
+    name: 'Human Resources and Recruitment (HR)',
+    subcategories: [
+      { id: 701, name: 'HR рекрутер' },
+      { id: 702, name: 'HR Menejeri' },
+      { id: 703, name: 'Директор по персоналу (HRD)' },
+      { id: 704, name: 'Talent Acquisition Specialist' },
+      { id: 705, name: 'Training & Development Specialist' },
+      { id: 706, name: 'HR Generalist' },
+      { id: 707, name: 'Compensation & Benefits Specialist' }
+    ]
+  },
+
+  {
+    id: 8,
+    name: 'Product and Project Management',
+    subcategories: [
+      { id: 801, name: 'Project Manager' },
+      { id: 802, name: 'Product Manager' },
+      { id: 803, name: 'Product Owner' },
+      { id: 804, name: 'Scrum Master' },
+      { id: 805, name: 'Business Analyst' },
+      { id: 806, name: 'Business Development Manager' },
+      { id: 807, name: 'Commercial Director' }
+    ]
+  },
+
+  {
+    id: 9,
+    name: 'Finance and Accounting',
+    subcategories: [
+      { id: 901, name: 'Financespecialist' },
+      { id: 902, name: 'Buxgalter' },
+      { id: 903, name: 'Финансовый директор (CFO)' },
+      { id: 904, name: 'Auditor' },
+      { id: 905, name: 'Financial Analyst' },
+      { id: 906, name: 'Tax Consultant' },
+      { id: 907, name: 'Payroll Specialist' },
+      { id: 908, name: 'Bookkeeper' }
+    ]
+  }
+])
+
+const getSubcategories = () => {
+  const category = categories.value.find(cat => cat.id === parseInt(formData.selectedCategory))
+  return category?.subcategories || []
+}
+
+const getSelectedCategoryName = () => {
+  const category = categories.value.find(cat => cat.id === parseInt(formData.selectedCategory))
+  return category?.name || ''
+}
+
+const handleCategoryChange = () => {
+  // Kategoriya o'zgarganda subcategorylarni tozalash
+  formData.selectedSubcategories = []
+}
+
+const loading = ref(false)
+const error = ref("")
+const fileError = ref(false)
+
 const isSuccess = (resp) => {
   if (!resp) return false
   const s = resp.status
   return s === true || s === 'success' || s === 'ok'
 }
 
-const handleFileUpload = (event) => {
-  selectedFile.value = event.target.files[0]
-}
-const uploadResume = async (token) => {
-  if (!selectedFile.value) return
-
-  const resumeForm = new FormData()
-  resumeForm.append("title", formData.resumeText)
-  resumeForm.append("file", selectedFile.value)
-
-  await axios.post(proxy.$locale + "/v1/resumes", resumeForm, {
-    headers: {
-      "Authorization": `Bearer ${token}`,
-      "Content-Type": "multipart/form-data",
-    },
-  })
-}
-
 const touched = reactive({
   firstName: false,
-  lastName: false,
-  email: false,
-  password: false,
-  confirm_password: false,
 })
-const showPassword = ref(false)
-const loading = ref(false)
-const btnLoading = ref(false)
-const error = ref("")
 
 const valid = reactive({
-  get email() {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)
-  },
-  get password() {
-    return formData.password.length >= 6
-  },
-  get confirm() {
-    return formData.confirm_password.length >= 6 && formData.confirm_password === formData.password
-  },
   get names() {
-    return formData.firstName.trim().length > 0 && formData.lastName.trim().length > 0
+    return formData.firstName.trim().length > 0
   },
 })
 
-const isValid = computed(() => valid.email && valid.password && valid.confirm && valid.names)
+const isValid = computed(() => valid.names)
 
 const isStepValid = () => {
-  if (currentStep.value === 1) {
-    return (
-        formData.firstName &&
-        formData.lastName &&
-        formData.email &&
-        formData.phone &&
-        formData.password &&
-        formData.confirm_password &&
-        formData.password === formData.confirm_password &&
-        formData.birth_date
-    )
-  }
-  if (currentStep.value === 2) {
-    return formData.resumeText?.trim().length > 0
-  }
-  if (currentStep.value === 3) {
-    return formData.workField && formData.experience && formData.location
-  }
-  if (currentStep.value === 4) {
-    return formData.employmentType && formData.salaryFrom && formData.salaryTo
-  }
-  return false
+  return (
+      formData.firstName &&
+      formData.phone &&
+      formData.selectedCategory !== '' &&
+      formData.selectedSubcategories.length > 0,
+          !fileError.value
+  )
 }
 
-const nextStep = async () => {
-  error.value = null // eski xatolarni tozalaymiz
-
-  if (!isStepValid()) return
-
-  if (currentStep.value === 1) {
-    try {
-      const data = await axios.post(proxy.$locale + "/user-verify", {
-        email: formData.email,
-        phone: formData.phone
-      })
-      // agar backenddan xatolik kelsa
-      if (data?.success === false) {
-        error.value = data.message || "Foydalanuvchi allaqachon mavjud!"
-        return
-      }
-
-      currentStep.value++
-    } catch (err) {
-      toast.error("Bunday foydalanuvchi allaqachon mavjud.!", {
-        position: "top-right"
-      })
-    }
-  } else {
-    if (isStepValid() && currentStep.value < 4) {
-      currentStep.value++
-    }
-  }
-}
-
-const prevStep = () => {
-  if (currentStep.value > 1) currentStep.value--
-}
-// 📌 sending-code
-const sendVerificationCode = async ({ fromRegister = false } = {}) => {
-  error.value = ''
-  try {
-    if (fromRegister) registering.value = true
-    const { data } = await axios.post(proxy.$locale + '/sending-code', {
-      email: formData.email
-    })
-   // console.log('📧 Code sent:', data)
-    if (isSuccess(data)) {
-      showVerifyModal.value = true
-    } else {
-      error.value = data.message || 'Noma\'lum xatolik.'
-    }
-  } catch (e) {
-    error.value = e.response?.data?.message || 'Kod yuborishda xatolik.'
-  }
-}
-const verifyEmailCode = async () => {
-  error.value = ''
-  try {
-    const { data } = await axios.post(proxy.$locale + '/verify-email', {
-      email: formData.email,
-      code: formData.verificationCode
-    })
-    //console.log('verify response', data)
-
-    if (isSuccess(data)) {
-      emailVerified.value = true
-      showVerifyModal.value = false
-
-      if (registering.value) {
-        await submitRegistration()
-        registering.value = false
-      } else {
-        if (typeof nextStep === 'function') nextStep()
-      }
-    } else {
-      error.value = data.message || 'Emailni tasdiqlashda xatolik.'
-    }
-  } catch (e) {
-    error.value = e.response?.data?.message || 'Server bilan bog‘lanishda xatolik.'
-  }
-}
 const submitRegistration = async () => {
   touched.firstName = true
-  touched.lastName = true
-  touched.email = true
-  touched.password = true
-  touched.confirm_password = true
   error.value = ''
   showLoading.value = true
 
@@ -625,40 +458,43 @@ const submitRegistration = async () => {
   }
 
   loading.value = true
+  const chatId = localStorage.getItem("chat_id");
+  const locale = localStorage.getItem("locale");
   try {
     const { data } = await axios.post(proxy.$locale + '/auth/register', {
       first_name: formData.firstName,
-      last_name: formData.lastName,
-      email: formData.email,
-      password: formData.password,
       phone: formData.phone,
-      birth_date: formData.birth_date,
-      resume_text: formData.resumeText,
-      work_field: formData.workField,
-      experience: formData.experience,
-      location: formData.location,
-      employment_type: formData.employmentType,
-      salary_from: formData.salaryFrom,
-      salary_to: formData.salaryTo
+      chat_id: chatId,
+      language: locale,
     })
-
-    //console.log('✅ Registration success:', data)
+    if (!isSuccess(data)) {
+      toast.error(
+          locale.value === 'uz'
+              ? "❗ Ushbu telefon raqami bilan allaqachon ro‘yxatdan o‘tilgan."
+              : locale.value === 'ru'
+                  ? "❗ Этот номер телефона уже зарегистрирован."
+                  : "❗ This phone number is already registered."
+      )
+      showLoading.value = false
+      loading.value = false
+      return
+    }
 
     if (isSuccess(data)) {
       const storage = localStorage
       storage.setItem('token', data.data.token)
       storage.setItem('user', JSON.stringify(data.data.user))
       storage.setItem('expires_at', data.data.expires_at)
+      storage.setItem('chat_id', chatId)
 
-      if (typeof uploadResume === 'function') {
-        try {
-          await uploadResume(data.data.token)
-        } catch (e) {
-          console.warn('Resume upload failed:', e)
-        }
+      try {
+        await uploadResume(data.data.token)
+      } catch (e) {
+        console.warn('Resume upload failed:', e)
       }
+
       const token = localStorage.getItem("token") || sessionStorage.getItem("token")
-      const { vacancy } = await axios.post(
+      const res = await axios.post(
           proxy.$locale + "/v1/vacancy-matches/run",
           {},
           {
@@ -669,36 +505,114 @@ const submitRegistration = async () => {
             }
           }
       )
-      //console.log('vacancy', vacancy)
+      if (res.data.status =! 200 || res.data.data.status == false) {
+        await deleteUserIfNoResume(token)
+      }
 
       router.push({ name: 'home' })
+      window.location.href = "/";
     } else {
+      await deleteUserIfNoResume(token)
       error.value = data.message || "Ro‘yxatdan o‘tishda xatolik yuz berdi."
     }
   } catch (e) {
-    error.value = e.response?.data?.message || 'Server bilan bog‘lanishda xatolik.'
+    if (e.response?.status === 422) {
+      toast.error(
+          locale.value === 'uz'
+              ? "❗ Ushbu telefon raqami bilan allaqachon ro‘yxatdan o‘tilgan."
+              : locale.value === 'ru'
+                  ? "❗ Этот номер телефона уже зарегистрирован."
+                  : "❗ This phone number is already registered."
+      )
+      router.push({ name: 'home' })
+      window.location.href = "/";
+    } else {
+      toast.error(
+          locale.value === 'uz'
+              ? "❌ Server bilan bog‘lanishda xatolik yuz berdi."
+              : locale.value === 'ru'
+                  ? "❌ Произошла ошибка при подключении к серверу."
+                  : "❌ An error occurred while connecting to the server."
+      )
+      await deleteUserIfNoResume(token)
+      error.value = e.response?.data?.message || 'Server bilan bog‘lanishda xatolik.'
+    }
   } finally {
     showLoading.value = false
     loading.value = false
   }
 }
+const uploadResume = async (token) => {
+  const categoryId = formData.selectedCategory
+  const selectedSubs = formData.selectedSubcategories
+
+  if (!categoryId || selectedSubs.length === 0) {
+    console.error("Category yoki subcategory tanlanmadi ❌")
+    return
+  }
+
+  const category = categories.value.find(cat => cat.id === parseInt(categoryId))
+  const categoryName = category?.name
+
+  const title = category.subcategories
+      .filter(sub => selectedSubs.includes(sub.id))
+      .map(sub => sub.name)
+      .join(", ")
+
+  const payload = {
+    category: categoryName,
+    title: title
+  }
+
+  try {
+    const response = await axios.post(
+        proxy.$locale + "/v1/resumes",
+        payload,
+        {
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+    )
+
+    if (response.status >= 200 && response.status < 300) {
+      console.log("Resume successfully uploaded (category name + title string) ✅")
+    } else {
+      await deleteUserIfNoResume(token)
+    }
+  } catch (error) {
+    console.error("Resume upload failed ❌", error)
+    await deleteUserIfNoResume(token)
+  }
+}
+const deleteUserIfNoResume = async (token) => {
+  try {
+    const response = await axios.delete(
+        proxy.$locale + "/auth/user/self-if-no-resume",
+        {
+          headers: {
+            "Authorization": `Bearer ${token}`,
+          },
+        }
+    )
+
+    console.log("User deleted:", response.data.message)
+  } catch (error) {
+    console.error("Failed to delete user:", error)
+  }
+}
+
+
 const completeRegistration = async () => {
   touched.firstName = true
-  touched.lastName = true
-  touched.email = true
-  touched.password = true
-  touched.confirm_password = true
   error.value = ''
 
   if (!isValid.value || !isStepValid()) return
 
   btnLoading.value = true
   try {
-    if (!emailVerified.value) {
-      await sendVerificationCode({ fromRegister: true })
-    } else {
-      await submitRegistration()
-    }
+    await submitRegistration()
   } catch (err) {
     console.error("❌ Error:", err)
   } finally {
@@ -706,10 +620,6 @@ const completeRegistration = async () => {
   }
 }
 
-const resetForm = () => {
-  currentStep.value = 1
-  Object.keys(formData).forEach(k => formData[k] = '')
-}
 const { locale } = useI18n()
 
 const tabs = [
@@ -727,4 +637,199 @@ const activeClass = 'bg-blue-600 text-white scale-100 py-2.5'
 const inactiveClass = 'bg-gray-100 text-gray-700 hover:bg-gray-200 scale-95 py-2'
 const activeTextClass = 'text-[13.5px] sm:text-[14px] scale-100'
 const inactiveTextClass = 'text-[11.5px] sm:text-[12px] scale-90'
+
+const phoneInput = ref(null);
+
+onMounted(async () => {
+  showLoading.value = true
+
+  const urlParams = new URLSearchParams(window.location.search)
+  const chatIdFromUrl = urlParams.get("chat_id")
+  const localeFromUrl = urlParams.get("locale") || "uz"
+
+  if (chatIdFromUrl) localStorage.setItem("chat_id", chatIdFromUrl)
+  if (localeFromUrl) localStorage.setItem("locale", localeFromUrl)
+
+  const chatId = localStorage.getItem("chat_id")
+  const token = localStorage.getItem("token")
+
+  try {
+    if (token) {
+      console.log("🔍 check-token so‘rov yuborilmoqda...");
+      await axios.get(proxy.$locale + "/auth/check-token", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      console.log("✅ check-token javob oldi!");
+      window.location.href = "/";
+      return;
+    }
+
+    if (chatId) {
+      console.log("💬 Chat ID orqali login:", chatId);
+      const res = await axios.post(proxy.$locale + "/auth/chat-id-login", { chat_id: chatId });
+      const TOKEN = res.data?.data?.token;
+
+      if (TOKEN) {
+        console.log("✅ Chat ID orqali token olindi");
+        localStorage.setItem("token", TOKEN);
+        window.location.href = "/";
+        return;
+      }
+    }
+  } catch (error) {
+    console.error("❌ Token yoki chat login xatosi:", error)
+    localStorage.removeItem("token")
+  } finally {
+    showLoading.value = false
+  }
+
+  if (phoneInput.value) {
+    const iti = intlTelInput(phoneInput.value, {
+      initialCountry: "uz",
+      onlyCountries: ["uz"],
+      preferredCountries: ["uz"],
+      allowDropdown: false,
+      separateDialCode: true,
+      nationalMode: false,
+    });
+
+    phoneInput.value.addEventListener("input", () => {
+      const digits = phoneInput.value.value.replace(/\D/g, '').slice(0, 9)
+      let grouped = ''
+      if (digits.length <= 2) grouped = digits
+      else if (digits.length <= 5) grouped = `${digits.slice(0,2)} ${digits.slice(2)}`
+      else if (digits.length <= 7) grouped = `${digits.slice(0,2)} ${digits.slice(2,5)} ${digits.slice(5)}`
+      else grouped = `${digits.slice(0,2)} ${digits.slice(2,5)} ${digits.slice(5,7)} ${digits.slice(7)}`
+      formData.phone = grouped
+      phoneInput.value.value = grouped
+    });
+  }
+})
 </script>
+
+
+<style scoped>
+.category-selection-wrapper {
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.form-group {
+  margin-bottom: 24px;
+}
+
+.form-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 8px;
+}
+
+.w-full {
+  width: 100%;
+}
+
+/* Category Select Custom Styles */
+:deep(.category-select) {
+  --el-select-border-color-hover: #3b82f6;
+  --el-select-input-focus-border-color: #3b82f6;
+}
+
+:deep(.category-select .el-input__wrapper) {
+  background-color: #f9fafb;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  transition: all 0.3s ease;
+}
+
+:deep(.category-select .el-input__wrapper:hover) {
+  background-color: #ffffff;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+:deep(.category-select .el-input__wrapper.is-focus) {
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgb(59 130 246 / 0.1);
+}
+
+/* Subcategory Select Custom Styles */
+:deep(.subcategory-select) {
+  --el-select-border-color-hover: #10b981;
+  --el-select-input-focus-border-color: #10b981;
+}
+
+:deep(.subcategory-select .el-input__wrapper) {
+  background: linear-gradient(to right, #f0fdf4, #fefce8);
+  border-radius: 8px;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  transition: all 0.3s ease;
+}
+
+:deep(.subcategory-select .el-input__wrapper:hover) {
+  background: linear-gradient(to right, #dcfce7, #fef9c3);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+:deep(.subcategory-select .el-input__wrapper.is-focus) {
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgb(16 185 129 / 0.1);
+}
+
+/* Option Text Styles */
+.option-text {
+  font-size: 14px;
+  color: #1f2937;
+}
+
+/* Selected Tags Styling */
+:deep(.el-tag) {
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+/* Selected Count Badge */
+.selected-count {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+}
+
+.selected-count .mr-1 {
+  margin-right: 4px;
+}
+
+/* Dropdown Panel Custom Styles */
+:deep(.el-select-dropdown__item) {
+  padding: 12px 20px;
+  transition: all 0.2s ease;
+}
+
+:deep(.el-select-dropdown__item:hover) {
+  background-color: #f3f4f6;
+}
+
+:deep(.el-select-dropdown__item.is-selected) {
+  background-color: #dbeafe;
+  color: #1e40af;
+  font-weight: 500;
+}
+
+/* Scrollbar Styling */
+:deep(.el-select-dropdown__wrap) {
+  max-height: 300px;
+}
+
+:deep(.el-select-dropdown__wrap::-webkit-scrollbar) {
+  width: 6px;
+}
+
+:deep(.el-select-dropdown__wrap::-webkit-scrollbar-thumb) {
+  background-color: #d1d5db;
+  border-radius: 3px;
+}
+
+:deep(.el-select-dropdown__wrap::-webkit-scrollbar-thumb:hover) {
+  background-color: #9ca3af;
+}
+</style>

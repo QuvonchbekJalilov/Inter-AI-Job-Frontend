@@ -175,57 +175,187 @@ const categories = ref([
     id: 1,
     name: 'IT and Software Development',
     subcategories: [
-      { id: 101, name: 'Php, Laravel, Yii2' },
-      { id: 102, name: 'Python, Django, Flask' },
-      { id: 103, name: '.NET, C#, ASP.NET' },
-      { id: 104, name: 'Java, Spring Boot' },
-      { id: 105, name: 'GoLang' },
-      { id: 106, name: 'React, Vue, Angular, JavaScript, TypeScript' },
-      { id: 107, name: 'Mobile Development (Flutter, React Native, Kotlin, Swift)' },
-      { id: 108, name: 'QA & Testing (Manual, Automation)' },
-      { id: 109, name: 'Cyber Security (SOC, Pentesting)' },
-      { id: 110, name: 'DevOps (Docker, Kubernetes, Linux, CI/CD)' },
-      { id: 111, name: 'Data Science' },
-      { id: 112, name: 'Machine Learning / AI Engineer' },
-      { id: 113, name: 'Game Development (Unity, Unreal)' },
-      { id: 114, name: 'Blockchain Developer' },
-      { id: 115, name: 'UI/UX Dizayn' },
-      { id: 116, name: 'Graphic Design' },
-      { id: 117, name: 'Cloud Specialist (AWS, Azure, GCP)' },
-      { id: 118, name: 'Database Administrator (DBA)' },
-      { id: 119, name: 'System Architect' },
-      { id: 120, name: 'Embedded / IoT Developer' }
+      // Backend — PHP
+      { id: 101, name: 'PHP' },
+      { id: 102, name: 'Laravel' },
+      { id: 103, name: 'Symfony' },
+      { id: 104, name: 'Yii2' },
+
+      // Backend — Python
+      { id: 105, name: 'Python' },
+      { id: 106, name: 'Django' },
+      { id: 107, name: 'Flask' },
+      { id: 108, name: 'FastAPI' },
+
+      // Backend — Java
+      { id: 109, name: 'Java' },
+      { id: 110, name: 'Spring Boot' },
+
+      // Backend — .NET
+      { id: 111, name: '.NET' },
+      { id: 112, name: 'C#' },
+      { id: 113, name: 'ASP.NET' },
+
+      // Backend — JavaScript
+      { id: 114, name: 'Node.js' },
+      { id: 115, name: 'Express.js' },
+      { id: 116, name: 'NestJS' },
+
+      // Backend — Go
+      { id: 117, name: 'GoLang' },
+
+      // Frontend
+      { id: 118, name: 'JavaScript' },
+      { id: 119, name: 'TypeScript' },
+      { id: 120, name: 'React' },
+      { id: 121, name: 'Vue.js' },
+      { id: 122, name: 'Angular' },
+      { id: 123, name: 'Next.js' },
+      { id: 124, name: 'Nuxt.js' },
+
+      // Mobile
+      { id: 125, name: 'Flutter' },
+      { id: 126, name: 'React Native' },
+      { id: 127, name: 'Kotlin' },
+      { id: 128, name: 'Swift' },
+
+      // QA & Testing
+      { id: 129, name: 'QA Manual' },
+      { id: 130, name: 'QA Automation' },
+      { id: 131, name: 'Selenium' },
+      { id: 132, name: 'Cypress' },
+
+      // Cyber Security
+      { id: 133, name: 'SOC Analyst' },
+      { id: 134, name: 'Pentesting' },
+      { id: 135, name: 'Ethical Hacking' },
+
+      // DevOps
+      { id: 136, name: 'Docker' },
+      { id: 137, name: 'Kubernetes' },
+      { id: 138, name: 'Linux Administration' },
+      { id: 139, name: 'CI/CD' },
+      { id: 140, name: 'Terraform' },
+
+      // Data
+      { id: 141, name: 'Data Science' },
+      { id: 142, name: 'Machine Learning' },
+      { id: 143, name: 'AI Engineering' },
+
+      // Game Dev
+      { id: 144, name: 'Unity' },
+      { id: 145, name: 'Unreal Engine' },
+
+      // Blockchain
+      { id: 146, name: 'Blockchain Developer' },
+      { id: 147, name: 'Solidity' },
+
+      // Design
+      { id: 148, name: 'UI/UX Design' },
+      { id: 149, name: 'Branding' },
+      { id: 150, name: 'Web Design' },
+      { id: 151, name: 'Graphic Design' },
+      { id: 152, name: 'Logo Design' },
+      { id: 153, name: 'Illustration' },
+
+      // Cloud
+      { id: 154, name: 'AWS' },
+      { id: 155, name: 'Azure' },
+      { id: 156, name: 'GCP' },
+
+      // Database
+      { id: 157, name: 'Database Administrator (DBA)' },
+      { id: 158, name: 'MySQL' },
+      { id: 159, name: 'PostgreSQL' },
+      { id: 160, name: 'MongoDB' },
+      { id: 161, name: 'Redis' },
+
+      // System Engineering
+      { id: 162, name: 'System Architect' },
+      { id: 163, name: 'System Engineer' },
+
+      // IoT / Embedded
+      { id: 164, name: 'Embedded Systems' },
+      { id: 165, name: 'IoT Developer' }
     ]
   },
-
   {
     id: 2,
     name: 'Marketing and Advertising',
     subcategories: [
-      { id: 201, name: 'Raqamli Marketing' },
-      { id: 202, name: 'SMM' },
-      { id: 203, name: 'Targetolog' },
-      { id: 204, name: 'SEO Specialist' },
-      { id: 205, name: 'Content Creator' },
-      { id: 206, name: 'Copywriter' },
-      { id: 207, name: 'Brand Manager' },
-      { id: 208, name: 'Performance Marketing' },
-      { id: 209, name: 'PR Manager' },
-      { id: 210, name: 'Influencer Marketing Manager' }
+      // Digital Marketing
+      { id: 201, name: 'Digital Marketing Specialist' },
+      { id: 202, name: 'SMM (Social Media Manager)' },
+      { id: 203, name: 'Targeting Specialist' },
+      { id: 204, name: 'Performance Marketing Specialist' },
+      { id: 205, name: 'SEO Specialist' },
+      { id: 206, name: 'SEM / PPC Specialist (Google Ads, Yandex Ads)' },
+      { id: 207, name: 'ASO Specialist (App Store Optimization)' },
+      { id: 208, name: 'Email Marketing Specialist' },
+      { id: 209, name: 'Marketing Analyst' },
+
+      // Content / Creative
+      { id: 210, name: 'Content Creator' },
+      { id: 211, name: 'Content Manager' },
+      { id: 212, name: 'Copywriter' },
+      { id: 213, name: 'Creative Director' },
+      { id: 214, name: 'Scriptwriter (Reklama / Video)' },
+
+      // Brand & Communication
+      { id: 215, name: 'Brand Manager' },
+      { id: 216, name: 'PR Manager' },
+      { id: 217, name: 'Communication Specialist' },
+      { id: 218, name: 'Influencer Marketing Manager' },
+      { id: 219, name: 'Community Manager' },
+
+      // Advertising / Media
+      { id: 220, name: 'Media Buyer' },
+      { id: 221, name: 'Media Planner' },
+      { id: 222, name: 'Advertising Manager' },
+
+      // Strategic / Management
+      { id: 223, name: 'Marketing Manager' },
+      { id: 224, name: 'Marketing Director (CMO)' },
+      { id: 225, name: 'Product Marketing Specialist' },
+
+      // Offline / Event
+      { id: 226, name: 'Event Manager' },
+      { id: 227, name: 'Trade Marketing Specialist' },
+      { id: 228, name: 'Merchandiser' }
     ]
   },
-
   {
     id: 3,
     name: 'Administration and Office Support',
     subcategories: [
+      // Administrative Roles
       { id: 301, name: 'Administrator' },
       { id: 302, name: 'Office Manager' },
-      { id: 303, name: 'Receptionist' },
-      { id: 304, name: 'System Administrator / IT Admin' },
-      { id: 305, name: 'Executive Assistant' },
-      { id: 306, name: 'Documentation Specialist' },
-      { id: 307, name: 'Technical Support Assistant' }
+      { id: 303, name: 'Administrative Assistant' },
+      { id: 304, name: 'Executive Assistant' },
+      { id: 305, name: 'Personal Assistant (PA)' },
+
+      // Front Desk / Coordination
+      { id: 306, name: 'Receptionist' },
+      { id: 307, name: 'Front Desk Coordinator' },
+      { id: 308, name: 'Customer Service Representative' },
+
+      // IT & System Support
+      { id: 309, name: 'System Administrator' },
+      { id: 310, name: 'IT Administrator' },
+      { id: 311, name: 'Technical Support Specialist' },
+      { id: 312, name: 'Help Desk Specialist' },
+
+      // Documentation & Operations
+      { id: 313, name: 'Documentation Specialist' },
+      { id: 314, name: 'Data Entry Specialist' },
+      { id: 315, name: 'Office Coordinator' },
+      { id: 316, name: 'Operations Assistant' },
+
+      // HR & Internal Support
+      { id: 317, name: 'HR Assistant' },
+      { id: 318, name: 'Recruitment Assistant' },
+      { id: 319, name: 'Payroll Assistant' }
     ]
   },
 
@@ -233,33 +363,61 @@ const categories = ref([
     id: 4,
     name: 'Sales and Customer Relations',
     subcategories: [
-      { id: 401, name: 'Sotuv Menejeri' },
-      { id: 402, name: 'Sales Manager' },
+      // Sales roles
+      { id: 401, name: 'Sales Manager' },
+      { id: 402, name: 'Sales Representative' },
       { id: 403, name: 'Key Account Manager' },
-      { id: 404, name: 'Client Manager' },
+      { id: 404, name: 'Business Development Manager' },
       { id: 405, name: 'Commercial Manager' },
-      { id: 406, name: 'Constructor' },
-      { id: 407, name: 'Customer Success Manager' },
-      { id: 408, name: 'TeleSales Manager' }
+      { id: 406, name: 'Field Sales Specialist' },
+      { id: 407, name: 'Retail Sales Specialist' },
+      { id: 408, name: 'TeleSales Manager' },
+      { id: 409, name: 'TeleSales Operator' },
+
+      // Customer Relations
+      { id: 410, name: 'Customer Success Manager' },
+      { id: 411, name: 'Client Manager' },
+      { id: 412, name: 'Customer Support Specialist' },
+      { id: 413, name: 'Call Center Specialist' },
+
+      // Pre-Sales / Technical Sales
+      { id: 414, name: 'Pre-Sales Engineer' },
+      { id: 415, name: 'Technical Sales Specialist' },
+
+      // Construction / Interior Sales
+      { id: 416, name: 'Constructor (Commercial Offers / Calculations)' },
+      { id: 417, name: 'Estimator / Sales Estimator' }
     ]
   },
-
   {
     id: 5,
     name: 'Logistics and Supply Chain',
     subcategories: [
+      // Dispatching / Trucking
       { id: 501, name: 'Dispatch Specialist' },
-      { id: 502, name: 'Driver Recruiter' },
-      { id: 503, name: 'Fleet Specialist' },
-      { id: 504, name: 'Logistics Coordinator' },
-      { id: 505, name: 'Supply Chain Manager' },
-      { id: 506, name: 'Warehouse Manager' },
-      { id: 507, name: 'Customs Specialist' },
-      { id: 508, name: 'Update Specialist' },
-      { id: 509, name: 'ELD Specialist' },
-      { id: 510, name: 'Freight Broker' },
-      { id: 511, name: 'Route Planner' },
-      { id: 512, name: 'Safety Specialist' }
+      { id: 502, name: 'ELD Specialist' },
+      { id: 503, name: 'Safety Specialist' },
+      { id: 504, name: 'Fleet Manager' },
+      { id: 505, name: 'Driver Recruiter' },
+
+      // Planning & Coordination
+      { id: 506, name: 'Logistics Coordinator' },
+      { id: 507, name: 'Route Planner' },
+      { id: 508, name: 'Freight Broker' },
+      { id: 509, name: 'Customs Specialist' },
+      { id: 510, name: 'Update Specialist' },
+
+      // Warehouse & Supply Chain
+      { id: 511, name: 'Warehouse Manager' },
+      { id: 512, name: 'Warehouse Worker' },
+      { id: 513, name: 'Supply Chain Manager' },
+      { id: 514, name: 'Inventory Specialist' },
+      { id: 515, name: 'Procurement Specialist' },
+
+      // Delivery / Transport
+      { id: 516, name: 'Logistics Manager' },
+      { id: 517, name: 'Transport Coordinator' },
+      { id: 518, name: 'Import/Export Specialist' }
     ]
   },
 
@@ -267,26 +425,55 @@ const categories = ref([
     id: 6,
     name: 'Customer Support and Call Center',
     subcategories: [
-      { id: 601, name: 'Call operator' },
-      { id: 602, name: 'Кассир-сотувчи' },
-      { id: 603, name: 'Менеджер по работе с клиентами' },
-      { id: 604, name: 'Support Specialist' },
-      { id: 605, name: 'Helpdesk Agent' },
-      { id: 606, name: 'Call Center Supervisor' }
+      // Call Center
+      { id: 601, name: 'Call Operator' },
+      { id: 602, name: 'Inbound Call Specialist' },
+      { id: 603, name: 'Outbound Call Specialist' },
+      { id: 604, name: 'Call Center Agent' },
+      { id: 605, name: 'Call Center Supervisor' },
+      { id: 606, name: 'Call Center Manager' },
+
+      // Customer Support
+      { id: 607, name: 'Customer Support Specialist' },
+      { id: 608, name: 'Customer Service Representative' },
+      { id: 609, name: 'Client Relationship Specialist' },
+
+      // Helpdesk / Technical Support
+      { id: 610, name: 'Helpdesk Agent' },
+      { id: 611, name: 'Technical Support Specialist' },
+      { id: 612, name: 'Support Specialist' },
+
+      // Cashier & Retail Service
+      { id: 613, name: 'Cashier / Sales Assistant (Кассир-сотувчи)' }
     ]
   },
-
   {
     id: 7,
     name: 'Human Resources and Recruitment (HR)',
     subcategories: [
-      { id: 701, name: 'HR рекрутер' },
-      { id: 702, name: 'HR Menejeri' },
-      { id: 703, name: 'Директор по персоналу (HRD)' },
-      { id: 704, name: 'Talent Acquisition Specialist' },
-      { id: 705, name: 'Training & Development Specialist' },
-      { id: 706, name: 'HR Generalist' },
-      { id: 707, name: 'Compensation & Benefits Specialist' }
+      // Recruitment
+      { id: 701, name: 'HR Recruiter' },
+      { id: 702, name: 'Talent Acquisition Specialist' },
+      { id: 703, name: 'Sourcing Specialist' },
+
+      // HR Management
+      { id: 704, name: 'HR Manager' },
+      { id: 705, name: 'HR Director (HRD)' },
+      { id: 706, name: 'HR Business Partner' },
+      { id: 707, name: 'HR Generalist' },
+
+      // Employee Relations / Development
+      { id: 708, name: 'Training & Development Specialist' },
+      { id: 709, name: 'Employee Relations Specialist' },
+      { id: 710, name: 'Onboarding Specialist' },
+
+      // Payroll & C&B
+      { id: 711, name: 'Compensation & Benefits Specialist' },
+      { id: 712, name: 'Payroll Specialist' },
+
+      // HR Operations
+      { id: 713, name: 'HR Coordinator' },
+      { id: 714, name: 'HR Assistant' }
     ]
   },
 
@@ -294,28 +481,54 @@ const categories = ref([
     id: 8,
     name: 'Product and Project Management',
     subcategories: [
+      // Project Management
       { id: 801, name: 'Project Manager' },
-      { id: 802, name: 'Product Manager' },
-      { id: 803, name: 'Product Owner' },
-      { id: 804, name: 'Scrum Master' },
-      { id: 805, name: 'Business Analyst' },
-      { id: 806, name: 'Business Development Manager' },
-      { id: 807, name: 'Commercial Director' }
+      { id: 802, name: 'Program Manager' },
+      { id: 803, name: 'Project Coordinator' },
+      { id: 804, name: 'PMO Specialist' },
+      { id: 805, name: 'Scrum Master' },
+      { id: 806, name: 'Agile Coach' },
+
+      // Product Management
+      { id: 807, name: 'Product Manager' },
+      { id: 808, name: 'Product Owner' },
+      { id: 809, name: 'Product Analyst' },
+
+      // Business roles
+      { id: 810, name: 'Business Analyst' },
+      { id: 811, name: 'Business Development Manager' },
+      { id: 812, name: 'Commercial Director' },
+
+      // Additional related roles
+      { id: 813, name: 'Technical Project Manager' },
+      { id: 814, name: 'Delivery Manager' }
     ]
   },
-
   {
     id: 9,
     name: 'Finance and Accounting',
     subcategories: [
-      { id: 901, name: 'Financespecialist' },
-      { id: 902, name: 'Buxgalter' },
-      { id: 903, name: 'Финансовый директор (CFO)' },
-      { id: 904, name: 'Auditor' },
-      { id: 905, name: 'Financial Analyst' },
-      { id: 906, name: 'Tax Consultant' },
-      { id: 907, name: 'Payroll Specialist' },
-      { id: 908, name: 'Bookkeeper' }
+      // Accounting
+      { id: 901, name: 'Accountant (Buxgalter)' },
+      { id: 902, name: 'Chief Accountant' },
+      { id: 903, name: 'Bookkeeper' },
+      { id: 904, name: 'Payroll Specialist' },
+
+      // Finance
+      { id: 905, name: 'Finance Specialist' },
+      { id: 906, name: 'Financial Analyst' },
+      { id: 907, name: 'Finance Manager' },
+      { id: 908, name: 'Financial Controller' },
+      { id: 909, name: 'Treasury Specialist' },
+      { id: 910, name: 'Risk Manager' },
+
+      // Audit & Tax
+      { id: 911, name: 'Auditor' },
+      { id: 912, name: 'Internal Auditor' },
+      { id: 913, name: 'Tax Consultant' },
+
+      // Senior Executive
+      { id: 914, name: 'Chief Financial Officer (CFO) / Финансовый директор' }
     ]
   }
 ])
