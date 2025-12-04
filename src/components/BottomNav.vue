@@ -36,7 +36,7 @@
           class="mt-1 text-xs"
           :class="isHomeActive ? 'text-white font-medium' : 'text-blue-100'"
         >
-          Bosh
+         
         </span>
       </button>
 
@@ -72,7 +72,7 @@
           class="mt-1 text-xs"
           :class="isResumeActive ? 'text-white font-medium' : 'text-blue-100'"
         >
-          Resume
+          
         </span>
       </RouterLink>
 
@@ -113,7 +113,7 @@
           class="mt-1 text-xs"
           :class="isProfileActive ? 'text-white font-medium' : 'text-blue-100'"
         >
-          Profil
+          
         </span>
       </RouterLink>
     </div>
