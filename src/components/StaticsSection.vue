@@ -222,12 +222,6 @@ onMounted(() => {
       })
 
       statistics.value = res.data || {}
-
-      // Otkaz uchun hozircha backend maydoni yo‘q,
-      // shuning uchun faqat rejected bo‘sh bo‘lsa 2 sifatida ko‘rsatamiz
-      if (statistics.value.rejected == null || statistics.value.rejected === 0) {
-        statistics.value.rejected = 2
-      }
     } catch (e) {
       console.error("❌ Statistika yuklanmadi:", e)
     } finally {
