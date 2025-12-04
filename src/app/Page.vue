@@ -7,7 +7,7 @@
       <VacancyList />
     </keep-alive>
 
-    <div class="fixed bottom-14 right-6">
+    <div class="fixed bottom-20 right-6">
       <a
           href="https://t.me/inter_ai_support_bot"
           target="_blank"
