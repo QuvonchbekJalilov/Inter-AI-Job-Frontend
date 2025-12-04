@@ -68,7 +68,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="pb-8 bg-gray-50">
+  <div class="pb-24 bg-gray-50">
     <router-view />
   </div>
   <BottomNav v-if="showBottomNav" />

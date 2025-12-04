@@ -1,9 +1,8 @@
 <template>
   <nav class="fixed bottom-0 left-0 w-full z-40">
-    <div class="max-w-7xl mx-auto px-6 pb-4">
-      <div
-        class="bg-gradient-to-r from-blue-600 to-blue-500 rounded-t-3xl shadow-[0_-4px_16px_rgba(15,23,42,0.3)] px-6 py-3 flex items-end justify-between"
-      >
+    <div
+      class="bg-gradient-to-r from-blue-600 to-blue-500 shadow-[0_-4px_16px_rgba(15,23,42,0.3)] px-6 py-3 flex items-end justify-between"
+    >
         <!-- Home -->
         <button
           type="button"
