@@ -13,6 +13,7 @@ import VacancyTelegramShow from '../app/VacancyTelegramShow.vue'
 import CareerTracking from "@/app/CareerTracking.vue";
 import Resume from "@/app/Resume.vue";
 import RejectionShow from "@/app/RejectionShow.vue";
+import MockInterview from "@/app/MockInterview.vue";
 
 
 const routes = [
@@ -78,6 +79,12 @@ const routes = [
         path: '/resume',
         name: 'resume',
         component: Resume,
+        meta: { requiresAuth: true }
+    },
+    {
+        path: '/mock-interview',
+        name: 'mockInterview',
+        component: MockInterview,
         meta: { requiresAuth: true }
     },
     {

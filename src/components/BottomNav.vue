@@ -1,8 +1,6 @@
 <template>
   <nav class="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 z-40">
-    <div
-      class="px-8 py-2 flex items-center justify-between"
-    >
+    <div class="px-6 py-2 flex items-center justify-between">
       <!-- Home -->
       <button
         type="button"
@@ -64,6 +62,36 @@
         </div>
       </RouterLink>
 
+      <!-- Mock Interview -->
+      <RouterLink
+        :to="{ name: 'mockInterview' }"
+        class="flex-1 flex items-center justify-center"
+      >
+        <div
+          :class="[
+            'flex items-center justify-center rounded-full transition-all duration-200',
+            isMockActive
+              ? 'bg-blue-400 text-white px-6 py-2'
+              : 'text-gray-500 px-0 py-0'
+          ]"
+        >
+          <svg
+            class="w-6 h-6"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="1.8"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M8 10h8M8 14h4M5 5h14a1 1 0 011 1v12l-4-2-4 2-4-2-4 2V6a1 1 0 011-1z"
+            />
+          </svg>
+        </div>
+      </RouterLink>
+
       <!-- Profile -->
       <RouterLink
         :to="{ name: 'profile' }"
@@ -111,6 +139,7 @@ const route = useRoute();
 
 const isHomeActive = computed(() => route.name === "home");
 const isResumeActive = computed(() => route.name === "resume");
+const isMockActive = computed(() => route.name === "mockInterview");
 const isProfileActive = computed(() => route.name === "profile");
 
 const goHome = () => {
