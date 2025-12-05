@@ -5,7 +5,7 @@
       <button
         type="button"
         @click="goHome"
-        class="flex-1 flex items-center justify-start"
+        class="flex-1 flex items-center justify-start mr-3"
       >
         <div
           :class="[
@@ -35,7 +35,7 @@
       <!-- Resume -->
       <RouterLink
         :to="{ name: 'resume' }"
-        class="flex-1 flex items-center justify-center mr-3"
+        class="flex-1 flex items-center justify-center mx-3"
       >
         <div
           :class="[
@@ -65,7 +65,7 @@
       <!-- Mock Interview -->
       <RouterLink
         :to="{ name: 'mockInterview' }"
-        class="flex-1 flex items-center justify-center ml-3"
+        class="flex-1 flex items-center justify-center mx-3"
       >
         <div
           :class="[
@@ -95,7 +95,7 @@
       <!-- Profile -->
       <RouterLink
         :to="{ name: 'profile' }"
-        class="flex-1 flex items-center justify-end"
+        class="flex-1 flex items-center justify-end ml-3"
       >
         <div
           :class="[
