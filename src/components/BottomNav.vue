@@ -7,13 +7,13 @@
       <button
         type="button"
         @click="goHome"
-        class="flex-1 flex items-center justify-center"
+        class="flex-1 flex items-center justify-start"
       >
         <div
           :class="[
             'flex items-center justify-center rounded-full transition-all duration-200',
             isHomeActive
-              ? 'bg-white/25 text-white px-6 py-2'
+              ? 'bg-white/25 text-white px-4 py-2'
               : 'text-white/80 px-0 py-0'
           ]"
         >
@@ -43,7 +43,7 @@
           :class="[
             'flex items-center justify-center rounded-full transition-all duration-200',
             isResumeActive
-              ? 'bg-white/25 text-white px-6 py-2'
+              ? 'bg-white/25 text-white px-4 py-2'
               : 'text-white/80 px-0 py-0'
           ]"
         >
@@ -67,13 +67,13 @@
       <!-- Profile -->
       <RouterLink
         :to="{ name: 'profile' }"
-        class="flex-1 flex items-center justify-center"
+        class="flex-1 flex items-center justify-end"
       >
         <div
           :class="[
             'flex items-center justify-center rounded-full transition-all duration-200',
             isProfileActive
-              ? 'bg-white/25 text-white px-6 py-2'
+              ? 'bg-white/25 text-white px-4 py-2'
               : 'text-white/80 px-0 py-0'
           ]"
         >
