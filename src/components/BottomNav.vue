@@ -1,7 +1,7 @@
 <template>
-  <nav class="fixed bottom-0 left-0 w-full z-40">
+  <nav class="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 z-40">
     <div
-      class="bg-gradient-to-r from-blue-600 to-blue-600 shadow-[0_-4px_16px_rgba(15,23,42,0.3)] px-8 py-2 flex items-center justify-between"
+      class="px-8 py-2 flex items-center justify-between"
     >
       <!-- Home -->
       <button
@@ -13,8 +13,8 @@
           :class="[
             'flex items-center justify-center rounded-full transition-all duration-200',
             isHomeActive
-              ? 'bg-white/25 text-white px-4 py-2'
-              : 'text-white/80 px-0 py-0'
+              ? 'bg-blue-400 text-white px-6 py-2'
+              : 'text-gray-500 px-0 py-0'
           ]"
         >
           <svg
@@ -43,8 +43,8 @@
           :class="[
             'flex items-center justify-center rounded-full transition-all duration-200',
             isResumeActive
-              ? 'bg-white/25 text-white px-4 py-2'
-              : 'text-white/80 px-0 py-0'
+              ? 'bg-blue-400 text-white px-6 py-2'
+              : 'text-gray-500 px-0 py-0'
           ]"
         >
           <svg
@@ -73,8 +73,8 @@
           :class="[
             'flex items-center justify-center rounded-full transition-all duration-200',
             isProfileActive
-              ? 'bg-white/25 text-white px-4 py-2'
-              : 'text-white/80 px-0 py-0'
+              ? 'bg-blue-400 text-white px-6 py-2'
+              : 'text-gray-500 px-0 py-0'
           ]"
         >
           <svg
