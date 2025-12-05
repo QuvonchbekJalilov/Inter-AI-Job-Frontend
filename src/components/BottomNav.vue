@@ -35,7 +35,7 @@
       <!-- Resume -->
       <RouterLink
         :to="{ name: 'resume' }"
-        class="flex-1 flex items-center justify-center"
+        class="flex-1 flex items-center justify-center mr-3"
       >
         <div
           :class="[
@@ -65,7 +65,7 @@
       <!-- Mock Interview -->
       <RouterLink
         :to="{ name: 'mockInterview' }"
-        class="flex-1 flex items-center justify-center"
+        class="flex-1 flex items-center justify-center ml-3"
       >
         <div
           :class="[
