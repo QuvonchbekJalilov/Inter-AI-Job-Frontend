@@ -139,13 +139,13 @@
             </div>
             <span class="px-3 py-1 bg-green-100 text-green-600 rounded-full text-xs">{{ translations.resumes?.status_active }}</span>
           </div>
-          <button
-              type="button"
-              class="mt-4 w-full px-4 py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-50 text-center block"
-              @click="showResumeModal = true"
-          >
-            {{ translations.auto_apply?.edit_resume }}
-          </button>
+<!--          <button-->
+<!--              type="button"-->
+<!--              class="mt-4 w-full px-4 py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-50 text-center block"-->
+<!--              @click="showResumeModal = true"-->
+<!--          >-->
+<!--            {{ translations.auto_apply?.edit_resume }}-->
+<!--          </button>-->
 <!--          <a-->
 <!--              :href="user?.resumes[0]?.file_url"-->
 <!--              target="_blank"-->
