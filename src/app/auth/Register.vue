@@ -656,8 +656,8 @@ const submitRegistration = async () => {
                   ? "❗ Этот номер телефона уже зарегистрирован."
                   : "❗ This phone number is already registered."
       )
-      router.push({ name: 'home' })
-      window.location.href = "/";
+      // router.push({ name: 'home' })
+      // window.location.href = "/";
     } else {
       toast.error(
           locale.value === 'uz'
