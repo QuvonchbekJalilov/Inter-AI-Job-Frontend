@@ -8,7 +8,7 @@
           @change-filter="setActiveFilter"
       />
 
-      <main class="space-y-6 mt-6">
+      <main class="space-y-6 mt-8">
 
         <template v-if="activeTab === 'vacancies'">
           <VacancyCard

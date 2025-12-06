@@ -1,5 +1,24 @@
 <template>
   <div class="max-w-7xl mx-auto px-4">
+    <!-- 🔎 Search input -->
+    <div class="mt-4 w-full max-w-md mx-auto flex gap-2">
+      <el-input
+          v-model="search"
+          placeholder="Search..."
+          clearable
+          prefix-icon="Search"
+          @keyup.enter="onSearch"
+      />
+
+      <el-button
+          type="primary"
+          icon="Search"
+          @click="onSearch"
+          style="background-color:#2563eb; border-color:#2563eb;"
+      >
+        Search
+      </el-button>
+    </div>
     <Vacancies :show="loadingSkeleton" :count="50" :cols="3" />
     <div
       v-if="!loadingSkeleton"
@@ -350,7 +369,6 @@ const props = defineProps({
 const router = useRouter()
 
 const { translations, t } = useI18n()
-
 const showModal = ref(false);
 const showLoading = ref(false);
 const loadingSkeleton = ref(false);
@@ -621,7 +639,12 @@ const user = ref(null)
 const error = ref("")
 const hhAccountActive = computed(() => !!user.value?.hh_account_status)
 
-const fetchJobs = async (forceUpdate = false) => {
+const onSearch = () => {
+  fetchJobs(false, search.value)
+}
+
+const search = ref()
+const fetchJobs = async (forceUpdate = false, searchQuery = null) => {
   showLoading.value = true
   loadingSkeleton.value = true
 
@@ -638,7 +661,13 @@ const fetchJobs = async (forceUpdate = false) => {
     if (forceUpdate) {
       response = await axios.post(`${proxy.$locale}/v1/vacancy-matches/run`, {}, { headers })
     } else {
-      response = await axios.get(`${proxy.$locale}/v1/vacancy-matches`, { headers })
+      let url = `${proxy.$locale}/v1/vacancy-matches`
+
+      if (searchQuery) {
+        url += `?search=${encodeURIComponent(searchQuery)}`
+      }
+
+      response = await axios.get(url, { headers })
     }
 
     const result = response.data

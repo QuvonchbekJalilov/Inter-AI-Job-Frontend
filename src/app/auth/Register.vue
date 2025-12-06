@@ -36,10 +36,8 @@
           />
         </div>
 
-
-        <!--  Replaced file upload with category dropdown and multiple select -->
+        <!-- Category Select Only -->
         <div class="category-selection-wrapper">
-          <!-- Category Select -->
           <div class="form-group">
             <label class="form-label">
               Kategoriyani tanlang
@@ -50,7 +48,6 @@
                 size="large"
                 class="w-full category-select"
                 clearable
-                @change="handleCategoryChange"
             >
               <el-option
                   v-for="category in categories"
@@ -62,62 +59,26 @@
               </el-option>
             </el-select>
           </div>
-
-          <!-- Subcategory Multi-Select -->
-          <div v-if="formData.selectedCategory && getSubcategories().length > 0" class="form-group">
-            <label class="form-label">
-              {{ getSelectedCategoryName() }} uchun bo'limlarni tanlang
-            </label>
-            <el-select
-                v-model="formData.selectedSubcategories"
-                multiple
-                collapse-tags
-                collapse-tags-tooltip
-                :max-collapse-tags="3"
-                placeholder="Bo'limlarni tanlang"
-                size="large"
-                class="w-full subcategory-select"
-                clearable
-            >
-              <el-option
-                  v-for="subcategory in getSubcategories()"
-                  :key="subcategory.id"
-                  :label="subcategory.name"
-                  :value="subcategory.id"
-              >
-                <span class="option-text">{{ subcategory.name }}</span>
-              </el-option>
-            </el-select>
-
-            <!-- Selected Count Badge -->
-            <div v-if="formData.selectedSubcategories.length > 0" class="selected-count">
-              <el-tag type="success" effect="plain" round>
-                <el-icon class="mr-1"><Check /></el-icon>
-                Tanlangan: {{ formData.selectedSubcategories.length }}
-              </el-tag>
-            </div>
-          </div>
         </div>
 
-        <!-- Offer Section (Placeholder) -->
+        <!-- Offer Section -->
         <Offer v-model="acceptedOffer" :locale="locale" />
-
 
         <!-- Submit Button -->
         <button
             @click="completeRegistration"
             :disabled="!isStepValid() || btnLoading || !acceptedOffer"
             :class="[
-              'w-full py-3 rounded-md font-medium transition-colors flex items-center justify-center gap-2',
-              (!isStepValid() || btnLoading || !acceptedOffer)
-                ? 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-50'
-                : 'bg-blue-500 text-white hover:bg-blue-600'
-            ]"
+        'w-full py-3 rounded-md font-medium transition-colors flex items-center justify-center gap-2',
+        (!isStepValid() || btnLoading || !acceptedOffer)
+          ? 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-50'
+          : 'bg-blue-500 text-white hover:bg-blue-600'
+      ]"
         >
-          <span
-              v-if="btnLoading"
-              class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"
-          ></span>
+    <span
+        v-if="btnLoading"
+        class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"
+    ></span>
           <span>{{ btnLoading ? translations.finish : translations.finish }}</span>
         </button>
       </div>
@@ -163,7 +124,7 @@ const formData = reactive({
   firstName: '',
   phone: '',
   selectedCategory: '',
-  selectedSubcategories: [],
+  // selectedSubcategories: [],
 })
 
 const acceptedOffer = ref(false)
@@ -276,20 +237,20 @@ const categories = ref([
   }
 ])
 
-const getSubcategories = () => {
-  const category = categories.value.find(cat => cat.id === parseInt(formData.selectedCategory))
-  return category?.subcategories || []
-}
-
-const getSelectedCategoryName = () => {
-  const category = categories.value.find(cat => cat.id === parseInt(formData.selectedCategory))
-  return category?.name || ''
-}
-
-const handleCategoryChange = () => {
-  // Kategoriya o'zgarganda subcategorylarni tozalash
-  formData.selectedSubcategories = []
-}
+// const getSubcategories = () => {
+//   const category = categories.value.find(cat => cat.id === parseInt(formData.selectedCategory))
+//   return category?.subcategories || []
+// }
+//
+// const getSelectedCategoryName = () => {
+//   const category = categories.value.find(cat => cat.id === parseInt(formData.selectedCategory))
+//   return category?.name || ''
+// }
+//
+// const handleCategoryChange = () => {
+//   // Kategoriya o'zgarganda subcategorylarni tozalash
+//   formData.selectedSubcategories = []
+// }
 
 const loading = ref(false)
 const error = ref("")
@@ -317,8 +278,7 @@ const isStepValid = () => {
   return (
       formData.firstName &&
       formData.phone &&
-      formData.selectedCategory !== '' &&
-      formData.selectedSubcategories.length > 0 &&  // && bilan o'zgartiring
+      formData.selectedCategory !== '' &&  // Faqat kategoriya tekshiriladi
       !fileError.value
   )
 }
@@ -419,24 +379,18 @@ const submitRegistration = async () => {
 }
 const uploadResume = async (token) => {
   const categoryId = formData.selectedCategory
-  const selectedSubs = formData.selectedSubcategories
 
-  if (!categoryId || selectedSubs.length === 0) {
-    console.error("Category yoki subcategory tanlanmadi ❌")
+  if (!categoryId) {
+    console.error("Category tanlanmadi ❌")
     return
   }
 
   const category = categories.value.find(cat => cat.id === parseInt(categoryId))
   const categoryName = category?.name
 
-  const title = category.subcategories
-      .filter(sub => selectedSubs.includes(sub.id))
-      .map(sub => sub.name)
-      .join(", ")
-
   const payload = {
     category: categoryName,
-    title: title
+    title: categoryName  // Yoki boshqa default qiymat
   }
 
   try {
@@ -452,7 +406,7 @@ const uploadResume = async (token) => {
     )
 
     if (response.status >= 200 && response.status < 300) {
-      console.log("Resume successfully uploaded (category name + title string) ✅")
+      console.log("Resume successfully uploaded ✅")
     } else {
       await deleteUserIfNoResume(token)
     }
