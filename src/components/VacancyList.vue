@@ -87,14 +87,35 @@ onBeforeUnmount(() => {
 
 const activeFilter = ref('all')
 
+const translations = {
+  uz: {
+    ALL: "Hammasi",
+    HH: "Head Hunter",
+    TG: "Telegram",
+  },
+  ru: {
+    ALL: "Все",
+    HH: "Head Hunter",
+    TG: "Телеграм",
+  },
+  en: {
+    ALL: "All",
+    HH: "Head Hunter",
+    TG: "Telegram",
+  }
+}
+const currentLang = ref(localStorage.getItem("locale") || "uz")
 const tabs = computed(() => {
   const isVacancies = activeTab.value === 'vacancies'
+  const t = translations[currentLang.value]  // til bo‘yicha tarjima
+
   return [
-    { name: 'ALL', key: 'all', active: isVacancies && activeFilter.value === 'all' },
-    { name: 'HeadHunter', key: 'headhunter', active: isVacancies && activeFilter.value === 'headhunter' },
-    { name: 'Telegram', key: 'telegram', active: isVacancies && activeFilter.value === 'telegram' },
+    { name: t.ALL, key: 'all', active: isVacancies && activeFilter.value === 'all' },
+    { name: t.HH, key: 'headhunter', active: isVacancies && activeFilter.value === 'headhunter' },
+    { name: t.TG, key: 'telegram', active: isVacancies && activeFilter.value === 'telegram' },
   ]
 })
+
 
 const setActiveTab = (tabKey) => {
   activeTab.value = tabKey

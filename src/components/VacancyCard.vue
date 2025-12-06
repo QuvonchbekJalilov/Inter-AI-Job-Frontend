@@ -4,7 +4,7 @@
     <div class="mt-4 w-full max-w-md mx-auto flex gap-2">
       <el-input
           v-model="search"
-          placeholder="Search..."
+          :placeholder="translations.search + '...'"
           clearable
           prefix-icon="Search"
           @keyup.enter="onSearch"
@@ -16,7 +16,7 @@
           @click="onSearch"
           style="background-color:#2563eb; border-color:#2563eb;"
       >
-        Search
+        {{ translations.search }}
       </el-button>
     </div>
     <Vacancies :show="loadingSkeleton" :count="50" :cols="3" />
@@ -638,12 +638,14 @@ const applyToVacancy = async (job) => {
 const user = ref(null)
 const error = ref("")
 const hhAccountActive = computed(() => !!user.value?.hh_account_status)
+const search = ref()
 
 const onSearch = () => {
+  localStorage.setItem("jobs_search", search.value || "")
   fetchJobs(false, search.value)
 }
 
-const search = ref()
+
 const fetchJobs = async (forceUpdate = false, searchQuery = null) => {
   showLoading.value = true
   loadingSkeleton.value = true
@@ -768,13 +770,21 @@ const formatDate = (date) => {
 }
 
 onMounted(async () => {
-  await fetchJobs();
+  const savedSearch = localStorage.getItem("jobs_search")
+
+  if (savedSearch) {
+    search.value = savedSearch
+    await fetchJobs(false, savedSearch)
+  } else {
+    await fetchJobs()
+  }
+
   emit("loaded");
 
   intervalId = setInterval(() => {
     fetchJobs(true);
   }, CACHE_TIME);
-});
+})
 
 onBeforeUnmount(() => {
   if (intervalId) clearInterval(intervalId);
