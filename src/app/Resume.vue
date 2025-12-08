@@ -1843,10 +1843,28 @@ const downloadDocx = (lang) => {
     return;
   }
 
-  // Web uchun: DOCX faylni bevosita brauzer orqali yuklab olish
-  const base = `${proxy.$locale}/v1/resume-create/docx`;
-  const url = `${base}?lang=${encodeURIComponent(lang)}&token=${encodeURIComponent(token)}`;
-  window.location.href = url;
+  // DOCX faylini Telegram chatga yuborish
+  const url = `${proxy.$locale}/v1/resume-create/docx/send-to-telegram?lang=${encodeURIComponent(
+    lang
+  )}&token=${encodeURIComponent(token)}`;
+
+  axios
+    .post(
+      url,
+      {},
+      {
+        headers: {
+          Accept: "application/json",
+        },
+      }
+    )
+    .then(() => {
+      toast.success("DOCX fayl Telegram chatga yuborildi. Chatdan yuklab olishingiz mumkin.");
+    })
+    .catch((e) => {
+      console.error("❌ send-docx-to-telegram error:", e.response?.data || e.message);
+      toast.error("DOCX faylini Telegram chatga yuborishda xatolik yuz berdi.");
+    });
 };
 
 const handleBack = () => {
