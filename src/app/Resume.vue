@@ -1743,25 +1743,52 @@ const buildPdfUrl = (lang) => {
   return query ? `${base}?${query}` : base;
 };
 
-const downloadPdf = (lang) => {
+const downloadPdf = async (lang) => {
   const tg = window.Telegram && window.Telegram.WebApp;
 
+  // Telegram mini‑app ichida: axios + blob orqali ochamiz,
+  // chunki openLink orqali ketganda ba'zi hollarda token query yo'qolishi mumkin.
+  if (tg && typeof tg.initDataUnsafe !== "undefined") {
+    const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+    if (!token) {
+      console.error("❌ No auth token found for Telegram PDF download");
+      return;
+    }
+
+    try {
+      const url = `${proxy.$locale}/v1/resume-create/pdf?lang=${encodeURIComponent(lang)}`;
+      const response = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/pdf",
+        },
+        responseType: "blob",
+      });
+
+      const blob = new Blob([response.data], { type: "application/pdf" });
+      const objectUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = objectUrl;
+      link.target = "_blank";
+      link.download = `resume-${lang}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(objectUrl);
+    } catch (e) {
+      console.error("❌ Telegram PDF download error:", e.response?.data || e.message);
+    }
+    return;
+  }
+
+  // Oddiy web (desktop + mobil brauzer): token'li URL ni to'g'ridan‑to'g'ri ochamiz
   const url = buildPdfUrl(lang);
 
-  // Agar Telegram mini app muhitida bo'lsak, ularning openLink API'sidan foydalanamiz
-  if (tg && typeof tg.openLink === "function") {
-    tg.openLink(url);
-    return;
-  }
-
-  // Mobil brauzerlar uchun eng ishonchli usul — to'g'ridan-to'g'ri redirect
   if (typeof navigator !== "undefined" && /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
     window.location.href = url;
-    return;
+  } else {
+    window.open(url, "_blank");
   }
-
-  // Desktopda yangi tabda ochamiz
-  window.open(url, "_blank");
 };
 
 const goBackHome = () => {
