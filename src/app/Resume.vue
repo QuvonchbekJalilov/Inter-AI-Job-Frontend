@@ -1728,36 +1728,32 @@ const removePhoto = async () => {
   }
 };
 
-const downloadPdf = async (lang) => {
-  const token = localStorage.getItem("token") || sessionStorage.getItem("token");
-  if (!token) {
-    console.error("❌ No auth token found for PDF download");
+const buildPdfUrl = (lang) => {
+  const token = localStorage.getItem("token") || sessionStorage.getItem("token") || "";
+  const base = `${proxy.$locale}/v1/resume-create/pdf`;
+  const params = new URLSearchParams({ lang });
+  if (token) params.append("token", token);
+  return `${base}?${params.toString()}`;
+};
+
+const downloadPdf = (lang) => {
+  const url = buildPdfUrl(lang);
+
+  // Agar Telegram mini app muhitida bo'lsak, ularning openLink API'sidan foydalanamiz
+  const tg = window.Telegram && window.Telegram.WebApp;
+  if (tg && typeof tg.openLink === "function") {
+    tg.openLink(url);
     return;
   }
 
-  try {
-    const response = await axios.get(`${proxy.$locale}/v1/resume-create/pdf`, {
-      params: { lang },
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/pdf",
-      },
-      responseType: "blob",
-    });
-
-    const blob = new Blob([response.data], { type: "application/pdf" });
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.target = "_blank";
-    link.download = `resume-${lang}.pdf`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    window.URL.revokeObjectURL(url);
-  } catch (e) {
-    console.error("❌ resume-create pdf download error:", e.response?.data || e.message);
+  // Mobil brauzerlar uchun eng ishonchli usul — to'g'ridan-to'g'ri redirect
+  if (typeof navigator !== "undefined" && /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+    window.location.href = url;
+    return;
   }
+
+  // Desktopda yangi tabda ochamiz
+  window.open(url, "_blank");
 };
 
 const goBackHome = () => {
