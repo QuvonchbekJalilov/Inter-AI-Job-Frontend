@@ -1843,18 +1843,15 @@ const downloadDocx = (lang) => {
     return;
   }
 
-  // DOCX faylini Telegram chatga yuborish
-  const url = `${proxy.$locale}/v1/resume-create/docx/send-to-telegram?lang=${encodeURIComponent(
-    lang
-  )}&token=${encodeURIComponent(token)}`;
-
+  // DOCX faylini Telegram chatga yuborish (backend tavsiya qilgan ko'rinishda)
   axios
     .post(
-      url,
-      {},
+      `${proxy.$locale}/v1/resume-create/docx/send-to-telegram`,
+      null,
       {
-        headers: {
-          Accept: "application/json",
+        params: {
+          lang,
+          token,
         },
       }
     )
