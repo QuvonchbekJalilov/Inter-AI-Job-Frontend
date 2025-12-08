@@ -1745,49 +1745,33 @@ const buildPdfUrl = (lang) => {
 };
 
 const downloadPdf = (lang) => {
-  const tg = window.Telegram && window.Telegram.WebApp;
-
-  // Telegram mini-app ichida: PDF'ni bot orqali chatga yuboramiz
-  if (tg && typeof tg.initDataUnsafe !== "undefined") {
-    const token = localStorage.getItem("token") || sessionStorage.getItem("token") || "";
-    if (!token) {
-      toast.error("Token topilmadi. Iltimos, qayta kiring.");
-      return;
-    }
-
-    const url = `${proxy.$locale}/v1/resume-create/pdf/send-to-telegram?lang=${encodeURIComponent(
-      lang
-    )}&token=${encodeURIComponent(token)}`;
-
-    axios
-      .post(
-        url,
-        {},
-        {
-          headers: {
-            Accept: "application/json",
-          },
-        }
-      )
-      .then(() => {
-        toast.success("PDF Telegram chatga yuborildi. Chatdan yuklab olishingiz mumkin.");
-      })
-      .catch((e) => {
-        console.error("❌ send-to-telegram error:", e.response?.data || e.message);
-        toast.error("PDFni Telegram chatga yuborishda xatolik yuz berdi.");
-      });
-
+  const token = localStorage.getItem("token") || sessionStorage.getItem("token") || "";
+  if (!token) {
+    toast.error("Token topilmadi. Iltimos, qayta kiring.");
     return;
   }
 
-  // Oddiy web (desktop + mobil brauzer): avvalgidek to'g'ridan‑to'g'ri PDF yuklab olish
-  const url = buildPdfUrl(lang);
+  const url = `${proxy.$locale}/v1/resume-create/pdf/send-to-telegram?lang=${encodeURIComponent(
+    lang
+  )}&token=${encodeURIComponent(token)}`;
 
-  if (typeof navigator !== "undefined" && /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-    window.location.href = url;
-  } else {
-    window.open(url, "_blank");
-  }
+  axios
+    .post(
+      url,
+      {},
+      {
+        headers: {
+          Accept: "application/json",
+        },
+      }
+    )
+    .then(() => {
+      toast.success("PDF Telegram chatga yuborildi. Chatdan yuklab olishingiz mumkin.");
+    })
+    .catch((e) => {
+      console.error("❌ send-to-telegram error:", e.response?.data || e.message);
+      toast.error("PDFni Telegram chatga yuborishda xatolik yuz berdi.");
+    });
 };
 
 const goBackHome = () => {
