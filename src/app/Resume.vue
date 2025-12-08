@@ -1728,19 +1728,30 @@ const removePhoto = async () => {
   }
 };
 
-const buildPdfUrl = (lang) => {
-  const token = localStorage.getItem("token") || sessionStorage.getItem("token") || "";
+const buildPdfUrl = (lang, withToken = false) => {
   const base = `${proxy.$locale}/v1/resume-create/pdf`;
   const params = new URLSearchParams({ lang });
-  if (token) params.append("token", token);
-  return `${base}?${params.toString()}`;
+
+  // Token faqat Telegram mini‑app yoki alohida holatlarda kerak;
+  // oddiy brauzerda cookie orqali auth ishlaydi, query-token yubormaymiz.
+  if (withToken) {
+    const token = localStorage.getItem("token") || sessionStorage.getItem("token") || "";
+    if (token) {
+      params.append("token", token);
+    }
+  }
+
+  const query = params.toString();
+  return query ? `${base}?${query}` : base;
 };
 
 const downloadPdf = (lang) => {
-  const url = buildPdfUrl(lang);
+  const tg = window.Telegram && window.Telegram.WebApp;
+
+  // Telegram mini‑app: token query kerak bo'ladi
+  const url = buildPdfUrl(lang, !!tg);
 
   // Agar Telegram mini app muhitida bo'lsak, ularning openLink API'sidan foydalanamiz
-  const tg = window.Telegram && window.Telegram.WebApp;
   if (tg && typeof tg.openLink === "function") {
     tg.openLink(url);
     return;
