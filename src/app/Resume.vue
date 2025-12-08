@@ -1743,47 +1743,31 @@ const buildPdfUrl = (lang) => {
   return query ? `${base}?${query}` : base;
 };
 
-const downloadPdf = async (lang) => {
+const downloadPdf = (lang) => {
+  const url = buildPdfUrl(lang);
   const tg = window.Telegram && window.Telegram.WebApp;
 
-  // Telegram mini‑app ichida: axios + blob orqali ochamiz,
-  // chunki openLink orqali ketganda ba'zi hollarda token query yo'qolishi mumkin.
-  if (tg && typeof tg.initDataUnsafe !== "undefined") {
-    const token = localStorage.getItem("token") || sessionStorage.getItem("token");
-    if (!token) {
-      console.error("❌ No auth token found for Telegram PDF download");
-      return;
-    }
-
+  // Telegram Mini App: downloadFile orqali
+  if (tg && typeof tg.downloadFile === "function") {
     try {
-      const url = `${proxy.$locale}/v1/resume-create/pdf?lang=${encodeURIComponent(lang)}`;
-      const response = await axios.get(url, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/pdf",
+      tg.downloadFile(
+        {
+          url,
+          file_name: `resume-${lang}.pdf`,
         },
-        responseType: "blob",
-      });
-
-      const blob = new Blob([response.data], { type: "application/pdf" });
-      const objectUrl = window.URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = objectUrl;
-      link.target = "_blank";
-      link.download = `resume-${lang}.pdf`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(objectUrl);
+        () => {
+          // callback required by API, lekin hozircha hech narsa qilmaymiz
+        }
+      );
     } catch (e) {
-      console.error("❌ Telegram PDF download error:", e.response?.data || e.message);
+      console.error("❌ Telegram downloadFile error:", e);
+      // fallback sifatida brauzerda ochib ko'ramiz
+      window.open(url, "_blank");
     }
     return;
   }
 
   // Oddiy web (desktop + mobil brauzer): token'li URL ni to'g'ridan‑to'g'ri ochamiz
-  const url = buildPdfUrl(lang);
-
   if (typeof navigator !== "undefined" && /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
     window.location.href = url;
   } else {
