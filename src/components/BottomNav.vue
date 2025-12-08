@@ -63,7 +63,7 @@
       </RouterLink>
 
       <!-- Mock Interview -->
-      <RouterLink
+      <!-- <RouterLink
         :to="{ name: 'mockInterview' }"
         class="flex-1 flex items-center justify-center mx-3"
       >
@@ -90,7 +90,7 @@
             />
           </svg>
         </div>
-      </RouterLink>
+      </RouterLink> -->
 
       <!-- Profile -->
       <RouterLink

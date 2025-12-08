@@ -1247,6 +1247,7 @@
 import { computed, onMounted, reactive, ref, getCurrentInstance } from "vue";
 import { useRouter } from "vue-router";
 import axios from "axios";
+import { toast } from "vue3-toastify";
 import { useI18n } from "@/i18n-lite.js";
 
 const router = useRouter();
@@ -1744,30 +1745,44 @@ const buildPdfUrl = (lang) => {
 };
 
 const downloadPdf = (lang) => {
-  const url = buildPdfUrl(lang);
   const tg = window.Telegram && window.Telegram.WebApp;
 
-  // Telegram Mini App: downloadFile orqali
-  if (tg && typeof tg.downloadFile === "function") {
-    try {
-      tg.downloadFile(
-        {
-          url,
-          file_name: `resume-${lang}.pdf`,
-        },
-        () => {
-          // callback required by API, lekin hozircha hech narsa qilmaymiz
-        }
-      );
-    } catch (e) {
-      console.error("❌ Telegram downloadFile error:", e);
-      // fallback sifatida brauzerda ochib ko'ramiz
-      window.open(url, "_blank");
+  // Telegram mini-app ichida: PDF'ni bot orqali chatga yuboramiz
+  if (tg && typeof tg.initDataUnsafe !== "undefined") {
+    const token = localStorage.getItem("token") || sessionStorage.getItem("token") || "";
+    if (!token) {
+      toast.error("Token topilmadi. Iltimos, qayta kiring.");
+      return;
     }
+
+    const url = `${proxy.$locale}/v1/resume-create/pdf/send-to-telegram?lang=${encodeURIComponent(
+      lang
+    )}&token=${encodeURIComponent(token)}`;
+
+    axios
+      .post(
+        url,
+        {},
+        {
+          headers: {
+            Accept: "application/json",
+          },
+        }
+      )
+      .then(() => {
+        toast.success("PDF Telegram chatga yuborildi. Chatdan yuklab olishingiz mumkin.");
+      })
+      .catch((e) => {
+        console.error("❌ send-to-telegram error:", e.response?.data || e.message);
+        toast.error("PDFni Telegram chatga yuborishda xatolik yuz berdi.");
+      });
+
     return;
   }
 
-  // Oddiy web (desktop + mobil brauzer): token'li URL ni to'g'ridan‑to'g'ri ochamiz
+  // Oddiy web (desktop + mobil brauzer): avvalgidek to'g'ridan‑to'g'ri PDF yuklab olish
+  const url = buildPdfUrl(lang);
+
   if (typeof navigator !== "undefined" && /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
     window.location.href = url;
   } else {
