@@ -128,7 +128,8 @@
 
         <div class="bg-white border border-gray-200 rounded-2xl p-6">
           <h2 class="text-lg font-medium mb-4 flex items-center gap-2 text-black">
-            <span>📄</span> {{ translations.resumes?.title }}
+<!--            <span>📄</span> {{ translations.resumes?.title }}-->
+            <span>📄</span> {{ translations.category }}
           </h2>
           <div class="flex items-center justify-between">
             <div class="text-sm text-gray-500">
@@ -137,7 +138,7 @@
                 {{ user?.resumes?.[0]?.title  }}
               </span>
             </div>
-            <span class="px-3 py-1 bg-green-100 text-green-600 rounded-full text-xs">{{ translations.resumes?.status_active }}</span>
+<!--            <span class="px-3 py-1 bg-green-100 text-green-600 rounded-full text-xs">{{ translations.resumes?.status_active }}</span>-->
           </div>
 <!--          <button-->
 <!--              type="button"-->
@@ -274,9 +275,9 @@
               ></div>
             </div>
 
-            <h3 class="text-2xl sm:text-lg font-medium mb-4 text-gray-900">
-              {{ translations.plan?.title }} 
-            </h3>
+<!--            <h3 class="text-2xl sm:text-lg font-medium mb-4 text-gray-900">-->
+<!--              {{ translations.plan?.title }} -->
+<!--            </h3>-->
 
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               <div

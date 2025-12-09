@@ -2,6 +2,8 @@
   "salom": "Привет",
   "chat": "Чаты",
   "search": "Поиск",
+  "category": "Категория",
+  "selected_category": "Выберите категорию",
   "all_information": "Получить больше информации: ",
   "working_status": "Current Status",
   "job_search": "Ищу работу",

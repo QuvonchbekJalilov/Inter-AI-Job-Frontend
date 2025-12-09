@@ -2,6 +2,8 @@
   "salom": "Hello",
   "chat": "Chats",
   "search": "Search",
+  "category": "Category",
+  "selected_category": "Select a category",
   "all_information": "Get more information: ",
   "working_status": "Current Status",
   "job_search": "Looking for a job",
