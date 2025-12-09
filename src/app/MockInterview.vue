@@ -1,747 +1,227 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-10">
-    <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-xl p-8">
-      <h1 class="text-3xl font-bold text-gray-800 mb-2">
-        Real-time PHP/Laravel Interview
-      </h1>
-      <p class="text-gray-600 mb-6">Voice Interview with AI - O'zbek tilida</p>
+  <div class="min-h-dvh bg-gradient-to-br from-slate-50 to-indigo-50">
+    <div class="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 sm:py-10">
 
-      <!-- Candidate Info Form -->
-      <div v-if="!isRecording && messages.length === 0" class="mb-6 p-4 bg-gray-50 rounded-lg">
-        <h3 class="text-lg font-semibold mb-3">Kandidat ma'lumotlari</h3>
-        <div class="grid grid-cols-2 gap-4">
-          <input
-            v-model="candidateInfo.name"
-            type="text"
-            placeholder="Ism familiya"
-            class="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-          />
-          <input
-            v-model="candidateInfo.position"
-            type="text"
-            placeholder="Lavozim"
-            class="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-          />
-        </div>
+      <!-- Header -->
+      <div class="mb-6 sm:mb-8">
+        <h1 class="text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl">
+          Suhbatlar
+        </h1>
+        <p class="mt-1 text-sm text-slate-600 sm:text-base">
+          Kerakli suhbatni tanlang va tayyorgarlikni boshlang.
+        </p>
       </div>
 
-      <!-- Status Bar -->
-      <div class="mb-6 p-4 bg-gray-50 rounded-lg">
-        <div class="flex items-center justify-between flex-wrap gap-2">
-          <div class="flex items-center gap-4">
-            <div>
-              <span class="text-sm text-gray-600">Status: </span>
-              <span
-                class="font-semibold"
-                :class="{
-                  'text-green-600': status === 'recording',
-                  'text-blue-600': status === 'connected',
-                  'text-yellow-600': status === 'connecting',
-                  'text-red-600': status.includes('error'),
-                  'text-gray-600': status === 'idle',
-                }"
-              >
-                {{ status }}
-              </span>
-            </div>
-            <div v-if="isAISpeaking" class="flex items-center gap-2">
-              <div class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
-              <span class="text-sm text-red-600 font-semibold">AI gapirmoqda</span>
-            </div>
-            <div v-if="isUserListening" class="flex items-center gap-2">
-              <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-              <span class="text-sm text-green-600 font-semibold">Siz gapiryapsiz (STT)</span>
-            </div>
-          </div>
-          <div class="text-sm text-gray-600">
-            Savollar: {{ questionCount }} | Javoblar: {{ answerCount }}
-          </div>
-        </div>
+      <!-- Resume tekshirilyapti -->
+      <div v-if="loadingResume" class="text-center py-20">
+        <div class="animate-spin h-8 w-8 border-4 border-indigo-400 border-t-transparent rounded-full mx-auto"></div>
+        <p class="mt-4 text-slate-600">Ma'lumotlar yuklanmoqda...</p>
       </div>
 
-      <!-- Control Buttons -->
-      <div class="flex gap-4 mb-6">
-        <button
-          @click="toggleInterview"
-          :disabled="status === 'connecting' || (!candidateInfo.name && !isRecording)"
-          class="flex items-center gap-2 px-6 py-3 rounded-lg text-white font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-          :class="isRecording ? 'bg-red-600 hover:bg-red-700' : 'bg-green-600 hover:bg-green-700'"
-        >
-          <svg v-if="!isRecording" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-            <path
-              fill-rule="evenodd"
-              d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z"
-              clip-rule="evenodd"
-            />
-          </svg>
-          <svg v-else class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-            <path
-              fill-rule="evenodd"
-              d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1V8a1 1 0 00-1-1H8z"
-              clip-rule="evenodd"
-            />
-          </svg>
-          {{ isRecording ? "Intervyuni To'xtatish" : "Intervyuni Boshlash" }}
-        </button>
+      <!-- Resume yo‘q -->
+      <div v-else-if="!hasResume" class="text-center py-20">
+        <h2 class="text-xl font-bold mb-2">Resume topilmadi</h2>
+        <p class="text-slate-600 mb-6">Mock interview boshlash uchun resume yuklashingiz kerak.</p>
 
-        <button
-          @click="manualSave"
-          :disabled="messages.length === 0 || isSaving"
-          class="flex items-center gap-2 px-6 py-3 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-            <path
-              d="M7.707 10.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V6h5a2 2 0 012 2v7a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2h5v5.586l-1.293-1.293zM9 4a1 1 0 012 0v2H9V4z"
-            />
-          </svg>
-          {{ isSaving ? "Saqlanmoqda..." : "Saqlash" }}
+        <button @click="goResumeBuilder"
+          class="px-6 py-3 bg-indigo-600 text-white rounded-xl font-semibold hover:bg-indigo-700 active:scale-95">
+          Resume tayyorlash
         </button>
       </div>
 
-      <!-- Current Speaking / STT Preview -->
-      <div v-if="currentTranscript" class="mb-4 p-4 bg-blue-50 border-l-4 border-blue-500 rounded">
-        <div class="flex items-start gap-2">
-          <div class="w-2 h-2 bg-blue-600 rounded-full mt-2 animate-pulse"></div>
-          <div>
-            <p class="text-xs text-blue-600 font-semibold mb-1">
-              {{ isAISpeaking ? "AI gapirmoqda..." : isUserListening ? "Siz gapiryapsiz..." : "Matn" }}
+      <!-- Agar resume bor bo‘lsa, Generate Interview button chiqadi -->
+      <div v-else class="mb-8">
+        <button v-if="pendingCount === 0" @click="generateInterview"
+          class="px-6 py-3 bg-slate-900 text-white rounded-xl font-semibold hover:bg-slate-800 active:scale-95">
+          🎯 Yangi Mock Interview yaratish
+        </button>
+
+        <!-- Progress (ixtiyoriy) -->
+        <div v-if="generating" class="mt-4">
+          <div class="w-full bg-slate-200 rounded-full h-4">
+            <div class="bg-indigo-600 h-4 rounded-full transition-all duration-300" :style="{ width: progress + '%' }">
+            </div>
+          </div>
+
+          <p class="text-indigo-700 text-sm text-center mt-2">
+            Savollar generatsiya qilinmoqda... {{ progress }}%
+          </p>
+        </div>
+      </div>
+
+
+      <!-- Interview cards -->
+      <div v-if="cards.length > 0" class="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+        <article v-for="c in cards" :key="c.id"
+          class="relative overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-black/5 transition hover:shadow-md">
+
+          <!-- Left highlight bar -->
+          <div class="absolute left-0 top-0 h-full w-1.5 bg-indigo-600"></div>
+
+          <div class="p-4 pl-6 sm:p-6 sm:pl-7">
+            <div class="flex items-start justify-between gap-3">
+              <div class="flex items-center gap-2">
+                <span
+                  class="inline-flex items-center rounded-full bg-indigo-50 px-3 py-1 text-[11px] font-semibold text-indigo-700 ring-1 ring-indigo-200 sm:text-xs">
+                  {{ c.tag }}
+                </span>
+
+                <span
+                  class="inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-semibold ring-1 sm:text-xs"
+                  :class="c.status === 'completed'
+                    ? 'bg-emerald-50 text-emerald-700 ring-emerald-200'
+                    : 'bg-amber-50 text-amber-700 ring-amber-200'">
+                  {{ c.status === 'completed' ? "Yakunlangan" : "Kutilmoqda" }}
+                </span>
+              </div>
+
+              <div class="flex items-center gap-2 text-xs text-slate-600 sm:text-sm">
+                <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path
+                    d="M8 3v3M16 3v3M4.5 9.5h15M6.5 21h11A2 2 0 0 0 19.5 19V7A2 2 0 0 0 17.5 5h-11A2 2 0 0 0 4.5 7v12A2 2 0 0 0 6.5 21Z"
+                    stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <span class="font-medium whitespace-nowrap">{{ c.date }}</span>
+              </div>
+            </div>
+
+            <p class="mt-4 text-sm leading-relaxed text-slate-700 sm:mt-5 sm:text-[15px]">
+              {{ c.text }}
             </p>
-            <p class="text-gray-700">{{ currentTranscript }}</p>
-          </div>
-        </div>
-      </div>
 
-      <!-- Messages Display -->
-      <div class="bg-gray-50 rounded-lg p-6 h-96 overflow-y-auto" ref="messagesContainer">
-        <div v-if="messages.length === 0" class="text-center text-gray-400 mt-20">
-          <svg class="w-12 h-12 mx-auto mb-4 opacity-50" fill="currentColor" viewBox="0 0 20 20">
-            <path
-              fill-rule="evenodd"
-              d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z"
-              clip-rule="evenodd"
-            />
-          </svg>
-          <p>"Intervyuni Boshlash" tugmasini bosing</p>
-        </div>
+            <div class="mt-5 flex flex-col gap-3 sm:mt-6 sm:flex-row sm:gap-4">
+              <button v-if="c.status !== 'completed'"
+                class="h-11 w-full rounded-xl bg-slate-900 px-4 text-sm font-semibold text-white shadow-sm hover:bg-slate-800 active:scale-[0.99] sm:h-12 sm:flex-1"
+                @click="goPreparation(c)">
+                Tayyorgarlik
+              </button>
 
-        <div v-else class="space-y-4">
-          <div
-            v-for="(msg, i) in messages"
-            :key="i"
-            class="flex"
-            :class="msg.role === 'user' ? 'justify-end' : 'justify-start'"
-          >
-            <div
-              class="max-w-[80%] p-4 rounded-lg"
-              :class="msg.role === 'user' ? 'bg-blue-600 text-white' : 'bg-white text-gray-800 shadow'"
-            >
-              <p class="text-xs opacity-75 mb-1">
-                {{ msg.role === "user" ? "Siz" : "Intervyuer" }}
-              </p>
-              <p class="whitespace-pre-wrap">{{ msg.text }}</p>
-              <p class="text-xs opacity-75 mt-2">
-                {{ formatTime(msg.timestamp) }}
-              </p>
+              <button v-else
+                class="h-11 w-full rounded-xl bg-emerald-600 px-4 text-sm font-semibold text-white shadow-sm hover:bg-emerald-700 active:scale-[0.99] sm:h-12 sm:flex-1"
+                @click="goResult(c)">
+                Natija
+              </button>
             </div>
           </div>
-        </div>
+        </article>
       </div>
 
-      <div v-if="saveSuccess" class="mt-4 p-4 bg-green-50 border-l-4 border-green-500 rounded">
-        <p class="text-green-700 font-semibold">✓ Interview muvaffaqiyatli saqlandi!</p>
-      </div>
-
-      <div v-if="saveError" class="mt-4 p-4 bg-red-50 border-l-4 border-red-500 rounded">
-        <p class="text-red-700 font-semibold">✗ Xatolik: {{ saveError }}</p>
-      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-  import { ref, nextTick } from "vue";
-  
-  const GEMINI_API_KEY =
-    import.meta.env.VITE_GEMINI_API_KEY ||
-    "AIzaSyA7B3PoALp4-q1tJ8CRQplD1YHvvv9V4DU"; // prod’da .env dan ol
-  
-  const BACKEND_URL = "http://localhost:8000/api/interviews";
-  
-  // === STATE ===
-  const messages = ref([]);
-  const isRecording = ref(false);
-  const status = ref("idle");
-  const currentTranscript = ref("");
-  const isSaving = ref(false);
-  const saveSuccess = ref(false);
-  const saveError = ref("");
-  const candidateInfo = ref({
-    name: "",
-    position: "PHP/Laravel Developer",
+import { ref, onMounted } from "vue";
+import { useRouter, useRoute } from "vue-router";
+
+const router = useRouter();
+
+// State
+const loadingResume = ref(true);
+const hasResume = ref(false);
+const cards = ref([]);
+const pendingCount = ref(0);
+
+// generation
+const generating = ref(false);
+const progress = ref(0);
+
+// token for auth
+const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+const API_BASE = "/api"; // kerak bo‘lsa o‘zgartiriladi
+
+// PAGE LOAD
+onMounted(async () => {
+  await checkResume();
+  if (hasResume.value) {
+    await fetchInterviews();
+  }
+});
+
+// ========================
+// 1️⃣ Resume Eligibility Check
+// ========================
+async function checkResume() {
+  const res = await fetch(`${API_BASE}/v1/check-resume-eligibility`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    }
   });
-  
-  const questionCount = ref(0);
-  const answerCount = ref(0);
-  const isAISpeaking = ref(false);
-  const isUserListening = ref(false);
-  const messagesContainer = ref(null);
-  
-  // STT holati (debug uchun)
-  const speechSupported = ref(true);
-  const sttStatus = ref("");
-  
-  // === INTERNAL ===
-  let ws = null;
-  let playbackCtx = null;
-  let playbackTime = 0;
-  let interviewStartTime = null;
-  let interviewTimeoutId = null;
-  let lastAssistantAt = 0;
-  let lastUserAt = 0;
-  let aiSpeakingTimeout = null;
-  
-  // browser SpeechRecognition
-  let recognition = null;
-  let recognitionFinalText = "";
-  
-  // === UTIL ===
-  function formatTime(date) {
-    return new Date(date).toLocaleTimeString("uz-UZ");
-  }
-  
-  function scrollToBottom() {
-    nextTick(() => {
-      if (messagesContainer.value) {
-        messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
-      }
-    });
-  }
-  
-  // === MESSAGES ===
-  function addMessage(role, text) {
-    if (!text || text.trim().length === 0) return;
-  
-    const now = Date.now();
-    const trimmed = text.trim();
-    const list = [...messages.value];
-    const last = list[list.length - 1];
-  
-    if (role === "assistant") {
-      if (last && last.role === "assistant" && now - lastAssistantAt < 800) {
-        last.text += " " + trimmed;
-        list[list.length - 1] = last;
-      } else {
-        list.push({ role, text: trimmed, timestamp: new Date() });
-        if (trimmed.includes("?")) {
-          questionCount.value++;
-          console.log("📊 Savol #" + questionCount.value);
-        }
-      }
-      lastAssistantAt = now;
-    } else if (role === "user") {
-      if (last && last.role === "user" && now - lastUserAt < 1500) {
-        last.text += " " + trimmed;
-        list[list.length - 1] = last;
-      } else {
-        list.push({ role, text: trimmed, timestamp: new Date() });
-        answerCount.value++;
-        console.log("📊 Javob #" + answerCount.value);
-      }
-      lastUserAt = now;
-    } else {
-      list.push({ role, text: trimmed, timestamp: new Date() });
-    }
-  
-    messages.value = list;
-    scrollToBottom();
-    checkInterviewCompletion();
-  }
-  
-  function checkInterviewCompletion() {
-    if (questionCount.value >= 5 && answerCount.value >= 5) {
-      console.log("✅ Intervyu yakunlandi (5/5)!");
-      setTimeout(() => {
-        saveInterview(true);
-        stopInterview();
-      }, 2000);
-    }
-  }
-  
-  // === AUDIO PLAYBACK (Gemini output) ===
-  function base64ToBytes(b64) {
-    const raw = atob(b64);
-    const arr = new Uint8Array(raw.length);
-    for (let i = 0; i < raw.length; i++) {
-      arr[i] = raw.charCodeAt(i);
-    }
-    return arr;
-  }
-  
-  async function bufferAudio(base64PCM) {
-    if (!playbackCtx || !base64PCM) return;
-  
-    try {
-      const bytes = base64ToBytes(base64PCM);
-      if (!bytes.byteLength) return;
-  
-      const int16 = new Int16Array(
-        bytes.buffer,
-        bytes.byteOffset,
-        bytes.byteLength / 2
-      );
-      const float32 = new Float32Array(int16.length);
-  
-      for (let i = 0; i < int16.length; i++) {
-        float32[i] = int16[i] / 32768.0;
-      }
-  
-      const sampleRate = 24000;
-      const audioBuffer = playbackCtx.createBuffer(1, float32.length, sampleRate);
-      audioBuffer.getChannelData(0).set(float32);
-  
-      const source = playbackCtx.createBufferSource();
-      source.buffer = audioBuffer;
-      source.connect(playbackCtx.destination);
-  
-      const now = playbackCtx.currentTime;
-      const startAt = Math.max(now, playbackTime);
-  
-      isAISpeaking.value = true;
-      if (aiSpeakingTimeout) clearTimeout(aiSpeakingTimeout);
-      source.onended = () => {
-        aiSpeakingTimeout = setTimeout(() => {
-          isAISpeaking.value = false;
-          // AI gapirib bo'ldi → endi userni eshitamiz
-          startUserListening();
-        }, 500);
-      };
-  
-      source.start(startAt);
-      playbackTime = startAt + audioBuffer.duration;
-    } catch (e) {
-      console.error("Audio playback error:", e);
-    }
-  }
-  
-  // === BROWSER STT (UZ) ===
-  function initRecognition() {
-    const SR =
-      window.SpeechRecognition || window.webkitSpeechRecognition || null;
-  
-    if (!SR) {
-      console.warn("SpeechRecognition qo'llab-quvvatlanmaydi");
-      speechSupported.value = false;
-      sttStatus.value =
-        "Brauzeringiz STT ni qo'llamaydi. Iltimos Chrome/Edge va HTTPS yoki localhost'dan foydalaning.";
-      return null;
-    }
-  
-    speechSupported.value = true;
-  
-    const rec = new SR();
-    rec.lang = "uz-UZ"; // brauzer support bullying, lekin shunday turadi
-    rec.interimResults = true;
-    rec.continuous = false;
-    return rec;
-  }
-  
-  function startUserListening() {
-    if (isUserListening.value) return;
-  
-    if (!recognition) {
-      recognition = initRecognition();
-      if (!recognition) return;
-  
-      recognition.onstart = () => {
-        console.log("🎤 STT boshlandi");
-        isUserListening.value = true;
-        currentTranscript.value = "";
-        recognitionFinalText = "";
-        sttStatus.value = "STT ishga tushdi, gapiring...";
-      };
-  
-      recognition.onresult = (event) => {
-        let interim = "";
-        let final = "";
-        for (let i = 0; i < event.results.length; i++) {
-          const res = event.results[i];
-          if (res.isFinal) final += res[0].transcript;
-          else interim += res[0].transcript;
-        }
-        if (final) recognitionFinalText = final;
-        currentTranscript.value = final || interim;
-        sttStatus.value =
-          "STT natija: " + (final || interim || "").substring(0, 80);
-      };
-  
-      recognition.onerror = (e) => {
-        console.error("STT error:", e);
-        sttStatus.value = "STT xato: " + e.error;
-      };
-  
-      recognition.onend = () => {
-        console.log("🎤 STT tugadi:", recognitionFinalText);
-        isUserListening.value = false;
-  
-        if (recognitionFinalText && recognitionFinalText.trim().length > 2) {
-          const txt = recognitionFinalText.trim();
-          addMessage("user", txt);
-          sendUserTurnToGemini(txt);
-        } else {
-          sttStatus.value = "Hech narsa tanilmadi, yana harakat qilib ko'ring.";
-        }
-  
-        recognitionFinalText = "";
-        currentTranscript.value = "";
-      };
-    }
-  
-    recognitionFinalText = "";
-    try {
-      recognition.start();
-    } catch (e) {
-      console.warn("STT start error (ehtimol allaqachon ishlayapti):", e);
-    }
-  }
-  
-  // === GEMINI WS HANDLING ===
-  async function handleWSMessage(event) {
-    let text;
-    if (typeof event.data === "string") {
-      text = event.data;
-    } else if (event.data instanceof Blob) {
-      text = await event.data.text();
-    } else if (event.data instanceof ArrayBuffer) {
-      text = new TextDecoder("utf-8").decode(event.data);
-    } else {
-      return;
-    }
-  
-    let data;
-    try {
-      data = JSON.parse(text);
-    } catch (e) {
-      console.error("JSON parse error:", e);
-      return;
-    }
-  
-    if (data.setupComplete !== undefined) {
-      console.log("✅ Gemini setupComplete");
-      // birinchi bo'lib AI salomlashadi
-      sendInitialPrompt();
-      return;
-    }
-  
-    if (data.serverContent) {
-      const sc = data.serverContent;
-  
-      // AI javobi
-      if (sc.modelTurn) {
-        if (sc.modelTurn.parts) {
-          let fullTxt = "";
-          for (const part of sc.modelTurn.parts) {
-            if (part.text) {
-              fullTxt += part.text;
-            }
-            if (part.inlineData && part.inlineData.mimeType) {
-              if (part.inlineData.mimeType.startsWith("audio/pcm")) {
-                await bufferAudio(part.inlineData.data);
-              }
-            }
-          }
-          if (fullTxt) {
-            currentTranscript.value = fullTxt;
-          }
-        }
-  
-        if (sc.modelTurn.turnComplete && currentTranscript.value) {
-          addMessage("assistant", currentTranscript.value);
-          currentTranscript.value = "";
-        }
-      }
-  
-      // inputTranscription’ni ishlatmaymiz (STTni o'zimiz qilamiz)
-      return;
-    }
-  
-    // fallback (odatda kerak bo'lmaydi)
-    if (data.inputTranscription && data.inputTranscription.text) {
-      addMessage("user", data.inputTranscription.text);
-      return;
-    }
-    if (data.outputTranscription && data.outputTranscription.text) {
-      addMessage("assistant", data.outputTranscription.text);
-      return;
-    }
-  }
-  
-  // === USER → GEMINI (kandidat javobi) ===
-  function sendUserTurnToGemini(text) {
-    if (!ws || ws.readyState !== WebSocket.OPEN) return;
-  
-    const payloadText = `Bu kandidatning navbatdagi javobi (o'zbek tilida, lotin yozuvida):
-  
-  "${text}"
-  
-  Iltimos, shu javob mazmuniga mos ravishda PHP/Laravel bo'yicha navbatdagi bitta savol bering. 
-  Savolingiz juda qisqa bo'lsin (1–2 gap), va takroriy umumiy savollar bermang.`;
-  
-    ws.send(
-      JSON.stringify({
-        clientContent: {
-          turns: [
-            {
-              role: "user",
-              parts: [{ text: payloadText }],
-            },
-          ],
-          turnComplete: true,
-        },
-      })
-    );
-  }
-  
-  // birinchi trigger: “Intervyuni boshlang”
-  function sendInitialPrompt() {
-    if (!ws || ws.readyState !== WebSocket.OPEN) return;
-    console.log("🚀 Boshlang'ich prompt yuborilmoqda...");
-    ws.send(
-      JSON.stringify({
-        clientContent: {
-          turns: [
-            {
-              role: "user",
-              parts: [{ text: "Intervyuni hozir boshlang." }],
-            },
-          ],
-          turnComplete: true,
-        },
-      })
-    );
-  }
-  
-  // === INTERVIEW CONTROL ===
-  async function startInterview() {
-    if (!candidateInfo.value.name) {
-      alert("Iltimos, ismingizni kiriting!");
-      return;
-    }
-  
-    status.value = "connecting";
-    messages.value = [];
-    currentTranscript.value = "";
-    saveSuccess.value = false;
-    saveError.value = "";
-    questionCount.value = 0;
-    answerCount.value = 0;
-    isAISpeaking.value = false;
-    isUserListening.value = false;
-    interviewStartTime = new Date();
-    lastAssistantAt = 0;
-    lastUserAt = 0;
-  
-    const WS_URL = `wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContent?key=${encodeURIComponent(
-      GEMINI_API_KEY
-    )}`;
-  
-    ws = new WebSocket(WS_URL);
-  
-    ws.onopen = () => {
-      console.log("🌐 WebSocket connected");
-      status.value = "connected";
-  
-      playbackCtx = new (window.AudioContext || window.webkitAudioContext)({
-        sampleRate: 24000,
-        latencyHint: "interactive",
-      });
-      playbackCtx.resume();
-      playbackTime = playbackCtx.currentTime;
-  
-      interviewTimeoutId = setTimeout(() => {
-        console.log("⏰ 10 daqiqa tugadi");
-        saveInterview(true);
-        stopInterview();
-      }, 10 * 60 * 1000);
-  
-      const systemText = `Siz professional PHP/Laravel bo'yicha SENIOR darajadagi texnik intervyuer rolidasiz.
-  Kandidat: "${candidateInfo.value.name}".
-  
-  QOIDALAR:
-  - FAQAT o'zbek tilida gapiring (lotin yozuvida).
-  - Har bir javobingiz 1–2 gapdan oshmasin.
-  - Tabiiy, muloyim ohangda gapiring.
-  
-  INTERVYUNI BOSHLASH:
-  Intervyuni quyidagi gap bilan boshlang (buni o'zgartirmang):
-  
-  "Assalomu alaykum, ${candidateInfo.value.name}. PHP va Laravel bo'yicha texnik suhbatga xush kelibsiz. Iltimos, o'zingiz haqingizda qisqacha gapirib bering."
-  
-  SAVOL STRATEGIYASI:
-  - Jami ANIQ 5 TA asosiy savol bering.
-  - Har xabarda faqat 1 ta savol bering.
-  - Mavzular: PHP, Laravel, MySQL, HTTP, REST API, dizayn patternlar, real project tajribasi.
-  - HAR DOIM yangi savolni kandidatning oxirgi JAVOBIGA mos qilib bering.
-  - Bir xil savolni takrorlamang, umumiy gap bilan cheklanib qolmang.
-  
-  USER JAVOBI:
-  - Kandidatning har bir javobi sizga matn ko'rinishida keladi.
-  - Siz shu matnga qarab, qisqa fikr bildirishingiz mumkin (1 gap), keyin navbatdagi savolni bering.
-  
-  YAKUN:
-  - 5-savoldan keyin qisqacha xulosa bering.
-  - Yakunda shunday deng:
-  "Rahmat, ${candidateInfo.value.name}. Intervyu shu yerda yakunlandi. Sizga omad tilayman."`;
-  
-      ws.send(
-        JSON.stringify({
-          setup: {
-            model: "models/gemini-2.0-flash-exp",
-            generationConfig: {
-              responseModalities: ["AUDIO"],
-              maxOutputTokens: 200,
-              temperature: 0.7,
-              speechConfig: {
-                voiceConfig: {
-                  prebuiltVoiceConfig: {
-                    voiceName: "Charon", // xohlasang boshqasiga almashtirasan
-                  },
-                },
-              },
-            },
-            systemInstruction: {
-              role: "user",
-              parts: [{ text: systemText }],
-            },
-            // STTni GEMINI tomonda ishlatmaymiz – hammasini text bilan boshqaramiz
-            realtimeInputConfig: {
-              automaticActivityDetection: {},
-            },
-          },
-        })
-      );
-    };
-  
-    ws.onmessage = handleWSMessage;
-  
-    ws.onerror = (error) => {
-      console.error("❌ WebSocket error:", error);
-      status.value = "error: connection failed";
-    };
-  
-    ws.onclose = (ev) => {
-      console.log("🔌 WebSocket closed", ev.code, ev.reason);
-      if (status.value !== "idle") {
-        status.value = "disconnected";
-      }
-    };
-  
-    isRecording.value = true;
-  }
-  
-  function stopInterview() {
-    isRecording.value = false;
-    status.value = "idle";
-    isAISpeaking.value = false;
-    isUserListening.value = false;
-  
-    if (interviewTimeoutId) {
-      clearTimeout(interviewTimeoutId);
-      interviewTimeoutId = null;
-    }
-    if (aiSpeakingTimeout) {
-      clearTimeout(aiSpeakingTimeout);
-      aiSpeakingTimeout = null;
-    }
-    if (recognition) {
-      try {
-        recognition.stop();
-      } catch {}
-    }
-    if (playbackCtx) {
-      playbackCtx.close();
-      playbackCtx = null;
-    }
-    if (ws) {
-      ws.close();
-      ws = null;
-    }
-    playbackTime = 0;
-  }
-  
-  function toggleInterview() {
-    if (!isRecording.value) startInterview();
-    else stopInterview();
-  }
-  
-  // === SAVE TO BACKEND ===
-  async function saveInterview(autoSave = false) {
-    if (messages.value.length === 0) {
-      if (!autoSave) alert("Saqlash uchun xabarlar yo'q!");
-      return;
-    }
-    if (isSaving.value) return;
-  
-    isSaving.value = true;
-    saveError.value = "";
-    saveSuccess.value = false;
-  
-    try {
-      const duration = interviewStartTime
-        ? Math.floor((new Date() - interviewStartTime) / 1000)
-        : 0;
-  
-      const response = await fetch(BACKEND_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          candidate_name: candidateInfo.value.name,
-          position: candidateInfo.value.position,
-          date: interviewStartTime.toISOString(),
-          conversation: messages.value,
-          duration,
-          question_count: questionCount.value,
-          answer_count: answerCount.value,
-          status: "completed",
-        }),
-      });
-  
-      if (!response.ok) {
-        throw new Error("Server xatosi: " + response.status);
-      }
-  
-      const data = await response.json();
-      console.log("✅ Interview saqlandi:", data);
-      saveSuccess.value = true;
-      setTimeout(() => (saveSuccess.value = false), 5000);
-    } catch (error) {
-      console.error("❌ Save error:", error);
-      saveError.value = error.message;
-    } finally {
-      isSaving.value = false;
-    }
-  }
-  
-  function manualSave() {
-    saveInterview(false);
-  }
-  </script>
-  
 
-<style scoped>
-.overflow-y-auto {
-  scroll-behavior: smooth;
+  const data = await res.json();
+  console.log("Resume eligibility:", data);
+  hasResume.value = data.eligible;
+  loadingResume.value = false;
 }
 
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
+// ========================
+// 2️⃣ Fetch Interviews
+// ========================
+async function fetchInterviews() {
+  const res = await fetch(`${API_BASE}/v1/mock-interviews`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    }
+  });
+
+  const data = await res.json();
+  const list = data.mock_interview || [];
+
+  pendingCount.value = list.filter(i => i.status !== "completed").length;
+
+  cards.value = list.map(i => ({
+    id: i.id,
+    tag: i.interview_type === "general" ? "Oddiy suhbat" : "Texnik suhbat",
+    date: new Date(i.created_at).toLocaleDateString(),
+    text: i.title,
+    status: i.status ?? "pending"
+  }));
 }
 
-.animate-pulse {
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+// ========================
+// 3️⃣ Generate Interview
+// ========================
+async function generateInterview() {
+  generating.value = true;
+  progress.value = 0;
+
+  await fetch(`${API_BASE}/v1/generate-questions`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({})
+  });
+
+  // progress simulate (yoki real-time Echo qo‘shish mumkin)
+  const interval = setInterval(() => {
+    progress.value += 10;
+    if (progress.value >= 100) {
+      clearInterval(interval);
+      generating.value = false;
+      fetchInterviews();
+    }
+  }, 400);
 }
-</style>
+
+// ========================
+// Navigation buttons
+// ========================
+function goPreparation(card) {
+  router.push({ name: "preparation", params: { id: card.id } });
+}
+
+function goResult(card) {
+  router.push({ name: "interviewResult", params: { id: card.id } });
+}
+
+function goResumeBuilder() {
+  router.push({ name: "resumeBuilder" });
+}
+</script>

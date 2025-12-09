@@ -14,6 +14,9 @@ import CareerTracking from "@/app/CareerTracking.vue";
 import Resume from "@/app/Resume.vue";
 import RejectionShow from "@/app/RejectionShow.vue";
 import MockInterview from "@/app/MockInterview.vue";
+import PreparationShow from "@/app/PreparationShow.vue";
+import InterviewResult from "@/app/InterviewResult.vue";
+
 
 
 const routes = [
@@ -86,6 +89,20 @@ const routes = [
         name: 'mockInterview',
         component: MockInterview,
         meta: { requiresAuth: true }
+    },
+    {
+        path: '/preparation/:id',
+        name: 'preparation',
+        component: PreparationShow,
+        props: true,
+        meta: { requiresAuth: true, headerBack: true }
+    },
+    {
+        path: '/interview-result/:id',
+        name: 'interviewResult',
+        component: InterviewResult,
+        props: true,
+        meta: { requiresAuth: true, headerBack: true }
     },
     {
         path: '/users/:id',
