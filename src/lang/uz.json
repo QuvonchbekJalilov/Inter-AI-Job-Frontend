@@ -338,10 +338,16 @@
   "resume_error_education_institution_required": "O‘quv muassasasini kiritish majburiy",
   "resume_error_education_start_date_required": "Boshlanish sanasini kiritish majburiy",
   "resume_error_education_add_required": "Taʼlim qo‘shish tugmasini bosib taʼlim maʼlumotini saqlang yoki formani tozalang",
+  "resume_download_button": "Yuklab olish",
+  "resume_download_lang_modal_title": "Qaysi tilda yuklab olasiz?",
+  "resume_download_lang_modal_text": "Rezyumeni yuklab olish uchun tilni tanlang.",
+  "resume_download_lang_ru": "Rus tilida yuklab olish",
+  "resume_download_lang_en": "Ingliz tilida yuklab olish",
   "resume_download_modal_title": "Fayl formatini tanlang",
   "resume_download_modal_text_ru": "Rus tilidagi rezyumeni yuklab olish uchun formatni tanlang.",
   "resume_download_modal_text_en": "Ingliz tilidagi rezyumeni yuklab olish uchun formatni tanlang.",
   "resume_download_modal_pdf_button": "PDF yuklab olish",
   "resume_download_modal_docx_button": "DOCX yuklab olish",
-  "resume_download_modal_cancel": "Bekor qilish"
+  "resume_download_modal_cancel": "Bekor qilish",
+  "resume_download_modal_back": "Ortga"
 }

@@ -223,6 +223,8 @@
   "resume_step3_example2": "Marketing specialist with a proven track record of increasing ROI by 150%",
   "resume_step3_example3": "UX/UI designer focused on creating intuitive user interfaces",
   "resume_step3_tip": "A good summary mentions your role, experience, key skills, and how you can help the employer.",
+  "resume_step2_citizenship_label": "Citizenship",
+  "resume_step2_citizenship_placeholder": "For example: Uzbekistan",
   "resume_step4_title": "Work experience",
   "resume_step4_subtitle": "Add your professional experience",
   "resume_step4_currently_working_suffix": "present",
@@ -335,5 +337,17 @@
   "resume_error_education_degree_required": "Degree is required",
   "resume_error_education_institution_required": "Educational institution is required",
   "resume_error_education_start_date_required": "Start date is required",
-  "resume_error_education_add_required": "Click “Add education” to save the entry or clear the form"
+  "resume_error_education_add_required": "Click “Add education” to save the entry or clear the form",
+  "resume_download_button": "Download",
+  "resume_download_lang_modal_title": "Which language to download?",
+  "resume_download_lang_modal_text": "Choose the language in which you want to download your resume.",
+  "resume_download_lang_ru": "Download in Russian",
+  "resume_download_lang_en": "Download in English",
+  "resume_download_modal_title": "Choose file format",
+  "resume_download_modal_text_ru": "Choose a format to download the Russian version of your resume.",
+  "resume_download_modal_text_en": "Choose a format to download the English version of your resume.",
+  "resume_download_modal_pdf_button": "Download PDF",
+  "resume_download_modal_docx_button": "Download DOCX",
+  "resume_download_modal_cancel": "Cancel",
+  "resume_download_modal_back": "Back"
 }

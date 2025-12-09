@@ -34,23 +34,6 @@
               ← {{ translations.resume_preview_back_to_editor }}
             </button> -->
 
-        <!-- Preview rejimida EN / RU download tugmalari -->
-        <!-- <div v-if="mode === 'preview'" class="flex items-center gap-2">
-          <button
-            type="button"
-            class="px-3 py-1 text-xs border rounded-full text-gray-600 hover:bg-gray-100"
-            @click="openDownloadModal('ru')"
-          >
-            Download RU
-          </button>
-          <button
-            type="button"
-            class="px-3 py-1 text-xs border rounded-full text-gray-600 hover:bg-gray-100"
-            @click="openDownloadModal('en')"
-          >
-            Download EN
-          </button>
-        </div> -->
       </div>
 
       <div
@@ -1041,23 +1024,14 @@
 
         <div class="bg-white rounded-2xl shadow p-6 sm:p-8 mb-6">
           <div class="flex justify-between items-center mb-6">
-            
-            <!-- <div class="flex gap-2">
-              <button
-                type="button"
-                class="px-3 py-1.5 text-xs border rounded-full text-gray-700 hover:bg-gray-50"
-                @click="downloadPdf('ru')"
-              >
-                {{ translations.resume_preview_pdf_ru }}
-              </button>
-              <button
-                type="button"
-                class="px-3 py-1.5 text-xs border rounded-full text-gray-700 hover:bg-gray-50"
-                @click="downloadPdf('en')"
-              >
-                {{ translations.resume_preview_pdf_en }}
-              </button>
-            </div> -->
+            <div></div>
+            <button
+              type="button"
+              class="px-3 py-1.5 text-xs border rounded-full text-gray-700 hover:bg-gray-50"
+              @click="openDownloadModal()"
+            >
+              {{ translations.resume_download_button }}
+            </button>
           </div>
 
           <!-- Header block -->
@@ -1380,45 +1354,90 @@
       </div>
     </div>
 
-    <!-- Download format modal -->
+    <!-- Download modal: 1-step (lang) + 2-step (format) -->
     <div
       v-if="mode === 'preview' && showDownloadModal"
       class="fixed inset-0 z-40 flex items-center justify-center bg-black/40"
     >
       <div class="bg-white rounded-2xl shadow-lg w-80 max-w-full p-5">
-        <h3 class="text-sm font-semibold text-gray-900 mb-3">
-          {{ translations.resume_download_modal_title }}
-        </h3>
-        <p class="text-xs text-gray-500 mb-4">
-          {{
-            selectedDownloadLang === 'ru'
-              ? translations.resume_download_modal_text_ru
-              : translations.resume_download_modal_text_en
-          }}
-        </p>
-        <div class="space-y-2">
+        <!-- Step 1: choose language -->
+        <div v-if="downloadStep === 'lang'" class="space-y-4">
+          <h3 class="text-sm font-semibold text-gray-900">
+            {{ translations.resume_download_lang_modal_title }}
+          </h3>
+          <p class="text-xs text-gray-500">
+            {{ translations.resume_download_lang_modal_text }}
+          </p>
+          <div class="space-y-2 mt-2">
+            <button
+              type="button"
+              class="w-full px-4 py-2 rounded-lg bg-black text-white text-sm font-medium hover:bg-gray-900"
+              @click="selectDownloadLang('ru')"
+            >
+              {{ translations.resume_download_lang_ru }}
+            </button>
+            <button
+              type="button"
+              class="w-full px-4 py-2 rounded-lg border border-gray-300 text-sm font-medium text-gray-800 hover:bg-gray-50"
+              @click="selectDownloadLang('en')"
+            >
+              {{ translations.resume_download_lang_en }}
+            </button>
+          </div>
           <button
             type="button"
-            class="w-full px-4 py-2 rounded-lg bg-black text-white text-sm font-medium hover:bg-gray-900"
-            @click="handleDownload('pdf')"
+            class="mt-4 w-full text-xs text-gray-500 hover:text-gray-700"
+            @click="closeDownloadModal"
           >
-            {{ translations.resume_download_modal_pdf_button }}
-          </button>
-          <button
-            type="button"
-            class="w-full px-4 py-2 rounded-lg border border-gray-300 text-sm font-medium text-gray-800 hover:bg-gray-50"
-            @click="handleDownload('docx')"
-          >
-            {{ translations.resume_download_modal_docx_button }}
+            {{ translations.resume_download_modal_cancel }}
           </button>
         </div>
-        <button
-          type="button"
-          class="mt-4 w-full text-xs text-gray-500 hover:text-gray-700"
-          @click="closeDownloadModal"
-        >
-          {{ translations.resume_download_modal_cancel }}
-        </button>
+
+        <!-- Step 2: choose format -->
+        <div v-else class="space-y-4">
+          <h3 class="text-sm font-semibold text-gray-900">
+            {{ translations.resume_download_modal_title }}
+          </h3>
+          <p class="text-xs text-gray-500">
+            {{
+              selectedDownloadLang === 'ru'
+                ? translations.resume_download_modal_text_ru
+                : translations.resume_download_modal_text_en
+            }}
+          </p>
+          <div class="space-y-2 mt-2">
+            <button
+              type="button"
+              class="w-full px-4 py-2 rounded-lg bg-black text-white text-sm font-medium hover:bg-gray-900"
+              @click="handleDownload('pdf')"
+            >
+              {{ translations.resume_download_modal_pdf_button }}
+            </button>
+            <button
+              type="button"
+              class="w-full px-4 py-2 rounded-lg border border-gray-300 text-sm font-medium text-gray-800 hover:bg-gray-50"
+              @click="handleDownload('docx')"
+            >
+              {{ translations.resume_download_modal_docx_button }}
+            </button>
+          </div>
+          <div class="mt-4 flex gap-2">
+            <button
+              type="button"
+              class="flex-1 text-xs text-gray-500 hover:text-gray-700"
+              @click="downloadStep = 'lang'"
+            >
+              {{ translations.resume_download_modal_back }}
+            </button>
+            <button
+              type="button"
+              class="flex-1 text-xs text-gray-500 hover:text-gray-700"
+              @click="closeDownloadModal"
+            >
+              {{ translations.resume_download_modal_cancel }}
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -1565,6 +1584,7 @@ const newLanguageLevel = ref(languageLevels[0]?.id || "basic");
 // Download modal state
 const showDownloadModal = ref(false);
 const selectedDownloadLang = ref("ru"); // 'ru' | 'en'
+const downloadStep = ref("lang"); // 'lang' | 'format'
 
 // Validation errors for steps
 const errors = reactive({
@@ -2252,13 +2272,20 @@ const goBackHome = () => {
   router.push({ name: "home" });
 };
 
-const openDownloadModal = (lang) => {
-  selectedDownloadLang.value = lang;
+const openDownloadModal = () => {
+  // Boshlang'ich qadam – til tanlash
+  downloadStep.value = "lang";
   showDownloadModal.value = true;
+};
+
+const selectDownloadLang = (lang) => {
+  selectedDownloadLang.value = lang;
+  downloadStep.value = "format";
 };
 
 const closeDownloadModal = () => {
   showDownloadModal.value = false;
+  downloadStep.value = "lang";
 };
 
 const handleDownload = (format) => {

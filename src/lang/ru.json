@@ -337,10 +337,16 @@
   "resume_error_education_institution_required": "Укажите учебное заведение",
   "resume_error_education_start_date_required": "Укажите дату начала обучения",
   "resume_error_education_add_required": "Нажмите «Добавить образование», чтобы сохранить запись, либо очистите форму",
+  "resume_download_button": "Скачать",
+  "resume_download_lang_modal_title": "На каком языке скачать?",
+  "resume_download_lang_modal_text": "Выберите язык, на котором хотите скачать резюме.",
+  "resume_download_lang_ru": "Скачать на русском",
+  "resume_download_lang_en": "Скачать на английском",
   "resume_download_modal_title": "Выберите формат файла",
   "resume_download_modal_text_ru": "Для русской версии резюме выберите формат для скачивания.",
   "resume_download_modal_text_en": "Для английской версии резюме выберите формат для скачивания.",
   "resume_download_modal_pdf_button": "Скачать PDF",
   "resume_download_modal_docx_button": "Скачать DOCX",
-  "resume_download_modal_cancel": "Отмена"
+  "resume_download_modal_cancel": "Отмена",
+  "resume_download_modal_back": "Назад"
 }
