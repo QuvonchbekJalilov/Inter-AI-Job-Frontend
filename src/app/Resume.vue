@@ -4,7 +4,7 @@
     <div class="max-w-4xl mx-auto px-4 sm:px-6">
       <div class="flex items-center justify-between mb-6">
         <!-- Back button: wizardda home'ga, previewda wizard'ga qaytaradi -->
-        <button
+        <!-- <button
           type="button"
               class="inline-flex items-center text-sm text-gray-600 hover:text-gray-900"
               @click="mode = 'wizard'"
@@ -13,7 +13,7 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M15 19l-7-7 7-7" />
           </svg>
           <span>{{ translations.resume_preview_back_to_editor }}</span>
-        </button>
+        </button> -->
 
         <!-- <button
           type="button"
@@ -35,7 +35,7 @@
             </button> -->
 
         <!-- Preview rejimida EN / RU download tugmalari -->
-        <div v-if="mode === 'preview'" class="flex items-center gap-2">
+        <!-- <div v-if="mode === 'preview'" class="flex items-center gap-2">
           <button
             type="button"
             class="px-3 py-1 text-xs border rounded-full text-gray-600 hover:bg-gray-100"
@@ -50,7 +50,7 @@
           >
             Download EN
           </button>
-        </div>
+        </div> -->
       </div>
 
       <div
@@ -142,58 +142,88 @@
               <div class="space-y-4">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label class="block text-xs font-medium text-gray-700 mb-1">{{ translations.name }} *</label>
+                    <label class="block text-xs font-medium text-gray-700 mb-1">
+                      {{ translations.name }} *
+                    </label>
                     <input
                       v-model="form.personal.first_name"
                       type="text"
                       class="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
+                    <p v-if="errors.step1.first_name" class="mt-1 text-xs text-red-500">
+                      {{ errors.step1.first_name }}
+                    </p>
                   </div>
                   <div>
-                    <label class="block text-xs font-medium text-gray-700 mb-1">{{ translations.surname }} *</label>
+                    <label class="block text-xs font-medium text-gray-700 mb-1">
+                      {{ translations.surname }} *
+                    </label>
                     <input
                       v-model="form.personal.last_name"
                       type="text"
                       class="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
+                    <p v-if="errors.step1.last_name" class="mt-1 text-xs text-red-500">
+                      {{ errors.step1.last_name }}
+                    </p>
                   </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label class="block text-xs font-medium text-gray-700 mb-1">{{ translations.email }} *</label>
+                    <label class="block text-xs font-medium text-gray-700 mb-1">
+                      {{ translations.email }} *
+                    </label>
                     <input
                       v-model="form.personal.email"
                       type="email"
                       class="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
+                    <p v-if="errors.step1.email" class="mt-1 text-xs text-red-500">
+                      {{ errors.step1.email }}
+                    </p>
                   </div>
                   <div>
-                    <label class="block text-xs font-medium text-gray-700 mb-1">{{ translations.phone }} *</label>
+                    <label class="block text-xs font-medium text-gray-700 mb-1">
+                      {{ translations.phone }} *
+                    </label>
                     <input
                       v-model="form.personal.phone"
                       type="text"
                       class="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
+                    <p v-if="errors.step1.phone" class="mt-1 text-xs text-red-500">
+                      {{ errors.step1.phone }}
+                    </p>
                   </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label class="block text-xs font-medium text-gray-700 mb-1">{{ translations.resume_city }} *</label>
+                    <label class="block text-xs font-medium text-gray-700 mb-1">
+                      {{ translations.resume_city }} *
+                    </label>
                     <input
                       v-model="form.personal.city"
                       type="text"
                       class="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
+                    <p v-if="errors.step1.city" class="mt-1 text-xs text-red-500">
+                      {{ errors.step1.city }}
+                    </p>
                   </div>
                   <div>
-                    <label class="block text-xs font-medium text-gray-700 mb-1">{{ translations.resume_country }}</label>
+                    <label class="block text-xs font-medium text-gray-700 mb-1">
+                      {{ translations.resume_country }} *
+                    </label>
                     <input
                       v-model="form.personal.country"
                       type="text"
                       class="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
+                    <p v-if="errors.step1.country" class="mt-1 text-xs text-red-500">
+                      {{ errors.step1.country }}
+                    </p>
                   </div>
                 </div>
 
@@ -242,13 +272,19 @@
 
             <div class="space-y-4">
               <div>
-                <label class="block text-xs font-medium text-gray-700 mb-1">{{ translations.resume_step2_desired_position_label }} *</label>
+                <label class="block text-xs font-medium text-gray-700 mb-1">
+                  {{ translations.resume_step2_desired_position_label }}
+                  <span v-if="step2Active" class="text-red-500">*</span>
+                </label>
                 <input
                   v-model="form.job.desired_position"
                   type="text"
                   class="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   :placeholder="translations.resume_step2_desired_position_placeholder"
                 />
+                <p v-if="errors.step2.desired_position" class="mt-1 text-xs text-red-500">
+                  {{ errors.step2.desired_position }}
+                </p>
               </div>
 
               <div>
@@ -265,18 +301,26 @@
               </div>
 
               <div>
-                <label class="block text-xs font-medium text-gray-700 mb-1">{{ translations.resume_step2_citizenship_label }} *</label>
+                <label class="block text-xs font-medium text-gray-700 mb-1">
+                  {{ translations.resume_step2_citizenship_label }}
+                  <span v-if="step2Active" class="text-red-500">*</span>
+                </label>
                 <input
                   v-model="form.job.citizenship"
                   type="text"
                   class="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Uzbekistan"
                 />
+                <p v-if="errors.step2.citizenship" class="mt-1 text-xs text-red-500">
+                  {{ errors.step2.citizenship }}
+                </p>
               </div>
 
               <div class="pt-3 border-t border-gray-100 space-y-3">
                 <h3 class="text-xs font-semibold text-gray-700 flex items-center gap-1">
-                  <span class="text-purple-500">▣</span> {{ translations.resume_step2_employment_label }} *
+                  <span class="text-purple-500">▣</span>
+                  {{ translations.resume_step2_employment_label }}
+                  <span v-if="step2Active" class="text-red-500">*</span>
                 </h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <label
@@ -293,11 +337,16 @@
                     <span class="text-gray-700">{{ translations[opt.labelKey] }}</span>
                   </label>
                 </div>
+                <p v-if="errors.step2.employment_types" class="mt-1 text-xs text-red-500">
+                  {{ errors.step2.employment_types }}
+                </p>
               </div>
 
               <div class="pt-3 border-t border-gray-100 space-y-3">
                 <h3 class="text-xs font-semibold text-gray-700 flex items-center gap-1">
-                  <span class="text-blue-500">🕒</span> {{ translations.resume_step2_schedule_label }} *
+                  <span class="text-blue-500">🕒</span>
+                  {{ translations.resume_step2_schedule_label }}
+                  <span v-if="step2Active" class="text-red-500">*</span>
                 </h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <label
@@ -314,6 +363,9 @@
                     <span class="text-gray-700">{{ translations[opt.labelKey] }}</span>
                   </label>
                 </div>
+                <p v-if="errors.step2.work_schedules" class="mt-1 text-xs text-red-500">
+                  {{ errors.step2.work_schedules }}
+                </p>
               </div>
 
               <div class="pt-3 border-t border-gray-100 space-y-2">
@@ -366,6 +418,9 @@
               ></textarea>
               <p class="text-xs text-gray-400">
                 {{ summaryLength }} {{ translations.resume_step3_characters_suffix }}
+              </p>
+              <p v-if="errors.step3.summary" class="text-xs text-red-500">
+                {{ errors.step3.summary }}
               </p>
             </div>
 
@@ -430,6 +485,9 @@
                     type="text"
                     class="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
+                  <p v-if="errors.step4.position" class="mt-1 text-xs text-red-500">
+                    {{ errors.step4.position }}
+                  </p>
                 </div>
                 <div>
                   <label class="block text-xs font-medium text-gray-700 mb-1">{{ translations.resume_step4_company_label }} *</label>
@@ -438,6 +496,9 @@
                     type="text"
                     class="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
+                  <p v-if="errors.step4.company" class="mt-1 text-xs text-red-500">
+                    {{ errors.step4.company }}
+                  </p>
                 </div>
               </div>
 
@@ -458,6 +519,9 @@
                     type="month"
                     class="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
+                  <p v-if="errors.step4.start_date" class="mt-1 text-xs text-red-500">
+                    {{ errors.step4.start_date }}
+                  </p>
                 </div>
                 <div>
                   <label class="block text-xs font-medium text-gray-700 mb-1">{{ translations.resume_end_date_label }}</label>
@@ -495,6 +559,9 @@
               >
                 {{ editingExperienceIndex === null ? translations.resume_step4_add_button : translations.resume_step4_save_button }}
               </button>
+              <p v-if="errors.step4.general" class="mt-2 text-xs text-red-500">
+                {{ errors.step4.general }}
+              </p>
             </div>
           </section>
 
@@ -544,6 +611,9 @@
                     type="text"
                     class="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
+                  <p v-if="errors.step5.degree" class="mt-1 text-xs text-red-500">
+                    {{ errors.step5.degree }}
+                  </p>
                 </div>
                 <div>
                   <label class="block text-xs font-medium text-gray-700 mb-1">{{ translations.resume_step5_institution_label }} *</label>
@@ -552,6 +622,9 @@
                     type="text"
                     class="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
+                  <p v-if="errors.step5.institution" class="mt-1 text-xs text-red-500">
+                    {{ errors.step5.institution }}
+                  </p>
                 </div>
               </div>
 
@@ -572,6 +645,9 @@
                     type="month"
                     class="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
+                  <p v-if="errors.step5.start_date" class="mt-1 text-xs text-red-500">
+                    {{ errors.step5.start_date }}
+                  </p>
                 </div>
                 <div>
                   <label class="block text-xs font-medium text-gray-700 mb-1">{{ translations.resume_end_date_label }}</label>
@@ -609,6 +685,9 @@
               >
                 {{ editingEducationIndex === null ? translations.resume_step5_add_button : translations.resume_step5_save_button }}
               </button>
+              <p v-if="errors.step5.general" class="mt-2 text-xs text-red-500">
+                {{ errors.step5.general }}
+              </p>
             </div>
           </section>
 
@@ -913,15 +992,35 @@
 
       <!-- Preview mode -->
       <div v-else class="max-w-4xl mx-auto px-4 sm:px-6">
-        <div class="bg-white rounded-2xl shadow p-6 sm:p-8 mb-6">
-          <div class="flex justify-between items-center mb-6">
-            <!-- <button
+                <div v-if="mode === 'preview'" class="flex justify-between items-center mb-6">
+                       <button
               type="button"
               class="inline-flex items-center text-sm text-gray-600 hover:text-gray-900"
               @click="mode = 'wizard'"
             >
               ← {{ translations.resume_preview_back_to_editor }}
-            </button> -->
+            </button>
+          <button
+            type="button"
+            class="px-3 py-1 text-xs border rounded-full text-gray-600 hover:bg-gray-100"
+            @click="openDownloadModal('ru')"
+          >
+            Download RU
+          </button>
+          <button
+            type="button"
+            class="px-3 py-1 text-xs border rounded-full text-gray-600 hover:bg-gray-100"
+            @click="openDownloadModal('en')"
+          >
+            Download EN
+          </button>
+        </div>
+
+
+
+        <div class="bg-white rounded-2xl shadow p-6 sm:p-8 mb-6">
+          <div class="flex justify-between items-center mb-6">
+            
             <!-- <div class="flex gap-2">
               <button
                 type="button"
@@ -1440,6 +1539,15 @@ const newLanguageLevel = ref(languageLevels[0]?.id || "basic");
 const showDownloadModal = ref(false);
 const selectedDownloadLang = ref("ru"); // 'ru' | 'en'
 
+// Validation errors for steps
+const errors = reactive({
+  step1: {},
+  step2: {},
+  step3: {},
+  step4: {},
+  step5: {},
+});
+
 // Helper for language levels: backend darajalarini ichki id ga moslashtirish
 const languageLevelAliases = {
   basic: "basic",
@@ -1612,6 +1720,26 @@ const editExperience = (index) => {
 };
 
 const saveExperience = () => {
+  // Agar foydalanuvchi to'ldirishni boshlagan bo'lsa, minimal maydonlarni tekshiramiz
+  errors.step4 = {};
+  const dirty = isExperienceFormDirty();
+  if (dirty) {
+    let ok = true;
+    if (isEmptyString(experienceForm.position)) {
+      errors.step4.position = "Lavozimni kiritish majburiy";
+      ok = false;
+    }
+    if (isEmptyString(experienceForm.company)) {
+      errors.step4.company = "Kompaniya nomini kiritish majburiy";
+      ok = false;
+    }
+    if (isEmptyString(experienceForm.start_date)) {
+      errors.step4.start_date = "Boshlanish sanasini kiritish majburiy";
+      ok = false;
+    }
+    if (!ok) return;
+  }
+
   const payload = { ...experienceForm };
   if (payload.is_current) {
     payload.end_date = null;
@@ -1650,6 +1778,26 @@ const editEducation = (index) => {
 };
 
 const saveEducation = () => {
+  // Agar foydalanuvchi to'ldirishni boshlagan bo'lsa, minimal maydonlarni tekshiramiz
+  errors.step5 = {};
+  const dirty = isEducationFormDirty();
+  if (dirty) {
+    let ok = true;
+    if (isEmptyString(educationForm.degree)) {
+      errors.step5.degree = "Darajani kiritish majburiy";
+      ok = false;
+    }
+    if (isEmptyString(educationForm.institution)) {
+      errors.step5.institution = "O'quv muassasasini kiritish majburiy";
+      ok = false;
+    }
+    if (isEmptyString(educationForm.start_date)) {
+      errors.step5.start_date = "Boshlanish sanasini kiritish majburiy";
+      ok = false;
+    }
+    if (!ok) return;
+  }
+
   const payload = { ...educationForm };
   if (payload.is_current) payload.end_date = null;
   if (editingEducationIndex.value === null) {
@@ -1714,7 +1862,194 @@ const removeCertificate = (index) => {
   form.certificates.splice(index, 1);
 };
 
+const isEmptyString = (val) => !val || !String(val).trim();
+
+const validateStep1 = () => {
+  errors.step1 = {};
+  let ok = true;
+
+  if (isEmptyString(form.personal.first_name)) {
+    errors.step1.first_name = "Ismingizni kiritishingiz shart";
+    ok = false;
+  }
+  if (isEmptyString(form.personal.last_name)) {
+    errors.step1.last_name = "Familiyangizni kiritishingiz shart";
+    ok = false;
+  }
+  if (isEmptyString(form.personal.email)) {
+    errors.step1.email = "Email manzilingizni kiritishingiz shart";
+    ok = false;
+  }
+  if (isEmptyString(form.personal.phone)) {
+    errors.step1.phone = "Telefon raqamingizni kiritishingiz shart";
+    ok = false;
+  }
+  if (isEmptyString(form.personal.city)) {
+    errors.step1.city = "Shahar nomini kiritishingiz shart";
+    ok = false;
+  }
+  if (isEmptyString(form.personal.country)) {
+    errors.step1.country = "Mamlakat nomini kiritishingiz shart";
+    ok = false;
+  }
+
+  return ok;
+};
+
+const step2Active = computed(() => {
+  return (
+    !isEmptyString(form.job.desired_position) ||
+    !isEmptyString(form.job.citizenship) ||
+    (form.job.employment_types && form.job.employment_types.length > 0) ||
+    (form.job.work_schedules && form.job.work_schedules.length > 0)
+  );
+});
+
+const validateStep2 = () => {
+  errors.step2 = {};
+
+  // Agar umuman hech narsa kiritilmagan bo'lsa, 2-step optional
+  if (!step2Active.value) {
+    return true;
+  }
+
+  let ok = true;
+
+  if (isEmptyString(form.job.desired_position)) {
+    errors.step2.desired_position = "Talab qilinayotgan lavozimni kiritish majburiy";
+    ok = false;
+  }
+  if (isEmptyString(form.job.citizenship)) {
+    errors.step2.citizenship = "Fuqaroligingizni kiritish majburiy";
+    ok = false;
+  }
+  if (!form.job.employment_types || form.job.employment_types.length === 0) {
+    errors.step2.employment_types = "Bandlik turidan kamida bittasini tanlang";
+    ok = false;
+  }
+  if (!form.job.work_schedules || form.job.work_schedules.length === 0) {
+    errors.step2.work_schedules = "Ish jadvalidan kamida bittasini tanlang";
+    ok = false;
+  }
+
+  return ok;
+};
+
+const validateStep3 = () => {
+  errors.step3 = {};
+  const len = form.summary.text ? form.summary.text.trim().length : 0;
+  if (len < 3) {
+    errors.step3.summary = "Professional resume bo'limida kamida 3 ta belgi yozing";
+    return false;
+  }
+  return true;
+};
+
+const isExperienceFormDirty = () =>
+  !isEmptyString(experienceForm.position) ||
+  !isEmptyString(experienceForm.company) ||
+  !isEmptyString(experienceForm.location) ||
+  !isEmptyString(experienceForm.start_date) ||
+  !isEmptyString(experienceForm.end_date) ||
+  !isEmptyString(experienceForm.description) ||
+  !!experienceForm.is_current;
+
+const validateStep4 = () => {
+  errors.step4 = {};
+  const hasExperiences = form.experiences && form.experiences.length > 0;
+  const dirty = isExperienceFormDirty();
+
+  // Hech narsa kiritilmagan va tajriba qo'shilmagan bo'lsa, optional
+  if (!dirty && !hasExperiences) {
+    return true;
+  }
+
+  let ok = true;
+
+  if (dirty) {
+    if (isEmptyString(experienceForm.position)) {
+      errors.step4.position = "Lavozimni kiritish majburiy";
+      ok = false;
+    }
+    if (isEmptyString(experienceForm.company)) {
+      errors.step4.company = "Kompaniya nomini kiritish majburiy";
+      ok = false;
+    }
+    if (isEmptyString(experienceForm.start_date)) {
+      errors.step4.start_date = "Boshlanish sanasini kiritish majburiy";
+      ok = false;
+    }
+  }
+
+  if (!hasExperiences) {
+    errors.step4.general = "Tajriba qo'shish tugmasini bosib tajribani saqlang yoki formani tozalang";
+    ok = false;
+  }
+
+  return ok;
+};
+
+const isEducationFormDirty = () =>
+  !isEmptyString(educationForm.degree) ||
+  !isEmptyString(educationForm.institution) ||
+  !isEmptyString(educationForm.location) ||
+  !isEmptyString(educationForm.start_date) ||
+  !isEmptyString(educationForm.end_date) ||
+  !isEmptyString(educationForm.extra_info) ||
+  !!educationForm.is_current;
+
+const validateStep5 = () => {
+  errors.step5 = {};
+  const hasEducations = form.educations && form.educations.length > 0;
+  const dirty = isEducationFormDirty();
+
+  // Hech narsa kiritilmagan va ta'lim qo'shilmagan bo'lsa, optional
+  if (!dirty && !hasEducations) {
+    return true;
+  }
+
+  let ok = true;
+
+  if (dirty) {
+    if (isEmptyString(educationForm.degree)) {
+      errors.step5.degree = "Darajani kiritish majburiy";
+      ok = false;
+    }
+    if (isEmptyString(educationForm.institution)) {
+      errors.step5.institution = "O'quv muassasasini kiritish majburiy";
+      ok = false;
+    }
+    if (isEmptyString(educationForm.start_date)) {
+      errors.step5.start_date = "Boshlanish sanasini kiritish majburiy";
+      ok = false;
+    }
+  }
+
+  if (!hasEducations) {
+    errors.step5.general = "Ta'lim qo'shish tugmasini bosib ta'lim ma'lumotini saqlang yoki formani tozalang";
+    ok = false;
+  }
+
+  return ok;
+};
+
 const nextStep = () => {
+  let valid = true;
+
+  if (step.value === 1) {
+    valid = validateStep1();
+  } else if (step.value === 2) {
+    valid = validateStep2();
+  } else if (step.value === 3) {
+    valid = validateStep3();
+  } else if (step.value === 4) {
+    valid = validateStep4();
+  } else if (step.value === 5) {
+    valid = validateStep5();
+  }
+
+  if (!valid) return;
+
   if (step.value < 8) step.value += 1;
 };
 
@@ -1724,6 +2059,16 @@ const prevStep = () => {
 
 const handleFinish = async () => {
   console.log("▶ handleFinish clicked, step =", step.value, "mode before =", mode.value);
+  // Yakunlashdan oldin 5-gacha bo'lgan steplarni ham tekshirib chiqamiz
+  if (
+    !validateStep1() ||
+    !validateStep2() ||
+    !validateStep3() ||
+    !validateStep4() ||
+    !validateStep5()
+  ) {
+    return;
+  }
   // Avval preview'ga o'tkazamiz, foydalanuvchi natijani darhol ko'rsin
   mode.value = "preview";
   console.log("▶ mode after =", mode.value);
