@@ -262,7 +262,7 @@
 
         <div class="space-y-4">
           <!-- Sizning mavjud HTML kodingizni o‘zgartirmadik -->
-          <!-- <div ref="plansSection" class="bg-white border border-gray-200 rounded-2xl p-4 sm:p-6">
+          <div ref="plansSection" class="bg-white border border-gray-200 rounded-2xl p-4 sm:p-6">
             <div class="mb-3 text-xs sm:text-sm text-gray-600 flex justify-between">
               <span>{{ translations.plan?.free_responses }}</span>
               <span class="text-gray-900 font-medium">{{ balanceCreditLimit }} / {{ planLimit }}</span>
@@ -291,12 +291,12 @@
                   ]"
                   @click="handlePlanClick(plan)"
 
-                  
+
               >
-              
+
                 <div class="flex items-center justify-between gap-3 mb-1">
                   <h4 class="text-xl sm:text-2xl font-normal text-gray-800 translate-y-2">
-                    {{ plan.name }} 
+                    {{ plan.name }}
                   </h4> -->
 
                     <!-- <span
@@ -307,7 +307,7 @@
                   </span> -->
                   <!-- <span class="text-xl sm:text-2xl font-normal text-blue-600 translate-y-1.5">
                     {{ formatUZS(plan.price) }} UZS
-                    
+
                   </span>
                 </div>
                 <div class="text-right mb-2" v-if="plan.fake_price">
@@ -366,7 +366,7 @@
 
 
 
-<!--                
+<!--
               </div>
             </div> -->
           <!-- </div> -->
@@ -483,6 +483,10 @@
           </transition>
         </div>
 
+      </div>
+    </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
