@@ -152,6 +152,7 @@ async function checkResume() {
   );
 
   const data = await res.json();
+  console.log('✅ Resume eligibility:', data);
   hasResume.value = data.eligible;
   loadingResume.value = false;
 }
@@ -172,6 +173,7 @@ async function fetchInterviews() {
   );
 
   const data = await res.json();
+  console.log('✅ Mock Interviews:', data);
   const list = data.mock_interview || [];
 
   pendingCount.value = list.filter(i => i.status !== "completed").length;
@@ -228,6 +230,6 @@ function goResult(card) {
 }
 
 function goResumeBuilder() {
-  router.push({ name: "resumeBuilder" });
+  router.push({ name: "resume" });
 }
 </script>
