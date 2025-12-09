@@ -111,24 +111,22 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
-import { useRouter, useRoute } from "vue-router";
+import { ref, onMounted, getCurrentInstance } from "vue";
+import { useRouter } from "vue-router";
 
+const { proxy } = getCurrentInstance()
 const router = useRouter();
 
-// State
+// STATE
 const loadingResume = ref(true);
 const hasResume = ref(false);
 const cards = ref([]);
 const pendingCount = ref(0);
 
-// generation
 const generating = ref(false);
 const progress = ref(0);
 
-// token for auth
 const token = localStorage.getItem("token") || sessionStorage.getItem("token");
-const API_BASE = "/api"; // kerak bo‘lsa o‘zgartiriladi
 
 // PAGE LOAD
 onMounted(async () => {
@@ -138,35 +136,40 @@ onMounted(async () => {
   }
 });
 
-// ========================
+// ===============================
 // 1️⃣ Resume Eligibility Check
-// ========================
+// ===============================
 async function checkResume() {
-  const res = await fetch(`${API_BASE}/v1/check-resume-eligibility`, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      Accept: "application/json",
+  const res = await fetch(
+    proxy.$locale + `/v1/check-resume-eligibility`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json"
+      }
     }
-  });
+  );
 
   const data = await res.json();
-  console.log("Resume eligibility:", data);
   hasResume.value = data.eligible;
   loadingResume.value = false;
 }
 
-// ========================
-// 2️⃣ Fetch Interviews
-// ========================
+// ===============================
+// 2️⃣ Fetch Mock Interviews
+// ===============================
 async function fetchInterviews() {
-  const res = await fetch(`${API_BASE}/v1/mock-interviews`, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      Accept: "application/json",
+  const res = await fetch(
+    proxy.$locale + `/v1/mock-interviews`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json"
+      }
     }
-  });
+  );
 
   const data = await res.json();
   const list = data.mock_interview || [];
@@ -182,24 +185,27 @@ async function fetchInterviews() {
   }));
 }
 
-// ========================
-// 3️⃣ Generate Interview
-// ========================
+// ===============================
+// 3️⃣ Generate Mock Interview
+// ===============================
 async function generateInterview() {
   generating.value = true;
   progress.value = 0;
 
-  await fetch(`${API_BASE}/v1/generate-questions`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      Accept: "application/json",
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({})
-  });
+  await fetch(
+    proxy.$locale + `/v1/generate-questions`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({})
+    }
+  );
 
-  // progress simulate (yoki real-time Echo qo‘shish mumkin)
+  // fake progress (agar realtime qo‘shmoqchi bo‘lsang ayt)
   const interval = setInterval(() => {
     progress.value += 10;
     if (progress.value >= 100) {
@@ -210,9 +216,9 @@ async function generateInterview() {
   }, 400);
 }
 
-// ========================
+// ===============================
 // Navigation buttons
-// ========================
+// ===============================
 function goPreparation(card) {
   router.push({ name: "preparation", params: { id: card.id } });
 }
