@@ -996,43 +996,24 @@
 
       <!-- Preview mode -->
       <div v-else class="max-w-4xl mx-auto px-4 sm:px-6">
-                <div v-if="mode === 'preview'" class="flex justify-between items-center mb-6">
-                       <button
-              type="button"
-              class="inline-flex items-center text-sm text-gray-600 hover:text-gray-900"
-              @click="mode = 'wizard'"
-            >
-              ← {{ translations.resume_preview_back_to_editor }}
-            </button>
+        <div v-if="mode === 'preview'" class="flex justify-between items-center mb-6">
           <button
             type="button"
-            class="px-3 py-1 text-xs border rounded-full text-gray-600 hover:bg-gray-100"
-            @click="openDownloadModal('ru')"
+            class="inline-flex items-center text-sm text-gray-600 hover:text-gray-900"
+            @click="mode = 'wizard'"
           >
-            Download RU
+            ← {{ translations.resume_preview_back_to_editor }}
           </button>
           <button
             type="button"
-            class="px-3 py-1 text-xs border rounded-full text-gray-600 hover:bg-gray-100"
-            @click="openDownloadModal('en')"
+            class="px-3 py-1.5 text-xs border rounded-full text-gray-700 hover:bg-gray-50"
+            @click="openDownloadModal()"
           >
-            Download EN
+            {{ translations.resume_download_button }}
           </button>
         </div>
 
-
-
         <div class="bg-white rounded-2xl shadow p-6 sm:p-8 mb-6">
-          <div class="flex justify-between items-center mb-6">
-            <div></div>
-            <button
-              type="button"
-              class="px-3 py-1.5 text-xs border rounded-full text-gray-700 hover:bg-gray-50"
-              @click="openDownloadModal()"
-            >
-              {{ translations.resume_download_button }}
-            </button>
-          </div>
 
           <!-- Header block -->
           <div class="flex gap-6 mb-6">
@@ -1371,14 +1352,14 @@
           <div class="space-y-2 mt-2">
             <button
               type="button"
-              class="w-full px-4 py-2 rounded-lg bg-black text-white text-sm font-medium hover:bg-gray-900"
+              class="w-full px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700"
               @click="selectDownloadLang('ru')"
             >
               {{ translations.resume_download_lang_ru }}
             </button>
             <button
               type="button"
-              class="w-full px-4 py-2 rounded-lg border border-gray-300 text-sm font-medium text-gray-800 hover:bg-gray-50"
+              class="w-full px-4 py-2 rounded-lg border border-gray-300 text-sm font-medium text-blue-600 hover:bg-gray-50"
               @click="selectDownloadLang('en')"
             >
               {{ translations.resume_download_lang_en }}
@@ -1408,14 +1389,14 @@
           <div class="space-y-2 mt-2">
             <button
               type="button"
-              class="w-full px-4 py-2 rounded-lg bg-black text-white text-sm font-medium hover:bg-gray-900"
+              class="w-full px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700"
               @click="handleDownload('pdf')"
             >
               {{ translations.resume_download_modal_pdf_button }}
             </button>
             <button
               type="button"
-              class="w-full px-4 py-2 rounded-lg border border-gray-300 text-sm font-medium text-gray-800 hover:bg-gray-50"
+              class="w-full px-4 py-2 rounded-lg border border-gray-300 text-sm font-medium text-blue-600 hover:bg-gray-50"
               @click="handleDownload('docx')"
             >
               {{ translations.resume_download_modal_docx_button }}
