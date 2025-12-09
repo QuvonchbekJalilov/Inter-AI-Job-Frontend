@@ -183,14 +183,29 @@
                       {{ errors.step1.email }}
                     </p>
                   </div>
+<!--                  <div>-->
+<!--                    <label class="block text-xs font-medium text-gray-700 mb-1">-->
+<!--                      {{ translations.phone }} *-->
+<!--                    </label>-->
+<!--                    <input-->
+<!--                      v-model="form.personal.phone"-->
+<!--                      type="text"-->
+<!--                      class="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"-->
+<!--                    />-->
+<!--                  </div>-->
                   <div>
-                    <label class="block text-xs font-medium text-gray-700 mb-1">
-                      {{ translations.phone }} *
+                    <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">
+                      {{ translations.phone }}
                     </label>
                     <input
-                      v-model="form.personal.phone"
-                      type="text"
-                      class="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        ref="phoneInput"
+                        id="phone"
+                        type="tel"
+                        v-model="form.personal.phone"
+                        class="w-full px-3 py-2 bg-gray-100 border rounded-lg
+           focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+           focus:outline-none focus:bg-white"
+                        placeholder="33 505 20 05"
                     />
                     <p v-if="errors.step1.phone" class="mt-1 text-xs text-red-500">
                       {{ errors.step1.phone }}
@@ -1415,6 +1430,8 @@ import { useRouter } from "vue-router";
 import axios from "axios";
 import { toast } from "vue3-toastify";
 import { useI18n } from "@/i18n-lite.js";
+import intlTelInput from "intl-tel-input";
+import "intl-tel-input/build/css/intlTelInput.css";
 
 const router = useRouter();
 const { proxy } = getCurrentInstance();
@@ -2252,6 +2269,63 @@ const handleDownload = (format) => {
   }
   showDownloadModal.value = false;
 };
+const phoneInput = ref(null);
 
+onMounted(async () => {
+  if (phoneInput.value) {
+    const iti = intlTelInput(phoneInput.value, {
+      initialCountry: "uz",
+      onlyCountries: ["uz"],
+      preferredCountries: ["uz"],
+      allowDropdown: false,
+      separateDialCode: true,
+      nationalMode: false,
+    });
+
+    phoneInput.value.addEventListener("input", () => {
+      let digits = phoneInput.value.value.replace(/\D/g, "").slice(0, 9);
+
+      // Format: 91 955 55 55   (2-3-2-2)
+      let grouped = "";
+
+      if (digits.length <= 2) {
+        grouped = digits;
+      } else if (digits.length <= 5) {
+        grouped = `${digits.slice(0, 2)} ${digits.slice(2)}`;
+      } else if (digits.length <= 7) {
+        grouped = `${digits.slice(0, 2)} ${digits.slice(2, 5)} ${digits.slice(5)}`;
+      } else {
+        grouped = `${digits.slice(0, 2)} ${digits.slice(2, 5)} ${digits.slice(5, 7)} ${digits.slice(7)}`;
+      }
+
+      form.personal.phone = grouped;
+      phoneInput.value.value = grouped;
+    });
+  }
+})
 onMounted(fetchResume);
 </script>
+
+<style scoped>
+/* 1) Chrome autofill sariqni butunlay o‘chiradi */
+input:-webkit-autofill,
+input:-webkit-autofill:focus {
+  -webkit-text-fill-color: inherit !important;
+  transition: background-color 100000s ease-in-out 0s;
+  box-shadow: 0 0 0px 1000px white inset !important;
+}
+
+/* 2) Browser default outline (sariq/orange)ni to‘liq o‘chiradi */
+input:focus,
+input:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* 3) Faqat ko‘k border ishlaydi */
+#phone:focus {
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 2px rgba(59,130,246,0.3) !important;
+}
+
+</style>
