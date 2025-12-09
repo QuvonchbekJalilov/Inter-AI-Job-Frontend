@@ -309,7 +309,7 @@
                   v-model="form.job.citizenship"
                   type="text"
                   class="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Uzbekistan"
+                  :placeholder="translations.resume_step2_citizenship_placeholder"
                 />
                 <p v-if="errors.step2.citizenship" class="mt-1 text-xs text-red-500">
                   {{ errors.step2.citizenship }}
@@ -590,18 +590,24 @@
                   <p class="text-xs text-gray-500">
                     <span v-if="edu.start_date">{{ edu.start_date }}</span>
                     <span v-if="edu.end_date"> – {{ edu.end_date }}</span>
-                    <span v-else-if="edu.is_current"> – по настоящее время</span>
+                    <span v-else-if="edu.is_current"> – {{ translations.resume_period_present }}</span>
                   </p>
                 </div>
                 <div class="flex items-center gap-3 text-xs">
-                  <button class="text-blue-600 hover:underline" @click="editEducation(index)">Изменить</button>
-                  <button class="text-red-500 hover:underline" @click="removeEducation(index)">Удалить</button>
+                  <button class="text-blue-600 hover:underline" @click="editEducation(index)">
+                    {{ translations.resume_edit }}
+                  </button>
+                  <button class="text-red-500 hover:underline" @click="removeEducation(index)">
+                    {{ translations.resume_delete }}
+                  </button>
                 </div>
               </div>
             </div>
 
             <div class="rounded-xl border border-dashed border-gray-300 bg-gray-50 px-4 py-4 space-y-4">
-              <h3 class="text-xs font-semibold text-gray-700">Добавить образование</h3>
+              <h3 class="text-xs font-semibold text-gray-700">
+                {{ translations.resume_step5_add_block_title }}
+              </h3>
 
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
@@ -1366,10 +1372,14 @@
     >
       <div class="bg-white rounded-2xl shadow-lg w-80 max-w-full p-5">
         <h3 class="text-sm font-semibold text-gray-900 mb-3">
-          Fayl formatini tanlang
+          {{ translations.resume_download_modal_title }}
         </h3>
         <p class="text-xs text-gray-500 mb-4">
-          {{ selectedDownloadLang === 'ru' ? 'Rus tilidagi resume uchun' : 'Ingliz tilidagi resume uchun' }}
+          {{
+            selectedDownloadLang === 'ru'
+              ? translations.resume_download_modal_text_ru
+              : translations.resume_download_modal_text_en
+          }}
         </p>
         <div class="space-y-2">
           <button
@@ -1377,14 +1387,14 @@
             class="w-full px-4 py-2 rounded-lg bg-black text-white text-sm font-medium hover:bg-gray-900"
             @click="handleDownload('pdf')"
           >
-            Download PDF
+            {{ translations.resume_download_modal_pdf_button }}
           </button>
           <button
             type="button"
             class="w-full px-4 py-2 rounded-lg border border-gray-300 text-sm font-medium text-gray-800 hover:bg-gray-50"
             @click="handleDownload('docx')"
           >
-            Download DOCX
+            {{ translations.resume_download_modal_docx_button }}
           </button>
         </div>
         <button
@@ -1392,7 +1402,7 @@
           class="mt-4 w-full text-xs text-gray-500 hover:text-gray-700"
           @click="closeDownloadModal"
         >
-          Bekor qilish
+          {{ translations.resume_download_modal_cancel }}
         </button>
       </div>
     </div>
@@ -1726,15 +1736,15 @@ const saveExperience = () => {
   if (dirty) {
     let ok = true;
     if (isEmptyString(experienceForm.position)) {
-      errors.step4.position = "Lavozimni kiritish majburiy";
+      errors.step4.position = translations.value.resume_error_experience_position_required;
       ok = false;
     }
     if (isEmptyString(experienceForm.company)) {
-      errors.step4.company = "Kompaniya nomini kiritish majburiy";
+      errors.step4.company = translations.value.resume_error_experience_company_required;
       ok = false;
     }
     if (isEmptyString(experienceForm.start_date)) {
-      errors.step4.start_date = "Boshlanish sanasini kiritish majburiy";
+      errors.step4.start_date = translations.value.resume_error_experience_start_date_required;
       ok = false;
     }
     if (!ok) return;
@@ -1784,15 +1794,15 @@ const saveEducation = () => {
   if (dirty) {
     let ok = true;
     if (isEmptyString(educationForm.degree)) {
-      errors.step5.degree = "Darajani kiritish majburiy";
+      errors.step5.degree = translations.value.resume_error_education_degree_required;
       ok = false;
     }
     if (isEmptyString(educationForm.institution)) {
-      errors.step5.institution = "O'quv muassasasini kiritish majburiy";
+      errors.step5.institution = translations.value.resume_error_education_institution_required;
       ok = false;
     }
     if (isEmptyString(educationForm.start_date)) {
-      errors.step5.start_date = "Boshlanish sanasini kiritish majburiy";
+      errors.step5.start_date = translations.value.resume_error_education_start_date_required;
       ok = false;
     }
     if (!ok) return;
@@ -1869,27 +1879,27 @@ const validateStep1 = () => {
   let ok = true;
 
   if (isEmptyString(form.personal.first_name)) {
-    errors.step1.first_name = "Ismingizni kiritishingiz shart";
+    errors.step1.first_name = translations.value.resume_error_first_name_required;
     ok = false;
   }
   if (isEmptyString(form.personal.last_name)) {
-    errors.step1.last_name = "Familiyangizni kiritishingiz shart";
+    errors.step1.last_name = translations.value.resume_error_last_name_required;
     ok = false;
   }
   if (isEmptyString(form.personal.email)) {
-    errors.step1.email = "Email manzilingizni kiritishingiz shart";
+    errors.step1.email = translations.value.resume_error_email_required;
     ok = false;
   }
   if (isEmptyString(form.personal.phone)) {
-    errors.step1.phone = "Telefon raqamingizni kiritishingiz shart";
+    errors.step1.phone = translations.value.resume_error_phone_required;
     ok = false;
   }
   if (isEmptyString(form.personal.city)) {
-    errors.step1.city = "Shahar nomini kiritishingiz shart";
+    errors.step1.city = translations.value.resume_error_city_required;
     ok = false;
   }
   if (isEmptyString(form.personal.country)) {
-    errors.step1.country = "Mamlakat nomini kiritishingiz shart";
+    errors.step1.country = translations.value.resume_error_country_required;
     ok = false;
   }
 
@@ -1916,19 +1926,19 @@ const validateStep2 = () => {
   let ok = true;
 
   if (isEmptyString(form.job.desired_position)) {
-    errors.step2.desired_position = "Talab qilinayotgan lavozimni kiritish majburiy";
+    errors.step2.desired_position = translations.value.resume_error_desired_position_required;
     ok = false;
   }
   if (isEmptyString(form.job.citizenship)) {
-    errors.step2.citizenship = "Fuqaroligingizni kiritish majburiy";
+    errors.step2.citizenship = translations.value.resume_error_citizenship_required;
     ok = false;
   }
   if (!form.job.employment_types || form.job.employment_types.length === 0) {
-    errors.step2.employment_types = "Bandlik turidan kamida bittasini tanlang";
+    errors.step2.employment_types = translations.value.resume_error_employment_required;
     ok = false;
   }
   if (!form.job.work_schedules || form.job.work_schedules.length === 0) {
-    errors.step2.work_schedules = "Ish jadvalidan kamida bittasini tanlang";
+    errors.step2.work_schedules = translations.value.resume_error_schedule_required;
     ok = false;
   }
 
@@ -1939,7 +1949,7 @@ const validateStep3 = () => {
   errors.step3 = {};
   const len = form.summary.text ? form.summary.text.trim().length : 0;
   if (len < 3) {
-    errors.step3.summary = "Professional resume bo'limida kamida 3 ta belgi yozing";
+    errors.step3.summary = translations.value.resume_error_summary_too_short;
     return false;
   }
   return true;
@@ -1968,21 +1978,21 @@ const validateStep4 = () => {
 
   if (dirty) {
     if (isEmptyString(experienceForm.position)) {
-      errors.step4.position = "Lavozimni kiritish majburiy";
+      errors.step4.position = translations.value.resume_error_experience_position_required;
       ok = false;
     }
     if (isEmptyString(experienceForm.company)) {
-      errors.step4.company = "Kompaniya nomini kiritish majburiy";
+      errors.step4.company = translations.value.resume_error_experience_company_required;
       ok = false;
     }
     if (isEmptyString(experienceForm.start_date)) {
-      errors.step4.start_date = "Boshlanish sanasini kiritish majburiy";
+      errors.step4.start_date = translations.value.resume_error_experience_start_date_required;
       ok = false;
     }
   }
 
   if (!hasExperiences) {
-    errors.step4.general = "Tajriba qo'shish tugmasini bosib tajribani saqlang yoki formani tozalang";
+    errors.step4.general = translations.value.resume_error_experience_add_required;
     ok = false;
   }
 
@@ -2012,21 +2022,21 @@ const validateStep5 = () => {
 
   if (dirty) {
     if (isEmptyString(educationForm.degree)) {
-      errors.step5.degree = "Darajani kiritish majburiy";
+      errors.step5.degree = translations.value.resume_error_education_degree_required;
       ok = false;
     }
     if (isEmptyString(educationForm.institution)) {
-      errors.step5.institution = "O'quv muassasasini kiritish majburiy";
+      errors.step5.institution = translations.value.resume_error_education_institution_required;
       ok = false;
     }
     if (isEmptyString(educationForm.start_date)) {
-      errors.step5.start_date = "Boshlanish sanasini kiritish majburiy";
+      errors.step5.start_date = translations.value.resume_error_education_start_date_required;
       ok = false;
     }
   }
 
   if (!hasEducations) {
-    errors.step5.general = "Ta'lim qo'shish tugmasini bosib ta'lim ma'lumotini saqlang yoki formani tozalang";
+    errors.step5.general = translations.value.resume_error_education_add_required;
     ok = false;
   }
 
