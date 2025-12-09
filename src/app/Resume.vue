@@ -1,36 +1,55 @@
 <template>
   <div class="min-h-screen bg-gray-50 pt-20 pb-24">
-    <!-- Wizard header -->
+    <!-- Wizard / Preview header -->
     <div class="max-w-4xl mx-auto px-4 sm:px-6">
       <div class="flex items-center justify-between mb-6">
+        <!-- Back button: wizardda home'ga, previewda wizard'ga qaytaradi -->
         <button
           type="button"
+              class="inline-flex items-center text-sm text-gray-600 hover:text-gray-900"
+              @click="mode = 'wizard'"
+        >
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M15 19l-7-7 7-7" />
+          </svg>
+          <span>{{ translations.resume_preview_back_to_editor }}</span>
+        </button>
+
+        <!-- <button
+          type="button"
           class="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900"
-          @click="goBackHome"
+          @click="handleBack"
         >
           <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M15 19l-7-7 7-7" />
           </svg>
           <span>{{ translations.back }}</span>
-        </button>
+        </button> -->
 
-        <div v-if="mode === 'preview'">
-          <div class="flex items-center gap-2">
-            <button
+                    <!-- <button
               type="button"
-              class="px-3 py-1 text-xs border rounded-full text-gray-600 hover:bg-gray-100"
-              @click="downloadPdf('ru')"
+              class="inline-flex items-center text-sm text-gray-600 hover:text-gray-900"
+              @click="mode = 'wizard'"
             >
-              RU PDF
-            </button>
-            <button
-              type="button"
-              class="px-3 py-1 text-xs border rounded-full text-gray-600 hover:bg-gray-100"
-              @click="downloadPdf('en')"
-            >
-              EN PDF
-            </button>
-          </div>
+              ← {{ translations.resume_preview_back_to_editor }}
+            </button> -->
+
+        <!-- Preview rejimida EN / RU download tugmalari -->
+        <div v-if="mode === 'preview'" class="flex items-center gap-2">
+          <button
+            type="button"
+            class="px-3 py-1 text-xs border rounded-full text-gray-600 hover:bg-gray-100"
+            @click="openDownloadModal('ru')"
+          >
+            Download RU
+          </button>
+          <button
+            type="button"
+            class="px-3 py-1 text-xs border rounded-full text-gray-600 hover:bg-gray-100"
+            @click="openDownloadModal('en')"
+          >
+            Download EN
+          </button>
         </div>
       </div>
 
@@ -896,14 +915,14 @@
       <div v-else class="max-w-4xl mx-auto px-4 sm:px-6">
         <div class="bg-white rounded-2xl shadow p-6 sm:p-8 mb-6">
           <div class="flex justify-between items-center mb-6">
-            <button
+            <!-- <button
               type="button"
               class="inline-flex items-center text-sm text-gray-600 hover:text-gray-900"
               @click="mode = 'wizard'"
             >
               ← {{ translations.resume_preview_back_to_editor }}
-            </button>
-            <div class="flex gap-2">
+            </button> -->
+            <!-- <div class="flex gap-2">
               <button
                 type="button"
                 class="px-3 py-1.5 text-xs border rounded-full text-gray-700 hover:bg-gray-50"
@@ -918,7 +937,7 @@
               >
                 {{ translations.resume_preview_pdf_en }}
               </button>
-            </div>
+            </div> -->
           </div>
 
           <!-- Header block -->
@@ -1240,6 +1259,44 @@
         </div>
       </div>
     </div>
+
+    <!-- Download format modal -->
+    <div
+      v-if="mode === 'preview' && showDownloadModal"
+      class="fixed inset-0 z-40 flex items-center justify-center bg-black/40"
+    >
+      <div class="bg-white rounded-2xl shadow-lg w-80 max-w-full p-5">
+        <h3 class="text-sm font-semibold text-gray-900 mb-3">
+          Fayl formatini tanlang
+        </h3>
+        <p class="text-xs text-gray-500 mb-4">
+          {{ selectedDownloadLang === 'ru' ? 'Rus tilidagi resume uchun' : 'Ingliz tilidagi resume uchun' }}
+        </p>
+        <div class="space-y-2">
+          <button
+            type="button"
+            class="w-full px-4 py-2 rounded-lg bg-black text-white text-sm font-medium hover:bg-gray-900"
+            @click="handleDownload('pdf')"
+          >
+            Download PDF
+          </button>
+          <button
+            type="button"
+            class="w-full px-4 py-2 rounded-lg border border-gray-300 text-sm font-medium text-gray-800 hover:bg-gray-50"
+            @click="handleDownload('docx')"
+          >
+            Download DOCX
+          </button>
+        </div>
+        <button
+          type="button"
+          class="mt-4 w-full text-xs text-gray-500 hover:text-gray-700"
+          @click="closeDownloadModal"
+        >
+          Bekor qilish
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -1247,6 +1304,7 @@
 import { computed, onMounted, reactive, ref, getCurrentInstance } from "vue";
 import { useRouter } from "vue-router";
 import axios from "axios";
+import { toast } from "vue3-toastify";
 import { useI18n } from "@/i18n-lite.js";
 
 const router = useRouter();
@@ -1377,6 +1435,10 @@ const newSkillCategory = ref(skillCategories[0]?.id || "basic");
 
 const newLanguageName = ref("");
 const newLanguageLevel = ref(languageLevels[0]?.id || "basic");
+
+// Download modal state
+const showDownloadModal = ref(false);
+const selectedDownloadLang = ref("ru"); // 'ru' | 'en'
 
 // Helper for language levels: backend darajalarini ichki id ga moslashtirish
 const languageLevelAliases = {
@@ -1728,40 +1790,112 @@ const removePhoto = async () => {
   }
 };
 
-const downloadPdf = async (lang) => {
-  const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+const buildPdfUrl = (lang) => {
+  const base = `${proxy.$locale}/v1/resume-create/pdf`;
+  const params = new URLSearchParams({ lang });
+
+  // Agar token bo'lsa, har doim query'ga qo'shamiz:
+  // backenddagi query.token middleware uni Authorization headerga aylantiradi.
+  const token = localStorage.getItem("token") || sessionStorage.getItem("token") || "";
+  if (token) {
+    params.append("token", token);
+  }
+
+  const query = params.toString();
+  return query ? `${base}?${query}` : base;
+};
+
+const downloadPdf = (lang) => {
+  const token = localStorage.getItem("token") || sessionStorage.getItem("token") || "";
   if (!token) {
-    console.error("❌ No auth token found for PDF download");
+    toast.error("Token topilmadi. Iltimos, qayta kiring.");
     return;
   }
 
-  try {
-    const response = await axios.get(`${proxy.$locale}/v1/resume-create/pdf`, {
-      params: { lang },
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/pdf",
-      },
-      responseType: "blob",
-    });
+  // Telegram chatga yuborish: backend PDFni yaratib, bot orqali jo'natadi
+  const url = `${proxy.$locale}/v1/resume-create/pdf/send-to-telegram?lang=${encodeURIComponent(
+    lang
+  )}&token=${encodeURIComponent(token)}`;
 
-    const blob = new Blob([response.data], { type: "application/pdf" });
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.target = "_blank";
-    link.download = `resume-${lang}.pdf`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    window.URL.revokeObjectURL(url);
-  } catch (e) {
-    console.error("❌ resume-create pdf download error:", e.response?.data || e.message);
+  axios
+    .post(
+      url,
+      {},
+      {
+        headers: {
+          Accept: "application/json",
+        },
+      }
+    )
+    .then(() => {
+      toast.success("PDF Telegram chatga yuborildi. Chatdan yuklab olishingiz mumkin.");
+    })
+    .catch((e) => {
+      console.error("❌ send-to-telegram error:", e.response?.data || e.message);
+      toast.error("PDFni Telegram chatga yuborishda xatolik yuz berdi.");
+    });
+};
+
+const downloadDocx = (lang) => {
+  const token = localStorage.getItem("token") || sessionStorage.getItem("token") || "";
+  if (!token) {
+    toast.error("Token topilmadi. Iltimos, qayta kiring.");
+    return;
   }
+
+  // DOCX faylini Telegram chatga yuborish (backend tavsiya qilgan ko'rinishda)
+  axios
+    .post(
+      `${proxy.$locale}/v1/resume-create/docx/send-to-telegram`,
+      null,
+      {
+        params: {
+          lang,
+          token,
+        },
+      }
+    )
+    .then(() => {
+      toast.success("DOCX fayl Telegram chatga yuborildi. Chatdan yuklab olishingiz mumkin.");
+    })
+    .catch((e) => {
+      console.error("❌ send-docx-to-telegram error:", e.response?.data || e.message);
+      toast.error("DOCX faylini Telegram chatga yuborishda xatolik yuz berdi.");
+    });
+};
+
+const handleBack = () => {
+  // Agar preview rejimida bo'lsak, faqat wizardga qaytamiz
+  if (mode.value === "preview") {
+    mode.value = "wizard";
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    return;
+  }
+
+  // Aks holda bosh sahifaga qaytamiz
+  goBackHome();
 };
 
 const goBackHome = () => {
   router.push({ name: "home" });
+};
+
+const openDownloadModal = (lang) => {
+  selectedDownloadLang.value = lang;
+  showDownloadModal.value = true;
+};
+
+const closeDownloadModal = () => {
+  showDownloadModal.value = false;
+};
+
+const handleDownload = (format) => {
+  if (format === "pdf") {
+    downloadPdf(selectedDownloadLang.value);
+  } else if (format === "docx") {
+    downloadDocx(selectedDownloadLang.value);
+  }
+  showDownloadModal.value = false;
 };
 
 onMounted(fetchResume);
