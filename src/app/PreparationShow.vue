@@ -1,40 +1,42 @@
 <script setup>
-import { computed, onBeforeUnmount, onMounted, ref } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref, getCurrentInstance } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 const route = useRoute();
 const router = useRouter();
+const { proxy } = getCurrentInstance();
 
-const props = defineProps({
-    id: { type: [String, Number], default: null },
-});
-const prepId = computed(() => props.id ?? route.params.id);
+const token = localStorage.getItem("token") || sessionStorage.getItem("token");
 
-/** Demo questions (keyin backenddan olib kelasiz) */
-const questions = ref([
-    "O‘zingizni qisqacha tanishtiring va so‘nggi loyihangizda Laravel’da nimalar qildingiz?",
-    "Laravel service container va dependency injection nima? Qachon ishlatganmisiz?",
-    "Eloquent’da N+1 muammosi nima va uni qanday yechasiz?",
-    "REST API’da 401 va 403 farqi nima? Qisqa misol bilan ayting.",
-    "MySQL index qachon foydali, qachon zarar bo‘lishi mumkin?",
-]);
+const prepId = computed(() => route.params.id);
 
-/** UI/flow state */
+// =========================================
+// 🟦 BACKEND QUESTIONS
+// =========================================
+const questions = ref([]);
+
+// =========================================
+// UI state
+// =========================================
 const idx = ref(0);
-const state = ref("asking"); // asking | ready | listening | done
+const state = ref("loading"); // loading | asking | ready | listening | done
 const countdown = ref(0);
 const countdownTimer = ref(null);
 
-const questionText = computed(() => questions.value[idx.value] || "");
+const questionText = computed(() => questions.value[idx.value]?.question || "");
 const progressText = computed(() => `${idx.value + 1} / ${questions.value.length}`);
 const isAsking = computed(() => state.value === "asking");
 const isListening = computed(() => state.value === "listening");
 
 /** speech synthesis (question audio) */
-const ttsSupported = computed(() => "speechSynthesis" in window && "SpeechSynthesisUtterance" in window);
+const ttsSupported = computed(
+    () => "speechSynthesis" in window && "SpeechSynthesisUtterance" in window
+);
 
 /** speech recognition (user answer) */
-const sttSupported = computed(() => !!(window.SpeechRecognition || window.webkitSpeechRecognition));
+const sttSupported = computed(
+    () => !!(window.SpeechRecognition || window.webkitSpeechRecognition)
+);
 let recognition = null;
 const liveTranscript = ref("");
 const finalTranscript = ref("");
@@ -71,9 +73,41 @@ function stopCountdown() {
     countdown.value = 0;
 }
 
+/* ========================================================
+   🟦 BACKENDDAN QUESTIONS YUKLASH
+=========================================================== */
+async function loadQuestions() {
+    state.value = "loading";
+
+    const res = await fetch(
+        proxy.$locale + `/v1/mock-interviews/${prepId.value}/questions`,
+        {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${token}`,
+                Accept: "application/json",
+            }
+        }
+    );
+
+    const data = await res.json();
+
+    questions.value = (data.questions || []).sort((a, b) => a.order - b.order);
+
+    if (questions.value.length === 0) {
+        alert("Savollar topilmadi");
+        router.push({ name: "conversations" });
+        return;
+    }
+
+    idx.value = 0;
+    state.value = "asking";
+
+    askCurrentQuestion();
+}
+
 /**
- * ✅ Button ichida countdown ko‘rinadi.
- * 10s ichida user bosmasa -> answer: "" (Javob berilmadi) -> nextQuestion()
+ * 10s ichida user bosmasa -> nextQuestion()
  */
 function startCountdown(seconds = 10) {
     stopCountdown();
@@ -86,7 +120,6 @@ function startCountdown(seconds = 10) {
             stopCountdown();
 
             if (state.value === "ready") {
-                // auto skip → record as no-answer
                 answers.value.push({
                     qIndex: idx.value,
                     question: questionText.value,
@@ -94,14 +127,13 @@ function startCountdown(seconds = 10) {
                     autoStopped: true,
                     at: new Date().toISOString(),
                 });
-
                 nextQuestion();
             }
         }
     }, 1000);
 }
 
-/* -------------------- TTS (question audio) -------------------- */
+/* -------------------- TTS -------------------- */
 function stopTTS() {
     try {
         if ("speechSynthesis" in window) window.speechSynthesis.cancel();
@@ -221,7 +253,6 @@ function initRecognition() {
 
 async function startListening() {
     if (!sttSupported.value) {
-        // STT yo‘q bo‘lsa ham — keyingi savolga o‘tamiz
         answers.value.push({
             qIndex: idx.value,
             question: questionText.value,
@@ -258,10 +289,7 @@ async function startListening() {
             liveTranscript.value = (finalTranscript.value + interim).trim();
         };
 
-        recognition.onerror = () => {
-            stopListening(true);
-        };
-
+        recognition.onerror = () => stopListening(true);
         recognition.onend = () => {
             if (state.value === "listening") stopListening(true);
         };
@@ -269,17 +297,13 @@ async function startListening() {
 
     try {
         recognition.start();
-    } catch {
-        // ignore (start twice)
-    }
+    } catch { }
 }
 
-function stopListening(auto = false) {
+async function stopListening(auto = false) {
     if (state.value !== "listening") return;
 
-    try {
-        recognition?.stop();
-    } catch { }
+    try { recognition?.stop(); } catch { }
 
     stopMicAnalyser();
 
@@ -292,6 +316,9 @@ function stopListening(auto = false) {
         autoStopped: auto,
         at: new Date().toISOString(),
     });
+
+    await saveAnswerToBackend(answerData);
+
 
     liveTranscript.value = "";
     finalTranscript.value = "";
@@ -335,17 +362,46 @@ function handleMainButton() {
 
 /* -------------------- lifecycle -------------------- */
 onMounted(() => {
-    askCurrentQuestion();
+    loadQuestions();
 });
 
 onBeforeUnmount(() => {
     stopCountdown();
     stopMicAnalyser();
     stopTTS();
-    try {
-        recognition?.stop();
-    } catch { }
+    try { recognition?.stop(); } catch { }
 });
+
+
+/** ===============================
+ *  🟦 BACKENDGA JAVOB YUBORISH
+ *  =============================== */
+ async function saveAnswerToBackend(answerObj) {
+    try {
+        const body = new FormData();
+        body.append("question_id", questions.value[answerObj.qIndex].id);
+        body.append("answer_text", answerObj.answer || "");
+        body.append("duration_seconds", answerObj.duration_seconds || 0);
+        body.append("skipped", answerObj.autoStopped ? 1 : 0);
+
+        const res = await fetch(
+            proxy.$locale + `/v1/mock-interviews/${prepId.value}/answer`,
+            {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+                body,
+            }
+        );
+
+        return await res.json();
+    } catch (e) {
+        console.error("Answer save failed:", e);
+        return null;
+    }
+}
+
 </script>
 
 <template>
