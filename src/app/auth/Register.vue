@@ -40,11 +40,11 @@
         <div class="category-selection-wrapper">
           <div class="form-group">
             <label class="form-label">
-              Kategoriyani tanlang
+              {{ translations.selected_category ?? 'Kategoriyani tanlang' }}
             </label>
             <el-select
                 v-model="formData.selectedCategory"
-                placeholder="-- Kategoriyani tanlang --"
+                :placeholder="translations.selected_category ?? 'Kategoriyani tanlang'"
                 size="large"
                 class="w-full category-select"
                 clearable

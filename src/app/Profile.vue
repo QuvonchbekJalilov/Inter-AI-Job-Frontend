@@ -128,7 +128,8 @@
 
         <div class="bg-white border border-gray-200 rounded-2xl p-6">
           <h2 class="text-lg font-medium mb-4 flex items-center gap-2 text-black">
-            <span>📄</span> {{ translations.resumes?.title }}
+<!--            <span>📄</span> {{ translations.resumes?.title }}-->
+            <span>📄</span> {{ translations.category }}
           </h2>
           <div class="flex items-center justify-between">
             <div class="text-sm text-gray-500">
@@ -137,14 +138,14 @@
                 {{ user?.resumes?.[0]?.title  }}
               </span>
             </div>
-            <span class="px-3 py-1 bg-green-100 text-green-600 rounded-full text-xs">{{ translations.resumes?.status_active }}</span>
+<!--            <span class="px-3 py-1 bg-green-100 text-green-600 rounded-full text-xs">{{ translations.resumes?.status_active }}</span>-->
           </div>
 <!--          <button-->
 <!--              type="button"-->
 <!--              class="mt-4 w-full px-4 py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-50 text-center block"-->
 <!--              @click="showResumeModal = true"-->
 <!--          >-->
-<!--            {{ translations.auto_apply?.edit_resume }}-->
+           <!-- {{ translations.auto_apply?.edit_resume }}-->
 <!--          </button>-->
 <!--          <a-->
 <!--              :href="user?.resumes[0]?.file_url"-->
@@ -152,10 +153,10 @@
 <!--              class="mt-4 w-full px-4 py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-50 text-center block"-->
 <!--          >-->
 <!--            {{ translations.resumes?.view_btn || 'Rezyumeni ko‘rish' }}-->
-<!--          </a>-->
+<!--          </a> -->
         </div>
 
-        <div class="bg-white border border-gray-200 rounded-2xl p-6">
+        <!-- <div class="bg-white border border-gray-200 rounded-2xl p-6">
           <h2 class="text-lg font-medium mb-2 flex items-center gap-2 text-black">
             ⚡ {{ translations.auto_apply?.title }}
           </h2>
@@ -167,10 +168,10 @@
               class="text-sm text-amber-600 bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 mb-3"
           >
             {{ translations.auto_apply?.enable_hint }}
-          </p>
+          </p> -->
 
           <!-- Checkbox -->
-          <label class="inline-flex items-center cursor-pointer">
+          <!-- <label class="inline-flex items-center cursor-pointer">
             <input
                 type="checkbox"
                 v-model="enabled"
@@ -182,10 +183,10 @@
                 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white
                 after:h-5 after:w-5 after:rounded-full after:transition-all peer-checked:after:translate-x-full"
             ></div>
-          </label>
+          </label> -->
 
           <!-- Slider + saqlash (asosiy qism) -->
-          <div v-if="enabled" class="mt-4 space-y-4">
+          <!-- <div v-if="enabled" class="mt-4 space-y-4">
             <div class="glass-slider flex items-center gap-3">
               <input
                   type="range"
@@ -221,8 +222,8 @@
             <p v-if="isTrialExhausted || isOutOfCredits" class="text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-4 py-3">
               {{ translations.auto_apply?.subscribe_to_use || 'Auto applydan foydalanish uchun obunani harid qiling' }}
             </p>
-          </div>
-        </div>
+          </div> -->
+        <!-- </div> -->
 
         <!-- <div
             v-if="hasActivePlan"
@@ -274,9 +275,9 @@
               ></div>
             </div>
 
-            <h3 class="text-2xl sm:text-lg font-medium mb-4 text-gray-900">
-              {{ translations.plan?.title }} 
-            </h3>
+<!--            <h3 class="text-2xl sm:text-lg font-medium mb-4 text-gray-900">-->
+<!--              {{ translations.plan?.title }} -->
+<!--            </h3>-->
 
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               <div
@@ -290,13 +291,13 @@
                   ]"
                   @click="handlePlanClick(plan)"
 
-                  
+
               >
-              
+
                 <div class="flex items-center justify-between gap-3 mb-1">
                   <h4 class="text-xl sm:text-2xl font-normal text-gray-800 translate-y-2">
-                    {{ plan.name }} 
-                  </h4>
+                    {{ plan.name }}
+                  </h4> -->
 
                     <!-- <span
                       v-if="isPlanActive(plan)"
@@ -304,16 +305,16 @@
                   >
                     {{ translations.plan?.current_badge || 'Sizning tarifi' }}
                   </span> -->
-                  <span class="text-xl sm:text-2xl font-normal text-blue-600 translate-y-1.5">
+                  <!-- <span class="text-xl sm:text-2xl font-normal text-blue-600 translate-y-1.5">
                     {{ formatUZS(plan.price) }} UZS
-                    
+
                   </span>
                 </div>
                 <div class="text-right mb-2" v-if="plan.fake_price">
                   <span class="text-gray-400 line-through text-xs sm:text-sm">
                     {{ formatUZS(plan.fake_price) }} UZS
                   </span>
-                </div>
+                </div> -->
 
 
 
@@ -325,7 +326,7 @@
 
 
 
-                <div v-if="isPlanActive(plan)" class="flex items-center justify-between gap-2">
+                <!-- <div v-if="isPlanActive(plan)" class="flex items-center justify-between gap-2">
                   <span
                       class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-medium"
                   >
@@ -336,7 +337,7 @@
                   >
                     {{ subscriptionPeriod }}
                   </span>
-                </div>
+                </div> -->
 
 
 
@@ -365,10 +366,10 @@
 
 
 
-               
+<!--
               </div>
-            </div>
-          </div>
+            </div> -->
+          <!-- </div> -->
 
           <!-- Payment modal -->
           <transition name="slide-up">
@@ -482,6 +483,10 @@
           </transition>
         </div>
 
+      </div>
+    </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
