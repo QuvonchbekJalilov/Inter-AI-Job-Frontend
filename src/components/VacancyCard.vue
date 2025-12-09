@@ -5,6 +5,7 @@
       <el-input
           v-model="search"
           :placeholder="translations.search + '...'"
+          class="rounded-input"
           clearable
           prefix-icon="Search"
           @keyup.enter="onSearch"
@@ -14,7 +15,7 @@
           type="primary"
           icon="Search"
           @click="onSearch"
-          style="background-color:#2563eb; border-color:#2563eb;"
+          style="background-color:#2563eb; border-color:#2563eb; border-radius: 8px"
       >
         {{ translations.search }}
       </el-button>
@@ -857,4 +858,8 @@ const navigateToPlans = () => {
   z-index: 1;
   transform: rotate(270deg);
 }
+.rounded-input :deep(.el-input__wrapper) {
+  border-radius: 10px !important;
+}
+
 </style>

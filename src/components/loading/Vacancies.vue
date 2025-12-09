@@ -3,7 +3,7 @@
     <div
         v-for="n in count"
         :key="n"
-        class="flex w-full max-w-lg flex-col mb-3 rounded-2xl overflow-hidden shadow bg-white"
+        class="flex w-full max-w-lg flex-col mb-3 mt-10 rounded-2xl overflow-hidden shadow bg-white"
     >
       <!-- yuqori tag (outer) -->
       <div class="flex items-center">
