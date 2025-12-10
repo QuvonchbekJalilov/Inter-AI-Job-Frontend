@@ -334,6 +334,7 @@
   "resume_error_city_required": "Please enter your city",
   "resume_error_country_required": "Please enter your country",
   "resume_error_gender_required": "Please select your gender",
+  "resume_error_birth_year_range": "Year of birth must be between 1950 and 2020",
   "resume_error_birth_date_required": "Please enter your full date of birth (day, month, year)",
   "resume_error_desired_position_required": "Desired position is required",
   "resume_error_citizenship_required": "Citizenship is required",

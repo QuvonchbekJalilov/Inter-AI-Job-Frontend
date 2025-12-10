@@ -333,6 +333,7 @@
   "resume_error_city_required": "Пожалуйста, укажите город",
   "resume_error_country_required": "Пожалуйста, укажите страну",
   "resume_error_gender_required": "Пожалуйста, выберите пол",
+  "resume_error_birth_year_range": "Год рождения должен быть в диапазоне 1950–2020",
   "resume_error_birth_date_required": "Пожалуйста, укажите дату рождения (день, месяц, год)",
   "resume_error_desired_position_required": "Укажите желаемую должность",
   "resume_error_citizenship_required": "Укажите гражданство",

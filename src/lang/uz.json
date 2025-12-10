@@ -334,6 +334,7 @@
   "resume_error_city_required": "Shahar nomini kiritishingiz shart",
   "resume_error_country_required": "Mamlakat nomini kiritishingiz shart",
   "resume_error_gender_required": "Jinsni tanlashingiz shart",
+  "resume_error_birth_year_range": "Tug‘ilgan yil 1950 va 2020 oralig‘ida bo‘lishi kerak",
   "resume_error_birth_date_required": "Tug‘ilgan sana (kun, oy, yil)ni kiritishingiz shart",
   "resume_error_desired_position_required": "Talab qilinayotgan lavozimni kiritish majburiy",
   "resume_error_citizenship_required": "Fuqaroligingizni kiritish majburiy",

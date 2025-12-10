@@ -1717,22 +1717,9 @@ const birthDateDisplay = computed(() => {
 
 const onBirthYearInput = (event) => {
   let raw = event.target.value || "";
-  // faqat raqamlar
-  raw = raw.replace(/\D/g, "");
-  if (!raw) {
-    birthYear.value = "";
-    return;
-  }
-  // faqat 4 ta raqamgacha
-  raw = raw.slice(0, 4);
-  let year = Number(raw);
-  if (Number.isNaN(year)) {
-    birthYear.value = "";
-    return;
-  }
-  if (year < 1950) year = 1950;
-  if (year > 2020) year = 2020;
-  birthYear.value = String(year);
+  // faqat raqamlar, 4 ta belgigacha, lekin oraliqni bu yerda emas, validatsiyada tekshiramiz
+  raw = raw.replace(/\D/g, "").slice(0, 4);
+  birthYear.value = raw;
 };
 
 const monthNamesShort = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -2097,6 +2084,16 @@ const validateStep1 = () => {
   if (!birthDay.value || !birthMonth.value || !birthYear.value) {
     errors.step1.birth_date = translations.value.resume_error_birth_date_required;
     ok = false;
+  } else {
+    const yearNum = Number(birthYear.value);
+    if (
+      Number.isNaN(yearNum) ||
+      yearNum < 1950 ||
+      yearNum > 2020
+    ) {
+      errors.step1.birth_date = translations.value.resume_error_birth_year_range;
+      ok = false;
+    }
   }
 
   return ok;
