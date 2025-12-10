@@ -175,11 +175,7 @@ const fetchRejectionStats = async () => {
       const count = data.data.length
       statistics.value = {
         ...statistics.value,
-        rejected: count,
-      }
-
-      if (!notificationCounts.value.rejections) {
-        notificationCounts.value.rejections = count
+        rejected: count
       }
     }
   } catch (error) {
@@ -222,6 +218,7 @@ const markNotificationsAsRead = async (key) => {
 
 const onStatusClick = (statusKey) => {
   emit("change-tab", statusKey)
+  markNotificationsAsRead(statusKey)
 }
 
 const onFilterClick = (tab) => {
@@ -238,25 +235,28 @@ watch(
 onMounted(() => {
   //console.log("⏳ 5 soniya kutilyapti...")
 
-  setTimeout(async () => {
-    //console.log("🚀 Serverga so‘rov yuborilmoqda...")
+      setTimeout(async () => {
+        //console.log("🚀 Serverga so‘rov yuborilmoqda...")
 
-    try {
-      const token = localStorage.getItem("token") || sessionStorage.getItem("token")
-      const res = await axios.get(proxy.$locale + "/v1/dashboard", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-          "Content-Type": "application/json"
+        try {
+          const token = localStorage.getItem("token") || sessionStorage.getItem("token")
+          const res = await axios.get(proxy.$locale + "/v1/dashboard", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+              "Content-Type": "application/json"
+            }
+          })
+
+          statistics.value = {
+            ...statistics.value,
+            ...(res.data || {})
+          }
+        } catch (e) {
+          console.error("❌ Statistika yuklanmadi:", e)
+        } finally {
+          loading.value = false
         }
-      })
-
-      statistics.value = res.data || {}
-    } catch (e) {
-      console.error("❌ Statistika yuklanmadi:", e)
-    } finally {
-      loading.value = false
-    }
   }, 2000)
 
   fetchNotifications()
