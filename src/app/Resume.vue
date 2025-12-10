@@ -879,13 +879,18 @@
             <div class="rounded-xl border border-gray-200 bg-gray-50 px-4 py-4 space-y-3">
               <h3 class="text-xs font-semibold text-gray-700">{{ translations.resume_step7_add_language_title }}</h3>
               <div class="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center">
-                <input
+                <select
                   v-model="newLanguageName"
-                  type="text"
                   class="flex-1 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  :placeholder="translations.resume_step7_language_placeholder"
-                  @keyup.enter.prevent="addLanguage"
-                />
+                >
+                  <option
+                    v-for="opt in languageNameOptions"
+                    :key="opt.value"
+                    :value="opt.value"
+                  >
+                    {{ translations[opt.labelKey] }}
+                  </option>
+                </select>
                 <select
                   v-model="newLanguageLevel"
                   class="w-full sm:w-56 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -918,7 +923,7 @@
                 :key="index"
                 class="inline-flex items-center gap-2 rounded-full bg-blue-50 text-blue-700 px-3 py-1 text-xs"
               >
-                <span>{{ lang.name }}</span>
+                <span>{{ languageNameLabel(lang.name) }}</span>
                 <span class="text-[10px] px-2 py-0.5 rounded-full bg-blue-100 text-blue-700">
                   {{ languageLabel(lang.level) }}
                 </span>
@@ -1373,8 +1378,8 @@
                 v-for="(lang, index) in form.languages"
                 :key="index"
               >
-                <span class="font-semibold lowercase">
-                  {{ lang.name }}:
+                <span class="font-semibold">
+                  {{ languageNameLabel(lang.name) }}:
                 </span>
                 <span class="ml-1 text-gray-700 text-xs">
                   {{ languageLabel(lang.level) }}
@@ -1619,7 +1624,13 @@ const editingEducationIndex = ref(null);
 const newSkillName = ref("");
 const newSkillCategory = ref(skillCategories[0]?.id || "basic");
 
-const newLanguageName = ref("");
+const languageNameOptions = [
+  { value: "Uzbek", labelKey: "resume_language_name_uz" },
+  { value: "Russian", labelKey: "resume_language_name_ru" },
+  { value: "English", labelKey: "resume_language_name_en" },
+];
+
+const newLanguageName = ref(languageNameOptions[0]?.value || "Uzbek");
 const newLanguageLevel = ref(languageLevels[0]?.id || "basic");
 
 // Download modal state
@@ -1750,6 +1761,25 @@ const languageLabel = (levelId) => {
   const dict = translations && translations.value ? translations.value : {};
   const translated = dict[key];
   return translated || normalized;
+};
+
+const languageNameLabel = (name) => {
+  if (!name) return "";
+  const dict = translations && translations.value ? translations.value : {};
+  const keyByAlias = {
+    uzbek: "resume_language_name_uz",
+    uz: "resume_language_name_uz",
+    russian: "resume_language_name_ru",
+    ru: "resume_language_name_ru",
+    english: "resume_language_name_en",
+    en: "resume_language_name_en",
+  };
+
+  const aliasKey = keyByAlias[String(name).trim().toLowerCase()];
+  if (aliasKey && dict[aliasKey]) return dict[aliasKey];
+
+  // Agar mos keladigan alias topilmasa, asl qiymatni qaytaramiz
+  return name;
 };
 
 const fetchResume = async () => {
@@ -2014,13 +2044,12 @@ const removeSkill = (skill) => {
 
 const addLanguage = () => {
   if (!newLanguageName.value.trim()) return;
-  console.log("▶ addLanguage", newLanguageName.value, newLanguageLevel.value);
   form.languages.push({
-    name: newLanguageName.value.trim(),
+    // Backend uchun inglizcha nomlar (Uzbek, Russian, English) jo'natiladi
+    name: newLanguageName.value,
     level: normalizeLanguageLevel(newLanguageLevel.value),
   });
-  console.log("▶ languages now:", form.languages);
-  newLanguageName.value = "";
+  // keyingi til qo'shish uchun nomni qayta o'zgartirish shart emas, shu selectdan tanlayveradi
 };
 
 const languagesByLevel = (levelId) =>
