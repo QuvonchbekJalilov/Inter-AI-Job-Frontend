@@ -262,24 +262,24 @@
 
         <div class="space-y-4">
           <!-- Sizning mavjud HTML kodingizni o‘zgartirmadik -->
-          <div ref="plansSection" class="bg-white border border-gray-200 rounded-2xl p-4 sm:p-6">
-            <div class="mb-3 text-xs sm:text-sm text-gray-600 flex justify-between">
+          <!-- <div ref="plansSection" class="bg-white border border-gray-200 rounded-2xl p-4 sm:p-6"> -->
+            <!-- <div class="mb-3 text-xs sm:text-sm text-gray-600 flex justify-between">
               <span>{{ translations.plan?.free_responses }}</span>
               <span class="text-gray-900 font-medium">{{ balanceCreditLimit }} / {{ planLimit }}</span>
-            </div>
+            </div> -->
 
-            <div class="w-full bg-gray-200 rounded-full h-2 mb-4 sm:h-2.5">
+            <!-- <div class="w-full bg-gray-200 rounded-full h-2 mb-4 sm:h-2.5">
               <div
                   class="bg-blue-500 h-2 sm:h-2.5 rounded-full"
                   :style="{ width: planUsagePercent + '%' }"
               ></div>
-            </div>
+            </div> -->
 
 <!--            <h3 class="text-2xl sm:text-lg font-medium mb-4 text-gray-900">-->
 <!--              {{ translations.plan?.title }} -->
 <!--            </h3>-->
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            <!-- <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               <div
                   v-for="plan in plans"
                   :key="plan.id || plan.plan_id"
@@ -292,9 +292,9 @@
                   @click="handlePlanClick(plan)"
 
 
-              >
+              > -->
 
-                <div class="flex items-center justify-between gap-3 mb-1">
+                <!-- <div class="flex items-center justify-between gap-3 mb-1">
                   <h4 class="text-xl sm:text-2xl font-normal text-gray-800 translate-y-2">
                     {{ plan.name }}
                   </h4> -->
@@ -372,7 +372,7 @@
           <!-- </div> -->
 
           <!-- Payment modal -->
-          <transition name="slide-up">
+          <!-- <transition name="slide-up">
             <div
                 v-if="showPayment"
                 class="fixed inset-0 bg-black bg-opacity-40 flex items-end justify-center z-50"
@@ -438,9 +438,9 @@
                 </button>
               </div>
             </div>
-          </transition>
+          </transition> -->
 
-          <transition name="fade">
+          <!-- <transition name="fade">
             <div
                 v-if="showConfirmModal"
                 class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[60]"
@@ -455,9 +455,9 @@
                   <b class="text-blue-600 uppercase">{{ selectedMethod }}</b>
                 </p>
 
-                <div class="flex justify-center gap-3">
+                <div class="flex justify-center gap-3"> -->
                   <!-- Continue: always visible; disabled until URL is ready -->
-                  <a
+                  <!-- <a
                       href="#"
                       target="_blank"
                       rel="noopener noreferrer"
@@ -485,7 +485,8 @@
 
       </div>
     </div>
-          </div>
+          </div> -->
+          <!-- --------------------------------------------- -->
         </div>
       </div>
     </div>

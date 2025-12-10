@@ -225,6 +225,82 @@
                   </div>
                 </div>
 
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-xs font-medium text-gray-700 mb-1">
+                      {{ translations.resume_gender_label }} *
+                    </label>
+                    <select
+                      v-model="form.personal.gender"
+                      class="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="" disabled>
+                        {{ translations.resume_gender_placeholder }}
+                      </option>
+                      <option
+                        v-for="opt in genderOptions"
+                        :key="opt.value"
+                        :value="opt.value"
+                      >
+                        {{ translations[opt.labelKey] }}
+                      </option>
+                    </select>
+                    <p v-if="errors.step1.gender" class="mt-1 text-xs text-red-500">
+                      {{ errors.step1.gender }}
+                    </p>
+                  </div>
+                  <div>
+                    <label class="block text-xs font-medium text-gray-700 mb-1">
+                      {{ translations.resume_birth_date_label }} *
+                    </label>
+                    <div class="flex gap-2">
+                      <div class="w-1/3">
+                        <label class="block text-[10px] font-medium text-gray-500 mb-0.5">
+                          {{ translations.resume_birth_day_label }} *
+                        </label>
+                        <input
+                          v-model="birthDay"
+                          type="number"
+                          min="1"
+                          max="31"
+                          class="w-full rounded-lg border border-gray-200 bg-gray-50 px-2 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          placeholder="10"
+                        />
+                      </div>
+                      <div class="w-1/3">
+                        <label class="block text-[10px] font-medium text-gray-500 mb-0.5">
+                          {{ translations.resume_birth_month_label }} *
+                        </label>
+                        <input
+                          v-model="birthMonth"
+                          type="number"
+                          min="1"
+                          max="12"
+                          class="w-full rounded-lg border border-gray-200 bg-gray-50 px-2 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          placeholder="12"
+                        />
+                      </div>
+                      <div class="w-1/3">
+                        <label class="block text-[10px] font-medium text-gray-500 mb-0.5">
+                          {{ translations.resume_birth_year_label }} *
+                        </label>
+                        <input
+                          v-model="birthYear"
+                          type="number"
+                          min="1950"
+                          max="2020"
+                          class="w-full rounded-lg border border-gray-200 bg-gray-50 px-2 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          @input="onBirthYearInput"
+                          placeholder="2000"
+                        />
+                      </div>
+                    </div>
+                    <p v-if="errors.step1.birth_date" class="mt-1 text-xs text-red-500">
+                      {{ errors.step1.birth_date }}
+                    </p>
+                  </div>
+                </div>
+
                 <div class="space-y-2 pt-2 border-t border-gray-100">
                   <p class="text-xs font-medium text-gray-600">
                     {{ translations.resume_prof_links_title }}
@@ -268,7 +344,7 @@
               </p>
             </div>
 
-            <div class="space-y-4">
+              <div class="space-y-4">
               <div>
                 <label class="block text-xs font-medium text-gray-700 mb-1">
                   {{ translations.resume_step2_desired_position_label }}
@@ -287,12 +363,22 @@
 
               <div>
                 <label class="block text-xs font-medium text-gray-700 mb-1">{{ translations.resume_step2_desired_salary_label }}</label>
-                <input
-                  v-model="form.job.desired_salary"
-                  type="text"
-                  class="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  :placeholder="translations.resume_step2_desired_salary_placeholder"
-                />
+                <div class="flex gap-2">
+                  <input
+                    v-model="salaryInput"
+                    type="text"
+                    class="flex-1 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    :placeholder="translations.resume_step2_desired_salary_placeholder"
+                  />
+                  <select
+                    v-model="salaryCurrency"
+                    class="w-24 rounded-lg border border-gray-200 bg-gray-50 px-2 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="UZS">UZS</option>
+                    <option value="USD">USD $</option>
+                    <option value="RUB">RUB ₽</option>
+                  </select>
+                </div>
                 <p class="mt-1 text-xs text-gray-400">
                   {{ translations.resume_step2_desired_salary_hint }}
                 </p>
@@ -552,7 +638,7 @@
 
               <button
                 type="button"
-                class="inline-flex items-center px-4 py-2 rounded-lg bg-gray-800 text-white text-xs font-medium hover:bg-black"
+                class="inline-flex items-center px-4 py-2 rounded-lg bg-blue-600 text-white text-xs font-medium hover:bg-blue-700"
                 @click="saveExperience"
               >
                 {{ editingExperienceIndex === null ? translations.resume_step4_add_button : translations.resume_step4_save_button }}
@@ -684,7 +770,7 @@
 
               <button
                 type="button"
-                class="inline-flex items-center px-4 py-2 rounded-lg bg-gray-800 text-white text-xs font-medium hover:bg-black"
+                class="inline-flex items-center px-4 py-2 rounded-lg bg-blue-600 text-white text-xs font-medium hover:bg-blue-700"
                 @click="saveEducation"
               >
                 {{ editingEducationIndex === null ? translations.resume_step5_add_button : translations.resume_step5_save_button }}
@@ -728,7 +814,7 @@
                 </select>
                 <button
                   type="button"
-                  class="inline-flex items-center justify-center px-4 py-2 rounded-lg bg-black text-white text-sm font-medium hover:bg-gray-900"
+                  class="inline-flex items-center justify-center px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700"
                   @click="addSkill"
                 >
                   {{ translations.resume_step6_add_skill_button }}
@@ -814,7 +900,7 @@
                 </select>
                 <button
                   type="button"
-                  class="inline-flex items-center justify-center px-4 py-2 rounded-lg bg-black text-white text-sm font-medium hover:bg-gray-900"
+                  class="inline-flex items-center justify-center px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700"
                   @click="addLanguage"
                 >
                   {{ translations.resume_step7_add_language_button }}
@@ -935,7 +1021,7 @@
 
               <button
                 type="button"
-                class="inline-flex items-center px-4 py-2 rounded-lg bg-gray-800 text-white text-xs font-medium hover:bg-black"
+                class="inline-flex items-center px-4 py-2 rounded-lg bg-blue-600 text-white text-xs font-medium hover:bg-blue-700"
                 @click="saveCertificate"
               >
                 {{ translations.resume_step8_add_button }}
@@ -975,7 +1061,7 @@
           <button
             v-if="step < 8"
             type="button"
-            class="inline-flex items-center px-5 py-2 rounded-lg bg-black text-white text-sm font-medium hover:bg-gray-900 disabled:opacity-60"
+            class="inline-flex items-center px-5 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 disabled:opacity-60"
             @click="nextStep"
           >
             {{ translations.next }}
@@ -984,7 +1070,7 @@
           <button
             v-else
             type="button"
-            class="inline-flex items-center px-5 py-2 rounded-lg bg-black text-white text-sm font-medium hover:bg-gray-900 disabled:opacity-60"
+            class="inline-flex items-center px-5 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 disabled:opacity-60"
             :disabled="saving"
             @click="handleFinish"
           >
@@ -1006,7 +1092,7 @@
           </button>
           <button
             type="button"
-            class="px-3 py-1.5 text-xs border rounded-full text-gray-700 hover:bg-gray-50"
+            class="px-3 py-1.5 text-xs rounded-full bg-blue-600 text-white hover:bg-blue-700"
             @click="openDownloadModal()"
           >
             {{ translations.resume_download_button }}
@@ -1059,6 +1145,14 @@
                   <p v-if="form.personal.city || form.personal.country">
                     {{ form.personal.city }}<span v-if="form.personal.country">, {{ form.personal.country }}</span>
                   </p>
+                  <p v-if="form.personal.gender">
+                    {{ translations.resume_gender_label }}:
+                    {{ genderLabel(form.personal.gender) }}
+                  </p>
+                  <p v-if="form.personal.birth_date">
+                    {{ translations.resume_birth_date_label }}:
+                    {{ birthDateDisplay }}
+                  </p>
                   <p v-if="form.personal.linkedin_url">{{ form.personal.linkedin_url }}</p>
                   <p v-if="form.personal.github_url">{{ form.personal.github_url }}</p>
                   <p v-if="form.personal.portfolio_url">{{ form.personal.portfolio_url }}</p>
@@ -1068,7 +1162,7 @@
           </div>
 
           <!-- SUMMARY -->
-          <div v-if="form.summary.text" class="border-t pt-4 mt-4">
+          <div v-if="form.summary.text" class="mt-4 pt-4 border-t-2 border-gray-300">
             <div class="flex items-center justify-between mb-2">
               <h3 class="text-xs font-semibold tracking-wide text-gray-500">
                 {{ translations.resume_preview_summary_title }}
@@ -1081,13 +1175,15 @@
                 {{ translations.resume_edit }}
               </button>
             </div>
-            <p class="text-sm text-gray-800 whitespace-pre-line">
-              {{ form.summary.text }}
-            </p>
+            <div class="pt-3 mt-1">
+              <p class="text-sm text-gray-800 whitespace-pre-line">
+                {{ form.summary.text }}
+              </p>
+            </div>
           </div>
 
           <!-- JOB PREFERENCES (Step 2) -->
-          <div class="border-t pt-4 mt-6">
+          <div class="mt-6 pt-4">
             <div class="flex items-center justify-between mb-2">
               <h3 class="text-xs font-semibold tracking-wide text-gray-500">
                 {{ translations.resume_preview_section_job }}
@@ -1100,7 +1196,7 @@
                 {{ translations.resume_edit }}
               </button>
             </div>
-            <div class="text-sm text-gray-800 space-y-1">
+            <div class="border-t pt-3 mt-1 text-sm text-gray-800 space-y-1">
               <p v-if="form.job.desired_position">
                 <span class="font-semibold">{{ translations.resume_step2_desired_position_label }}:</span>
                 <span class="ml-1">{{ form.job.desired_position }}</span>
@@ -1141,7 +1237,7 @@
           </div>
 
           <!-- EXPERIENCE -->
-          <div v-if="form.experiences.length" class="border-t pt-4 mt-6">
+          <div v-if="form.experiences.length" class="mt-6 pt-4">
             <div class="flex items-center justify-between mb-2">
               <h3 class="text-xs font-semibold tracking-wide text-gray-500">
                 {{ translations.resume_preview_section_experience }}
@@ -1154,35 +1250,37 @@
                 {{ translations.resume_edit }}
               </button>
             </div>
-            <div
-              v-for="(exp, index) in form.experiences"
-              :key="index"
-              class="flex items-start justify-between text-sm text-gray-800 mt-3"
-            >
-              <div class="pr-4">
-                <p class="font-semibold">
-                  {{ exp.position }}
-                </p>
-                <p class="text-gray-600 text-xs mt-0.5">
-                  <span v-if="exp.company">{{ exp.company }}</span>
-                  <span v-if="exp.company && exp.location"> | </span>
-                  <span v-if="exp.location">{{ exp.location }}</span>
-                </p>
-                <p
-                  v-if="exp.description"
-                  class="text-gray-700 text-xs mt-1 whitespace-pre-line"
-                >
-                  {{ exp.description }}
+            <div class="border-t pt-3 mt-1">
+              <div
+                v-for="(exp, index) in form.experiences"
+                :key="index"
+                class="flex items-start justify-between text-sm text-gray-800 mt-3"
+              >
+                <div class="pr-4">
+                  <p class="font-semibold">
+                    {{ exp.position }}
+                  </p>
+                  <p class="text-gray-600 text-xs mt-0.5">
+                    <span v-if="exp.company">{{ exp.company }}</span>
+                    <span v-if="exp.company && exp.location"> | </span>
+                    <span v-if="exp.location">{{ exp.location }}</span>
+                  </p>
+                  <p
+                    v-if="exp.description"
+                    class="text-gray-700 text-xs mt-1 whitespace-pre-line"
+                  >
+                    {{ exp.description }}
+                  </p>
+                </div>
+                <p class="text-xs text-gray-500 whitespace-nowrap">
+                  {{ formatPeriod(exp.start_date, exp.end_date, exp.is_current) }}
                 </p>
               </div>
-              <p class="text-xs text-gray-500 whitespace-nowrap">
-                {{ formatPeriod(exp.start_date, exp.end_date, exp.is_current) }}
-              </p>
             </div>
           </div>
 
           <!-- EDUCATION -->
-          <div v-if="form.educations.length" class="border-t pt-4 mt-6">
+          <div v-if="form.educations.length" class="mt-6 pt-4">
             <div class="flex items-center justify-between mb-2">
               <h3 class="text-xs font-semibold tracking-wide text-gray-500">
                 {{ translations.resume_preview_section_education }}
@@ -1195,35 +1293,37 @@
                 {{ translations.resume_edit }}
               </button>
             </div>
-            <div
-              v-for="(edu, index) in form.educations"
-              :key="index"
-              class="flex items-start justify-between text-sm text-gray-800 mt-3"
-            >
-              <div class="pr-4">
-                <p class="font-semibold">
-                  {{ edu.degree }}
-                </p>
-                <p class="text-gray-600 text-xs mt-0.5">
-                  <span v-if="edu.institution">{{ edu.institution }}</span>
-                  <span v-if="edu.institution && edu.location"> | </span>
-                  <span v-if="edu.location">{{ edu.location }}</span>
-                </p>
-                <p
-                  v-if="edu.extra_info"
-                  class="text-gray-700 text-xs mt-1 whitespace-pre-line"
-                >
-                  {{ edu.extra_info }}
+            <div class="border-t pt-3 mt-1">
+              <div
+                v-for="(edu, index) in form.educations"
+                :key="index"
+                class="flex items-start justify-between text-sm text-gray-800 mt-3"
+              >
+                <div class="pr-4">
+                  <p class="font-semibold">
+                    {{ edu.degree }}
+                  </p>
+                  <p class="text-gray-600 text-xs mt-0.5">
+                    <span v-if="edu.institution">{{ edu.institution }}</span>
+                    <span v-if="edu.institution && edu.location"> | </span>
+                    <span v-if="edu.location">{{ edu.location }}</span>
+                  </p>
+                  <p
+                    v-if="edu.extra_info"
+                    class="text-gray-700 text-xs mt-1 whitespace-pre-line"
+                  >
+                    {{ edu.extra_info }}
+                  </p>
+                </div>
+                <p class="text-xs text-gray-500 whitespace-nowrap">
+                  {{ formatPeriod(edu.start_date, edu.end_date, edu.is_current) }}
                 </p>
               </div>
-              <p class="text-xs text-gray-500 whitespace-nowrap">
-                {{ formatPeriod(edu.start_date, edu.end_date, edu.is_current) }}
-              </p>
             </div>
           </div>
 
           <!-- SKILLS -->
-          <div v-if="form.skills.length" class="border-t pt-4 mt-6">
+          <div v-if="form.skills.length" class="mt-6 pt-4">
             <div class="flex items-center justify-between mb-2">
               <h3 class="text-xs font-semibold tracking-wide text-gray-500">
                 {{ translations.resume_preview_section_skills }}
@@ -1236,7 +1336,7 @@
                 {{ translations.resume_edit }}
               </button>
             </div>
-            <div class="space-y-1 text-sm text-gray-800">
+            <div class="border-t pt-3 mt-1 space-y-1 text-sm text-gray-800">
               <p
                 v-for="(skill, index) in form.skills"
                 :key="index"
@@ -1255,7 +1355,7 @@
           </div>
 
           <!-- LANGUAGES -->
-          <div v-if="form.languages.length" class="border-t pt-4 mt-6">
+          <div v-if="form.languages.length" class="mt-6 pt-4">
             <div class="flex items-center justify-between mb-2">
               <h3 class="text-xs font-semibold tracking-wide text-gray-500">
                 {{ translations.resume_preview_section_languages }}
@@ -1268,7 +1368,7 @@
                 {{ translations.resume_edit }}
               </button>
             </div>
-            <div class="space-y-1 text-sm text-gray-800">
+            <div class="border-t pt-3 mt-1 space-y-1 text-sm text-gray-800">
               <p
                 v-for="(lang, index) in form.languages"
                 :key="index"
@@ -1284,7 +1384,7 @@
           </div>
 
           <!-- CERTIFICATES -->
-          <div v-if="form.certificates.length" class="border-t pt-4 mt-6">
+          <div v-if="form.certificates.length" class="mt-6 pt-4">
             <div class="flex items-center justify-between mb-2">
               <h3 class="text-xs font-semibold tracking-wide text-gray-500">
                 {{ translations.resume_preview_section_certificates }}
@@ -1297,7 +1397,7 @@
                 {{ translations.resume_edit }}
               </button>
             </div>
-            <ul class="space-y-1 text-sm text-gray-800">
+            <ul class="border-t pt-3 mt-1 space-y-1 text-sm text-gray-800">
               <li
                 v-for="(cert, index) in form.certificates"
                 :key="index"
@@ -1335,14 +1435,13 @@
       </div>
     </div>
 
-    <!-- Download modal: 1-step (lang) + 2-step (format) -->
+    <!-- Download modal: faqat tilni tanlash (PDF Telegramga yuboriladi) -->
     <div
       v-if="mode === 'preview' && showDownloadModal"
       class="fixed inset-0 z-40 flex items-center justify-center bg-black/40"
     >
       <div class="bg-white rounded-2xl shadow-lg w-80 max-w-full p-5">
-        <!-- Step 1: choose language -->
-        <div v-if="downloadStep === 'lang'" class="space-y-4">
+        <div class="space-y-4">
           <h3 class="text-sm font-semibold text-gray-900">
             {{ translations.resume_download_lang_modal_title }}
           </h3>
@@ -1353,14 +1452,14 @@
             <button
               type="button"
               class="w-full px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700"
-              @click="selectDownloadLang('ru')"
+              @click="handleDownload('ru')"
             >
               {{ translations.resume_download_lang_ru }}
             </button>
             <button
               type="button"
               class="w-full px-4 py-2 rounded-lg border border-gray-300 text-sm font-medium text-blue-600 hover:bg-gray-50"
-              @click="selectDownloadLang('en')"
+              @click="handleDownload('en')"
             >
               {{ translations.resume_download_lang_en }}
             </button>
@@ -1372,52 +1471,6 @@
           >
             {{ translations.resume_download_modal_cancel }}
           </button>
-        </div>
-
-        <!-- Step 2: choose format -->
-        <div v-else class="space-y-4">
-          <h3 class="text-sm font-semibold text-gray-900">
-            {{ translations.resume_download_modal_title }}
-          </h3>
-          <p class="text-xs text-gray-500">
-            {{
-              selectedDownloadLang === 'ru'
-                ? translations.resume_download_modal_text_ru
-                : translations.resume_download_modal_text_en
-            }}
-          </p>
-          <div class="space-y-2 mt-2">
-            <button
-              type="button"
-              class="w-full px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700"
-              @click="handleDownload('pdf')"
-            >
-              {{ translations.resume_download_modal_pdf_button }}
-            </button>
-            <button
-              type="button"
-              class="w-full px-4 py-2 rounded-lg border border-gray-300 text-sm font-medium text-blue-600 hover:bg-gray-50"
-              @click="handleDownload('docx')"
-            >
-              {{ translations.resume_download_modal_docx_button }}
-            </button>
-          </div>
-          <div class="mt-4 flex gap-2">
-            <button
-              type="button"
-              class="flex-1 text-xs text-gray-500 hover:text-gray-700"
-              @click="downloadStep = 'lang'"
-            >
-              {{ translations.resume_download_modal_back }}
-            </button>
-            <button
-              type="button"
-              class="flex-1 text-xs text-gray-500 hover:text-gray-700"
-              @click="closeDownloadModal"
-            >
-              {{ translations.resume_download_modal_cancel }}
-            </button>
-          </div>
         </div>
       </div>
     </div>
@@ -1452,6 +1505,8 @@ const form = reactive({
     city: "",
     country: "",
     photo_path: null,
+    gender: "",
+    birth_date: "2000",
     linkedin_url: "",
     github_url: "",
     portfolio_url: "",
@@ -1517,6 +1572,11 @@ const skillCategories = [
   { id: "strong", labelKey: "resume_skill_level_strong" },
 ].filter(Boolean);
 
+const genderOptions = [
+  { value: "male", labelKey: "resume_gender_male" },
+  { value: "female", labelKey: "resume_gender_female" },
+];
+
 const languageLevels = [
   { id: "basic", labelKey: "resume_language_level_basic" },
   { id: "intermediate", labelKey: "resume_language_level_intermediate" },
@@ -1565,7 +1625,15 @@ const newLanguageLevel = ref(languageLevels[0]?.id || "basic");
 // Download modal state
 const showDownloadModal = ref(false);
 const selectedDownloadLang = ref("ru"); // 'ru' | 'en'
-const downloadStep = ref("lang"); // 'lang' | 'format'
+
+// Step 2: salary currency
+const salaryInput = ref("");
+const salaryCurrency = ref("UZS"); // 'UZS' | 'USD' | 'RUB'
+
+// Tug'ilgan sana uchun UI (kun va oy faqat frontda)
+const birthDay = ref("10");
+const birthMonth = ref("01");
+const birthYear = ref("2000");
 
 // Validation errors for steps
 const errors = reactive({
@@ -1634,6 +1702,39 @@ const scheduleLabel = (value) => {
   return dict[opt.labelKey] || value;
 };
 
+const genderLabel = (value) => {
+  if (!value) return "";
+  const dict = translations && translations.value ? translations.value : {};
+  if (value === "male") return dict.resume_gender_male || "Male";
+  if (value === "female") return dict.resume_gender_female || "Female";
+  return value;
+};
+
+const birthDateDisplay = computed(() => {
+  // Previewda to'g'ridan-to'g'ri backendga ketadigan qiymatni ko'rsatamiz
+  return form.personal.birth_date ? String(form.personal.birth_date) : "";
+});
+
+const onBirthYearInput = (event) => {
+  let raw = event.target.value || "";
+  // faqat raqamlar
+  raw = raw.replace(/\D/g, "");
+  if (!raw) {
+    birthYear.value = "";
+    return;
+  }
+  // faqat 4 ta raqamgacha
+  raw = raw.slice(0, 4);
+  let year = Number(raw);
+  if (Number.isNaN(year)) {
+    birthYear.value = "";
+    return;
+  }
+  if (year < 1950) year = 1950;
+  if (year > 2020) year = 2020;
+  birthYear.value = String(year);
+};
+
 const monthNamesShort = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 const formatMonthYear = (value) => {
@@ -1690,6 +1791,46 @@ const fetchResume = async () => {
         level: normalizeLanguageLevel(l.level),
       }));
       form.certificates = data.data.certificates || [];
+
+      // Tug'ilgan sana: backend "DD-MM-YYYY" yoki eski formatda faqat "YYYY" qaytarishi mumkin
+      const bd = data.data.personal?.birth_date;
+      if (bd) {
+        const fullMatch = String(bd).match(/^(\d{1,2})-(\d{1,2})-(\d{4})$/);
+        if (fullMatch) {
+          birthDay.value = fullMatch[1].padStart(2, "0");
+          birthMonth.value = fullMatch[2].padStart(2, "0");
+          birthYear.value = fullMatch[3];
+          form.personal.birth_date = `${birthDay.value}-${birthMonth.value}-${birthYear.value}`;
+        } else if (/^\d{4}$/.test(String(bd))) {
+          birthYear.value = String(bd);
+          form.personal.birth_date = String(bd);
+        }
+      }
+
+      // Step 2: desired salary parsing (e.g. "1000-2000 UZS", "1000-2000 $", "1000-2000 ₽")
+      if (form.job.desired_salary) {
+        const raw = String(form.job.desired_salary).trim();
+        let currency = "UZS";
+        let amount = raw;
+
+        const match = raw.match(/^(.*)\s+(UZS|USD|\$|RUB|₽)$/i);
+        if (match) {
+          amount = match[1].trim();
+          const cur = match[2].toUpperCase();
+          if (cur === "UZS") currency = "UZS";
+          else if (cur === "USD" || cur === "$") currency = "USD";
+          else currency = "RUB";
+        }
+
+        salaryInput.value = amount;
+        salaryCurrency.value = currency;
+      } else {
+        salaryInput.value = "";
+        salaryCurrency.value = "UZS";
+      }
+
+      // Agar backendda rezyume mavjud bo'lsa, sahifani darhol preview rejimida ochamiz
+      mode.value = "preview";
     }
   } catch (e) {
     console.error("❌ resume-create fetch error:", e.response?.data || e.message);
@@ -1702,17 +1843,44 @@ const submitAll = async () => {
   saving.value = true;
   try {
     const token = localStorage.getItem("token") || sessionStorage.getItem("token");
-    await axios.post(
-      `${proxy.$locale}/v1/resume-create`,
-      form,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      }
-    );
+
+    // Form nusxasini yaratib, maoshni valyutaga qarab formatlaymiz
+    const payload = JSON.parse(JSON.stringify(form));
+
+    // Tug'ilgan sana: foydalanuvchi kiritgan kun-oy-yilni "DD-MM-YYYY" ko'rinishida yuboramiz
+    const year = birthYear.value ? String(birthYear.value).trim() : "";
+    const day = birthDay.value ? String(birthDay.value).padStart(2, "0") : "";
+    const month = birthMonth.value ? String(birthMonth.value).padStart(2, "0") : "";
+    if (day && month && year) {
+      payload.personal.birth_date = `${day}-${month}-${year}`;
+      form.personal.birth_date = payload.personal.birth_date;
+    } else {
+      payload.personal.birth_date = "";
+    }
+
+    let formattedSalary = "";
+    if (salaryInput.value && String(salaryInput.value).trim()) {
+      const clean = String(salaryInput.value).trim();
+      let suffix = "";
+      if (salaryCurrency.value === "USD") suffix = " $";
+      else if (salaryCurrency.value === "RUB") suffix = " ₽";
+      else suffix = " UZS";
+      formattedSalary = `${clean}${suffix}`;
+      payload.job.desired_salary = formattedSalary;
+    } else {
+      payload.job.desired_salary = "";
+    }
+
+    // Preview'da ham ko'rinishi uchun form holatini yangilaymiz
+    form.job.desired_salary = formattedSalary;
+
+    await axios.post(`${proxy.$locale}/v1/resume-create`, payload, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    });
   } catch (e) {
     console.error("❌ resume-create save error:", e.response?.data || e.message);
     throw e;
@@ -1918,6 +2086,16 @@ const validateStep1 = () => {
   }
   if (isEmptyString(form.personal.country)) {
     errors.step1.country = translations.value.resume_error_country_required;
+    ok = false;
+  }
+  if (isEmptyString(form.personal.gender)) {
+    errors.step1.gender = translations.value.resume_error_gender_required;
+    ok = false;
+  }
+
+  // Tug'ilgan sana (kun, oy, yil) majburiy
+  if (!birthDay.value || !birthMonth.value || !birthYear.value) {
+    errors.step1.birth_date = translations.value.resume_error_birth_date_required;
     ok = false;
   }
 
@@ -2254,27 +2432,17 @@ const goBackHome = () => {
 };
 
 const openDownloadModal = () => {
-  // Boshlang'ich qadam – til tanlash
-  downloadStep.value = "lang";
   showDownloadModal.value = true;
-};
-
-const selectDownloadLang = (lang) => {
-  selectedDownloadLang.value = lang;
-  downloadStep.value = "format";
 };
 
 const closeDownloadModal = () => {
   showDownloadModal.value = false;
-  downloadStep.value = "lang";
 };
 
-const handleDownload = (format) => {
-  if (format === "pdf") {
-    downloadPdf(selectedDownloadLang.value);
-  } else if (format === "docx") {
-    downloadDocx(selectedDownloadLang.value);
-  }
+const handleDownload = (lang) => {
+  selectedDownloadLang.value = lang;
+  // Faqat PDF ni Telegram chatga yuboramiz
+  downloadPdf(selectedDownloadLang.value);
   showDownloadModal.value = false;
 };
 const phoneInput = ref(null);
