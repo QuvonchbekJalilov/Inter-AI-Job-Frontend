@@ -159,6 +159,34 @@ const fetchNotifications = async () => {
   }
 }
 
+const fetchRejectionStats = async () => {
+  try {
+    const token = localStorage.getItem("token") || sessionStorage.getItem("token")
+    if (!token) return
+
+    const { data } = await axios.get(`${proxy.$locale}/v1/rejections`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+      },
+    })
+
+    if (data?.success && Array.isArray(data.data)) {
+      const count = data.data.length
+      statistics.value = {
+        ...statistics.value,
+        rejected: count,
+      }
+
+      if (!notificationCounts.value.rejections) {
+        notificationCounts.value.rejections = count
+      }
+    }
+  } catch (error) {
+    console.error("❌ Rejection stats fetch error:", error.response?.data || error.message)
+  }
+}
+
 const markNotificationsAsRead = async (key) => {
   const map = TAB_NOTIFICATION_MAP[key]
   if (!map) return
@@ -232,6 +260,7 @@ onMounted(() => {
   }, 2000)
 
   fetchNotifications()
+  fetchRejectionStats()
 })
 </script>
 
