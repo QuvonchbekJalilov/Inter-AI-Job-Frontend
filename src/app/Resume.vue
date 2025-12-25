@@ -1846,8 +1846,15 @@ const fetchResume = async () => {
         salaryCurrency.value = "UZS";
       }
 
-      // Agar backendda rezyume mavjud bo'lsa, sahifani darhol preview rejimida ochamiz
-      mode.value = "preview";
+      const hasFirstName =
+        !isEmptyString(data.data.personal?.first_name);
+      if (hasFirstName) {
+        // Agar backendda rezyume mavjud bo'lsa, sahifani darhol preview rejimida ochamiz
+        mode.value = "preview";
+      } else {
+        mode.value = "wizard";
+        step.value = 1;
+      }
     }
   } catch (e) {
     console.error("❌ resume-create fetch error:", e.response?.data || e.message);
